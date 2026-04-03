@@ -266,7 +266,11 @@ For more information, visit <a href="https://lfess.energy/">https://lfess.energy
               <li><a href="#auth-details-include-aggregation-addresses">7.2.7.1. Include Aggregation Addresses</a></li>
             </ul>
           </li>
-          <li><a href="#auth-details-include-usage-segments">7.2.8. Include Usage Segments</a></li>
+          <li><a href="#auth-details-include-usage-segments">7.2.8. Include Usage Segments</a>
+            <ul>
+              <li><a href="#auth-details-include-usage-segment-formats">7.2.8.1. Include Usage Segment Formats</a></li>
+            </ul>
+          </li>
           <li><a href="#auth-details-include-eacs">7.2.9. Include Energy Attribute Certificates</a></li>
         </ul>
       </li>
@@ -1305,7 +1309,7 @@ Additionally, by defining these authorization data fields, Servers will be able 
 
 <p>For some use cases, Clients need to have access to a Customer’s <a href="#account-format">Accounts</a>.
 For example, a contracted vendor may need catalog and organize the list of accounts for an enterprise Customer’s locations.
-To enable whether Account objects access is in included in addition to the data normally provided for a scope, this specification defines an authorization details field that controls additional Account access.</p>
+To enable whether Account objects access is included in addition to the data normally provided for a scope, this specification defines an authorization details field that controls additional Account access.</p>
 
 <p>To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:</p>
 
@@ -1323,7 +1327,7 @@ To enable whether Account objects access is in included in addition to the data 
 
 <ul>
   <li>If this field’s value is <code class="language-plaintext highlighter-rouge">true</code>, in addition to the data access defined with this field’s scope, the Server MUST provide access to related Account objects.
-Related Account objects are any Account that are referenced by <code class="language-plaintext highlighter-rouge">cds_account_id</code>, <code class="language-plaintext highlighter-rouge">grouped_accounts</code>, or <code class="language-plaintext highlighter-rouge">related_accounts</code> values in any included <a href="#service-contract-format">Service Contract</a>, <a href="#bill-statment-format">Bill Statement</a>, <a href="#bill-section-format">Bill Section</a>, <a href="#aggregation-format">Aggregation</a>, or <a href="#usage-segment-format">Usage Segment</a>. 
+Related Account objects are any Account that are referenced by <code class="language-plaintext highlighter-rouge">cds_account_id</code>, <code class="language-plaintext highlighter-rouge">grouped_accounts</code>, or <code class="language-plaintext highlighter-rouge">related_accounts</code> values in any included <a href="#service-contract-format">Service Contract</a>, <a href="#bill-statment-format">Bill Statement</a>, <a href="#bill-section-format">Bill Section</a>, <a href="#aggregation-format">Aggregation</a>, or <a href="#usage-segment-format">Usage Segment</a>.
 Additionally, parent Accounts that are referenced by any included Accounts’ <code class="language-plaintext highlighter-rouge">cds_account_parent</code> values MUST also be included.</li>
   <li>Servers MUST NOT include OPTIONAL fields for Accounts unless those fields are enabled to be included by the Grant’s scope or other authorization details fields.</li>
 </ul>
@@ -1426,7 +1430,7 @@ To address these use cases, this specification defines an authorization details 
 
 <p>For some use cases, Clients need to have access to a Customer’s <a href="#service-contract-format">Service Contracts</a>.
 For example, a contracted vendor may need get a business Customer’s list of services so that they can determine which locations are feasible for a project.
-To enable whether Service Contract objects access is in included in addition to the data normally provided for a scope, this specification defines an authorization details field that controls additional Service Contract access.</p>
+To enable whether Service Contract objects access is included in addition to the data normally provided for a scope, this specification defines an authorization details field that controls additional Service Contract access.</p>
 
 <p>To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:</p>
 
@@ -1444,7 +1448,7 @@ To enable whether Service Contract objects access is in included in addition to 
 
 <ul>
   <li>If this field’s value is <code class="language-plaintext highlighter-rouge">true</code>, in addition to the data access defined with this field’s scope, the Server MUST provide access to related Service Contract objects.
-Related Service Contract objects are any Service Contract that are referenced by <code class="language-plaintext highlighter-rouge">cds_servicecontract_id</code>, <code class="language-plaintext highlighter-rouge">current_servicecontracts</code>, <code class="language-plaintext highlighter-rouge">previous_servicecontracts</code>, <code class="language-plaintext highlighter-rouge">related_servicecontracts</code>, <code class="language-plaintext highlighter-rouge">grouped_servicecontracts</code>, or <code class="language-plaintext highlighter-rouge">beneficiaries</code> values in any included <a href="#service-point-format">Service Point</a>, <a href="#bill-section-format">Bill Section</a>, <a href="#aggregation-format">Aggregation</a>, <a href="#usage-segment-format">Usage Segment</a>, or <a href="#eac-format">Energy Attribute Certificate</a> object. 
+Related Service Contract objects are any Service Contract that are referenced by <code class="language-plaintext highlighter-rouge">cds_servicecontract_id</code>, <code class="language-plaintext highlighter-rouge">current_servicecontracts</code>, <code class="language-plaintext highlighter-rouge">previous_servicecontracts</code>, <code class="language-plaintext highlighter-rouge">related_servicecontracts</code>, <code class="language-plaintext highlighter-rouge">grouped_servicecontracts</code>, or <code class="language-plaintext highlighter-rouge">beneficiaries</code> values in any included <a href="#service-point-format">Service Point</a>, <a href="#bill-section-format">Bill Section</a>, <a href="#aggregation-format">Aggregation</a>, <a href="#usage-segment-format">Usage Segment</a>, or <a href="#eac-format">Energy Attribute Certificate</a> object.
 Additionally, Service Contracts that have an <code class="language-plaintext highlighter-rouge">cds_account_id</code> value that matches any included Accounts MUST also be included.</li>
   <li>Servers MUST NOT include OPTIONAL fields for Service Contracts unless those fields are enabled to be included by the Grant’s scope or other authorization details fields.</li>
 </ul>
@@ -1541,7 +1545,7 @@ To address these use cases, this specification defines an authorization details 
 
 <p>For some use cases, Clients need to have access to a specific list of <a href="#service-point-format">Service Points</a>.
 For example, a utility vendor Client may need access to the list of relevant service point locations for the data analysis project with which they are working with the Server utility.
-To enable whether Service Point objects access is in included in addition to the data normally provided for a scope, this specification defines an authorization details field that controls additional Service Point access.</p>
+To enable whether Service Point objects access is included in addition to the data normally provided for a scope, this specification defines an authorization details field that controls additional Service Point access.</p>
 
 <p>To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:</p>
 
@@ -1569,7 +1573,7 @@ Related Service Point objects are any Service Point that are referenced by <code
 
 <p>For some use cases, Clients need to have access to the Server’s premise identifiers and details for reference with other materials (e.g. the local municipality’s building permit records).
 For example, a utility vendor Client may need cross reference which of the utility’s service points have had construction work performed on that premise’s property.
-To address these use cases, this specification defines an authorization details field that controls whether service contract details access is enabled.</p>
+To address these use cases, this specification defines an authorization details field that controls whether service contract details access is enabled.##########TODO</p>
 
 <p>To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:</p>
 
@@ -1595,9 +1599,9 @@ To address these use cases, this specification defines an authorization details 
 
 <h5 id="7232-include-service-point-addresses-">7.2.3.2. Include Service Point Addresses <a id="auth-details-include-service-point-addresses" href="#auth-details-include-service-point-addresses" class="permalink">🔗</a></h5>
 
-<p>For some use cases, Clients need to have access to a Customer’s service contract details for reference with other Customer materials (e.g. the Customer’s service addresses).
-For example, an energy consultant Client working with an enterprise Customer may need to understand which locations have how many and which types of utility services.
-To address these use cases, this specification defines an authorization details field that controls whether service contract details access is enabled.</p>
+<p>For some use cases, Clients need to have access to a Customer’s service point addresses for reference with other materials (e.g. municipal maps).
+For example, a utility vendor Client may need cross reference which of the utility’s service point locations are within areas designated as commercial zoning.
+To address these use cases, this specification defines an authorization details field that controls whether service point address access is enabled.</p>
 
 <p>To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:</p>
 
@@ -1623,32 +1627,94 @@ To address these use cases, this specification defines an authorization details 
 
 <h5 id="7233-include-coordinates-">7.2.3.3. Include Coordinates <a id="auth-details-include-coordinates" href="#auth-details-include-coordinates" class="permalink">🔗</a></h5>
 
+<p>For some use cases, Clients need to have access to a Customer’s service point coordinates for reference with other materials (e.g. flood zone maps).
+For example, a utility vendor Client may need cross reference which of the utility’s rural service points are within a specific local municipal jurisdiction.
+To address these use cases, this specification defines an authorization details field that controls whether service point coordinates access is enabled.</p>
+
+<p>To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:</p>
+
 <ul>
-  <li><code class="language-plaintext highlighter-rouge">include_coordinates</code></li>
+  <li>The <code class="language-plaintext highlighter-rouge">id</code> value MUST be <code class="language-plaintext highlighter-rouge">"include_coordinates"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">format</code> value MUST be <code class="language-plaintext highlighter-rouge">"boolean"</code>.</li>
+  <li>If this object is included in a Scope Description where the <code class="language-plaintext highlighter-rouge">response_types_supported</code> field is not empty array (e.g. Customer authorization is supported):
+    <ul>
+      <li>The <code class="language-plaintext highlighter-rouge">is_required</code> value MUST be <code class="language-plaintext highlighter-rouge">false</code>.</li>
+    </ul>
+  </li>
 </ul>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>Additionally, Servers MUST implement the following behavior to support this authorization details field:</p>
+
+<ul>
+  <li>If this field’s value is <code class="language-plaintext highlighter-rouge">true</code>, Servers MUST include the following field values in any Service Point objects accessible using this field’s scope:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">latitude</code></li>
+      <li><code class="language-plaintext highlighter-rouge">longitude</code></li>
+    </ul>
+  </li>
+</ul>
 
 <h4 id="724-include-meter-devices-">7.2.4. Include Meter Devices <a id="auth-details-include-meter-devices" href="#auth-details-include-meter-devices" class="permalink">🔗</a></h4>
 
+<p>For some use cases, Clients need to have access to a specific list of <a href="#meter-device-format">Meter Devices</a>.
+For example, a utility vendor Client may need access to the list of relevant meters for the data analysis project with which they are working with the Server utility.
+To enable whether Meter Device objects access is included in addition to the data normally provided for a scope, this specification defines an authorization details field that controls additional Meter Device access.</p>
+
+<p>To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:</p>
+
 <ul>
-  <li><code class="language-plaintext highlighter-rouge">include_meter_devices</code></li>
+  <li>The <code class="language-plaintext highlighter-rouge">id</code> value MUST be <code class="language-plaintext highlighter-rouge">"include_meter_devices"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">format</code> value MUST be <code class="language-plaintext highlighter-rouge">"boolean"</code>.</li>
+  <li>If this object is included in a Scope Description where the <code class="language-plaintext highlighter-rouge">response_types_supported</code> field is not empty array (e.g. Customer authorization is supported):
+    <ul>
+      <li>The <code class="language-plaintext highlighter-rouge">is_required</code> value MUST be <code class="language-plaintext highlighter-rouge">false</code>.</li>
+    </ul>
+  </li>
 </ul>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>Additionally, Servers MUST implement the following behavior to support this authorization details field:</p>
+
+<ul>
+  <li>If this field’s value is <code class="language-plaintext highlighter-rouge">true</code>, in addition to the data access defined with this field’s scope, the Server MUST provide access to related Meter Device objects.
+Related Meter Device objects are any Meter Device that are referenced by <code class="language-plaintext highlighter-rouge">related_meterdevices</code> or <code class="language-plaintext highlighter-rouge">grouped_meterdevices</code> values in any included <a href="#bill-section-format">Bill Section</a>, <a href="#aggregation-format">Aggregation</a>, or <a href="#usage-segment-format">Usage Segment</a> object.</li>
+  <li>Servers MUST NOT include OPTIONAL fields for Service Points unless those fields are enabled to be included by the Grant’s scope or other authorization details fields.</li>
+</ul>
+
+<p>Additional authorization details fields are defined in subsections to this section to enable the inclusion of OPTIONAL Service Point object fields.</p>
 
 <h5 id="7241-include-meter-numbers-">7.2.4.1. Include Meter Numbers <a id="auth-details-include-meter-numbers" href="#auth-details-include-meter-numbers" class="permalink">🔗</a></h5>
+
+<p>For some use cases, Clients need to have access to a Customer’s meter numbers for reference with other Customer materials (e.g. their notes from an on-site inspection).
+For example, an energy service company Client doing and initial feasibility analysis for an enterprise Customer’s locations may need to match up the meter numbers written down during their on-site inspection to the list of Meter Devices obtained when requesting usage data from the Server for the Customer.
+To address these use cases, this specification defines an authorization details field that controls whether Meter Device <code class="language-plaintext highlighter-rouge">meter_number</code> access is enabled.</p>
+
+<p>To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:</p>
+
 <ul>
-  <li><code class="language-plaintext highlighter-rouge">include_meter_numbers</code></li>
+  <li>The <code class="language-plaintext highlighter-rouge">id</code> value MUST be <code class="language-plaintext highlighter-rouge">"include_meter_numbers"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">format</code> value MUST be <code class="language-plaintext highlighter-rouge">"boolean"</code>.</li>
+  <li>If this object is included in a Scope Description where the <code class="language-plaintext highlighter-rouge">response_types_supported</code> field is not empty array (e.g. Customer authorization is supported):
+    <ul>
+      <li>The <code class="language-plaintext highlighter-rouge">is_required</code> value MUST be <code class="language-plaintext highlighter-rouge">false</code>.</li>
+    </ul>
+  </li>
 </ul>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>Additionally, Servers MUST implement the following behavior to support this authorization details field:</p>
+
+<ul>
+  <li>If this field’s value is <code class="language-plaintext highlighter-rouge">true</code>, Servers MUST include the following field values in any Meter Device objects accessible using this field’s scope:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">meter_number</code></li>
+    </ul>
+  </li>
+</ul>
 
 <h4 id="725-include-bill-statements-">7.2.5. Include Bill Statements <a id="auth-details-include-bill-statements" href="#auth-details-include-bill-statements" class="permalink">🔗</a></h4>
 
 <p>For some use cases, Clients need to have access to a Customer’s <a href="#bill-statement-format">Bill Statements</a>.
 For example, a financial auditor Client may need to review a Customer’s utility bills as part of a business’s financial audit.
-To enable whether Bill Statement objects access is in included in addition to the data normally provided for a scope, this specification defines an authorization details field that controls additional Bill Statement access.</p>
+To enable whether Bill Statement objects access is included in addition to the data normally provided for a scope, this specification defines an authorization details field that controls additional Bill Statement access.</p>
 
 <p>To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:</p>
 
@@ -1765,7 +1831,7 @@ To address these use cases, this specification defines an authorization details 
 
 <p>For some use cases, Clients need to have access to a Customer’s <a href="#bill-section-format">Bill Sections</a>.
 For example, an energy service company Client may need to analyze a Customer’s billed energy charges to settle an energy savings contract they have with the Customer.
-To enable whether Bill Section objects access is in included in addition to the data normally provided for a scope, this specification defines an authorization details field that controls additional Bill Section access.</p>
+To enable whether Bill Section objects access is included in addition to the data normally provided for a scope, this specification defines an authorization details field that controls additional Bill Section access.</p>
 
 <p>To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:</p>
 
@@ -1819,35 +1885,162 @@ To address these use cases, this specification defines an authorization details 
 
 <h4 id="727-include-aggregations-">7.2.7. Include Aggregations <a id="auth-details-include-aggregations" href="#auth-details-include-aggregations" class="permalink">🔗</a></h4>
 
+<p>For some use cases, Clients need to have access to a specific list of <a href="#aggregation-format">Aggregations</a>.
+For example, an academic research Client may need access aggregated usage data as part of their energy grid project with their university.
+To enable whether Aggregation objects access is included in addition to the data normally provided for a scope, this specification defines an authorization details field that controls additional Aggregation access.</p>
+
+<p>To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:</p>
+
 <ul>
-  <li><code class="language-plaintext highlighter-rouge">include_aggregations</code></li>
+  <li>The <code class="language-plaintext highlighter-rouge">id</code> value MUST be <code class="language-plaintext highlighter-rouge">"include_aggregations"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">format</code> value MUST be <code class="language-plaintext highlighter-rouge">"boolean"</code>.</li>
+  <li>If this object is included in a Scope Description where the <code class="language-plaintext highlighter-rouge">response_types_supported</code> field is not empty array (e.g. Customer authorization is supported):
+    <ul>
+      <li>The <code class="language-plaintext highlighter-rouge">is_required</code> value MUST be <code class="language-plaintext highlighter-rouge">false</code>.</li>
+    </ul>
+  </li>
 </ul>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>Additionally, Servers MUST implement the following behavior to support this authorization details field:</p>
+
+<ul>
+  <li>If this field’s value is <code class="language-plaintext highlighter-rouge">true</code>, in addition to the data access defined with this field’s scope, the Server MUST provide access to related Aggregation objects.
+Related Aggregation objects are any Aggregation that are referenced by <code class="language-plaintext highlighter-rouge">grouped_aggregations</code> or <code class="language-plaintext highlighter-rouge">related_aggregations</code> values in any included <a href="#aggregation-format">Aggregation</a> or <a href="#usage-segment-format">Usage Segment</a> object.</li>
+  <li>Servers MUST NOT include OPTIONAL fields for Aggregations unless those fields are enabled to be included by the Grant’s scope or other authorization details fields.</li>
+</ul>
+
+<p>Additional authorization details fields are defined in subsections to this section to enable the inclusion of OPTIONAL Aggregation object fields.</p>
 
 <h5 id="7271-include-aggregation-addresses-">7.2.7.1. Include Aggregation Addresses <a id="auth-details-include-aggregation-addresses" href="#auth-details-include-aggregation-addresses" class="permalink">🔗</a></h5>
 
+<p>For some use cases, Clients need to have access to an <a href="#aggregation-format">Aggregation</a>’s grouped set of addresses.
+For example, a utility vendor Client may need access to an Aggregation’s set of addresses to cross reference them with other municipal details (e.g. the distribution zoning designations for the aggregated data).
+To address these use cases, this specification defines an authorization details field that controls whether Aggregation <code class="language-plaintext highlighter-rouge">grouped_addresses</code> access is enabled.</p>
+
+<p>To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:</p>
+
 <ul>
-  <li><code class="language-plaintext highlighter-rouge">include_aggregation_addresses</code></li>
+  <li>The <code class="language-plaintext highlighter-rouge">id</code> value MUST be <code class="language-plaintext highlighter-rouge">"include_aggregation_addresses"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">format</code> value MUST be <code class="language-plaintext highlighter-rouge">"boolean"</code>.</li>
+  <li>If this object is included in a Scope Description where the <code class="language-plaintext highlighter-rouge">response_types_supported</code> field is not empty array (e.g. Customer authorization is supported):
+    <ul>
+      <li>The <code class="language-plaintext highlighter-rouge">is_required</code> value MUST be <code class="language-plaintext highlighter-rouge">false</code>.</li>
+    </ul>
+  </li>
 </ul>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>Additionally, Servers MUST implement the following behavior to support this authorization details field:</p>
+
+<ul>
+  <li>If this field’s value is <code class="language-plaintext highlighter-rouge">true</code>, Servers MUST include the following field values in any Aggregation objects accessible using this field’s scope:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">grouped_addresses</code></li>
+    </ul>
+  </li>
+</ul>
 
 <h4 id="728-include-usage-segments-">7.2.8. Include Usage Segments <a id="auth-details-include-usage-segments" href="#auth-details-include-usage-segments" class="permalink">🔗</a></h4>
 
+<p>For some use cases, Clients need to have access to a set of <a href="#usage-segment-format">Usage Segments</a>.
+For example, a utility vendor Client may need to access the electric usage for a set of Customer Accounts to analyze the impact of a rebate program.
+To enable whether Usage Segment objects access is included in addition to the data normally provided for a scope, this specification defines an authorization details field that controls additional Usage Segment access.</p>
+
+<p>To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:</p>
+
 <ul>
-  <li><code class="language-plaintext highlighter-rouge">include_usage_segments</code></li>
+  <li>The <code class="language-plaintext highlighter-rouge">id</code> value MUST be <code class="language-plaintext highlighter-rouge">"include_usage_segments"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">format</code> value MUST be <code class="language-plaintext highlighter-rouge">"boolean"</code>.</li>
+  <li>If this object is included in a Scope Description where the <code class="language-plaintext highlighter-rouge">response_types_supported</code> field is not empty array (e.g. Customer authorization is supported):
+    <ul>
+      <li>The <code class="language-plaintext highlighter-rouge">is_required</code> value MUST be <code class="language-plaintext highlighter-rouge">false</code>.</li>
+    </ul>
+  </li>
 </ul>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>Additionally, Servers MUST implement the following behavior to support this authorization details field:</p>
+
+<ul>
+  <li>If this field’s value is <code class="language-plaintext highlighter-rouge">true</code>, in addition to the data access defined with this field’s scope, the Server MUST provide access to related Usage Segment objects.
+Related Usage Segment objects are any Usage Segments that have the following relationships with other objects included in this field’s scope or other authorization details fields:
+    <ul>
+      <li>Usage Segments that have <code class="language-plaintext highlighter-rouge">related_aggregations</code> values that match the <code class="language-plaintext highlighter-rouge">cds_aggregation_id</code> for any included Aggregation object.</li>
+      <li>Usage Segments that have <code class="language-plaintext highlighter-rouge">related_accounts</code> values that match the <code class="language-plaintext highlighter-rouge">cds_account_id</code> for any included Account object.</li>
+      <li>Usage Segments that have <code class="language-plaintext highlighter-rouge">related_servicecontracts</code> values that match the <code class="language-plaintext highlighter-rouge">cds_servicecontract_id</code> for any included Service Contract object.</li>
+      <li>Usage Segments that have <code class="language-plaintext highlighter-rouge">related_servicepoints</code> values that match the <code class="language-plaintext highlighter-rouge">cds_servicepoint_id</code> for any included Service Point object.</li>
+      <li>Usage Segments that have <code class="language-plaintext highlighter-rouge">related_meterdevices</code> values that match the <code class="language-plaintext highlighter-rouge">cds_meterdevice_id</code> for any included Meter Device object.</li>
+      <li>Usage Segments that have <code class="language-plaintext highlighter-rouge">related_billsections</code> values that match the <code class="language-plaintext highlighter-rouge">cds_billsection_id</code> for any included Bill Section object.</li>
+    </ul>
+  </li>
+  <li>If this field’s value is <code class="language-plaintext highlighter-rouge">false</code>, Servers MUST NOT include Usage Segment objects in the Client’s access.</li>
+</ul>
+
+<h5 id="7281-include-usage-segment-formats-">7.2.8.1. Include Usage Segment Formats <a id="auth-details-include-usage-segment-formats" href="#auth-details-include-usage-segment-formats" class="permalink">🔗</a></h5>
+
+<p>For some use cases, Clients need to have access to a specific set of <a href="#usage-segment-value-format">Usage Segment Value Formats</a> (e.g. both usage kWh and peak kW readings).
+For example, a utility vendor Client may need to access the electric usage, demand, and supply mix for a specific set of Meter Devices with which they are contracted in analyzing.
+To enable which Usage Segment Value Formats access is included in addition to the data normally provided for a scope, this specification defines an authorization details field that controls additional Usage Segment access.</p>
+
+<p>To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:</p>
+
+<ul>
+  <li>The <code class="language-plaintext highlighter-rouge">id</code> value MUST be <code class="language-plaintext highlighter-rouge">"include_usage_segment_formats"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">format</code> value MUST be <code class="language-plaintext highlighter-rouge">"choice_list_or_null"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">choices</code> array contains Choice objects who’s <code class="language-plaintext highlighter-rouge">id</code> values are one of the defined <a href="#usage-segment-value-format">Usage Segment Value Formats</a> in this specification.
+Servers MAY include additional Choice objects that do not represent one of the defined Value Formats defined in this specification in order to accommodate extensions and Server-specific use cases (e.g. cloud coverage readings).
+Servers MUST NOT have custom Choice <code class="language-plaintext highlighter-rouge">id</code> values that represent an already defined Value Format in this specification, so that Clients can be interoperable with Servers for the set of Value Formats defined in this specification.
+Clients MUST ignore any Choice <code class="language-plaintext highlighter-rouge">id</code> values that they do not understand, so that Servers are able to include extension and Server-specific <code class="language-plaintext highlighter-rouge">id</code> values without breaking Client integrations.</li>
+  <li>If this object is included in a Scope Description where the <code class="language-plaintext highlighter-rouge">response_types_supported</code> field is not empty array (e.g. Customer authorization is supported):
+    <ul>
+      <li>The <code class="language-plaintext highlighter-rouge">is_required</code> value MUST be <code class="language-plaintext highlighter-rouge">false</code>.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Additionally, Servers MUST implement the following behavior to support this authorization details field:</p>
+
+<ul>
+  <li>If the value is <code class="language-plaintext highlighter-rouge">null</code>, Usage Segments included as part of this field’s scope MUST have empty arrays (<code class="language-plaintext highlighter-rouge">[]</code>) for their <code class="language-plaintext highlighter-rouge">values</code> and <code class="language-plaintext highlighter-rouge">format</code> values.
+This can be useful if the Server is only providing durations (e.g. month cutoff dates) for a Usage Segment, but no values, for example as part of an Aggregation.</li>
+  <li>If the value is an array, Usage Segments included as part of this field’s scope MUST have <code class="language-plaintext highlighter-rouge">format</code> values that are an array that contains the same or a subset of Value Formats in this field’s array.
+Servers MAY order the <code class="language-plaintext highlighter-rouge">format</code> values in any order, so it does not have to be in the same order as this field’s array values.
+Clients MUST be able to parse Usage Segment <a href="#usage-segment-value-format">Value Formats</a> in any order and in any subset of this field’s array values.</li>
+</ul>
 
 <h4 id="729-include-energy-attribute-certificates-">7.2.9. Include Energy Attribute Certificates <a id="auth-details-include-eacs" href="#auth-details-include-eacs" class="permalink">🔗</a></h4>
 
+<p>For some use cases, Clients need to have access to a set of <a href="#eac-format&quot;">Energy Attribute Certificates</a> (EACs).
+For example, a emissions auditor Client may need to access the utility’s EACs that have been applied to a set of enterprise Customer’s Accounts in order to verify the Customer’s corporate emissions reporting.
+To enable whether EAC objects access is included in addition to the data normally provided for a scope, this specification defines an authorization details field that controls additional EAC access.</p>
+
+<p>To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:</p>
+
 <ul>
-  <li><code class="language-plaintext highlighter-rouge">include_eacs</code></li>
+  <li>The <code class="language-plaintext highlighter-rouge">id</code> value MUST be <code class="language-plaintext highlighter-rouge">"include_eacs"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">format</code> value MUST be <code class="language-plaintext highlighter-rouge">"boolean"</code>.</li>
+  <li>If this object is included in a Scope Description where the <code class="language-plaintext highlighter-rouge">response_types_supported</code> field is not empty array (e.g. Customer authorization is supported):
+    <ul>
+      <li>The <code class="language-plaintext highlighter-rouge">is_required</code> value MUST be <code class="language-plaintext highlighter-rouge">false</code>.</li>
+    </ul>
+  </li>
 </ul>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>Additionally, Servers MUST implement the following behavior to support this authorization details field:</p>
+
+<ul>
+  <li>If this field’s value is <code class="language-plaintext highlighter-rouge">true</code>, in addition to the data access defined with this field’s scope, the Server MUST provide access to related EAC objects.
+Related EAC objects are any EACs that have the following relationships with other objects included in this field’s scope or other authorization details fields:
+    <ul>
+      <li>EACs that have a <code class="language-plaintext highlighter-rouge">beneficiary_type</code> value of <code class="language-plaintext highlighter-rouge">customer</code> and <code class="language-plaintext highlighter-rouge">beneficiaries</code> values that match the <code class="language-plaintext highlighter-rouge">customer_number</code> for any included Account object.</li>
+      <li>EACs that have a <code class="language-plaintext highlighter-rouge">beneficiary_type</code> value of <code class="language-plaintext highlighter-rouge">account</code> and <code class="language-plaintext highlighter-rouge">beneficiaries</code> values that match the <code class="language-plaintext highlighter-rouge">cds_account_id</code> for any included Account object.</li>
+      <li>EACs that have a <code class="language-plaintext highlighter-rouge">beneficiary_type</code> value of <code class="language-plaintext highlighter-rouge">servicecontract</code> and <code class="language-plaintext highlighter-rouge">beneficiaries</code> values that match the <code class="language-plaintext highlighter-rouge">cds_servicecontract_id</code> for any included Service Contract object.</li>
+      <li>EACs that have a <code class="language-plaintext highlighter-rouge">beneficiary_type</code> value of <code class="language-plaintext highlighter-rouge">rateplan</code> and <code class="language-plaintext highlighter-rouge">beneficiaries</code> values that match the <code class="language-plaintext highlighter-rouge">rateplan_code</code> for any included Service Contract object.</li>
+      <li>EACs that have a <code class="language-plaintext highlighter-rouge">beneficiary_type</code> value of <code class="language-plaintext highlighter-rouge">program</code> and <code class="language-plaintext highlighter-rouge">beneficiaries</code> values that match the <code class="language-plaintext highlighter-rouge">program_number</code> for any included Account object’s <code class="language-plaintext highlighter-rouge">account_programs</code> entries or Service Contract object’s <code class="language-plaintext highlighter-rouge">service_programs</code> entries.</li>
+      <li>EACs that are referenced in <a href="#TODO-usage-segment-value-eacs"><code class="language-plaintext highlighter-rouge">eacs</code></a> formatted <a href="#usage-segment-value-object-format">Value Objects</a> in any included <a href="#usage-segment-format">Usage Segment</a> object.</li>
+      <li>Any additional EACs that the Server determines are related to this field’s scope or other authorization details fields (e.g. EACs that have a <code class="language-plaintext highlighter-rouge">beneficiary_type</code> value of <code class="language-plaintext highlighter-rouge">general</code> and applicable to the Client’s use case).</li>
+    </ul>
+  </li>
+  <li>If this field’s value is <code class="language-plaintext highlighter-rouge">false</code>, Servers MUST NOT include EAC objects in the Client’s access.</li>
+</ul>
 
 <h3 id="73-duration-fields-">7.3. Duration Fields <a id="auth-details-duration" href="#auth-details-duration" class="permalink">🔗</a></h3>
 
@@ -2671,23 +2864,26 @@ If the Server caches the data for this object and periodically synchronizes it w
   <li><code class="language-plaintext highlighter-rouge">aggregation_number</code> - <em><a href="#string">string</a> or <code class="language-plaintext highlighter-rouge">null</code></em> - (REQUIRED) The aggregation identifier that a Client sees in Server documentation or other online interfaces as the aggregation identifier for this Aggregation, if available.
 If a Server does not have a Client-facing aggregation identifier for an Aggregation and the Client is not authorized to see the Server’s internal aggregation identifier for this Aggregation, or the Server does not have aggregation identifiers stored for this Aggregation, this value is <code class="language-plaintext highlighter-rouge">null</code>.</li>
   <li><code class="language-plaintext highlighter-rouge">grouped_accounts</code> - <em>Array[<a href="#string">string</a>]</em> - (REQUIRED) The list of <code class="language-plaintext highlighter-rouge">cds_account_id</code> values that identify Accounts that are part of this Aggregation.
-For Aggregations that do not have or do not make available Accounts that are part of the Aggregation, this is an empty array (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
+For Aggregations that do not have or the Client does not have authorization to access Accounts that are part of the Aggregation, this is an empty array (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
   <li><code class="language-plaintext highlighter-rouge">grouped_servicecontracts</code> - <em>Array[<a href="#string">string</a>]</em> - (REQUIRED) The list of <code class="language-plaintext highlighter-rouge">cds_servicecontract_id</code> values that identify Service Contracts that are part of this Aggregation.
-For Aggregations that do not have or do not make available Service Contracts that are part of the Aggregation, this is an empty array (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
+For Aggregations that do not have or the Client does not have authorization to access Service Contracts that are part of the Aggregation, this is an empty array (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
   <li><code class="language-plaintext highlighter-rouge">grouped_servicepoints</code> - <em>Array[<a href="#string">string</a>]</em> - (REQUIRED) The list of <code class="language-plaintext highlighter-rouge">cds_servicepoint_id</code> values that identify Service Points that are part of this Aggregation.
-For Aggregations that do not have or do not make available Service Points that are part of the Aggregation, this is an empty array (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
+For Aggregations that do not have or the Client does not have authorization to access Service Points that are part of the Aggregation, this is an empty array (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
   <li><code class="language-plaintext highlighter-rouge">grouped_meterdevices</code> - <em>Array[<a href="#string">string</a>]</em> - (REQUIRED) The list of <code class="language-plaintext highlighter-rouge">cds_meterdevice_id</code> values that identify Meter Devices that are part of this Aggregation.
-For Aggregations that do not have or do not make available Meter Devices that are part of the Aggregation, this is an empty array (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
+For Aggregations that do not have or the Client does not have authorization to access Meter Devices that are part of the Aggregation, this is an empty array (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
   <li><code class="language-plaintext highlighter-rouge">grouped_aggregations</code> - <em>Array[<a href="#string">string</a>]</em> - (REQUIRED) The list of <code class="language-plaintext highlighter-rouge">cds_aggregation_id</code> values that identify other Aggregations that are part of this Aggregation.
-For Aggregations that do not have or do not make available other sub Aggregations that are part of the parent Aggregation, this is an empty array (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
-  <li><code class="language-plaintext highlighter-rouge">addresses</code> - <em>Array[<a href="#string">string</a>]</em> - (OPTIONAL) A list of addresses that are associated with this Aggregation, if applicable for the <code class="language-plaintext highlighter-rouge">aggregation_type</code>.
+For Aggregations that do not have or the Client does not have authorization to access other sub Aggregations that are part of the parent Aggregation, this is an empty array (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
+  <li><code class="language-plaintext highlighter-rouge">grouped_addresses</code> - <em>Array[<a href="#string">string</a>]</em> - (OPTIONAL) A list of addresses that are associated with this Aggregation, if applicable for the <code class="language-plaintext highlighter-rouge">aggregation_type</code>.
 Strings MAY have line breaks, such as when the address is multiple lines.
-If there are no addresses for this Aggregation, this value is an empty array (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
-  <li><code class="language-plaintext highlighter-rouge">regions</code> - <em>Array[<a href="#TODO-aggregation-region-format">AggregationRegion</a>]</em> - (REQUIRED) A list of Aggregation Regions that are associated with this Aggregation, if applicable for the <code class="language-plaintext highlighter-rouge">aggregation_type</code>.
-If there are no regions for this Aggregation, this value is an empty array (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
+For Aggregations that do not have or the Client does not have authorization to access addresses that are part of the parent Aggregation, this is an empty array (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
+  <li><code class="language-plaintext highlighter-rouge">grouped_regions</code> - <em>Array[<a href="#TODO-aggregation-region-format">AggregationRegion</a>]</em> - (REQUIRED) A list of Aggregation Regions that are associated with this Aggregation, if applicable for the <code class="language-plaintext highlighter-rouge">aggregation_type</code>.
+For Aggregations that do not have or the Client does not have authorization to access regions that are part of the parent Aggregation, this is an empty array (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
   <li><code class="language-plaintext highlighter-rouge">consents_required</code> - <em>Array[<a href="#TODO-consent-requirement-format">ConsentRequirement</a>]</em> - (REQUIRED) A list of Consent Requirements that are required for this Aggregation, if applicable for the <code class="language-plaintext highlighter-rouge">aggregation_type</code>.
 If there are no consent requirements for this Aggregation, this value is an empty array (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
 </ul>
+
+<p>For Aggregations that have more than 1000 grouped items in any of the Aggregation object’s <code class="language-plaintext highlighter-rouge">grouped_*</code> arrays, so as to not create overly large individual Aggregation objects, the Server MUST create Aggregation objects that group the items in groups of 1000 or fewer items, then include those Aggregations in the original Aggregation’s <code class="language-plaintext highlighter-rouge">groupd_aggregations</code> array.
+The intent of this requirement is to enable Servers to use the <a href="#aggregation-list">Listing Aggregations</a> API as a means for breaking up and paginating very large groupings of Account, Service Contract, Service Point, Meter Devices, or Aggregation objects.</p>
 
 <h3 id="162-listing-aggregations-">16.2. Listing Aggregations <a id="aggregation-list" href="#aggregation-list" class="permalink">🔗</a></h3>
 
@@ -2749,12 +2945,13 @@ If the Server caches the data for this object and periodically synchronizes it w
 For values that represent a duration (e.g. 15-min usage interval reading), the <code class="language-plaintext highlighter-rouge">segment_end</code> MUST represent the timestamp at the end of the duration.</li>
   <li><code class="language-plaintext highlighter-rouge">interval</code> - <em><a href="#decimal">decimal</a></em> - (REQUIRED) How long between values, in seconds.
 For values representing a duration interval (e.g. kwh usage intervals), this <code class="language-plaintext highlighter-rouge">interval</code> represents the duration of each interval, where the next value starts immediately at the end of the prior interval value with no time gap.
-For values representing instantaneous readings (e.g. register read), this <code class="language-plaintext highlighter-rouge">interval</code> represents the time between the readings provided in the <code class="language-plaintext highlighter-rouge">values</code>.</li>
+For values representing instantaneous readings (e.g. register read), this <code class="language-plaintext highlighter-rouge">interval</code> represents the time between the readings provided in the <code class="language-plaintext highlighter-rouge">values</code>.
+For usage readings that have varying duration, such as monthly usage readings, Servers MUST create individual Usage Point objects that have an <code class="language-plaintext highlighter-rouge">interval</code> value with the duration of the specific period (e.g. month) and a single Value Set entry in their <code class="language-plaintext highlighter-rouge">values</code> array.</li>
   <li><code class="language-plaintext highlighter-rouge">format</code> - <em>Array[<a href="#usage-segment-value-format">ValueFormat</a>]</em> - (REQUIRED) For each entry in <code class="language-plaintext highlighter-rouge">values</code>, these are the formats of that are included, presented in the order in which the values are presented.</li>
   <li><code class="language-plaintext highlighter-rouge">values</code> - <em>Array[<a href="#usage-segment-value-set-format">ValueSet</a>]</em> - (REQUIRED) A list of Value Sets that represent the entries included in the Usage Segment.</li>
 </ul>
 
-<p>Servers MUST only inlude unique identifiers in <code class="language-plaintext highlighter-rouge">related_aggregations</code>, <code class="language-plaintext highlighter-rouge">related_accounts</code>, <code class="language-plaintext highlighter-rouge">related_servicecontracts</code>, <code class="language-plaintext highlighter-rouge">related_servicepoints</code>, <code class="language-plaintext highlighter-rouge">related_meterdevices</code>, and <code class="language-plaintext highlighter-rouge">related_billsections</code> lists MUST only include identifiers that the Client is authorized to see as scoped by their requesting <code class="language-plaintext highlighter-rouge">access_token</code>.</p>
+<p>Servers MUST only include unique identifiers in <code class="language-plaintext highlighter-rouge">related_aggregations</code>, <code class="language-plaintext highlighter-rouge">related_accounts</code>, <code class="language-plaintext highlighter-rouge">related_servicecontracts</code>, <code class="language-plaintext highlighter-rouge">related_servicepoints</code>, <code class="language-plaintext highlighter-rouge">related_meterdevices</code>, and <code class="language-plaintext highlighter-rouge">related_billsections</code> lists MUST only include identifiers that the Client is authorized to see as scoped by their requesting <code class="language-plaintext highlighter-rouge">access_token</code>.</p>
 
 <h3 id="172-usage-segment-value-formats-">17.2. Usage Segment Value Formats <a id="usage-segment-value-format" href="#usage-segment-value-format" class="permalink">🔗</a></h3>
 
@@ -2770,6 +2967,7 @@ Usage Segments are organized this way so that the <code class="language-plaintex
   <li><code class="language-plaintext highlighter-rouge">usage_net_kwh</code> - <a href="#TODO-usage-segment-value-usage-net-kwh">Net Electric Usage in kWh object</a></li>
   <li><code class="language-plaintext highlighter-rouge">aggregated_kwh</code> - <a href="#TODO-usage-segment-value-aggregated-kwh">Aggregated Electric Usage in kWh object</a></li>
   <li><code class="language-plaintext highlighter-rouge">demand_kw</code> - <a href="#TODO-usage-segment-value-demand-kw">Electric Demand in kW object</a></li>
+  <li><code class="language-plaintext highlighter-rouge">peak_kw</code> - <a href="#TODO-usage-segment-value-peak-kw">Electric Peak Demand in kW object</a></li>
   <li><code class="language-plaintext highlighter-rouge">water_m3</code> - <a href="#TODO-usage-segment-value-water-m3">Water Usage in Cubic Meters object</a></li>
   <li><code class="language-plaintext highlighter-rouge">water_gal</code> - <a href="#TODO-usage-segment-value-water-gal">Water Usage in Gallons object</a></li>
   <li><code class="language-plaintext highlighter-rouge">water_ft3</code> - <a href="#TODO-usage-segment-value-water-ft3">Water Usage in Cubic Feet object</a></li>
