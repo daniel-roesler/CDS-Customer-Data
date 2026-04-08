@@ -181,22 +181,23 @@ For more information, visit <a href="https://lfess.energy/">https://lfess.energy
   <li><a href="#scopes">6. Scopes Supported</a>
     <ul>
       <li><a href="#scope-rate-plan">6.1. Rate Plan</a></li>
-      <li><a href="#scope-program-participation">6.2. Program Participation</a></li>
-      <li><a href="#scope-account-list">6.3. Account List</a></li>
-      <li><a href="#scope-service-list">6.4. Service List</a></li>
-      <li><a href="#scope-meter-list">6.5. Meter List</a></li>
-      <li><a href="#scope-bill-statements">6.6. Bill Statements</a></li>
-      <li><a href="#scope-service-bills">6.7. Service Bills</a></li>
-      <li><a href="#scope-meter-usage">6.8. Meter Usage</a></li>
-      <li><a href="#scope-aggregation-inclusion">6.9. Aggregation Inclusion</a></li>
-      <li><a href="#scope-accounts-query">6.10. Accounts Query</a></li>
-      <li><a href="#scope-service-contracts-query">6.11. Service Contracts Query</a></li>
-      <li><a href="#scope-service-points-query">6.12. Service Points Query</a></li>
-      <li><a href="#scope-meter-devices-query">6.13. Meters Devices Query</a></li>
-      <li><a href="#scope-bill-statements-query">6.14. Bill Statements Query</a></li>
-      <li><a href="#scope-bill-sections-query">6.15. Bill Sections Query</a></li>
-      <li><a href="#scope-aggregations-query">6.16. Aggregations Query</a></li>
-      <li><a href="#scope-usage-query">6.17. Usage Query</a></li>
+      <li><a href="#scope-account-program-participation">6.2. Account Program Participation</a></li>
+      <li><a href="#scope-service-program-participation">6.3. Service Program Participation</a></li>
+      <li><a href="#scope-account-list">6.4. Account List</a></li>
+      <li><a href="#scope-service-list">6.5. Service List</a></li>
+      <li><a href="#scope-meter-list">6.6. Meter List</a></li>
+      <li><a href="#scope-bill-statements">6.7. Bill Statements</a></li>
+      <li><a href="#scope-service-bills">6.8. Service Bills</a></li>
+      <li><a href="#scope-meter-usage">6.9. Meter Usage</a></li>
+      <li><a href="#scope-aggregation-inclusion">6.10. Aggregation Inclusion</a></li>
+      <li><a href="#scope-accounts-query">6.11. Accounts Query</a></li>
+      <li><a href="#scope-service-contracts-query">6.12. Service Contracts Query</a></li>
+      <li><a href="#scope-service-points-query">6.13. Service Points Query</a></li>
+      <li><a href="#scope-meter-devices-query">6.14. Meters Devices Query</a></li>
+      <li><a href="#scope-bill-statements-query">6.15. Bill Statements Query</a></li>
+      <li><a href="#scope-bill-sections-query">6.16. Bill Sections Query</a></li>
+      <li><a href="#scope-aggregations-query">6.17. Aggregations Query</a></li>
+      <li><a href="#scope-usage-query">6.18. Usage Query</a></li>
     </ul>
   </li>
   <li><a href="#auth-details-fields">7. Authorization Details Fields</a>
@@ -205,7 +206,7 @@ For more information, visit <a href="https://lfess.energy/">https://lfess.energy
         <ul>
           <li><a href="#auth-details-account-numbers">7.1.1. Preselect Account Numbers</a></li>
           <li><a href="#auth-details-account-programs">7.1.2. Preselect Account Programs</a></li>
-          <li><a href="#auth-details-contract-numbers">7.1.3. Preselect Service Contract Numbers</a></li>
+          <li><a href="#auth-details-contract-numbers">7.1.3. Preselect Contract Numbers</a></li>
           <li><a href="#auth-details-service-types">7.1.4. Preselect Service Types</a></li>
           <li><a href="#auth-details-service-programs">7.1.5. Preselect Service Programs</a></li>
           <li><a href="#auth-details-servicepoint-numbers">7.1.6. Preselect Service Point Numbers</a></li>
@@ -232,9 +233,10 @@ For more information, visit <a href="https://lfess.energy/">https://lfess.energy
           </li>
           <li><a href="#auth-details-include-service-contracts">7.2.2. Include Service Contracts</a>
             <ul>
-              <li><a href="#auth-details-include-contract-numbers">7.2.2.1. Include Service Contract Numbers</a></li>
-              <li><a href="#auth-details-include-contract-details">7.2.2.2. Include Service Contract Details</a></li>
-              <li><a href="#auth-details-include-contract-programs">7.2.2.3. Include Service Contract Programs</a></li>
+              <li><a href="#auth-details-include-contract-numbers">7.2.2.1. Include Contract Numbers</a></li>
+              <li><a href="#auth-details-include-rate-plans">7.2.2.2. Include Rate Plans</a></li>
+              <li><a href="#auth-details-include-contract-details">7.2.2.3. Include Service Contract Details</a></li>
+              <li><a href="#auth-details-include-service-programs">7.2.2.4. Include Service Programs</a></li>
             </ul>
           </li>
           <li><a href="#auth-details-include-service-points">7.2.3. Include Service Points</a>
@@ -283,6 +285,7 @@ For more information, visit <a href="https://lfess.energy/">https://lfess.energy
           <li><a href="#auth-details-bill-section-end">7.3.5. Bill Section End Date</a></li>
           <li><a href="#auth-details-usage-segment-start">7.3.6. Usage Segment Start</a></li>
           <li><a href="#auth-details-usage-segment-end">7.3.7. Usage Segment End</a></li>
+          <li><a href="#auth-details-expires">7.3.8. Expires</a></li>
         </ul>
       </li>
       <li><a href="#auth-details-other">7.4. Other Fields</a>
@@ -611,105 +614,899 @@ This is REQUIRED if the <code class="language-plaintext highlighter-rouge">cds_e
 
 <p>This specification extends CDS’s Client Registration Scopes Supported [<a href="#ref-cds-wg1-02-scopes">CDS-WG1-02 Section 3.3</a>] to define the following additional Scope Descriptions [<a href="#ref-cds-wg1-02-scope-descriptions">CDS-WG1-02 Section 3.4</a>] that a Server MAY add to the <code class="language-plaintext highlighter-rouge">scopes_supported</code> field in the Authorization Server Metadata object [<a href="#ref-cds-wg1-02-metadata">CDS-WG1-02 Section 3.2</a>].</p>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>To support a Scope defined in this section, in addition to that Scope’s defined requirements, the Server MUST also implement the following:</p>
+
+<ul>
+  <li>When a Client is granted access, the Server MUST synchronously create a Grant object on the Grants API [<a href="#ref-cds-wg1-02-grant-object">CDS-WG1-02 Section 8.1</a>] with the Scopes that were authorized or included, except as defined in individual Scope requirements (e.g. not including preselection fields for Scopes that require Customer authorization).</li>
+  <li>For Grants that were created from authorization requests (i.e. the Customer authorization form was used), Servers MUST record the authorization’s selections using the same type as the <a href="#selection-component">Selection Component</a> used, so that the data access matches the selected entries by the Customer authorizing the access.
+For example, if the <a href="#contract-selection">Service Contract Selection Component</a> was used to select Service Contracts in an authorization request for the <a href="#scope-meter-list">Meter List Scope</a>, and the access is granted to sync data for 1 year (<code class="language-plaintext highlighter-rouge">"sync_until": "P1Y"</code>), and then if there’s a meter swap during that period, the Server MUST change which Meter Devices are accessible to the Client so as to match what the Customer authorized (i.e. all the Meter Devices under their selected Service Contracts).</li>
+  <li>If the Server asynchronously makes data available to the Client (e.g. the Server has to internally query for the data then load it into Customer Data API cached objects), the Server MUST implement the following:
+    <ul>
+      <li>When the Grant object is initially created, the  MUST have the following default values:
+        <ul>
+          <li>The <code class="language-plaintext highlighter-rouge">status</code> value MUST be <code class="language-plaintext highlighter-rouge">"pending"</code>.</li>
+          <li>The <code class="language-plaintext highlighter-rouge">enabled_scope</code> value MUST be an empty string (<code class="language-plaintext highlighter-rouge">""</code>).</li>
+          <li>The <code class="language-plaintext highlighter-rouge">enabled_authorization_details</code> value MUST be an empty array (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
+          <li>The <code class="language-plaintext highlighter-rouge">eta</code> value MUST NOT be <code class="language-plaintext highlighter-rouge">null</code>.</li>
+        </ul>
+      </li>
+      <li>During asynchronous data loading, if some data objects are accessible but others are not (e.g. the Account objects are available, but the Usage Segments are still being loaded), it is RECOMMENDED that the Server update the Grant’s <code class="language-plaintext highlighter-rouge">enabled_scope</code> and <code class="language-plaintext highlighter-rouge">enabled_authorization_details</code> values to be the appropriate values representing which data is now accessible.
+That way, Client’s can start requesting and processing data from the Customer Data APIs while the Server continues to make available the rest of the granted data.</li>
+      <li>During asynchronous data loading, if the estimated time for completing the asynchronous tasks changes (e.g. there is an unexpected delay in the queries for data internally), the Server MUST update the Grant’s <code class="language-plaintext highlighter-rouge">eta</code> value with the Server’s new estimate for when its asynchronous tasks will be completed.</li>
+      <li>When the Server completes its asynchronous tasks for making data available, the Server MUST update the <code class="language-plaintext highlighter-rouge">status</code> value from <code class="language-plaintext highlighter-rouge">pending</code> to the appropriate status value based on the asynchronous task’s results.
+The Server MUST also update the <code class="language-plaintext highlighter-rouge">enabled_scope</code> and <code class="language-plaintext highlighter-rouge">enabled_authorization_details</code> values to the appropriate access now available to the Client.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>While this specification defines Scopes that can meet many use cases, extensions to this specifications are encouraged to modify Scopes or define additional Scopes to meet other use cases.
+However, it is RECOMMENDED that if extensions or use cases can define their needs using existing Scopes defined in this specification, combined with authorization details requirements, that they define those authorization details requirements, rather than creating a new Scope with new requirements.
+The <a href="#scenarios">Scenarios</a> section of this specification are some examples of how to defined combined Scope and authorization details requirements.
+This is so that Clients who support the Scopes and authorization details defined in this specification will already be compatible with extensions and new use cases.</p>
+
+<p>Extensions that modify a Scope defined in this specification MUST define those modifications as a new Scope with a new Scope Type identifier that references the existing Scope in this specification followed by the description of modifications.
+This is so that Clients do not mix up the Scope defined in this specification with the modified Scope defined in an extension.</p>
+
+<p>It is RECOMMENDED that extensions that create new Scopes define them in the same same format structure as those defined in this specification.
+This is so that Client developers who are familiar with this specification can easily add support for other Scopes in extensions.
+The format for Scope definitions in this specification use the following structure:</p>
+
+<ul>
+  <li>Brief explanation and example of the use cases the Scope is intending to address.
+This allows Clients to understand why this Scope exists.</li>
+  <li>Definition of Scope Description [<a href="#ref-cds-wg1-02-scope-descriptions">CDS-WG1-02 Section 3.4</a>] requirements.
+This allows Clients to understand how to use this Scope in their requests to Servers.</li>
+  <li>Definition of Server access and behavior requirements.
+This allows Clients to understand what access and behavior Servers will provide when this Scope is part of a request or Grant.</li>
+</ul>
 
 <h3 id="61-rate-plan-">6.1. Rate Plan <a id="scope-rate-plan" href="#scope-rate-plan" class="permalink">🔗</a></h3>
 
-<p><code class="language-plaintext highlighter-rouge">cds_rate_plan</code></p>
+<p>For some use cases, a Client only needs to obtain a Customer’s rate plans (i.e. the tariffs they are assigned for their utility services).
+For example, a demand response app Client may need the rate plan for a Customer in order to determine if the Customer has any services that could join a demand response aggregation program.
+In these relevant use cases, Clients only need access to Customers’ rate plans, so this Scope provides the ability for Servers to limit access to only rate plan related fields.</p>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>To support this Scope, the Scope Description object MUST meet the following requirements:</p>
 
-<h3 id="62-program-participation-">6.2. Program Participation <a id="scope-program-participation" href="#scope-program-participation" class="permalink">🔗</a></h3>
+<ul>
+  <li>The <code class="language-plaintext highlighter-rouge">type</code> value MUST be <code class="language-plaintext highlighter-rouge">"cds_rate_plan"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">response_types_supported</code> value must contain at least the value <code class="language-plaintext highlighter-rouge">"code"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">grant_types_supported</code> value MUST contain at least the values <code class="language-plaintext highlighter-rouge">"authorization_code"</code> and <code class="language-plaintext highlighter-rouge">"refresh_token"</code> and MUST NOT contain the value <code class="language-plaintext highlighter-rouge">"client_credentials"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain at least the following values and support those authorization details fields as defined in the <a href="#auth-details-fields">Authorization Details Fields</a> section:
+    <ul>
+      <li><a href="#auth-details-contract-numbers"><code class="language-plaintext highlighter-rouge">"contract_numbers"</code></a></li>
+      <li><a href="#auth-details-service-types"><code class="language-plaintext highlighter-rouge">"service_types"</code></a></li>
+      <li><a href="#auth-details-include-contract-numbers"><code class="language-plaintext highlighter-rouge">"include_contract_numbers"</code></a></li>
+      <li><a href="#auth-details-sync-until"><code class="language-plaintext highlighter-rouge">"sync_until"</code></a></li>
+      <li><a href="#auth-details-selection-type"><code class="language-plaintext highlighter-rouge">"authorization_form_selection_type"</code></a></li>
+      <li><a href="#auth-details-merge-selections"><code class="language-plaintext highlighter-rouge">"merge_selection_with"</code></a></li>
+      <li><a href="#auth-details-error-if-no-preselections"><code class="language-plaintext highlighter-rouge">"error_if_no_preselections"</code></a></li>
+      <li><a href="#auth-details-allow-scope-modifications"><code class="language-plaintext highlighter-rouge">"allow_scope_modifications"</code></a></li>
+    </ul>
+  </li>
+  <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain any the following values and support the authorization details field when the Server has access to the data that allows for support of that field:
+    <ul>
+      <li><a href="#auth-details-account-numbers"><code class="language-plaintext highlighter-rouge">"account_numbers"</code></a></li>
+      <li><a href="#auth-details-meter-numbers"><code class="language-plaintext highlighter-rouge">"meter_numbers"</code></a></li>
+      <li><a href="#auth-details-addresses"><code class="language-plaintext highlighter-rouge">"addresses"</code></a></li>
+      <li><a href="#auth-details-include-accounts"><code class="language-plaintext highlighter-rouge">"include_accounts"</code></a></li>
+      <li><a href="#auth-details-include-account-numbers"><code class="language-plaintext highlighter-rouge">"include_account_numbers"</code></a></li>
+      <li><a href="#auth-details-include-meter-devices"><code class="language-plaintext highlighter-rouge">"include_meter_devices"</code></a></li>
+      <li><a href="#auth-details-include-meter-numbers"><code class="language-plaintext highlighter-rouge">"include_meter_numbers"</code></a></li>
+    </ul>
+  </li>
+  <li>The following is required for Authorization Details Field Objects in the Scope Description’s <code class="language-plaintext highlighter-rouge">authorization_details_fields_supported</code> field:
+    <ul>
+      <li>For the object with an <code class="language-plaintext highlighter-rouge">id</code> value of <code class="language-plaintext highlighter-rouge">authorization_form_selection_type</code>, it MUST meet the following requirements:
+        <ul>
+          <li>The <code class="language-plaintext highlighter-rouge">choices</code> array MUST contain only one object, and that object MUST have its <code class="language-plaintext highlighter-rouge">id</code> value be <a href="#contract-selection"><code class="language-plaintext highlighter-rouge">"service_contract_selection"</code></a>.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
 
-<p><code class="language-plaintext highlighter-rouge">cds_programs</code></p>
+<p>Additionally, to support this Scope, the Server MUST implement the following requirements:</p>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<ul>
+  <li>The Server MUST treat this Scope as having included <code class="language-plaintext highlighter-rouge">true</code> values for the following authorization details fields, so that the data defined by those fields is included (this is the default access granted by this Scope):
+    <ul>
+      <li><a href="#auth-details-include-service-contracts"><code class="language-plaintext highlighter-rouge">include_service_contracts</code></a></li>
+      <li><a href="#auth-details-include-rate-plans"><code class="language-plaintext highlighter-rouge">include_rate_plans</code></a></li>
+    </ul>
+  </li>
+  <li>The Server MUST make available the Service Contract objects that were selected by the Customer during authorization.</li>
+  <li>The Server MUST include any fields or objects as set by the Grant’s authorization details fields.</li>
+  <li>The Server MUST NOT include <a href="#auth-details-preselection">Preselection Fields</a> in the Server response’s and Grant object’s <code class="language-plaintext highlighter-rouge">authorization_details</code> arrays.</li>
+</ul>
 
-<h3 id="63-account-list-">6.3. Account List <a id="scope-account-list" href="#scope-account-list" class="permalink">🔗</a></h3>
+<h3 id="62-account-program-participation-">6.2. Account Program Participation <a id="scope-account-program-participation" href="#scope-account-program-participation" class="permalink">🔗</a></h3>
 
-<p><code class="language-plaintext highlighter-rouge">cds_accounts</code></p>
+<p>For some use cases, a Client only needs to obtain a list of which <a href="#TODO-account-program-format">Account-level programs</a> which apply to a Customer.
+For example, a utility rebate program contractor Client may need to know if a Customer is on low-income assistance for their  utility account in order to know if they are qualified for a specific set of utility rebates.
+In these relevant use cases, Clients only need access to Customers’ relevant account-level programs, so this Scope provides the ability for Servers to limit access to only <a href="#account-format">Account</a> <code class="language-plaintext highlighter-rouge">account_programs</code>.</p>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>To support this Scope, the Scope Description object MUST meet the following requirements:</p>
 
-<h3 id="64-service-list-">6.4. Service List <a id="scope-service-list" href="#scope-service-list" class="permalink">🔗</a></h3>
+<ul>
+  <li>The <code class="language-plaintext highlighter-rouge">type</code> value MUST be <code class="language-plaintext highlighter-rouge">"cds_account_programs"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">response_types_supported</code> value must contain at least the value <code class="language-plaintext highlighter-rouge">"code"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">grant_types_supported</code> value MUST contain at least the values <code class="language-plaintext highlighter-rouge">"authorization_code"</code> and <code class="language-plaintext highlighter-rouge">"refresh_token"</code> and MUST NOT contain the value <code class="language-plaintext highlighter-rouge">"client_credentials"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain at least the following values and support those authorization details fields as defined in the <a href="#auth-details-fields">Authorization Details Fields</a> section:
+    <ul>
+      <li><a href="#auth-details-account-numbers"><code class="language-plaintext highlighter-rouge">"account_numbers"</code></a></li>
+      <li><a href="#auth-details-account-programs"><code class="language-plaintext highlighter-rouge">"account_programs"</code></a></li>
+      <li><a href="#auth-details-include-account-numbers"><code class="language-plaintext highlighter-rouge">"include_account_numbers"</code></a></li>
+      <li><a href="#auth-details-sync-until"><code class="language-plaintext highlighter-rouge">"sync_until"</code></a></li>
+      <li><a href="#auth-details-selection-type"><code class="language-plaintext highlighter-rouge">"authorization_form_selection_type"</code></a></li>
+      <li><a href="#auth-details-merge-selections"><code class="language-plaintext highlighter-rouge">"merge_selection_with"</code></a></li>
+      <li><a href="#auth-details-error-if-no-preselections"><code class="language-plaintext highlighter-rouge">"error_if_no_preselections"</code></a></li>
+      <li><a href="#auth-details-allow-scope-modifications"><code class="language-plaintext highlighter-rouge">"allow_scope_modifications"</code></a></li>
+    </ul>
+  </li>
+  <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain any the following values and support the authorization details field when the Server has access to the data that allows for support of that field:
+    <ul>
+      <li><a href="#auth-details-addresses"><code class="language-plaintext highlighter-rouge">"addresses"</code></a></li>
+    </ul>
+  </li>
+  <li>The following is required for Authorization Details Field Objects in the Scope Description’s <code class="language-plaintext highlighter-rouge">authorization_details_fields_supported</code> field:
+    <ul>
+      <li>For the object with an <code class="language-plaintext highlighter-rouge">id</code> value of <code class="language-plaintext highlighter-rouge">authorization_form_selection_type</code>, it MUST meet the following requirements:
+        <ul>
+          <li>The <code class="language-plaintext highlighter-rouge">choices</code> array MUST contain only one object, and that object MUST have its <code class="language-plaintext highlighter-rouge">id</code> value be <a href="#account-selection"><code class="language-plaintext highlighter-rouge">"account_selection"</code></a>.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
 
-<p><code class="language-plaintext highlighter-rouge">cds_service_contracts</code></p>
+<p>Additionally, to support this Scope, the Server MUST implement the following requirements:</p>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<ul>
+  <li>The Server MUST reject Client authorization requests with an <code class="language-plaintext highlighter-rouge">invalid_authorization_details</code> error [<a href="#ref-rfc9396-error-response">RFC 9396 Section 5</a>] where the <code class="language-plaintext highlighter-rouge">account_programs</code> authorization details field is set to <code class="language-plaintext highlighter-rouge">null</code>, meaning that Clients MUST include which specific Account programs to which they are requesting access.
+Servers MAY set the <code class="language-plaintext highlighter-rouge">default</code> value for the <code class="language-plaintext highlighter-rouge">account_programs</code> field to a non-<code class="language-plaintext highlighter-rouge">null</code> value, so that Client requests have a default set of programs for which they are asking the Customer to authorize access.</li>
+  <li>The Server MUST treat this Scope as having included <code class="language-plaintext highlighter-rouge">true</code> values for the following authorization details fields, so that the data defined by those fields is included (this is the default access granted by this Scope):
+    <ul>
+      <li><a href="#auth-details-include-accounts"><code class="language-plaintext highlighter-rouge">include_accounts</code></a></li>
+      <li><a href="#auth-details-include-account-programs"><code class="language-plaintext highlighter-rouge">include_account_programs</code></a></li>
+    </ul>
+  </li>
+  <li>The Server MUST make available the Account objects that were selected by the Customer during authorization.</li>
+  <li>The Server MUST include any fields or objects as set by the Grant’s authorization details fields.</li>
+  <li>The Server MUST include the <code class="language-plaintext highlighter-rouge">account_programs</code> field in this scopes authorization details object in the Server response’s and Grant object’s <code class="language-plaintext highlighter-rouge">authorization_details</code> arrays.</li>
+  <li>Except for the <code class="language-plaintext highlighter-rouge">account_programs</code> field, the Server MUST NOT include <a href="#auth-details-preselection">Preselection Fields</a> in this scopes authorization details object in the Server response’s and Grant object’s <code class="language-plaintext highlighter-rouge">authorization_details</code> arrays.</li>
+  <li>It is RECOMMENDED for the Server to have a Client-specific <code class="language-plaintext highlighter-rouge">cds_server_metadata</code> URL value for Client objects in the Client API [<a href="#ref-cds-wg1-02-grant-object">CDS-WG1-02 Section 5.1</a>] where this scope is included in the Client object’s <code class="language-plaintext highlighter-rouge">scope</code> value, rather than a generic public CDS Server Metadata endpoint.
+That way the Server can customize the list of Choice objects in the <code class="language-plaintext highlighter-rouge">choices</code> list for the <code class="language-plaintext highlighter-rouge">account_programs</code> Authorization Details Field object in this Scope’s <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> field, which lets the Server tailor which Program objects are available for sharing based on which Client is requesting access.</li>
+</ul>
 
-<h3 id="65-meter-list-">6.5. Meter List <a id="scope-meter-list" href="#scope-meter-list" class="permalink">🔗</a></h3>
+<h3 id="63-service-program-participation-">6.3. Service Program Participation <a id="scope-service-program-participation" href="#scope-service-program-participation" class="permalink">🔗</a></h3>
 
-<p><code class="language-plaintext highlighter-rouge">cds_meters</code></p>
+<p>For some use cases, a Client only needs to obtain a list of which <a href="#TODO-service-program-format">Service Contract-level programs</a> which apply to a Customer.
+For example, a demand response app Client may need to know if an enterprise Customer is already signed up for a demand response program for their buildings.
+In these relevant use cases, Clients only need access to Customers’ relevant service-level programs, so this Scope provides the ability for Servers to limit access to only <a href="#service-contract-format">Service Contract</a> <code class="language-plaintext highlighter-rouge">service_programs</code>.</p>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>To support this Scope, the Scope Description object MUST meet the following requirements:</p>
 
-<h3 id="66-bill-statements-">6.6. Bill Statements <a id="scope-bill-statements" href="#scope-bill-statements" class="permalink">🔗</a></h3>
+<ul>
+  <li>The <code class="language-plaintext highlighter-rouge">type</code> value MUST be <code class="language-plaintext highlighter-rouge">"cds_service_programs"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">response_types_supported</code> value must contain at least the value <code class="language-plaintext highlighter-rouge">"code"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">grant_types_supported</code> value MUST contain at least the values <code class="language-plaintext highlighter-rouge">"authorization_code"</code> and <code class="language-plaintext highlighter-rouge">"refresh_token"</code> and MUST NOT contain the value <code class="language-plaintext highlighter-rouge">"client_credentials"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain at least the following values and support those authorization details fields as defined in the <a href="#auth-details-fields">Authorization Details Fields</a> section:
+    <ul>
+      <li><a href="#auth-details-contract-numbers"><code class="language-plaintext highlighter-rouge">"contract_numbers"</code></a></li>
+      <li><a href="#auth-details-service-programs"><code class="language-plaintext highlighter-rouge">"service_programs"</code></a></li>
+      <li><a href="#auth-details-service-types"><code class="language-plaintext highlighter-rouge">"service_types"</code></a></li>
+      <li><a href="#auth-details-include-contract-numbers"><code class="language-plaintext highlighter-rouge">"include_contract_numbers"</code></a></li>
+      <li><a href="#auth-details-sync-until"><code class="language-plaintext highlighter-rouge">"sync_until"</code></a></li>
+      <li><a href="#auth-details-selection-type"><code class="language-plaintext highlighter-rouge">"authorization_form_selection_type"</code></a></li>
+      <li><a href="#auth-details-merge-selections"><code class="language-plaintext highlighter-rouge">"merge_selection_with"</code></a></li>
+      <li><a href="#auth-details-error-if-no-preselections"><code class="language-plaintext highlighter-rouge">"error_if_no_preselections"</code></a></li>
+      <li><a href="#auth-details-allow-scope-modifications"><code class="language-plaintext highlighter-rouge">"allow_scope_modifications"</code></a></li>
+    </ul>
+  </li>
+  <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain any the following values and support the authorization details field when the Server has access to the data that allows for support of that field:
+    <ul>
+      <li><a href="#auth-details-account-numbers"><code class="language-plaintext highlighter-rouge">"account_numbers"</code></a></li>
+      <li><a href="#auth-details-meter-numbers"><code class="language-plaintext highlighter-rouge">"meter_numbers"</code></a></li>
+      <li><a href="#auth-details-addresses"><code class="language-plaintext highlighter-rouge">"addresses"</code></a></li>
+      <li><a href="#auth-details-include-accounts"><code class="language-plaintext highlighter-rouge">"include_accounts"</code></a></li>
+      <li><a href="#auth-details-include-account-numbers"><code class="language-plaintext highlighter-rouge">"include_account_numbers"</code></a></li>
+      <li><a href="#auth-details-include-rate-plans"><code class="language-plaintext highlighter-rouge">"include_rate_plans"</code></a></li>
+      <li><a href="#auth-details-include-meter-devices"><code class="language-plaintext highlighter-rouge">"include_meter_devices"</code></a></li>
+      <li><a href="#auth-details-include-meter-numbers"><code class="language-plaintext highlighter-rouge">"include_meter_numbers"</code></a></li>
+    </ul>
+  </li>
+  <li>The following is required for Authorization Details Field Objects in the Scope Description’s <code class="language-plaintext highlighter-rouge">authorization_details_fields_supported</code> field:
+    <ul>
+      <li>For the object with an <code class="language-plaintext highlighter-rouge">id</code> value of <code class="language-plaintext highlighter-rouge">authorization_form_selection_type</code>, it MUST meet the following requirements:
+        <ul>
+          <li>The <code class="language-plaintext highlighter-rouge">choices</code> array MUST contain only one object, and that object MUST have its <code class="language-plaintext highlighter-rouge">id</code> value be -<a href="#contract-selection"><code class="language-plaintext highlighter-rouge">"service_contract_selection"</code></a>.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
 
-<p><code class="language-plaintext highlighter-rouge">cds_bill_statements</code></p>
+<p>Additionally, to support this Scope, the Server MUST implement the following requirements:</p>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<ul>
+  <li>The Server MUST reject Client authorization requests with an <code class="language-plaintext highlighter-rouge">invalid_authorization_details</code> error [<a href="#ref-rfc9396-error-response">RFC 9396 Section 5</a>] where the <code class="language-plaintext highlighter-rouge">service_programs</code> authorization details field is set to <code class="language-plaintext highlighter-rouge">null</code>, meaning that Clients MUST include which specific Service Contract programs to which they are requesting access.
+Servers MAY set the <code class="language-plaintext highlighter-rouge">default</code> value for the <code class="language-plaintext highlighter-rouge">service_programs</code> field to a non-<code class="language-plaintext highlighter-rouge">null</code> value, so that Client requests have a default set of programs for which they are asking the Customer to authorize access.</li>
+  <li>The Server MUST treat this Scope as having included <code class="language-plaintext highlighter-rouge">true</code> values for the following authorization details fields, so that the data defined by those fields is included (this is the default access granted by this Scope):
+    <ul>
+      <li><a href="#auth-details-include-service-contracts"><code class="language-plaintext highlighter-rouge">include_service_contracts</code></a></li>
+      <li><a href="#auth-details-include-service-programs"><code class="language-plaintext highlighter-rouge">include_service_programs</code></a></li>
+    </ul>
+  </li>
+  <li>The Server MUST make available the Service Contract objects that were selected by the Customer during authorization.</li>
+  <li>The Server MUST include any fields or objects as set by the Grant’s authorization details fields.</li>
+  <li>The Server MUST include the <code class="language-plaintext highlighter-rouge">service_programs</code> field in this scopes authorization details object in the Server response’s and Grant object’s <code class="language-plaintext highlighter-rouge">authorization_details</code> arrays.</li>
+  <li>Except for the <code class="language-plaintext highlighter-rouge">service_programs</code> field, the Server MUST NOT include <a href="#auth-details-preselection">Preselection Fields</a> in this scopes authorization details object in the Server response’s and Grant object’s <code class="language-plaintext highlighter-rouge">authorization_details</code> arrays.</li>
+  <li>It is RECOMMENDED for the Server to have a Client-specific <code class="language-plaintext highlighter-rouge">cds_server_metadata</code> URL value for Client objects in the Client API [<a href="#ref-cds-wg1-02-grant-object">CDS-WG1-02 Section 5.1</a>] where this scope is included in the Client object’s <code class="language-plaintext highlighter-rouge">scope</code> value, rather than a generic public CDS Server Metadata endpoint.
+That way the Server can customize the list of Choice objects in the <code class="language-plaintext highlighter-rouge">choices</code> list for the <code class="language-plaintext highlighter-rouge">service_programs</code> Authorization Details Field object in this Scope’s <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> field, which lets the Server tailor which Program objects are available for sharing based on which Client is requesting access.</li>
+</ul>
 
-<h3 id="67-service-bills-">6.7. Service Bills <a id="scope-service-bills" href="#scope-service-bills" class="permalink">🔗</a></h3>
+<h3 id="64-account-list-">6.4. Account List <a id="scope-account-list" href="#scope-account-list" class="permalink">🔗</a></h3>
 
-<p><code class="language-plaintext highlighter-rouge">cds_service_bills</code></p>
+<p>For some use cases, a Client needs access to the Customer’s account list.
+For example, a financial auditor Client may need to know the full list of Accounts for an enterprise Customer as part of their accounting audit of the enterprise’s organization.
+In these relevant use cases, Clients only need access to a Customer’s list of Accounts, so this Scope provides the ability for Servers to limit access to only Account objects.</p>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>To support this Scope, the Scope Description object MUST meet the following requirements:</p>
 
-<h3 id="68-meter-usage-">6.8. Meter Usage <a id="scope-meter-usage" href="#scope-meter-usage" class="permalink">🔗</a></h3>
+<ul>
+  <li>The <code class="language-plaintext highlighter-rouge">type</code> value MUST be <code class="language-plaintext highlighter-rouge">"cds_accounts"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">response_types_supported</code> value must contain at least the value <code class="language-plaintext highlighter-rouge">"code"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">grant_types_supported</code> value MUST contain at least the values <code class="language-plaintext highlighter-rouge">"authorization_code"</code> and <code class="language-plaintext highlighter-rouge">"refresh_token"</code> and MUST NOT contain the value <code class="language-plaintext highlighter-rouge">"client_credentials"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain at least the following values and support those authorization details fields as defined in the <a href="#auth-details-fields">Authorization Details Fields</a> section:
+    <ul>
+      <li><a href="#auth-details-account-numbers"><code class="language-plaintext highlighter-rouge">"account_numbers"</code></a></li>
+      <li><a href="#auth-details-include-account-numbers"><code class="language-plaintext highlighter-rouge">"include_account_numbers"</code></a></li>
+      <li><a href="#auth-details-sync-until"><code class="language-plaintext highlighter-rouge">"sync_until"</code></a></li>
+      <li><a href="#auth-details-selection-type"><code class="language-plaintext highlighter-rouge">"authorization_form_selection_type"</code></a></li>
+      <li><a href="#auth-details-merge-selections"><code class="language-plaintext highlighter-rouge">"merge_selection_with"</code></a></li>
+      <li><a href="#auth-details-error-if-no-preselections"><code class="language-plaintext highlighter-rouge">"error_if_no_preselections"</code></a></li>
+      <li><a href="#auth-details-allow-scope-modifications"><code class="language-plaintext highlighter-rouge">"allow_scope_modifications"</code></a></li>
+    </ul>
+  </li>
+  <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain any the following values and support the authorization details field when the Server has access to the data that allows for support of that field:
+    <ul>
+      <li><a href="#auth-details-addresses"><code class="language-plaintext highlighter-rouge">"addresses"</code></a></li>
+      <li><a href="#auth-details-include-account-details"><code class="language-plaintext highlighter-rouge">"include_account_details"</code></a></li>
+      <li><a href="#auth-details-include-account-programs"><code class="language-plaintext highlighter-rouge">"include_account_programs"</code></a></li>
+    </ul>
+  </li>
+  <li>The following is required for Authorization Details Field Objects in the Scope Description’s <code class="language-plaintext highlighter-rouge">authorization_details_fields_supported</code> field:
+    <ul>
+      <li>For the object with an <code class="language-plaintext highlighter-rouge">id</code> value of <code class="language-plaintext highlighter-rouge">authorization_form_selection_type</code>, it MUST meet the following requirements:
+        <ul>
+          <li>The <code class="language-plaintext highlighter-rouge">choices</code> array MUST contain only one object, and that object MUST have its <code class="language-plaintext highlighter-rouge">id</code> value be <a href="#account-selection"><code class="language-plaintext highlighter-rouge">"account_selection"</code></a>.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
 
-<p><code class="language-plaintext highlighter-rouge">cds_usage</code></p>
+<p>Additionally, to support this Scope, the Server MUST implement the following requirements:</p>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<ul>
+  <li>The Server MUST treat this Scope as having included <code class="language-plaintext highlighter-rouge">true</code> values for the following authorization details fields, so that the data defined by those fields is included (this is the default access granted by this Scope):
+    <ul>
+      <li><a href="#auth-details-include-accounts"><code class="language-plaintext highlighter-rouge">include_accounts</code></a></li>
+    </ul>
+  </li>
+  <li>The Server MUST make available the Account objects that were selected by the Customer during authorization.</li>
+  <li>The Server MUST include any fields or objects as set by the Grant’s authorization details fields.</li>
+  <li>The Server MUST NOT include <a href="#auth-details-preselection">Preselection Fields</a> in the Server response’s and Grant object’s <code class="language-plaintext highlighter-rouge">authorization_details</code> arrays.</li>
+</ul>
 
-<h3 id="69-aggregation-inclusion-">6.9. Aggregation Inclusion <a id="scope-aggregation-inclusion" href="#scope-aggregation-inclusion" class="permalink">🔗</a></h3>
+<h3 id="65-service-list-">6.5. Service List <a id="scope-service-list" href="#scope-service-list" class="permalink">🔗</a></h3>
 
-<p><code class="language-plaintext highlighter-rouge">cds_aggregation_consent</code></p>
+<p>For some use cases, a Client needs access to the Customer’s list of Service Contracts (e.g. their list of electric and gas services from a utility).
+For example, an energy consultant Client working with an enterprise Customer may need to review which of the business’s buildings have which utility services.
+In these relevant use cases, Clients only need access to a Customer’s list of Service Contracts, so this Scope provides the ability for Servers to limit access to only Service Contract objects.</p>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>To support this Scope, the Scope Description object MUST meet the following requirements:</p>
 
-<h3 id="610-accounts-query-">6.10. Accounts Query <a id="scope-accounts-query" href="#scope-accounts-query" class="permalink">🔗</a></h3>
+<ul>
+  <li>The <code class="language-plaintext highlighter-rouge">type</code> value MUST be <code class="language-plaintext highlighter-rouge">"cds_service_contracts"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">response_types_supported</code> value must contain at least the value <code class="language-plaintext highlighter-rouge">"code"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">grant_types_supported</code> value MUST contain at least the values <code class="language-plaintext highlighter-rouge">"authorization_code"</code> and <code class="language-plaintext highlighter-rouge">"refresh_token"</code> and MUST NOT contain the value <code class="language-plaintext highlighter-rouge">"client_credentials"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain at least the following values and support those authorization details fields as defined in the <a href="#auth-details-fields">Authorization Details Fields</a> section:
+    <ul>
+      <li><a href="#auth-details-contract-numbers"><code class="language-plaintext highlighter-rouge">"contract_numbers"</code></a></li>
+      <li><a href="#auth-details-service-types"><code class="language-plaintext highlighter-rouge">"service_types"</code></a></li>
+      <li><a href="#auth-details-include-contract-numbers"><code class="language-plaintext highlighter-rouge">"include_contract_numbers"</code></a></li>
+      <li><a href="#auth-details-sync-until"><code class="language-plaintext highlighter-rouge">"sync_until"</code></a></li>
+      <li><a href="#auth-details-selection-type"><code class="language-plaintext highlighter-rouge">"authorization_form_selection_type"</code></a></li>
+      <li><a href="#auth-details-merge-selections"><code class="language-plaintext highlighter-rouge">"merge_selection_with"</code></a></li>
+      <li><a href="#auth-details-error-if-no-preselections"><code class="language-plaintext highlighter-rouge">"error_if_no_preselections"</code></a></li>
+      <li><a href="#auth-details-allow-scope-modifications"><code class="language-plaintext highlighter-rouge">"allow_scope_modifications"</code></a></li>
+    </ul>
+  </li>
+  <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain any the following values and support the authorization details field when the Server has access to the data that allows for support of that field:
+    <ul>
+      <li><a href="#auth-details-account-numbers"><code class="language-plaintext highlighter-rouge">"account_numbers"</code></a></li>
+      <li><a href="#auth-details-meter-numbers"><code class="language-plaintext highlighter-rouge">"meter_numbers"</code></a></li>
+      <li><a href="#auth-details-addresses"><code class="language-plaintext highlighter-rouge">"addresses"</code></a></li>
+      <li><a href="#auth-details-include-accounts"><code class="language-plaintext highlighter-rouge">"include_accounts"</code></a></li>
+      <li><a href="#auth-details-include-account-numbers"><code class="language-plaintext highlighter-rouge">"include_account_numbers"</code></a></li>
+      <li><a href="#auth-details-include-account-details"><code class="language-plaintext highlighter-rouge">"include_account_details"</code></a></li>
+      <li><a href="#auth-details-include-account-programs"><code class="language-plaintext highlighter-rouge">"include_account_programs"</code></a></li>
+      <li><a href="#auth-details-include-rate-plans"><code class="language-plaintext highlighter-rouge">"include_rate_plans"</code></a></li>
+      <li><a href="#auth-details-include-contract-details"><code class="language-plaintext highlighter-rouge">"include_service_contract_details"</code></a></li>
+      <li><a href="#auth-details-include-service-programs"><code class="language-plaintext highlighter-rouge">"include_service_programs"</code></a></li>
+      <li><a href="#auth-details-include-meter-devices"><code class="language-plaintext highlighter-rouge">"include_meter_devices"</code></a></li>
+      <li><a href="#auth-details-include-meter-numbers"><code class="language-plaintext highlighter-rouge">"include_meter_numbers"</code></a></li>
+    </ul>
+  </li>
+  <li>The following is required for Authorization Details Field Objects in the Scope Description’s <code class="language-plaintext highlighter-rouge">authorization_details_fields_supported</code> field:
+    <ul>
+      <li>For the object with an <code class="language-plaintext highlighter-rouge">id</code> value of <code class="language-plaintext highlighter-rouge">authorization_form_selection_type</code>, it MUST meet the following requirements:
+        <ul>
+          <li>The <code class="language-plaintext highlighter-rouge">choices</code> array MUST contain objects with the following <code class="language-plaintext highlighter-rouge">id</code> values:
+            <ul>
+              <li><a href="#contract-selection"><code class="language-plaintext highlighter-rouge">"service_contract_selection"</code></a></li>
+            </ul>
+          </li>
+          <li>The <code class="language-plaintext highlighter-rouge">choices</code> array MAY contain objects with the following <code class="language-plaintext highlighter-rouge">id</code> values:
+            <ul>
+              <li><a href="#account-selection"><code class="language-plaintext highlighter-rouge">"account_selection"</code></a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>Additionally, to support this Scope, the Server MUST implement the following requirements:</p>
+
+<ul>
+  <li>The Server MUST treat this Scope as having included <code class="language-plaintext highlighter-rouge">true</code> values for the following authorization details fields, so that the data defined by those fields is included (this is the default access granted by this Scope):
+    <ul>
+      <li><a href="#auth-details-include-service-contracts"><code class="language-plaintext highlighter-rouge">include_service_contracts</code></a></li>
+    </ul>
+  </li>
+  <li>The Server MUST make available the Service Contract objects that were selected by the Customer during authorization.
+    <ul>
+      <li>If the Account Selection Component was used to select Accounts for this scope, selected Service Contracts are any with <code class="language-plaintext highlighter-rouge">cds_account_id</code> values that match the selected Accounts from the Account Selection Component.</li>
+    </ul>
+  </li>
+  <li>The Server MUST include any fields or objects as set by the Grant’s authorization details fields.</li>
+  <li>The Server MUST NOT include <a href="#auth-details-preselection">Preselection Fields</a> in the Server response’s and Grant object’s <code class="language-plaintext highlighter-rouge">authorization_details</code> arrays.</li>
+</ul>
+
+<h3 id="66-meter-list-">6.6. Meter List <a id="scope-meter-list" href="#scope-meter-list" class="permalink">🔗</a></h3>
+
+<p>For some use cases, a Client needs access to a Customer’s list of Meters Devices.
+For example, an energy auditor Client working with an enterprise Customer may need to review which of the meters are at which building for the utility.
+In these relevant use cases, Clients only need access to a Customer’s list of Service Contracts, so this Scope provides the ability for Servers to limit access to only Service Contract objects.</p>
+
+<p>To support this Scope, the Scope Description object MUST meet the following requirements:</p>
+
+<ul>
+  <li>The <code class="language-plaintext highlighter-rouge">type</code> value MUST be <code class="language-plaintext highlighter-rouge">"cds_meters"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">response_types_supported</code> value must contain at least the value <code class="language-plaintext highlighter-rouge">"code"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">grant_types_supported</code> value MUST contain at least the values <code class="language-plaintext highlighter-rouge">"authorization_code"</code> and <code class="language-plaintext highlighter-rouge">"refresh_token"</code> and MUST NOT contain the value <code class="language-plaintext highlighter-rouge">"client_credentials"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain at least the following values and support those authorization details fields as defined in the <a href="#auth-details-fields">Authorization Details Fields</a> section:
+    <ul>
+      <li><a href="#auth-details-meter-numbers"><code class="language-plaintext highlighter-rouge">"meter_numbers"</code></a></li>
+      <li><a href="#auth-details-meter-types"><code class="language-plaintext highlighter-rouge">"meter_types"</code></a></li>
+      <li><a href="#auth-details-include-meter-numbers"><code class="language-plaintext highlighter-rouge">"include_meter_numbers"</code></a></li>
+      <li><a href="#auth-details-sync-until"><code class="language-plaintext highlighter-rouge">"sync_until"</code></a></li>
+      <li><a href="#auth-details-selection-type"><code class="language-plaintext highlighter-rouge">"authorization_form_selection_type"</code></a></li>
+      <li><a href="#auth-details-merge-selections"><code class="language-plaintext highlighter-rouge">"merge_selection_with"</code></a></li>
+      <li><a href="#auth-details-error-if-no-preselections"><code class="language-plaintext highlighter-rouge">"error_if_no_preselections"</code></a></li>
+      <li><a href="#auth-details-allow-scope-modifications"><code class="language-plaintext highlighter-rouge">"allow_scope_modifications"</code></a></li>
+    </ul>
+  </li>
+  <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain any the following values and support the authorization details field when the Server has access to the data that allows for support of that field:
+    <ul>
+      <li><a href="#auth-details-account-numbers"><code class="language-plaintext highlighter-rouge">"account_numbers"</code></a></li>
+      <li><a href="#auth-details-contract-numbers"><code class="language-plaintext highlighter-rouge">"contract_numbers"</code></a></li>
+      <li><a href="#auth-details-service-types"><code class="language-plaintext highlighter-rouge">"service_types"</code></a></li>
+      <li><a href="#auth-details-servicepoint-numbers"><code class="language-plaintext highlighter-rouge">"servicepoint_numbers"</code></a></li>
+      <li><a href="#auth-details-servicepoint-types"><code class="language-plaintext highlighter-rouge">"servicepoint_types"</code></a></li>
+      <li><a href="#auth-details-premise-numbers"><code class="language-plaintext highlighter-rouge">"premise_numbers"</code></a></li>
+      <li><a href="#auth-details-addresses"><code class="language-plaintext highlighter-rouge">"addresses"</code></a></li>
+      <li><a href="#auth-details-include-accounts"><code class="language-plaintext highlighter-rouge">"include_accounts"</code></a></li>
+      <li><a href="#auth-details-include-account-numbers"><code class="language-plaintext highlighter-rouge">"include_account_numbers"</code></a></li>
+      <li><a href="#auth-details-include-account-details"><code class="language-plaintext highlighter-rouge">"include_account_details"</code></a></li>
+      <li><a href="#auth-details-include-account-programs"><code class="language-plaintext highlighter-rouge">"include_account_programs"</code></a></li>
+      <li><a href="#auth-details-include-service-contracts"><code class="language-plaintext highlighter-rouge">"include_service_contracts"</code></a></li>
+      <li><a href="#auth-details-include-contract-numbers"><code class="language-plaintext highlighter-rouge">"include_contract_numbers"</code></a></li>
+      <li><a href="#auth-details-include-rate-plans"><code class="language-plaintext highlighter-rouge">"include_rate_plans"</code></a></li>
+      <li><a href="#auth-details-include-contract-details"><code class="language-plaintext highlighter-rouge">"include_service_contract_details"</code></a></li>
+      <li><a href="#auth-details-include-service-programs"><code class="language-plaintext highlighter-rouge">"include_service_programs"</code></a></li>
+      <li><a href="#auth-details-include-service-points"><code class="language-plaintext highlighter-rouge">"include_service_points"</code></a></li>
+      <li><a href="#auth-details-include-premises"><code class="language-plaintext highlighter-rouge">"include_premises"</code></a></li>
+      <li><a href="#auth-details-include-service-point-addresses"><code class="language-plaintext highlighter-rouge">"include_service_point_addresses"</code></a></li>
+      <li><a href="#auth-details-include-coordinates"><code class="language-plaintext highlighter-rouge">"include_coordinates"</code></a></li>
+    </ul>
+  </li>
+  <li>The following is required for Authorization Details Field Objects in the Scope Description’s <code class="language-plaintext highlighter-rouge">authorization_details_fields_supported</code> field:
+    <ul>
+      <li>For the object with an <code class="language-plaintext highlighter-rouge">id</code> value of <code class="language-plaintext highlighter-rouge">authorization_form_selection_type</code>, it MUST meet the following requirements:
+        <ul>
+          <li>The <code class="language-plaintext highlighter-rouge">choices</code> array MUST contain objects with the following <code class="language-plaintext highlighter-rouge">id</code> values:
+            <ul>
+              <li><a href="#meter-selection"><code class="language-plaintext highlighter-rouge">"meter_device_selection"</code></a></li>
+            </ul>
+          </li>
+          <li>The <code class="language-plaintext highlighter-rouge">choices</code> array MAY contain objects with the following <code class="language-plaintext highlighter-rouge">id</code> values:
+            <ul>
+              <li><a href="#contract-selection"><code class="language-plaintext highlighter-rouge">"service_contract_selection"</code></a></li>
+              <li><a href="#account-selection"><code class="language-plaintext highlighter-rouge">"account_selection"</code></a></li>
+              <li><a href="#servicepoint-selection"><code class="language-plaintext highlighter-rouge">"servicepoint_selection"</code></a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>Additionally, to support this Scope, the Server MUST implement the following requirements:</p>
+
+<ul>
+  <li>The Server MUST treat this Scope as having included <code class="language-plaintext highlighter-rouge">true</code> values for the following authorization details fields, so that the data defined by those fields is included (this is the default access granted by this Scope):
+    <ul>
+      <li><a href="#auth-details-include-meter-devices"><code class="language-plaintext highlighter-rouge">include_meter_devices</code></a></li>
+    </ul>
+  </li>
+  <li>When rendering the <a href="#contract-selection">Service Contract Selection</a> Component, the Server MUST include the list of Meter Devices that will be shared under each Service Contract entry that is able to be selected.
+This is to make sure the Customer knows which meters they are sharing for this authorization request.</li>
+  <li>The Server MUST make available the Meter Device objects that were selected by the Customer during authorization.
+    <ul>
+      <li>If the Account Selection Component was used to select Accounts for this scope, selected Meter Devices are any that have a Service Point listed the Meter Device’s <code class="language-plaintext highlighter-rouge">current_servicepoints</code> and has a Service Contract listed in that Service Point’s <code class="language-plaintext highlighter-rouge">current_servicecontracts</code> that also has a selected Account set as the Service Contract’s <code class="language-plaintext highlighter-rouge">cds_account_id</code>.</li>
+      <li>If the Service Contract Selection Component was used to select Service Contracts for this scope, selected Meter Devices are any that have a Service Point listed the Meter Device’s <code class="language-plaintext highlighter-rouge">current_servicepoints</code> that also has a selected Service Contract listed in the Service Point’s <code class="language-plaintext highlighter-rouge">current_servicecontracts</code>.</li>
+      <li>If the Service Point Selection Component was used to select Service Points for this scope, selected Meter Devices are any that have a selected Service Point listed the Meter Device’s <code class="language-plaintext highlighter-rouge">current_servicepoints</code>.</li>
+    </ul>
+  </li>
+  <li>The Server MUST include any fields or objects as set by the Grant’s authorization details fields.</li>
+  <li>The Server MUST NOT include <a href="#auth-details-preselection">Preselection Fields</a> in the Server response’s and Grant object’s <code class="language-plaintext highlighter-rouge">authorization_details</code> arrays.</li>
+</ul>
+
+<h3 id="67-bill-statements-">6.7. Bill Statements <a id="scope-bill-statements" href="#scope-bill-statements" class="permalink">🔗</a></h3>
+
+<p>For some use cases, a Client needs access to a Customer’s Bill Statements.
+For example, a financial auditor Client may need to review a Customer’s utility bills as part of a business’s financial audit.
+In these relevant use cases, Clients need access to a Customer’s set of Bill Statements, so this Scope provides the ability for Servers to offer tailored access to Bill Statement objects.</p>
+
+<p>To support this Scope, the Scope Description object MUST meet the following requirements:</p>
+
+<ul>
+  <li>The <code class="language-plaintext highlighter-rouge">type</code> value MUST be <code class="language-plaintext highlighter-rouge">"cds_bill_statements"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">response_types_supported</code> value must contain at least the value <code class="language-plaintext highlighter-rouge">"code"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">grant_types_supported</code> value MUST contain at least the values <code class="language-plaintext highlighter-rouge">"authorization_code"</code> and <code class="language-plaintext highlighter-rouge">"refresh_token"</code> and MUST NOT contain the value <code class="language-plaintext highlighter-rouge">"client_credentials"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain at least the following values and support those authorization details fields as defined in the <a href="#auth-details-fields">Authorization Details Fields</a> section:
+    <ul>
+      <li><a href="#auth-details-account-numbers"><code class="language-plaintext highlighter-rouge">"account_numbers"</code></a></li>
+      <li><a href="#auth-details-sync-until"><code class="language-plaintext highlighter-rouge">"sync_until"</code></a></li>
+      <li><a href="#auth-details-statement-start"><code class="language-plaintext highlighter-rouge">"statement_date_start"</code></a></li>
+      <li><a href="#auth-details-statement-end"><code class="language-plaintext highlighter-rouge">"statement_date_end"</code></a></li>
+      <li><a href="#auth-details-selection-type"><code class="language-plaintext highlighter-rouge">"authorization_form_selection_type"</code></a></li>
+      <li><a href="#auth-details-merge-selections"><code class="language-plaintext highlighter-rouge">"merge_selection_with"</code></a></li>
+      <li><a href="#auth-details-error-if-no-preselections"><code class="language-plaintext highlighter-rouge">"error_if_no_preselections"</code></a></li>
+      <li><a href="#auth-details-allow-scope-modifications"><code class="language-plaintext highlighter-rouge">"allow_scope_modifications"</code></a></li>
+    </ul>
+  </li>
+  <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain any the following values and support the authorization details field when the Server has access to the data that allows for support of that field:
+    <ul>
+      <li><a href="#auth-details-contract-numbers"><code class="language-plaintext highlighter-rouge">"contract_numbers"</code></a></li>
+      <li><a href="#auth-details-meter-numbers"><code class="language-plaintext highlighter-rouge">"meter_numbers"</code></a></li>
+      <li><a href="#auth-details-addresses"><code class="language-plaintext highlighter-rouge">"addresses"</code></a></li>
+      <li><a href="#auth-details-include-bill-statement-files"><code class="language-plaintext highlighter-rouge">"include_bill_statement_files"</code></a></li>
+      <li><a href="#auth-details-include-bill-statement-charges"><code class="language-plaintext highlighter-rouge">"include_bill_statement_charges"</code></a></li>
+      <li><a href="#auth-details-include-bill-statement-programs"><code class="language-plaintext highlighter-rouge">"include_bill_statement_programs"</code></a></li>
+    </ul>
+  </li>
+  <li>The following is required for Authorization Details Field Objects in the Scope Description’s <code class="language-plaintext highlighter-rouge">authorization_details_fields_supported</code> field:
+    <ul>
+      <li>For the object with an <code class="language-plaintext highlighter-rouge">id</code> value of <code class="language-plaintext highlighter-rouge">authorization_form_selection_type</code>, it MUST meet the following requirements:
+        <ul>
+          <li>The <code class="language-plaintext highlighter-rouge">choices</code> array MUST contain only one object, and that object MUST have its <code class="language-plaintext highlighter-rouge">id</code> value be <a href="#account-selection"><code class="language-plaintext highlighter-rouge">"account_selection"</code></a>.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>Additionally, to support this Scope, the Server MUST implement the following requirements:</p>
+
+<ul>
+  <li>The Server MUST treat this Scope as having included <code class="language-plaintext highlighter-rouge">true</code> values for the following authorization details fields, so that the data defined by those fields is included (this is the default access granted by this Scope):
+    <ul>
+      <li><a href="#auth-details-include-bill-statements"><code class="language-plaintext highlighter-rouge">include_bill_statements</code></a></li>
+      <li><a href="#auth-details-include-accounts"><code class="language-plaintext highlighter-rouge">include_accounts</code></a></li>
+      <li><a href="#auth-details-include-account-numbers"><code class="language-plaintext highlighter-rouge">include_account_numbers</code></a></li>
+    </ul>
+  </li>
+  <li>The Server MUST make available the Bill Statement objects that have a <code class="language-plaintext highlighter-rouge">cds_account_id</code> value that matches the Accounts selected by the Customer during authorization.</li>
+  <li>The Server MUST include any fields or objects as set by the Grant’s authorization details fields (e.g. <code class="language-plaintext highlighter-rouge">include_bill_statement_files</code>) and MUST NOT include any fields or objects that are constrained by the Grant’s authorization details fields (e.g. <code class="language-plaintext highlighter-rouge">statement_date_start</code>).</li>
+  <li>The Server MUST NOT include <a href="#auth-details-preselection">Preselection Fields</a> in the Server response’s and Grant object’s <code class="language-plaintext highlighter-rouge">authorization_details</code> arrays.</li>
+</ul>
+
+<h3 id="68-service-bills-">6.8. Service Bills <a id="scope-service-bills" href="#scope-service-bills" class="permalink">🔗</a></h3>
+
+<p>For some use cases, a Client needs access to a breakdown of bill charges for a Customer’s set of Service Contracts.
+For example, an energy service company Client that is working with an enterprise Customer may need to analyze the historical energy charges for some of the Customer’s utility services for a building.
+In these relevant use cases, Clients need access to a Customer’s set of Bill Sections, so this Scope provides the ability for Servers to offer tailored access to Bill Section objects.</p>
+
+<p>To support this Scope, the Scope Description object MUST meet the following requirements:</p>
+
+<ul>
+  <li>The <code class="language-plaintext highlighter-rouge">type</code> value MUST be <code class="language-plaintext highlighter-rouge">"cds_service_bills"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">response_types_supported</code> value must contain at least the value <code class="language-plaintext highlighter-rouge">"code"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">grant_types_supported</code> value MUST contain at least the values <code class="language-plaintext highlighter-rouge">"authorization_code"</code> and <code class="language-plaintext highlighter-rouge">"refresh_token"</code> and MUST NOT contain the value <code class="language-plaintext highlighter-rouge">"client_credentials"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain at least the following values and support those authorization details fields as defined in the <a href="#auth-details-fields">Authorization Details Fields</a> section:
+    <ul>
+      <li><a href="#auth-details-contract-numbers"><code class="language-plaintext highlighter-rouge">"contract_numbers"</code></a></li>
+      <li><a href="#auth-details-service-types"><code class="language-plaintext highlighter-rouge">"service_types"</code></a></li>
+      <li><a href="#auth-details-sync-until"><code class="language-plaintext highlighter-rouge">"sync_until"</code></a></li>
+      <li><a href="#auth-details-bill-section-start"><code class="language-plaintext highlighter-rouge">"start_date"</code></a></li>
+      <li><a href="#auth-details-bill-section-end"><code class="language-plaintext highlighter-rouge">"end_date"</code></a></li>
+      <li><a href="#auth-details-selection-type"><code class="language-plaintext highlighter-rouge">"authorization_form_selection_type"</code></a></li>
+      <li><a href="#auth-details-merge-selections"><code class="language-plaintext highlighter-rouge">"merge_selection_with"</code></a></li>
+      <li><a href="#auth-details-error-if-no-preselections"><code class="language-plaintext highlighter-rouge">"error_if_no_preselections"</code></a></li>
+      <li><a href="#auth-details-allow-scope-modifications"><code class="language-plaintext highlighter-rouge">"allow_scope_modifications"</code></a></li>
+    </ul>
+  </li>
+  <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain any the following values and support the authorization details field when the Server has access to the data that allows for support of that field:
+    <ul>
+      <li><a href="#auth-details-account-numbers"><code class="language-plaintext highlighter-rouge">"account_numbers"</code></a></li>
+      <li><a href="#auth-details-meter-numbers"><code class="language-plaintext highlighter-rouge">"meter_numbers"</code></a></li>
+      <li><a href="#auth-details-addresses"><code class="language-plaintext highlighter-rouge">"addresses"</code></a></li>
+      <li><a href="#auth-details-statement-start"><code class="language-plaintext highlighter-rouge">"statement_date_start"</code></a></li>
+      <li><a href="#auth-details-statement-end"><code class="language-plaintext highlighter-rouge">"statement_date_end"</code></a></li>
+      <li><a href="#auth-details-include-bill-statements"><code class="language-plaintext highlighter-rouge">"include_bill_statements"</code></a></li>
+      <li><a href="#auth-details-include-bill-statement-files"><code class="language-plaintext highlighter-rouge">"include_bill_statement_files"</code></a></li>
+      <li><a href="#auth-details-include-bill-statement-charges"><code class="language-plaintext highlighter-rouge">"include_bill_statement_charges"</code></a></li>
+      <li><a href="#auth-details-include-bill-statement-programs"><code class="language-plaintext highlighter-rouge">"include_bill_statement_programs"</code></a></li>
+      <li><a href="#auth-details-include-bill-section-line-items"><code class="language-plaintext highlighter-rouge">"include_bill_section_line_items"</code></a></li>
+      <li><a href="#auth-details-include-service-points"><code class="language-plaintext highlighter-rouge">"include_service_points"</code></a></li>
+      <li><a href="#auth-details-include-meter-devices"><code class="language-plaintext highlighter-rouge">"include_meter_devices"</code></a></li>
+      <li><a href="#auth-details-include-meter-numbers"><code class="language-plaintext highlighter-rouge">"include_meter_numbers"</code></a></li>
+    </ul>
+  </li>
+  <li>The following is required for Authorization Details Field Objects in the Scope Description’s <code class="language-plaintext highlighter-rouge">authorization_details_fields_supported</code> field:
+    <ul>
+      <li>For the object with an <code class="language-plaintext highlighter-rouge">id</code> value of <code class="language-plaintext highlighter-rouge">authorization_form_selection_type</code>, it MUST meet the following requirements:
+        <ul>
+          <li>The <code class="language-plaintext highlighter-rouge">choices</code> array MUST contain objects with the following <code class="language-plaintext highlighter-rouge">id</code> values:
+            <ul>
+              <li><a href="#contract-selection"><code class="language-plaintext highlighter-rouge">"service_contract_selection"</code></a></li>
+              <li><a href="#account-selection"><code class="language-plaintext highlighter-rouge">"account_selection"</code></a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>Additionally, to support this Scope, the Server MUST implement the following requirements:</p>
+
+<ul>
+  <li>The Server MUST treat this Scope as having included <code class="language-plaintext highlighter-rouge">true</code> values for the following authorization details fields, so that the data defined by those fields is included (this is the default access granted by this Scope):
+    <ul>
+      <li><a href="#auth-details-include-bill-sections"><code class="language-plaintext highlighter-rouge">include_bill_sections</code></a></li>
+      <li><a href="#auth-details-include-accounts"><code class="language-plaintext highlighter-rouge">include_accounts</code></a></li>
+      <li><a href="#auth-details-include-account-numbers"><code class="language-plaintext highlighter-rouge">include_account_numbers</code></a></li>
+      <li><a href="#auth-details-include-service-contracts"><code class="language-plaintext highlighter-rouge">include_service_contracts</code></a></li>
+      <li><a href="#auth-details-include-contract-numbers"><code class="language-plaintext highlighter-rouge">include_contract_numbers</code></a></li>
+    </ul>
+  </li>
+  <li>If the Customer used the <a href="#account-selection">Account Selection</a> Component for an authorization Grant, the Server MUST treat the Accounts that were selected as the basis for determining which objects to include.
+    <ul>
+      <li>Included Service Contracts are those which have a selected Account as the Service Contract’s <code class="language-plaintext highlighter-rouge">cds_account_id</code> value.</li>
+      <li>Included Bill Sections are those which have a selected Account as the Bill Section’s <code class="language-plaintext highlighter-rouge">cds_account_id</code> value.</li>
+    </ul>
+  </li>
+  <li>If the Customer used the <a href="#contract-selection">Service Contract Selection</a> Component for an authorization Grant, the Server MUST treat the Service Contracts that were selected as the basis for determining which objects to include.
+    <ul>
+      <li>Included Accounts are those which are referenced by a selected Service Contract’s <code class="language-plaintext highlighter-rouge">cds_account_id</code> value.</li>
+      <li>Included Bill Sections are those which have a selected Service Contract listed in the Bill Section’s <code class="language-plaintext highlighter-rouge">related_servicecontracts</code> array and an included Account referenced in the Bill Section’s <code class="language-plaintext highlighter-rouge">cds_account_id</code>.</li>
+    </ul>
+  </li>
+  <li>The Server MUST include any fields or objects as set by the Grant’s authorization details fields (e.g. <code class="language-plaintext highlighter-rouge">include_bill_section_line_items</code>) and MUST NOT include any fields or objects that are constrained by the Grant’s authorization details fields (e.g. <code class="language-plaintext highlighter-rouge">start_date</code>).</li>
+  <li>The Server MUST NOT include <a href="#auth-details-preselection">Preselection Fields</a> in the Server response’s and Grant object’s <code class="language-plaintext highlighter-rouge">authorization_details</code> arrays.</li>
+</ul>
+
+<h3 id="69-meter-usage-">6.9. Meter Usage <a id="scope-meter-usage" href="#scope-meter-usage" class="permalink">🔗</a></h3>
+
+<p>For some use cases, a Client needs access to the usage data for a Customer’s set of Meter Devices.
+For example, a building energy management platform Client being used by an enterprise Customer may need to collect and monitor the meter usage for the Customer’s properties.
+In these relevant use cases, Clients need access to a Customer’s Usage Segments, so this Scope provides the ability for Servers to offer tailored access to Usage Segment objects.</p>
+
+<p>To support this Scope, the Scope Description object MUST meet the following requirements:</p>
+
+<ul>
+  <li>The <code class="language-plaintext highlighter-rouge">type</code> value MUST be <code class="language-plaintext highlighter-rouge">"cds_usage"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">response_types_supported</code> value must contain at least the value <code class="language-plaintext highlighter-rouge">"code"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">grant_types_supported</code> value MUST contain at least the values <code class="language-plaintext highlighter-rouge">"authorization_code"</code> and <code class="language-plaintext highlighter-rouge">"refresh_token"</code> and MUST NOT contain the value <code class="language-plaintext highlighter-rouge">"client_credentials"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain at least the following values and support those authorization details fields as defined in the <a href="#auth-details-fields">Authorization Details Fields</a> section:
+    <ul>
+      <li><a href="#auth-details-include-usage-segment-formats"><code class="language-plaintext highlighter-rouge">"include_usage_segment_formats"</code></a></li>
+      <li><a href="#auth-details-sync-until"><code class="language-plaintext highlighter-rouge">"sync_until"</code></a></li>
+      <li><a href="#auth-details-usage-segment-start"><code class="language-plaintext highlighter-rouge">"segment_start"</code></a></li>
+      <li><a href="#auth-details-usage-segment-end"><code class="language-plaintext highlighter-rouge">"segment_end"</code></a></li>
+      <li><a href="#auth-details-selection-type"><code class="language-plaintext highlighter-rouge">"authorization_form_selection_type"</code></a></li>
+      <li><a href="#auth-details-merge-selections"><code class="language-plaintext highlighter-rouge">"merge_selection_with"</code></a></li>
+      <li><a href="#auth-details-error-if-no-preselections"><code class="language-plaintext highlighter-rouge">"error_if_no_preselections"</code></a></li>
+      <li><a href="#auth-details-allow-scope-modifications"><code class="language-plaintext highlighter-rouge">"allow_scope_modifications"</code></a></li>
+    </ul>
+  </li>
+  <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain any the following values and support the authorization details field when the Server has access to the data that allows for support of that field:
+    <ul>
+      <li><a href="#auth-details-account-numbers"><code class="language-plaintext highlighter-rouge">"account_numbers"</code></a></li>
+      <li><a href="#auth-details-contract-numbers"><code class="language-plaintext highlighter-rouge">"contract_numbers"</code></a></li>
+      <li><a href="#auth-details-service-types"><code class="language-plaintext highlighter-rouge">"service_types"</code></a></li>
+      <li><a href="#auth-details-servicepoint-numbers"><code class="language-plaintext highlighter-rouge">"servicepoint_numbers"</code></a></li>
+      <li><a href="#auth-details-servicepoint-types"><code class="language-plaintext highlighter-rouge">"servicepoint_types"</code></a></li>
+      <li><a href="#auth-details-premise-numbers"><code class="language-plaintext highlighter-rouge">"premise_numbers"</code></a></li>
+      <li><a href="#auth-details-meter-numbers"><code class="language-plaintext highlighter-rouge">"meter_numbers"</code></a></li>
+      <li><a href="#auth-details-meter-types"><code class="language-plaintext highlighter-rouge">"meter_types"</code></a></li>
+      <li><a href="#auth-details-aggregation-numbers"><code class="language-plaintext highlighter-rouge">"aggregation_numbers"</code></a></li>
+      <li><a href="#auth-details-addresses"><code class="language-plaintext highlighter-rouge">"addresses"</code></a></li>
+      <li><a href="#auth-details-include-accounts"><code class="language-plaintext highlighter-rouge">"include_accounts"</code></a></li>
+      <li><a href="#auth-details-include-account-numbers"><code class="language-plaintext highlighter-rouge">"include_account_numbers"</code></a></li>
+      <li><a href="#auth-details-include-service-contracts"><code class="language-plaintext highlighter-rouge">"include_service_contracts"</code></a></li>
+      <li><a href="#auth-details-include-contract-numbers"><code class="language-plaintext highlighter-rouge">"include_contract_numbers"</code></a></li>
+      <li><a href="#auth-details-include-service-points"><code class="language-plaintext highlighter-rouge">"include_service_points"</code></a></li>
+      <li><a href="#auth-details-include-premises"><code class="language-plaintext highlighter-rouge">"include_premises"</code></a></li>
+      <li><a href="#auth-details-include-service-point-addresses"><code class="language-plaintext highlighter-rouge">"include_service_point_addresses"</code></a></li>
+      <li><a href="#auth-details-include-coordinates"><code class="language-plaintext highlighter-rouge">"include_coordinates"</code></a></li>
+      <li><a href="#auth-details-include-meter-devices"><code class="language-plaintext highlighter-rouge">"include_meter_devices"</code></a></li>
+      <li><a href="#auth-details-include-meter-numbers"><code class="language-plaintext highlighter-rouge">"include_meter_numbers"</code></a></li>
+      <li><a href="#auth-details-include-aggregations"><code class="language-plaintext highlighter-rouge">"include_aggregations"</code></a></li>
+      <li><a href="#auth-details-include-aggregation-addresses"><code class="language-plaintext highlighter-rouge">"include_aggregation_addresses"</code></a></li>
+      <li><a href="#auth-details-include-bill-sections"><code class="language-plaintext highlighter-rouge">"include_bill_sections"</code></a></li>
+      <li><a href="#auth-details-include-bill-section-line-items"><code class="language-plaintext highlighter-rouge">"include_bill_section_line_items"</code></a></li>
+    </ul>
+  </li>
+  <li>The following is required for Authorization Details Field Objects in the Scope Description’s <code class="language-plaintext highlighter-rouge">authorization_details_fields_supported</code> field:
+    <ul>
+      <li>For the object with an <code class="language-plaintext highlighter-rouge">id</code> value of <code class="language-plaintext highlighter-rouge">authorization_form_selection_type</code>, it MUST meet the following requirements:
+        <ul>
+          <li>The <code class="language-plaintext highlighter-rouge">choices</code> array MUST contain at least one object and objects MUST have one of following <code class="language-plaintext highlighter-rouge">id</code> values:
+            <ul>
+              <li><a href="#account-selection"><code class="language-plaintext highlighter-rouge">"account_selection"</code></a></li>
+              <li><a href="#contract-selection"><code class="language-plaintext highlighter-rouge">"service_contract_selection"</code></a></li>
+              <li><a href="#servicepoint-selection"><code class="language-plaintext highlighter-rouge">"servicepoint_selection"</code></a></li>
+              <li><a href="#meter-selection"><code class="language-plaintext highlighter-rouge">"meter_device_selection"</code></a></li>
+              <li><a href="#aggregation-selection"><code class="language-plaintext highlighter-rouge">"aggregation_selection"</code></a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>If the Server includes <code class="language-plaintext highlighter-rouge">account_selection</code> as a choice in the <code class="language-plaintext highlighter-rouge">authorization_form_selection_type</code> authorization details object, the Server MUST include the following values in the <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array:
+        <ul>
+          <li><code class="language-plaintext highlighter-rouge">"account_numbers"</code></li>
+          <li><code class="language-plaintext highlighter-rouge">"include_accounts"</code></li>
+          <li><code class="language-plaintext highlighter-rouge">"include_account_numbers"</code></li>
+        </ul>
+      </li>
+      <li>If the Server includes <code class="language-plaintext highlighter-rouge">"service_contract_selection"</code> as a choice in the <code class="language-plaintext highlighter-rouge">authorization_form_selection_type</code> authorization details object, the Server MUST include the following values in the <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array:
+        <ul>
+          <li><code class="language-plaintext highlighter-rouge">"account_numbers"</code></li>
+          <li><code class="language-plaintext highlighter-rouge">"contract_numbers"</code></li>
+          <li><code class="language-plaintext highlighter-rouge">"include_accounts"</code></li>
+          <li><code class="language-plaintext highlighter-rouge">"include_account_numbers"</code></li>
+          <li><code class="language-plaintext highlighter-rouge">"include_service_contracts"</code></li>
+          <li><code class="language-plaintext highlighter-rouge">"include_contract_numbers"</code></li>
+        </ul>
+      </li>
+      <li>If the Server includes <code class="language-plaintext highlighter-rouge">"servicepoint_selection"</code> as a choice in the <code class="language-plaintext highlighter-rouge">authorization_form_selection_type</code> authorization details object, the Server MUST include the following values in the <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array:
+        <ul>
+          <li><code class="language-plaintext highlighter-rouge">"servicepoint_numbers"</code></li>
+          <li><code class="language-plaintext highlighter-rouge">"include_service_points"</code></li>
+        </ul>
+      </li>
+      <li>If the Server includes <code class="language-plaintext highlighter-rouge">"meter_device_selection"</code> as a choice in the <code class="language-plaintext highlighter-rouge">authorization_form_selection_type</code> authorization details object, the Server MUST include the following values in the <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array:
+        <ul>
+          <li><code class="language-plaintext highlighter-rouge">"meter_numbers"</code></li>
+          <li><code class="language-plaintext highlighter-rouge">"include_meter_devices"</code></li>
+          <li><code class="language-plaintext highlighter-rouge">"include_meter_numbers"</code></li>
+        </ul>
+      </li>
+      <li>If the Server includes <code class="language-plaintext highlighter-rouge">"aggregation_selection"</code> as a choice in the <code class="language-plaintext highlighter-rouge">authorization_form_selection_type</code> authorization details object, the Server MUST include the following values in the <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array:
+        <ul>
+          <li><code class="language-plaintext highlighter-rouge">"aggregation_numbers"</code></li>
+          <li><code class="language-plaintext highlighter-rouge">"include_aggregations"</code></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>Additionally, to support this Scope, the Server MUST implement the following requirements:</p>
+
+<ul>
+  <li>The Server MUST treat this Scope as having included <code class="language-plaintext highlighter-rouge">true</code> values for the following authorization details fields, so that the data defined by those fields is included (this is the default access granted by this Scope):
+    <ul>
+      <li><a href="#auth-details-include-bill-sections"><code class="language-plaintext highlighter-rouge">include_usage_segments</code></a></li>
+    </ul>
+  </li>
+  <li>If the Customer used the <a href="#account-selection">Account Selection</a> Component for an authorization Grant, the Server MUST treat the Accounts that were selected as the basis for determining which objects to include.
+    <ul>
+      <li>Included Usage Segments are those which have a selected Account listed in the Usage Segment’s <code class="language-plaintext highlighter-rouge">related_accounts</code> array.</li>
+    </ul>
+  </li>
+  <li>If the Customer used the <a href="#contract-selection">Service Contract Selection</a> Component for an authorization Grant, the Server MUST treat the Service Contracts that were selected as the basis for determining which objects to include.
+    <ul>
+      <li>Included Usage Segments are those which have a selected Service Contract listed in the Usage Segment’s <code class="language-plaintext highlighter-rouge">related_servicecontracts</code> array.</li>
+    </ul>
+  </li>
+  <li>If the Customer used the <a href="#servicepoint-selection">Service Point Selection</a> Component for an authorization Grant, the Server MUST treat the Service Points that were selected as the basis for determining which objects to include.
+    <ul>
+      <li>Included Usage Segments are those which have a selected Service Points listed in the Usage Segment’s <code class="language-plaintext highlighter-rouge">related_servicepoints</code> array.</li>
+    </ul>
+  </li>
+  <li>If the Customer used the <a href="#meter-selection">Meter Device Selection</a> Component for an authorization Grant, the Server MUST treat the Meter Devices that were selected as the basis for determining which objects to include.
+    <ul>
+      <li>Included Usage Segments are those which have a selected Meter Devices listed in the Usage Segment’s <code class="language-plaintext highlighter-rouge">related_meterdevices</code> array.</li>
+    </ul>
+  </li>
+  <li>If the Customer used the <a href="#aggregation-selection">Aggregations Selection</a> Component for an authorization Grant, the Server MUST treat the Aggregations that were selected as the basis for determining which objects to include.
+    <ul>
+      <li>Included Usage Segments are those which have a selected Aggregations listed in the Usage Segment’s <code class="language-plaintext highlighter-rouge">related_aggregations</code> array.</li>
+    </ul>
+  </li>
+  <li>The Server MUST include any fields or objects as set by the Grant’s authorization details fields (e.g. <code class="language-plaintext highlighter-rouge">include_contract_numbers</code>) and MUST NOT include any fields or objects that are constrained by the Grant’s authorization details fields (e.g. <code class="language-plaintext highlighter-rouge">segment_start</code>).</li>
+  <li>The Server MUST NOT include <a href="#auth-details-preselection">Preselection Fields</a> in the Server response’s and Grant object’s <code class="language-plaintext highlighter-rouge">authorization_details</code> arrays.</li>
+</ul>
+
+<h3 id="610-aggregation-inclusion-">6.10. Aggregation Inclusion <a id="scope-aggregation-inclusion" href="#scope-aggregation-inclusion" class="permalink">🔗</a></h3>
+
+<p>For some use cases, a Client needs a Customer to approve being included in an Aggregation.
+For example, a building owner Client needs to get the aggregated energy usage for their property, but the number of tenants in the property falls below a privacy threshold and individual tenant Customer consent is required, so the Server needs the Client to request individual authorizations from Customers.
+In these relevant use cases, Clients need to be able to obtain an authorization from a Customer to be included in an Aggregation, so this Scope provides the ability for Servers to perform these authorization requests.</p>
+
+<p>Typically, this scope is used when a Client requests access to Usage Data via the <a href="#scope-usage-query"><code class="language-plaintext highlighter-rouge">cds_query_usage</code></a> scope with an <a href="#auth-details-aggregation-numbers"><code class="language-plaintext highlighter-rouge">aggregation_numbers</code></a> authorization details field value (e.g. request whole-building energy usage for two buildings, which have aggregation numbers <code class="language-plaintext highlighter-rouge">B1111</code> and <code class="language-plaintext highlighter-rouge">B2222</code>), but the requested Aggregations require consent from Customers before releasing the Usage Segments.
+In these cases, the Server will create a Grant for the <code class="language-plaintext highlighter-rouge">cds_query_usage</code> scope, set that Grant status to <code class="language-plaintext highlighter-rouge">needs_sub_grants</code>, create sub-Grants for the individual Customer authorizations required, set those Grant scopes to <code class="language-plaintext highlighter-rouge">cds_aggregation_consent</code> and statuses of <code class="language-plaintext highlighter-rouge">needs_authorization</code>.
+This allows the Client to detect that individual Customer authorizations are required and use the Grant Authorization Request process [<a href="#ref-cds-wg1-02-grant-auth-requests">CDS-WG1-02 Section 8.3</a>] to request authorization from relevant Customers.
+Then, when all relevant Customers have authorized the sub-Grants (which have the <code class="language-plaintext highlighter-rouge">cds_aggregation_consent</code> scope), the Server can update the original Grant status to <code class="language-plaintext highlighter-rouge">active</code> and release the Usage Segments to the Client.</p>
+
+<p>To support this Scope, the Scope Description object MUST meet the following requirements:</p>
+
+<ul>
+  <li>The <code class="language-plaintext highlighter-rouge">type</code> value MUST be <code class="language-plaintext highlighter-rouge">"cds_aggregation_consent"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">response_types_supported</code> value must contain at least the value <code class="language-plaintext highlighter-rouge">"code"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">grant_types_supported</code> value MUST contain at least the values <code class="language-plaintext highlighter-rouge">"authorization_code"</code> and <code class="language-plaintext highlighter-rouge">"refresh_token"</code> and MUST NOT contain the value <code class="language-plaintext highlighter-rouge">"client_credentials"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain at least the following values and support those authorization details fields as defined in the <a href="#auth-details-fields">Authorization Details Fields</a> section:
+    <ul>
+      <li><a href="#auth-details-aggregation-numbers"><code class="language-plaintext highlighter-rouge">"aggregation_numbers"</code></a></li>
+      <li><a href="#auth-details-expires"><code class="language-plaintext highlighter-rouge">"expires"</code></a></li>
+      <li><a href="#auth-details-selection-type"><code class="language-plaintext highlighter-rouge">"authorization_form_selection_type"</code></a></li>
+      <li><a href="#auth-details-error-if-no-preselections"><code class="language-plaintext highlighter-rouge">"error_if_no_preselections"</code></a></li>
+      <li><a href="#auth-details-allow-scope-modifications"><code class="language-plaintext highlighter-rouge">"allow_scope_modifications"</code></a></li>
+    </ul>
+  </li>
+  <li>The following is required for Authorization Details Field Objects in the Scope Description’s <code class="language-plaintext highlighter-rouge">authorization_details_fields_supported</code> field:
+    <ul>
+      <li>For the object with an <code class="language-plaintext highlighter-rouge">id</code> value of <code class="language-plaintext highlighter-rouge">authorization_form_selection_type</code>, it MUST meet the following requirements:
+        <ul>
+          <li>The <code class="language-plaintext highlighter-rouge">choices</code> array MUST contain only one object, and that object MUST have its <code class="language-plaintext highlighter-rouge">id</code> value be <a href="#aggregation-selection"><code class="language-plaintext highlighter-rouge">"aggregation_selection"</code></a>.</li>
+        </ul>
+      </li>
+      <li>For the object with an <code class="language-plaintext highlighter-rouge">id</code> value of <code class="language-plaintext highlighter-rouge">error_if_no_preselections</code>, it MUST meet the following requirements:
+        <ul>
+          <li>The <code class="language-plaintext highlighter-rouge">default</code> value MUST be set to <code class="language-plaintext highlighter-rouge">true</code>.</li>
+        </ul>
+      </li>
+      <li>For the object with an <code class="language-plaintext highlighter-rouge">id</code> value of <code class="language-plaintext highlighter-rouge">allow_scope_modifications</code>, it MUST meet the following requirements:
+        <ul>
+          <li>The <code class="language-plaintext highlighter-rouge">default</code> value MUST be set to <code class="language-plaintext highlighter-rouge">false</code>.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>Additionally, to support this Scope, the Server MUST implement the following requirements:</p>
+
+<ul>
+  <li>The Server MUST reject Client authorization requests with an <code class="language-plaintext highlighter-rouge">invalid_authorization_details</code> error [<a href="#ref-rfc9396-error-response">RFC 9396 Section 5</a>] where the <code class="language-plaintext highlighter-rouge">aggregation_numbers</code> authorization details field is set to <code class="language-plaintext highlighter-rouge">null</code>, meaning that Clients MUST specify which Aggregations for which they are requesting the Customer to authorize inclusion.</li>
+  <li>The Server MUST reject Client authorization requests with an <code class="language-plaintext highlighter-rouge">invalid_authorization_details</code> error [<a href="#ref-rfc9396-error-response">RFC 9396 Section 5</a>] where the <code class="language-plaintext highlighter-rouge">error_if_no_preselections</code> authorization details field is set to <code class="language-plaintext highlighter-rouge">false</code>, meaning that Customer MUST have an applicable Aggregation in the <code class="language-plaintext highlighter-rouge">aggregation_numbers</code> included in the authorization request’s authorization details.</li>
+  <li>The Server MUST reject Client authorization requests with an <code class="language-plaintext highlighter-rouge">invalid_authorization_details</code> error [<a href="#ref-rfc9396-error-response">RFC 9396 Section 5</a>] where the <code class="language-plaintext highlighter-rouge">allow_scope_modifications</code> authorization details field is set to <code class="language-plaintext highlighter-rouge">true</code>, meaning that the Customer MUST NOT be able to edit the authorization request’s scope, since the request is specifically for requesting consent to be included in a set of Aggregations.</li>
+</ul>
+
+<h3 id="611-accounts-query-">6.11. Accounts Query <a id="scope-accounts-query" href="#scope-accounts-query" class="permalink">🔗</a></h3>
+
+<p>For some use cases, a Client needs to be able to access a list of Accounts.
+For example, an enterprise Customer, acting as the Client, may need to review their list of utility accounts from the utility, acting as the Server.
+As another example, a utility vendor Client may need to search for a specific Account in the utility’s Customer list.
+In these relevant use cases, Clients need access to a set of Account objects directly, so this Scope provides the ability for Servers to offer managed access to Account objects.</p>
+
+<p>To support this Scope, the Scope Description object MUST meet the following requirements:</p>
+
+<ul>
+  <li>The <code class="language-plaintext highlighter-rouge">type</code> value MUST be <code class="language-plaintext highlighter-rouge">"cds_query_accounts"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">response_types_supported</code> value must be an empty array (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
+  <li>The <code class="language-plaintext highlighter-rouge">grant_types_supported</code> value MUST contain at least the value <code class="language-plaintext highlighter-rouge">"client_credentials"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain at least the following values and support those authorization details fields as defined in the <a href="#auth-details-fields">Authorization Details Fields</a> section:
+    <ul>
+      <li><a href="#auth-details-account-numbers"><code class="language-plaintext highlighter-rouge">"account_numbers"</code></a></li>
+      <li><a href="#auth-details-include-account-numbers"><code class="language-plaintext highlighter-rouge">"include_account_numbers"</code></a></li>
+      <li><a href="#auth-details-sync-until"><code class="language-plaintext highlighter-rouge">"sync_until"</code></a></li>
+      <li><a href="#auth-details-error-if-no-preselections"><code class="language-plaintext highlighter-rouge">"error_if_no_preselections"</code></a></li>
+    </ul>
+  </li>
+  <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain any the following values and support the authorization details field when the Server has access to the data that allows for support of that field:
+    <ul>
+      <li><a href="#auth-details-addresses"><code class="language-plaintext highlighter-rouge">"addresses"</code></a></li>
+      <li><a href="#auth-details-account-programs"><code class="language-plaintext highlighter-rouge">"account_programs"</code></a></li>
+      <li><a href="#auth-details-include-account-details"><code class="language-plaintext highlighter-rouge">"include_account_details"</code></a></li>
+      <li><a href="#auth-details-include-account-programs"><code class="language-plaintext highlighter-rouge">"include_account_programs"</code></a></li>
+    </ul>
+  </li>
+  <li>The following is required for Authorization Details Field Objects in the Scope Description’s <code class="language-plaintext highlighter-rouge">authorization_details_fields_supported</code> field:
+    <ul>
+      <li>For the object with an <code class="language-plaintext highlighter-rouge">id</code> value of <code class="language-plaintext highlighter-rouge">authorization_form_selection_type</code>, it MUST meet the following requirements:
+        <ul>
+          <li>The <code class="language-plaintext highlighter-rouge">choices</code> array MUST contain only one object, and that object MUST have its <code class="language-plaintext highlighter-rouge">id</code> value be <a href="#account-selection"><code class="language-plaintext highlighter-rouge">"account_selection"</code></a>.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>Additionally, to support this Scope, the Server MUST implement the following requirements:</p>
+
+<ul>
+  <li>The Server MUST treat this Scope as having included <code class="language-plaintext highlighter-rouge">true</code> values for the following authorization details fields, so that the data defined by those fields is included (this is the default access granted by this Scope):
+    <ul>
+      <li><a href="#auth-details-include-accounts"><code class="language-plaintext highlighter-rouge">include_accounts</code></a></li>
+    </ul>
+  </li>
+  <li>The Server MUST make available the Account objects that were selected by the Customer during authorization.</li>
+  <li>The Server MUST include any fields or objects as set by the Grant’s authorization details fields.</li>
+  <li>The Server MUST NOT include <a href="#auth-details-preselection">Preselection Fields</a> in the Server response’s and Grant object’s <code class="language-plaintext highlighter-rouge">authorization_details</code> arrays.</li>
+</ul>
 
 <p><code class="language-plaintext highlighter-rouge">cds_query_accounts</code></p>
 
 <p><span style="background-color:yellow">TODO</span></p>
 
-<h3 id="611-service-contracts-query-">6.11. Service Contracts Query <a id="scope-service-contracts-query" href="#scope-service-contracts-query" class="permalink">🔗</a></h3>
+<h3 id="612-service-contracts-query-">6.12. Service Contracts Query <a id="scope-service-contracts-query" href="#scope-service-contracts-query" class="permalink">🔗</a></h3>
 
 <p><code class="language-plaintext highlighter-rouge">cds_query_service_contracts</code></p>
 
 <p><span style="background-color:yellow">TODO</span></p>
 
-<h3 id="612-service-points-query-">6.12. Service Points Query <a id="scope-service-points-query" href="#scope-service-points-query" class="permalink">🔗</a></h3>
+<h3 id="613-service-points-query-">6.13. Service Points Query <a id="scope-service-points-query" href="#scope-service-points-query" class="permalink">🔗</a></h3>
 
 <p><code class="language-plaintext highlighter-rouge">cds_query_service_points</code></p>
 
 <p><span style="background-color:yellow">TODO</span></p>
 
-<h3 id="613-meter-devices-query-">6.13. Meter Devices Query <a id="scope-meter-devices-query" href="#scope-meter-devices-query" class="permalink">🔗</a></h3>
+<h3 id="614-meter-devices-query-">6.14. Meter Devices Query <a id="scope-meter-devices-query" href="#scope-meter-devices-query" class="permalink">🔗</a></h3>
 
 <p><code class="language-plaintext highlighter-rouge">cds_query_meters</code></p>
 
 <p><span style="background-color:yellow">TODO</span></p>
 
-<h3 id="614-bill-statements-query-">6.14. Bill Statements Query <a id="scope-bill-statements-query" href="#scope-bill-statements-query" class="permalink">🔗</a></h3>
+<h3 id="615-bill-statements-query-">6.15. Bill Statements Query <a id="scope-bill-statements-query" href="#scope-bill-statements-query" class="permalink">🔗</a></h3>
 
 <p><code class="language-plaintext highlighter-rouge">cds_query_bill_statements</code></p>
 
 <p><span style="background-color:yellow">TODO</span></p>
 
-<h3 id="615-bill-sections-query-">6.15. Bill Sections Query <a id="scope-bill-sections-query" href="#scope-bill-sections-query" class="permalink">🔗</a></h3>
+<h3 id="616-bill-sections-query-">6.16. Bill Sections Query <a id="scope-bill-sections-query" href="#scope-bill-sections-query" class="permalink">🔗</a></h3>
 
 <p><code class="language-plaintext highlighter-rouge">cds_query_bill_sections</code></p>
 
 <p><span style="background-color:yellow">TODO</span></p>
 
-<h3 id="616-aggregations-query-">6.16. Aggregations Query <a id="scope-aggregations-query" href="#scope-aggregations-query" class="permalink">🔗</a></h3>
+<h3 id="617-aggregations-query-">6.17. Aggregations Query <a id="scope-aggregations-query" href="#scope-aggregations-query" class="permalink">🔗</a></h3>
 
 <p><code class="language-plaintext highlighter-rouge">cds_query_aggregations</code></p>
 
 <p><span style="background-color:yellow">TODO</span></p>
 
-<h3 id="617-usage-query-">6.17. Usage Query <a id="scope-usage-query" href="#scope-usage-query" class="permalink">🔗</a></h3>
+<h3 id="618-usage-query-">6.18. Usage Query <a id="scope-usage-query" href="#scope-usage-query" class="permalink">🔗</a></h3>
 
 <p><code class="language-plaintext highlighter-rouge">cds_query_usage</code></p>
 
@@ -731,7 +1528,7 @@ Clients MUST use the authorization details values in a Grant to determine that G
 <p>Extensions of this specification MAY define additional Authorization Details Fields that define additional behavior for <a href="#scopes">Scope</a> defined in this specification.
 When defining additional Authorization Details Fields, it is RECOMMENDED to define them in the same format as those defined in this section.</p>
 
-<h3 id="71-preselection-fields-">7.1. Preselection Fields <a id="auth-details-preselection" href="#auth-details-account-numbers" class="permalink">🔗</a></h3>
+<h3 id="71-preselection-fields-">7.1. Preselection Fields <a id="auth-details-preselection" href="#auth-details-preselection" class="permalink">🔗</a></h3>
 
 <p>Use cases for customer data access, especially commercial use cases, frequently require that Clients to be granted limit access to a subset of the Customer’s data.
 In these situations, it is useful for a Client to “preselect” the specific accounts, contracts, devices, etc. for which the Customer needs to authorize access.</p>
@@ -739,8 +1536,15 @@ In these situations, it is useful for a Client to “preselect” the specific a
 <p>This section defines authorization details fields that allow a Client to set preselections for the Server’s authorization form, so that Customer doesn’t have to individually select the subset of accounts, contracts, devices, etc. that are relevant for the Client’s needs.
 Additionally, the preselection authorization details fields defined in this section MAY also be used by Clients to minimize and tailor scopes of access when making access token requests that do not require authorization (e.g. the <code class="language-plaintext highlighter-rouge">client_credentials</code> grant flow).</p>
 
-<p>If multiple preselection authorization details field are used (i.e. multiple values are not <code class="language-plaintext highlighter-rouge">null</code>), Servers MUST determine which resources are preselected by intersecting the preselected resources matched by each individual preselection authorization details field.
-If the preselected resources from each individual preselection authorization details field do not have any overlap, then the intersection is an empty set, and no resources are preselected.</p>
+<p>For all preselection fields defined in this section, the Server MUST implement the following requirements:</p>
+
+<ul>
+  <li>Any matched objects for preselection MUST be able to be matched by the Client’s base set of permissions.
+This means that if the Server has limited a Client to only having permissions to preselect a specific set of objects or fields, using preselection fields will not be able to extend beyond what the Server permits for that Client.
+For example, if a energy contractor Client is set to only have permission to preselect <code class="language-plaintext highlighter-rouge">premise_numbers</code> but not <code class="language-plaintext highlighter-rouge">account_numbers</code>, when the Client uses the <code class="language-plaintext highlighter-rouge">account_numbers</code> preselection field to try to match specific Accounts, the Server will act as if there were not preselection matches for those Accounts, even if the Server does have Accounts with matching <code class="language-plaintext highlighter-rouge">account_number</code> values stored in its system.</li>
+  <li>If multiple preselection authorization details field are used (i.e. multiple values are not <code class="language-plaintext highlighter-rouge">null</code>), Servers MUST determine which resources are preselected by intersecting the preselected resources matched by each individual preselection authorization details field.
+If the preselected resources from each individual preselection authorization details field do not have any overlap, then the intersection is an empty set, and no resources are preselected.</li>
+</ul>
 
 <h4 id="711-preselect-account-numbers-">7.1.1. Preselect Account Numbers <a id="auth-details-account-numbers" href="#auth-details-account-numbers" class="permalink">🔗</a></h4>
 
@@ -815,7 +1619,7 @@ In these relevant use cases, Clients benefit from being able to configure an aut
   <li>If the value is an array, Accounts are selected that contain Account Program objects that have a matching <code class="language-plaintext highlighter-rouge">program_number</code> value to any of the array’s values.</li>
 </ul>
 
-<h4 id="713-preselect-service-contract-numbers-">7.1.3. Preselect Service Contract Numbers <a id="auth-details-contract-numbers" href="#auth-details-contract-numbers" class="permalink">🔗</a></h4>
+<h4 id="713-preselect-contract-numbers-">7.1.3. Preselect Contract Numbers <a id="auth-details-contract-numbers" href="#auth-details-contract-numbers" class="permalink">🔗</a></h4>
 
 <p>For some use cases, a Client may need to request access to datasets for a specific list of Customer service contracts.
 For example, an energy auditor may be working with a commercial Customer to produce a report on the energy use for a specific set of electric services on a Customer’s property.
@@ -831,6 +1635,14 @@ In these relevant use cases, Clients benefit from being able to configure an aut
       <li>The <code class="language-plaintext highlighter-rouge">is_required</code> value MUST be <code class="language-plaintext highlighter-rouge">false</code>.</li>
     </ul>
   </li>
+</ul>
+
+<p>When rendering <a href="#account-selection">Account Selections</a> for this field’s scope and this field is included, the Server MUST preselect Accounts based on the following criteria:</p>
+
+<ul>
+  <li>If the value is an array and <code class="language-plaintext highlighter-rouge">"_all"</code> is included as a value in the array, all Accounts are preselected.</li>
+  <li>If the value is an array and <code class="language-plaintext highlighter-rouge">"_include_future"</code> is included as a value in the array, the Account Selection’s Include Future option, if present, is preselected.</li>
+  <li>If the value is an array, Accounts are preselected that have a Service Contract with a matching <code class="language-plaintext highlighter-rouge">contract_number</code> to any of the array’s values that also has the Account as that Service Contract’s <code class="language-plaintext highlighter-rouge">cds_account_id</code>.</li>
 </ul>
 
 <p>When rendering <a href="#contract-selection">Service Contract Selections</a> for this field’s scope and this field is included, the Server MUST preselect Service Contracts based on the following criteria:</p>
@@ -864,6 +1676,12 @@ In these relevant use cases, Clients benefit from being able to configure an aut
       <li>The <code class="language-plaintext highlighter-rouge">is_required</code> value MUST be <code class="language-plaintext highlighter-rouge">false</code>.</li>
     </ul>
   </li>
+</ul>
+
+<p>When rendering <a href="#account-selection">Account Selections</a> for this field’s scope and this field is included, the Server MUST preselect Accounts based on the following criteria:</p>
+
+<ul>
+  <li>If the value is an array, Accounts are preselected that have a Service Contract with a matching <code class="language-plaintext highlighter-rouge">service_type</code> to any of the array’s values that also has the Account as that Service Contract’s <code class="language-plaintext highlighter-rouge">cds_account_id</code>.</li>
 </ul>
 
 <p>When rendering <a href="#contract-selection">Service Contract Selections</a> for this field’s scope and this field is included, the Server MUST preselect Service Contracts based on the following criteria:</p>
@@ -928,6 +1746,18 @@ In these relevant use cases, Clients benefit from being able to configure an aut
   </li>
 </ul>
 
+<p>When rendering <a href="#account-selection">Account Selections</a> for this field’s scope and this field is included, the Server MUST preselect Accounts based on the following criteria:</p>
+
+<ul>
+  <li>If the value is an array, Accounts are preselected that have a Service Point with a matching <code class="language-plaintext highlighter-rouge">servicepoint_number</code> to any of the array’s values and a Service Contract is listed in the Service Point’s <code class="language-plaintext highlighter-rouge">current_servicecontracts</code> array that also has the Account set as the Service Contract’s <code class="language-plaintext highlighter-rouge">cds_account_id</code>.</li>
+</ul>
+
+<p>When rendering <a href="#contract-selection">Service Contract Selections</a> for this field’s scope and this field is included, the Server MUST preselect Service Contracts based on the following criteria:</p>
+
+<ul>
+  <li>If the value is an array, Service Contracts are preselected that have a Service Point with a matching <code class="language-plaintext highlighter-rouge">servicepoint_number</code> to any of the array’s values that also has the Service Contract listed in the Service Point’s <code class="language-plaintext highlighter-rouge">current_servicecontracts</code>.</li>
+</ul>
+
 <p>When rendering <a href="#servicepoint-selection">Service Point Selections</a> for this field’s scope and this field is included, the Server MUST preselect Service Points based on the following criteria:</p>
 
 <ul>
@@ -964,6 +1794,18 @@ In these relevant use cases, Clients benefit from being able to configure an aut
       <li>The <code class="language-plaintext highlighter-rouge">is_required</code> value MUST be <code class="language-plaintext highlighter-rouge">false</code>.</li>
     </ul>
   </li>
+</ul>
+
+<p>When rendering <a href="#account-selection">Account Selections</a> for this field’s scope and this field is included, the Server MUST preselect Accounts based on the following criteria:</p>
+
+<ul>
+  <li>If the value is an array, Accounts are preselected that have a Service Point with a matching <code class="language-plaintext highlighter-rouge">servicepoint_type</code> to any of the array’s values and a Service Contract is listed in the Service Point’s <code class="language-plaintext highlighter-rouge">current_servicecontracts</code> array that also has the Account set as the Service Contract’s <code class="language-plaintext highlighter-rouge">cds_account_id</code>.</li>
+</ul>
+
+<p>When rendering <a href="#contract-selection">Service Contract Selections</a> for this field’s scope and this field is included, the Server MUST preselect Service Contracts based on the following criteria:</p>
+
+<ul>
+  <li>If the value is an array, Service Contracts are preselected that have a Service Point with a matching <code class="language-plaintext highlighter-rouge">servicepoint_type</code> to any of the array’s values that also has the Service Contract listed in the Service Point’s <code class="language-plaintext highlighter-rouge">current_servicecontracts</code>.</li>
 </ul>
 
 <p>When rendering <a href="#servicepoint-selection">Service Point Selections</a> for this field’s scope and this field is included, the Server MUST preselect Service Points based on the following criteria:</p>
@@ -1003,6 +1845,18 @@ In these relevant use cases, Clients benefit from being able to configure an aut
   </li>
 </ul>
 
+<p>When rendering <a href="#account-selection">Account Selections</a> for this field’s scope and this field is included, the Server MUST preselect Accounts based on the following criteria:</p>
+
+<ul>
+  <li>If the value is an array, Accounts are preselected that have a Service Point with a matching <code class="language-plaintext highlighter-rouge">premise_number</code> to any of the array’s values and a Service Contract is listed in the Service Point’s <code class="language-plaintext highlighter-rouge">current_servicecontracts</code> array that also has the Account set as the Service Contract’s <code class="language-plaintext highlighter-rouge">cds_account_id</code>.</li>
+</ul>
+
+<p>When rendering <a href="#contract-selection">Service Contract Selections</a> for this field’s scope and this field is included, the Server MUST preselect Service Contracts based on the following criteria:</p>
+
+<ul>
+  <li>If the value is an array, Service Contracts are preselected that have a Service Point with a matching <code class="language-plaintext highlighter-rouge">premise_number</code> to any of the array’s values that also has the Service Contract listed in the Service Point’s <code class="language-plaintext highlighter-rouge">current_servicecontracts</code>.</li>
+</ul>
+
 <p>When rendering <a href="#servicepoint-selection">Service Point Selections</a> for this field’s scope and this field is included, the Server MUST preselect Service Points based on the following criteria:</p>
 
 <ul>
@@ -1040,11 +1894,16 @@ In these relevant use cases, Clients benefit from being able to configure an aut
   </li>
 </ul>
 
-<p>When rendering <a href="#meter-selection">Meter Device Selections</a> for this field’s scope and this field is included, the Server MUST preselect Meter Devices based on the following criteria:</p>
+<p>When rendering <a href="#account-selection">Account Selections</a> for this field’s scope and this field is included, the Server MUST preselect Accounts based on the following criteria:</p>
 
 <ul>
-  <li>If the value is an array and <code class="language-plaintext highlighter-rouge">"_all"</code> is included as a value in the array, all Meter Devices are preselected.</li>
-  <li>If the value is an array, Meter Devices are preselected that match their <code class="language-plaintext highlighter-rouge">meter_number</code> to any of the array’s values.</li>
+  <li>If the value is an array, Accounts are preselected that have a Meter Device Point with a matching <code class="language-plaintext highlighter-rouge">meter_number</code> to any of the array’s values and a Service Point is listed in the Meter Device’s <code class="language-plaintext highlighter-rouge">current_servicepoints</code> array and Service Contract listed in the Service Point’s <code class="language-plaintext highlighter-rouge">current_servicecontracts</code> array that also has the Account set as the Service Contract’s <code class="language-plaintext highlighter-rouge">cds_account_id</code>.</li>
+</ul>
+
+<p>When rendering <a href="#contract-selection">Service Contract Selections</a> for this field’s scope and this field is included, the Server MUST preselect Service Contracts based on the following criteria:</p>
+
+<ul>
+  <li>If the value is an array, Service Contracts are preselected that have a Meter Device with a matching <code class="language-plaintext highlighter-rouge">meter_number</code> to any of the array’s values and a Service Point is listed in the Meter Device’s <code class="language-plaintext highlighter-rouge">current_servicepoints</code> array that also has the Service Contract listed in that Service Point’s <code class="language-plaintext highlighter-rouge">current_servicecontracts</code>.</li>
 </ul>
 
 <p>When rendering <a href="#servicepoint-selection">Service Point Selections</a> for this field’s scope and this field is included, the Server MUST preselect Service Points based on the following criteria:</p>
@@ -1053,10 +1912,11 @@ In these relevant use cases, Clients benefit from being able to configure an aut
   <li>If the value is an array, Service Points are preselected that have a Meter Device with a matching <code class="language-plaintext highlighter-rouge">meter_number</code> to any of the array’s values and the Service Point is listed in the Meter Device’s <code class="language-plaintext highlighter-rouge">current_servicepoints</code> array.</li>
 </ul>
 
-<p>When rendering <a href="#contract-selection">Service Contract Selections</a> for this field’s scope and this field is included, the Server MUST preselect Service Contracts based on the following criteria:</p>
+<p>When rendering <a href="#meter-selection">Meter Device Selections</a> for this field’s scope and this field is included, the Server MUST preselect Meter Devices based on the following criteria:</p>
 
 <ul>
-  <li>If the value is an array, Service Contracts are preselected that have a Meter Device with a matching <code class="language-plaintext highlighter-rouge">meter_number</code> to any of the array’s values and a Service Point is listed in the Meter Device’s <code class="language-plaintext highlighter-rouge">current_servicepoints</code> array that also has the Service Contract listed in that Service Point’s <code class="language-plaintext highlighter-rouge">current_servicecontracts</code>.</li>
+  <li>If the value is an array and <code class="language-plaintext highlighter-rouge">"_all"</code> is included as a value in the array, all Meter Devices are preselected.</li>
+  <li>If the value is an array, Meter Devices are preselected that match their <code class="language-plaintext highlighter-rouge">meter_number</code> to any of the array’s values.</li>
 </ul>
 
 <p>For scopes where the Scope Description’s <code class="language-plaintext highlighter-rouge">response_types_supported</code> array is empty (i.e. no authorization request method is available) and this field is included in <code class="language-plaintext highlighter-rouge">authorization_details_fields_supported</code> object, Servers MUST implement the following requirements:</p>
@@ -1086,6 +1946,18 @@ In these relevant use cases, Clients benefit from being able to configure an aut
   </li>
 </ul>
 
+<p>When rendering <a href="#account-selection">Account Selections</a> for this field’s scope and this field is included, the Server MUST preselect Accounts based on the following criteria:</p>
+
+<ul>
+  <li>If the value is an array, Accounts are preselected that have a Meter Device Point with a matching <code class="language-plaintext highlighter-rouge">meter_type</code> to any of the array’s values and a Service Point is listed in the Meter Device’s <code class="language-plaintext highlighter-rouge">current_servicepoints</code> array and Service Contract listed in the Service Point’s <code class="language-plaintext highlighter-rouge">current_servicecontracts</code> array that also has the Account set as the Service Contract’s <code class="language-plaintext highlighter-rouge">cds_account_id</code>.</li>
+</ul>
+
+<p>When rendering <a href="#contract-selection">Service Contract Selections</a> for this field’s scope and this field is included, the Server MUST preselect Service Contracts based on the following criteria:</p>
+
+<ul>
+  <li>If the value is an array, Service Contracts are preselected that have a Meter Device with a matching <code class="language-plaintext highlighter-rouge">meter_type</code> to any of the array’s values and a Service Point is listed in the Meter Device’s <code class="language-plaintext highlighter-rouge">current_servicepoints</code> array that also has the Service Contract listed in that Service Point’s <code class="language-plaintext highlighter-rouge">current_servicecontracts</code>.</li>
+</ul>
+
 <p>When rendering <a href="#meter-selection">Meter Device Selections</a> for this field’s scope and this field is included, the Server MUST preselect Meter Devices based on the following criteria:</p>
 
 <ul>
@@ -1096,12 +1968,6 @@ In these relevant use cases, Clients benefit from being able to configure an aut
 
 <ul>
   <li>If the value is an array, Service Points are preselected that have a Meter Device with a matching <code class="language-plaintext highlighter-rouge">meter_type</code> to any of the array’s values and the Service Point is listed in the Meter Device’s <code class="language-plaintext highlighter-rouge">current_servicepoints</code> array.</li>
-</ul>
-
-<p>When rendering <a href="#contract-selection">Service Contract Selections</a> for this field’s scope and this field is included, the Server MUST preselect Service Contracts based on the following criteria:</p>
-
-<ul>
-  <li>If the value is an array, Service Contracts are preselected that have a Meter Device with a matching <code class="language-plaintext highlighter-rouge">meter_type</code> to any of the array’s values and a Service Point is listed in the Meter Device’s <code class="language-plaintext highlighter-rouge">current_servicepoints</code> array that also has the Service Contract listed in that Service Point’s <code class="language-plaintext highlighter-rouge">current_servicecontracts</code>.</li>
 </ul>
 
 <p>For scopes where the Scope Description’s <code class="language-plaintext highlighter-rouge">response_types_supported</code> array is empty (i.e. no authorization request method is available) and this field is included in <code class="language-plaintext highlighter-rouge">authorization_details_fields_supported</code> object, Servers MUST implement the following requirements:</p>
@@ -1303,7 +2169,14 @@ However, in other use cases, the need for bill section line items may not be nee
 That way, Clients can customize the scopes of their requests to select the data fields they need, and ignore others which are not needed.
 Additionally, by defining these authorization data fields, Servers will be able to disclose which data fields they support in their <code class="language-plaintext highlighter-rouge">authorization_details_fields_supported</code> array in their Server Metadata’s Scope Descriptions [<a href="#ref-cds-wg1-02-scope-descriptions">CDS-WG1-02 Section 3.4</a>].</p>
 
-<p>For all authorization details fields defined in this section, if the field’s value is <code class="language-plaintext highlighter-rouge">false</code>, the field does not change access beyond what is provided by the field’s scope and other fields included in the scope’s authorization details.</p>
+<p>For all included data fields defined in this section, the Server MUST implement the following requirements:</p>
+
+<ul>
+  <li>Any included objects or object fields MUST be able to be accessed by the Client’s base set of permissions.
+This means that if the Server has limited a Client to only having access to a specific set of objects or fields, including other data using these authorization details fields will not be able to extend access beyond what the Server permits for that Client.
+For example, if a utility vendor Client is set to only have access to Meter Devices and Usage Segments for a specific list of meters, when the Client uses the <code class="language-plaintext highlighter-rouge">include_aggregations</code> field to try to enable access to related Aggregations, the Server will return an empty list of Aggregations on the Aggregations API, because the Client is not permitted to see Aggregations, even if the Server does have related Aggregation objects stored in its system.</li>
+  <li>If the field’s value is <code class="language-plaintext highlighter-rouge">false</code>, the field does not change access beyond what is provided by the field’s scope and other fields included in the scope’s authorization details.</li>
+</ul>
 
 <h4 id="721-include-accounts-">7.2.1. Include Accounts <a id="auth-details-include-accounts" href="#auth-details-include-accounts" class="permalink">🔗</a></h4>
 
@@ -1450,12 +2323,14 @@ To enable whether Service Contract objects access is included in addition to the
   <li>If this field’s value is <code class="language-plaintext highlighter-rouge">true</code>, in addition to the data access defined with this field’s scope, the Server MUST provide access to related Service Contract objects.
 Related Service Contract objects are any Service Contract that are referenced by <code class="language-plaintext highlighter-rouge">cds_servicecontract_id</code>, <code class="language-plaintext highlighter-rouge">current_servicecontracts</code>, <code class="language-plaintext highlighter-rouge">previous_servicecontracts</code>, <code class="language-plaintext highlighter-rouge">related_servicecontracts</code>, <code class="language-plaintext highlighter-rouge">grouped_servicecontracts</code>, or <code class="language-plaintext highlighter-rouge">beneficiaries</code> values in any included <a href="#service-point-format">Service Point</a>, <a href="#bill-section-format">Bill Section</a>, <a href="#aggregation-format">Aggregation</a>, <a href="#usage-segment-format">Usage Segment</a>, or <a href="#eac-format">Energy Attribute Certificate</a> object.
 Additionally, Service Contracts that have an <code class="language-plaintext highlighter-rouge">cds_account_id</code> value that matches any included Accounts MUST also be included.</li>
+  <li>If this field’s value is <code class="language-plaintext highlighter-rouge">true</code> and the scope also have the <a href="#auth-details-include-meter-devices"><code class="language-plaintext highlighter-rouge">include_meter_devices</code></a> field value as <code class="language-plaintext highlighter-rouge">true</code> or the scope includes Meter Device access, the Server MUST treat this scope as also having the <a href="#auth-details-include-service-points"><code class="language-plaintext highlighter-rouge">include_service_points</code></a> field value as <code class="language-plaintext highlighter-rouge">true</code>.
+This means that Service Point objects connecting Service Contracts and Meter Devices MUST be included when both Service Contracts and Meter Devices are included, so that Clients can know which Service Contracts are related to which Meter Devices.</li>
   <li>Servers MUST NOT include OPTIONAL fields for Service Contracts unless those fields are enabled to be included by the Grant’s scope or other authorization details fields.</li>
 </ul>
 
 <p>Additional authorization details fields are defined in subsections to this section to enable the inclusion of OPTIONAL Service Contract object fields.</p>
 
-<h5 id="7221-include-service-contract-numbers-">7.2.2.1. Include Service Contract Numbers <a id="auth-details-include-contract-numbers" href="#auth-details-include-contract-numbers" class="permalink">🔗</a></h5>
+<h5 id="7221-include-contract-numbers-">7.2.2.1. Include Contract Numbers <a id="auth-details-include-contract-numbers" href="#auth-details-include-contract-numbers" class="permalink">🔗</a></h5>
 
 <p>For some use cases, Clients need to have access to a Customer’s contract number for reference with other Customer materials (e.g. paper copies of the bills they received from the Customer).
 For example, an energy service company Client doing and initial feasibility analysis for what energy upgrade projects would be viable at an enterprise Customer’s locations may need to match up the service charges from the paper utility bills to the list service contract numbers in the Customer’s online accounts.
@@ -1464,7 +2339,7 @@ To address these use cases, this specification defines an authorization details 
 <p>To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:</p>
 
 <ul>
-  <li>The <code class="language-plaintext highlighter-rouge">id</code> value MUST be <code class="language-plaintext highlighter-rouge">"include_service_contract_numbers"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">id</code> value MUST be <code class="language-plaintext highlighter-rouge">"include_contract_numbers"</code>.</li>
   <li>The <code class="language-plaintext highlighter-rouge">format</code> value MUST be <code class="language-plaintext highlighter-rouge">"boolean"</code>.</li>
   <li>If this object is included in a Scope Description where the <code class="language-plaintext highlighter-rouge">response_types_supported</code> field is not empty array (e.g. Customer authorization is supported):
     <ul>
@@ -1483,7 +2358,36 @@ To address these use cases, this specification defines an authorization details 
   </li>
 </ul>
 
-<h5 id="7222-include-service-contract-details-">7.2.2.2. Include Service Contract Details <a id="auth-details-include-contract-details" href="#auth-details-include-contract-details" class="permalink">🔗</a></h5>
+<h5 id="7222-include-rate-plans-">7.2.2.2. Include Rate Plans <a id="auth-details-include-rate-plans" href="#auth-details-include-rate-plans" class="permalink">🔗</a></h5>
+
+<p>For some use cases, Clients need to have access to a Customer’s service rate plan details to use in analyses for the Customer.
+For example, a demand response app Client working with a residential Customer may want to know if the Customer’s home is one a time-of-use rate plan, which could impact whether they would save money by joining a demand response program.
+To address these use cases, this specification defines an authorization details field that controls whether service contract details access is enabled.</p>
+
+<p>To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:</p>
+
+<ul>
+  <li>The <code class="language-plaintext highlighter-rouge">id</code> value MUST be <code class="language-plaintext highlighter-rouge">"include_rate_plans"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">format</code> value MUST be <code class="language-plaintext highlighter-rouge">"boolean"</code>.</li>
+  <li>If this object is included in a Scope Description where the <code class="language-plaintext highlighter-rouge">response_types_supported</code> field is not empty array (e.g. Customer authorization is supported):
+    <ul>
+      <li>The <code class="language-plaintext highlighter-rouge">is_required</code> value MUST be <code class="language-plaintext highlighter-rouge">false</code>.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Additionally, Servers MUST implement the following behavior to support this authorization details field:</p>
+
+<ul>
+  <li>If this field’s value is <code class="language-plaintext highlighter-rouge">true</code>, Servers MUST include the following field values in any Service Contract objects accessible using this field’s scope:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">rateplan_code</code></li>
+      <li><code class="language-plaintext highlighter-rouge">rateplan_name</code></li>
+    </ul>
+  </li>
+</ul>
+
+<h5 id="7223-include-service-contract-details-">7.2.2.3. Include Service Contract Details <a id="auth-details-include-contract-details" href="#auth-details-include-contract-details" class="permalink">🔗</a></h5>
 
 <p>For some use cases, Clients need to have access to a Customer’s service contract details for reference with other Customer materials (e.g. the Customer’s service addresses).
 For example, an energy consultant Client working with an enterprise Customer may need to understand which locations have how many and which types of utility services.
@@ -1513,7 +2417,7 @@ To address these use cases, this specification defines an authorization details 
   </li>
 </ul>
 
-<h5 id="7223-include-service-contract-programs-">7.2.2.3. Include Service Contract Programs <a id="auth-details-include-contract-programs" href="#auth-details-include-contract-programs" class="permalink">🔗</a></h5>
+<h5 id="7224-include-service-programs-">7.2.2.4. Include Service Programs <a id="auth-details-include-service-programs" href="#auth-details-include-service-programs" class="permalink">🔗</a></h5>
 
 <p>For some use cases, Clients need to have access to a Customer’s service programs for assessing the Customer’s eligibility with various utility programs.
 For example, a demand response aggregation app Client may need to determine if a Customer is already participating in a utility’s demand response program.
@@ -1522,7 +2426,7 @@ To address these use cases, this specification defines an authorization details 
 <p>To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:</p>
 
 <ul>
-  <li>The <code class="language-plaintext highlighter-rouge">id</code> value MUST be <code class="language-plaintext highlighter-rouge">"include_service_contract_programs"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">id</code> value MUST be <code class="language-plaintext highlighter-rouge">"include_service_programs"</code>.</li>
   <li>The <code class="language-plaintext highlighter-rouge">format</code> value MUST be <code class="language-plaintext highlighter-rouge">"boolean"</code>.</li>
   <li>If this object is included in a Scope Description where the <code class="language-plaintext highlighter-rouge">response_types_supported</code> field is not empty array (e.g. Customer authorization is supported):
     <ul>
@@ -1573,7 +2477,7 @@ Related Service Point objects are any Service Point that are referenced by <code
 
 <p>For some use cases, Clients need to have access to the Server’s premise identifiers and details for reference with other materials (e.g. the local municipality’s building permit records).
 For example, a utility vendor Client may need cross reference which of the utility’s service points have had construction work performed on that premise’s property.
-To address these use cases, this specification defines an authorization details field that controls whether service contract details access is enabled.##########TODO</p>
+To address these use cases, this specification defines an authorization details field that controls whether Service Point premise information is enabled.</p>
 
 <p>To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:</p>
 
@@ -1677,6 +2581,8 @@ To enable whether Meter Device objects access is included in addition to the dat
 <ul>
   <li>If this field’s value is <code class="language-plaintext highlighter-rouge">true</code>, in addition to the data access defined with this field’s scope, the Server MUST provide access to related Meter Device objects.
 Related Meter Device objects are any Meter Device that are referenced by <code class="language-plaintext highlighter-rouge">related_meterdevices</code> or <code class="language-plaintext highlighter-rouge">grouped_meterdevices</code> values in any included <a href="#bill-section-format">Bill Section</a>, <a href="#aggregation-format">Aggregation</a>, or <a href="#usage-segment-format">Usage Segment</a> object.</li>
+  <li>If this field’s value is <code class="language-plaintext highlighter-rouge">true</code> and the scope also have the <a href="#auth-details-include-service-contracts"><code class="language-plaintext highlighter-rouge">include_service_contracts</code></a> field value as <code class="language-plaintext highlighter-rouge">true</code> or the scope includes Service Contract access, the Server MUST treat this scope as also having the <a href="#auth-details-include-service-points"><code class="language-plaintext highlighter-rouge">include_service_points</code></a> field value as <code class="language-plaintext highlighter-rouge">true</code>.
+This means that Service Point objects connecting Meter Devices and Service Contracts MUST be included when both Meter Devices and Service Contracts are included, so that Clients can know which Meter Devices are related to which Service Contracts.</li>
   <li>Servers MUST NOT include OPTIONAL fields for Service Points unless those fields are enabled to be included by the Grant’s scope or other authorization details fields.</li>
 </ul>
 
@@ -1849,7 +2755,12 @@ To enable whether Bill Section objects access is included in addition to the dat
 
 <ul>
   <li>If this field’s value is <code class="language-plaintext highlighter-rouge">true</code>, in addition to the data access defined with this field’s scope, the Server MUST provide access to related Bill Section objects.
-Related Bill Section objects are any Bill Section that have a <code class="language-plaintext highlighter-rouge">cds_account_id</code> value equal to the Accounts for which the scope is providing access.</li>
+Related Bill Section objects are any of the following:
+    <ul>
+      <li>Any Bill Section that have both a <code class="language-plaintext highlighter-rouge">cds_account_id</code> value equal to an included <a href="#account-format">Account</a> and contains at least one included <a href="#service-contract-format">Service Contract</a> listed in the Bill Section’s <code class="language-plaintext highlighter-rouge">related_servicecontracts</code> array.</li>
+      <li>Any Bill Section that is referenced by <code class="language-plaintext highlighter-rouge">related_billsections</code> values in any included <a href="#usage-segment-format">Usage Segment</a> object.</li>
+    </ul>
+  </li>
   <li>Servers MUST NOT include OPTIONAL fields for Bill Statements unless those fields are enabled to be included by the Grant’s scope or other authorization details fields.</li>
 </ul>
 
@@ -1905,7 +2816,14 @@ To enable whether Aggregation objects access is included in addition to the data
 
 <ul>
   <li>If this field’s value is <code class="language-plaintext highlighter-rouge">true</code>, in addition to the data access defined with this field’s scope, the Server MUST provide access to related Aggregation objects.
-Related Aggregation objects are any Aggregation that are referenced by <code class="language-plaintext highlighter-rouge">grouped_aggregations</code> or <code class="language-plaintext highlighter-rouge">related_aggregations</code> values in any included <a href="#aggregation-format">Aggregation</a> or <a href="#usage-segment-format">Usage Segment</a> object.</li>
+Related Aggregation objects are any of the following:
+    <ul>
+      <li>Any Aggregation objects that are referenced by <code class="language-plaintext highlighter-rouge">grouped_aggregations</code> or <code class="language-plaintext highlighter-rouge">related_aggregations</code> values in any included <a href="#aggregation-format">Aggregation</a> or <a href="#usage-segment-format">Usage Segment</a> object.</li>
+      <li>Any Aggregation objects that have <code class="language-plaintext highlighter-rouge">grouped_accounts</code> for any included Account objects.</li>
+      <li>Any Aggregation objects that have <code class="language-plaintext highlighter-rouge">grouped_servicecontracts</code> for any included Service Contract objects.</li>
+      <li>Any Aggregation objects that have <code class="language-plaintext highlighter-rouge">grouped_meterdevices</code> for any included Meter Device objects.</li>
+    </ul>
+  </li>
   <li>Servers MUST NOT include OPTIONAL fields for Aggregations unless those fields are enabled to be included by the Grant’s scope or other authorization details fields.</li>
 </ul>
 
@@ -2054,6 +2972,9 @@ Additionally, by defining these authorization details fields, Servers will be ab
 <p>For all duration authorization details fields defined in this section, a Server MUST implement the following requirements:</p>
 
 <ul>
+  <li>Any included objects or object fields MUST be able to be accessed by the Client’s base set of permissions.
+This means that if the Server has limited a Client to only having access to a specific time range of objects or fields, including other data using these duration fields will not be able to extend access beyond what the Server permits for that Client.
+For example, if a utility vendor Client is set to only have access to one year of data for Usage Segments, when the Client uses the <code class="language-plaintext highlighter-rouge">start_date</code> and <code class="language-plaintext highlighter-rouge">end_date</code> fields to try to enable access for two years, the Server will still only return one year of Usage Segment data, even if the Server does have the two years of Usage Segment objects stored in its system.</li>
   <li>If the field is part of an authorization details array that is returned by the Server in a Token Response [<a href="#ref-rfc9396-token-response">RFC 9396 Section 7</a>] or the Grants API [<a href="#ref-cds-wg1-02-grant-object">CDS-WG1-02 Section 8.1</a>], the value of the field MUST be a <code class="language-plaintext highlighter-rouge">date</code> or <code class="language-plaintext highlighter-rouge">datetime</code> or <code class="language-plaintext highlighter-rouge">"infinite"</code> string, subject to the field’s other constraints (e.g. the <code class="language-plaintext highlighter-rouge">maximum</code> value), and MUST NOT be a <code class="language-plaintext highlighter-rouge">relative date</code> or <code class="language-plaintext highlighter-rouge">relative datetime</code> string.
 This ensures Clients are provided an absolute time for field’s value.</li>
   <li>Clients MAY set formats that are any valid relative date or datetime format when including the field in any authorization details array as part of a request to the Server.
@@ -2070,7 +2991,7 @@ To control how long a Client has access to updated data for a Customer, this spe
 <p>To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:</p>
 
 <ul>
-  <li>The <code class="language-plaintext highlighter-rouge">id</code> value MUST be <code class="language-plaintext highlighter-rouge">"sync_util"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">id</code> value MUST be <code class="language-plaintext highlighter-rouge">"sync_until"</code>.</li>
   <li>The <code class="language-plaintext highlighter-rouge">format</code> value MUST be <code class="language-plaintext highlighter-rouge">"relative_or_absolute_datetime"</code>.</li>
   <li>If this object is included in a Scope Description where the <code class="language-plaintext highlighter-rouge">response_types_supported</code> field is not empty array (e.g. Customer authorization is supported):
     <ul>
@@ -2082,9 +3003,9 @@ To control how long a Client has access to updated data for a Customer, this spe
 <p>Additionally, Servers MUST implement the following behavior to support this authorization details field:</p>
 
 <ul>
-  <li>Data available under the scope for this authorization details field MUST be populated with data that is valid on or before the <code class="language-plaintext highlighter-rouge">sync_util</code> datetime.</li>
-  <li>If the Server provides Customer Data objects when requested by the Client that are populated synchronously from the Server’s source of truth (e.g. by internally proxying requests to the utility’s internal customer database), the Server MUST NOT populate data that is valid after the <code class="language-plaintext highlighter-rouge">sync_util</code> datetime.
-This means that a Server MUST freeze the Customer Data as of the <code class="language-plaintext highlighter-rouge">sync_until</code> time for Client requests made after the end of the <code class="language-plaintext highlighter-rouge">sync_util</code> datetime so that Clients do not have access to changes to the data after that.</li>
+  <li>Data available under the scope for this authorization details field MUST be populated with data that is valid on or before the <code class="language-plaintext highlighter-rouge">sync_until</code> datetime.</li>
+  <li>If the Server provides Customer Data objects when requested by the Client that are populated synchronously from the Server’s source of truth (e.g. by internally proxying requests to the utility’s internal customer database), the Server MUST NOT populate data that is valid after the <code class="language-plaintext highlighter-rouge">sync_until</code> datetime.
+This means that a Server MUST freeze the Customer Data as of the <code class="language-plaintext highlighter-rouge">sync_until</code> time for Client requests made after the end of the <code class="language-plaintext highlighter-rouge">sync_until</code> datetime so that Clients do not have access to changes to the data after that.</li>
   <li>If the Server populates data objects for the Grant asynchronously after a Grant is created, the Server MUST ensure that the data populated is not from a time after the <code class="language-plaintext highlighter-rouge">sync_until</code> value.
 This means that if a Client submits this field as part of a request and the value has no duration (e.g. <code class="language-plaintext highlighter-rouge">"P0S"</code>), the Server’s expiration for syncing will be the time of creation of any Grant, and the Server MUST populate the data objects with data synced before or exactly the same as the Grant’s creation time.</li>
   <li>In the situation that a Server that asynchronously updates data objects finds that their asynchronous task for a Grant is running after the <code class="language-plaintext highlighter-rouge">sync_until</code> datetime has expired, the Server MUST continue the task and update any data objects with data that was previously synchronized before the <code class="language-plaintext highlighter-rouge">sync_until</code> datetime.
@@ -2243,6 +3164,31 @@ For example, if the Server normally provides 30 day long Usage Segments with dai
 This means that Clients will still be granted access to authorized interval data even if the normally provided Usage Segment is partially cut off by this field’s value.</li>
 </ul>
 
+<h4 id="738-expires-">7.3.8. Expires <a id="auth-details-expires" href="#auth-details-expires" class="permalink">🔗</a></h4>
+
+<p>For some use cases, Clients and Customers need to be able to set an expiration date for a Grant.
+For example, a tenant Customer may be only able to consent to being included in an Aggregation for whole-building data for a 1-year period, and have to reauthorize each subsequent year.
+To control how long a Grant lasts, this specification defines an authorization details field that allows configuration of a Grant’s <code class="language-plaintext highlighter-rouge">expires</code> value.</p>
+
+<p>To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:</p>
+
+<ul>
+  <li>The <code class="language-plaintext highlighter-rouge">id</code> value MUST be <code class="language-plaintext highlighter-rouge">"expires"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">format</code> value MUST be <code class="language-plaintext highlighter-rouge">"relative_or_absolute_datetime"</code>.</li>
+  <li>If this object is included in a Scope Description where the <code class="language-plaintext highlighter-rouge">response_types_supported</code> field is not empty array (e.g. Customer authorization is supported):
+    <ul>
+      <li>The <code class="language-plaintext highlighter-rouge">is_required</code> value MUST be <code class="language-plaintext highlighter-rouge">false</code>.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Additionally, Servers MUST implement the following behavior to support this authorization details field:</p>
+
+<ul>
+  <li>When a Grant is created with this field as an authorization details field, provided that all scope and authorization details are valid, the Server MUST set to the Grant’s <code class="language-plaintext highlighter-rouge">expires</code> value to this field’s value.</li>
+  <li>When the Grant expires, the Server MUST remove the Client’s access that was provided by the Grant.</li>
+</ul>
+
 <h3 id="74-other-fields-">7.4. Other Fields <a id="auth-details-other" href="#auth-details-other" class="permalink">🔗</a></h3>
 
 <p>This section defines authorization details fields that do not fall under the preselection, data fields, or duration categories, but are still important user experience or constraining factors that help Clients customize their requests to more seamlessly integrate their applications with Servers.</p>
@@ -2300,7 +3246,8 @@ Additionally, the Server MUST implement the following behavior:
         <ul>
           <li>Matches MUST have a non-<code class="language-plaintext highlighter-rouge">null</code> value for that scope’s <code class="language-plaintext highlighter-rouge">merge_selection_with</code> authorization details field.</li>
           <li>Matches MUST have the same Selection type to be rendered on the authorization form, so that the Selection Component can be unified.</li>
-          <li>Matches MUST have the same preselection authorization details fields available in their Scope Descriptions and MUST have the same preselection values set by either the Client in the authorization request or default values.</li>
+          <li>For preselection authorization details fields that exist both in both match’s Scope Description <code class="language-plaintext highlighter-rouge">authorization_details_fields_supported</code>, the field’s object MUST have the same values, so that the field’s value in the request has the same validation process for both scopes.</li>
+          <li>For preselection authorization details fields that only exist in one or the other Scope Descriptions <code class="language-plaintext highlighter-rouge">authorization_details_fields_supported</code>, the field’s value in the request MUST be <code class="language-plaintext highlighter-rouge">null</code> or <code class="language-plaintext highlighter-rouge">null</code> by default, so that there is no preselection impact for combining the Scopes into a single Selection Component.</li>
         </ul>
       </li>
       <li>If a match does not pass validation, the Server MUST reject the authorization request with an <code class="language-plaintext highlighter-rouge">invalid_authorization_details</code> error.</li>
@@ -2529,8 +3476,8 @@ This string MAY have linebreaks, such as when the address is multiple lines.</li
 If the agreement is still ongoing, this value is <code class="language-plaintext highlighter-rouge">null</code>.</li>
   <li><code class="language-plaintext highlighter-rouge">service_type</code> - <em><a href="#TODO-service-types">ServiceType</a></em> - (REQUIRED) The type of utility or other service that this Service Contract provides.</li>
   <li><code class="language-plaintext highlighter-rouge">service_class</code> - <em><a href="#TODO-service-classes">ServiceClass</a></em> - (REQUIRED) The class of service for which this Service Contract is categorized.</li>
-  <li><code class="language-plaintext highlighter-rouge">rateplan_code</code> - <em><a href="#string">string</a></em> - (REQUIRED) A unique code for the current rate plan or tariff on which costs for this Service Contract are calculated.</li>
-  <li><code class="language-plaintext highlighter-rouge">rateplan_name</code> - <em><a href="#string">string</a></em> - (REQUIRED) The name that a Customer sees on their bill or online user interface as the rate plan or tariff that applies to this Service Contract.</li>
+  <li><code class="language-plaintext highlighter-rouge">rateplan_code</code> - <em><a href="#string">string</a></em> - (OPTIONAL) A unique code for the current rate plan or tariff on which costs for this Service Contract are calculated.</li>
+  <li><code class="language-plaintext highlighter-rouge">rateplan_name</code> - <em><a href="#string">string</a></em> - (OPTIONAL) The name that a Customer sees on their bill or online user interface as the rate plan or tariff that applies to this Service Contract.</li>
   <li><code class="language-plaintext highlighter-rouge">service_programs</code> - <em>Array[<a href="#TODO-service-program-format">ServiceProgram</a>]</em> - (OPTIONAL) A list of Service Programs for the Account.
 If the Server does not have this information or the Customer is not participating in any Service Contract-level programs, this value is and empty list (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
 </ul>
@@ -3178,9 +4125,17 @@ In situations where relevant EACs have the same <code class="language-plaintext 
 <code class="language-plaintext highlighter-rouge">CDS-WG1-02 Section 3.8</code> - “Authorization Details Field Object Format”, CDS-WG1-02, LF Energy Standards and Specifications (LFESS),<br />
 <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02/#auth-details-fields-format">https://cds-registration.lfenergy.org/specs/cds-wg1-02/#auth-details-field-formats</a></p>
 
+<p><a id="ref-cds-wg1-02-client-object" href="#ref-cds-wg1-02-client-object" class="permalink">🔗</a>
+<code class="language-plaintext highlighter-rouge">CDS-WG1-02 Section 5.1</code> - “Client Object Format”, CDS-WG1-02, LF Energy Standards and Specifications (LFESS),<br />
+<a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02/#client-format">https://cds-registration.lfenergy.org/specs/cds-wg1-02/#client-format</a></p>
+
 <p><a id="ref-cds-wg1-02-grant-object" href="#ref-cds-wg1-02-grant-object" class="permalink">🔗</a>
 <code class="language-plaintext highlighter-rouge">CDS-WG1-02 Section 8.1</code> - “Grant Object Format”, CDS-WG1-02, LF Energy Standards and Specifications (LFESS),<br />
 <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02/#grant-format">https://cds-registration.lfenergy.org/specs/cds-wg1-02/#grant-format</a></p>
+
+<p><a id="ref-cds-wg1-02-grant-auth-requests" href="#ref-cds-wg1-02-grant-auth-requests" class="permalink">🔗</a>
+<code class="language-plaintext highlighter-rouge">CDS-WG1-02 Section 8.3</code> - “Grant Authorization Requests”, CDS-WG1-02, LF Energy Standards and Specifications (LFESS),<br />
+<a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02/#grant-authorization-requests">https://cds-registration.lfenergy.org/specs/cds-wg1-02/#grant-authorization-requests</a></p>
 
 <p><a id="ref-iso4217" href="#ref-iso4217" class="permalink">🔗</a>
 <code class="language-plaintext highlighter-rouge">ISO 4217</code> - “Currency Codes”, ISO 4217, International Organization for Standardization (ISO),<br />
