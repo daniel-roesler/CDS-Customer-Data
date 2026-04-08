@@ -1442,15 +1442,6 @@ In these relevant use cases, Clients need access to a set of Account objects dir
       <li><a href="#auth-details-include-account-programs"><code class="language-plaintext highlighter-rouge">"include_account_programs"</code></a></li>
     </ul>
   </li>
-  <li>The following is required for Authorization Details Field Objects in the Scope Description’s <code class="language-plaintext highlighter-rouge">authorization_details_fields_supported</code> field:
-    <ul>
-      <li>For the object with an <code class="language-plaintext highlighter-rouge">id</code> value of <code class="language-plaintext highlighter-rouge">authorization_form_selection_type</code>, it MUST meet the following requirements:
-        <ul>
-          <li>The <code class="language-plaintext highlighter-rouge">choices</code> array MUST contain only one object, and that object MUST have its <code class="language-plaintext highlighter-rouge">id</code> value be <a href="#account-selection"><code class="language-plaintext highlighter-rouge">"account_selection"</code></a>.</li>
-        </ul>
-      </li>
-    </ul>
-  </li>
 </ul>
 
 <p>Additionally, to support this Scope, the Server MUST implement the following requirements:</p>
@@ -1461,14 +1452,13 @@ In these relevant use cases, Clients need access to a set of Account objects dir
       <li><a href="#auth-details-include-accounts"><code class="language-plaintext highlighter-rouge">include_accounts</code></a></li>
     </ul>
   </li>
-  <li>The Server MUST make available the Account objects that were selected by the Customer during authorization.</li>
-  <li>The Server MUST include any fields or objects as set by the Grant’s authorization details fields.</li>
-  <li>The Server MUST NOT include <a href="#auth-details-preselection">Preselection Fields</a> in the Server response’s and Grant object’s <code class="language-plaintext highlighter-rouge">authorization_details</code> arrays.</li>
+  <li>The Server MUST make available the Account objects that the Client is allowed to access, in accordance with the following requirements:
+    <ul>
+      <li>The Server MUST include any fields or objects as set by the Grant’s authorization details fields.</li>
+      <li>If any <a href="#auth-details-preselection">Preselection Fields</a> are included, the Server MUST constrain the results to only object selected by those preselection fields.</li>
+    </ul>
+  </li>
 </ul>
-
-<p><code class="language-plaintext highlighter-rouge">cds_query_accounts</code></p>
-
-<p><span style="background-color:yellow">TODO</span></p>
 
 <h3 id="612-service-contracts-query-">6.12. Service Contracts Query <a id="scope-service-contracts-query" href="#scope-service-contracts-query" class="permalink">🔗</a></h3>
 
