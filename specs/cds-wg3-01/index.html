@@ -177,7 +177,11 @@ For more information, visit <a href="https://lfess.energy/">https://lfess.energy
     </ul>
   </li>
   <li><a href="#cds-wg1-02-extension">4. CDS-WG1-02 Extension</a></li>
-  <li><a href="#server-metadata">5. Server Metadata</a></li>
+  <li><a href="#server-metadata">5. Server Metadata</a>
+    <ul>
+      <li><a href="#registration-field-formats-extension">5.1. Registration Field Formats Extension</a></li>
+    </ul>
+  </li>
   <li><a href="#scopes">6. Scopes Supported</a>
     <ul>
       <li><a href="#scopes-customer-consent">6.1. Customer Consent Scopes</a>
@@ -302,12 +306,19 @@ For more information, visit <a href="https://lfess.energy/">https://lfess.energy
           <li><a href="#auth-details-selection-type">7.4.1. Selection Type</a></li>
           <li><a href="#auth-details-merge-selections">7.4.2. Merge Selections</a></li>
           <li><a href="#auth-details-error-if-no-preselections">7.4.3. Error If No Preselections</a></li>
-          <li><a href="#auth-details-allow-scope-modifications">7.4.4. Allow Scope Modifications</a></li>
+          <li><a href="#auth-details-purpose">7.4.4. Purpose Identifier</a></li>
+          <li><a href="#auth-details-allow-scope-modifications">7.4.5. Allow Scope Modifications</a></li>
         </ul>
       </li>
     </ul>
   </li>
-  <li><a href="#client-registration-requirements">8. Client Registration Requirements</a></li>
+  <li><a href="#clients">8. Clients</a>
+    <ul>
+      <li><a href="#client-extension">8.1. Client Object Extension</a></li>
+      <li><a href="#clients-modify-extension">8.2. Modifying Client Objects Extension</a></li>
+      <li><a href="#purpose-format">8.3. Purpose Object Format</a></li>
+    </ul>
+  </li>
   <li><a href="#customer-authorizations">9. Customer Authorizations</a>
     <ul>
       <li><a href="#auth-process">9.1. Authorization Process</a>
@@ -323,10 +334,11 @@ For more information, visit <a href="https://lfess.energy/">https://lfess.energy
             <ul>
               <li><a href="#auth-form-header">9.2.1.1. Authorization Form Header Section</a></li>
               <li><a href="#auth-form-requester">9.2.1.2. Authorization Form Requester Section</a></li>
-              <li><a href="#auth-form-segments">9.2.1.3. Authorization Form Segments Section</a></li>
-              <li><a href="#auth-form-closing">9.2.1.4. Authorization Form Closing Section</a></li>
-              <li><a href="#auth-form-approval">9.2.1.5. Authorization Form Approval Section</a></li>
-              <li><a href="#auth-form-footer">9.2.1.6. Authorization Form Footer Section</a></li>
+              <li><a href="#auth-form-requests">9.2.1.3. Authorization Form Requests Container</a></li>
+              <li><a href="#auth-form-request">9.2.1.4. Authorization Form Request Section</a></li>
+              <li><a href="#auth-form-closing">9.2.1.5. Authorization Form Closing Section</a></li>
+              <li><a href="#auth-form-approval">9.2.1.6. Authorization Form Approval Section</a></li>
+              <li><a href="#auth-form-footer">9.2.1.7. Authorization Form Footer Section</a></li>
             </ul>
           </li>
           <li><a href="#auth-form-components">9.2.2. Authorization Form Components</a>
@@ -334,6 +346,7 @@ For more information, visit <a href="https://lfess.energy/">https://lfess.energy
               <li><a href="#data-component">9.2.2.1. Data Component</a></li>
               <li><a href="#duration-component">9.2.2.2. Duration Component</a></li>
               <li><a href="#selection-component">9.2.2.3. Selection Component</a></li>
+              <li><a href="#purpose-component">9.2.2.4. Purpose Component</a></li>
             </ul>
           </li>
           <li><a href="#auth-form-components">9.2.3. Authorization Form Selections</a>
@@ -613,7 +626,15 @@ For example, an energy efficiency auditor is working with building owner, and ne
 <p>As the framework for providing Client registration, onboarding, communication, management, and grant authorizations, Servers MUST implement CDS’s Client Registration specification [<a href="#ref-cds-wg1-02">CDS-WG1-02</a>].
 This specification in subsequent sections extends the CDS’s Client Registration framework by defining additional fields, values, and APIs that are relevant to Customer Data access, so that Servers implementing this specification can satisfy Customer Data use cases.</p>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>Specifically, the following sections are extended from [<a href="#ref-cds-wg1-02">CDS-WG1-02</a>]:</p>
+
+<ul>
+  <li>The Authorization Server Metadata object [<a href="#ref-cds-wg1-02-metadata">CDS-WG1-02 Section 3.2</a>] is extended to include <a href="#server-metadata">additional fields</a>.</li>
+  <li>The Registration Field Formats [<a href="#ref-cds-wg1-02-registration-field-formats">CDS-WG1-02 Section 3.7</a>] is extended to include <a href="#registration-field-formats-extension">additional fields</a>.</li>
+  <li>The Scopes Supported section [<a href="#ref-cds-wg1-02-scopes">CDS-WG1-02 Section 3.3</a>] is extended to include <a href="#scopes">additional Scopes</a>.</li>
+  <li>The Client object [<a href="#ref-cds-wg1-02-client-object">CDS-WG1-02 Section 5.1</a>] is extended to include <a href="#client-extension">additional fields</a>.</li>
+  <li>The Client modification API [<a href="#ref-cds-wg1-02-modifying-clients">CDS-WG1-02 Section 5.5</a>] is extended to include <a href="#clients-modify-extension">additional requirements</a>.</li>
+</ul>
 
 <h2 id="5-server-metadata-">5. Server Metadata <a id="server-metadata" href="#server-metadata" class="permalink">🔗</a></h2>
 
@@ -642,6 +663,17 @@ This is REQUIRED if a <a href="#scope-meter-usage">Meter Usage</a> or <a href="#
 This is REQUIRED if any Scope Descriptions <code class="language-plaintext highlighter-rouge">authorization_details_fields_supported</code> list has an <a href="#auth-details-field-include-eacs">Include EACs</a> authorization details field object.</li>
   <li><code class="language-plaintext highlighter-rouge">cds_eac_formats</code> - <em>Map[<a href="#eac-data-format-descriptions">EACDataFormatDescription</a>]</em> - (OPTIONAL) An object providing additional information about each Energy Attribute Certificate (EAC) data format value that may be provided as the <a href="#eac-format">EAC object</a> <code class="language-plaintext highlighter-rouge">eac_format</code>, with the <a href="#eac-data-format-descriptions">EAC Data Format Description’s</a> <code class="language-plaintext highlighter-rouge">id</code> as the keys of the object and values being the <a href="#eac-data-format-descriptions">EAC Data Format Description</a> object itself.
 This is REQUIRED if the <code class="language-plaintext highlighter-rouge">cds_eacs_api</code> field is populated in the Server Metadata object.</li>
+</ul>
+
+<h3 id="51-registration-field-formats-extension-">5.1. Registration Field Formats Extension <a id="registration-field-formats-extension" href="#registration-field-formats-extension" class="permalink">🔗</a></h3>
+
+<p>This specification extends the CDS’s Registration Field Format options [<a href="#ref-cds-wg1-02-registration-field-formats">CDS-WG1-02 Section 3.7</a>] to define additional formats that can be used for defining Registration Fields [<a href="#ref-cds-wg1-02-registration-fields">CDS-WG1-02 Section 3.5</a>].</p>
+
+<p>Specifically, the additional Registration Field Formats are defined:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">purpose_list</code> - <em>Array[<a href="#purpose-format">Purpose</a>]</em> - A list of one or more Purpose objects where each object’s <code class="language-plaintext highlighter-rouge">id</code> value MUST be an empty string (<code class="language-plaintext highlighter-rouge">""</code>) and <code class="language-plaintext highlighter-rouge">scopes_supported</code> value MUST be an empty list (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
+  <li><code class="language-plaintext highlighter-rouge">purpose_list_or_null</code> - <em>Array[<a href="#purpose-format">Purpose</a>] or <code class="language-plaintext highlighter-rouge">null</code></em> - Same as <code class="language-plaintext highlighter-rouge">purpose_list</code>, only with <code class="language-plaintext highlighter-rouge">null</code> being an additional possible value which indicates that no Purpose objects are submitted.</li>
 </ul>
 
 <h2 id="6-scopes-supported-">6. Scopes Supported <a id="scopes" href="#scopes" class="permalink">🔗</a></h2>
@@ -3593,7 +3625,7 @@ Additionally, the Server MUST implement the following behavior:
         </ul>
       </li>
       <li>If a match does not pass validation, the Server MUST reject the authorization request with an <code class="language-plaintext highlighter-rouge">invalid_authorization_details</code> error.</li>
-      <li>If a match passes validation, the Server MUST render the Authorization Segments for this field’s scope and the matched scope as having a single Selection Component, such that the User only needs to select the resources in that Selection and those resources will be applied to all of the scopes grouped together via this authorization details field.</li>
+      <li>If a match passes validation, the Server MUST render the <a href="#auth-form-segment">Authorization Segments</a> for this field’s scope and the matched scope as having a single Selection Component, such that the User only needs to select the resources in that Selection and those resources will be applied to all of the scopes grouped together via this authorization details field.</li>
       <li>Servers MUST support merging the any number of scopes together that reference each other via this authorization details field, so that Clients can group any number of scopes together into a single Selection Component for an authorization form.</li>
     </ul>
   </li>
@@ -3611,7 +3643,7 @@ If the Customer does not have any electric meters (e.g. they are a gas-only cust
 In other situations, a Customer may have multiple accounts they control, such as a commercial Customer with multiple locations, and may need to reauthenticate as a different user if they are accidentally logged in as the wrong user for an authorization request with a specific list of preselected <a href="#auth-details-account-numbers">account numbers</a> (e.g. <code class="language-plaintext highlighter-rouge">"account_numbers": ["1234-5"]</code>).</p>
 
 <p>In these relevant use cases, Clients benefit from being able to configure the authorization request to automatically render a <a href="#preselection-error">Preselection Error</a> for an authenticated Customer if they do not have any objects that can be preselected.
-That way, Customers are given a chance to re-authenticate as a different user or decline the authorization and be redirected back to the Client with a specific error.
+That way, Customers are given a chance to reauthenticate as a different user or decline the authorization and be redirected back to the Client with a specific error.
 This allows Clients to present relevant messages to Customers that do not have required objects for the Client’s use case (e.g. “You don’t appear to have any electric meters, so we won’t be able to run an energy audit for your account.”).</p>
 
 <p>To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:</p>
@@ -3638,7 +3670,34 @@ If the Server determines that the preselection field values are insufficient or 
   <li>If this field value is <code class="language-plaintext highlighter-rouge">false</code>, the Server MUST ignore this field and treat the token request as if this field was not included.</li>
 </ul>
 
-<h4 id="744-allow-scope-modifications-">7.4.4. Allow Scope Modifications <a id="auth-details-allow-scope-modifications" href="#auth-details-allow-scope-modifications" class="permalink">🔗</a></h4>
+<h4 id="744-purpose-identifier-">7.4.4. Purpose Identifier <a id="auth-details-purpose" href="#auth-details-purpose" class="permalink">🔗</a></h4>
+
+<p>For some use cases, a Client may need to disclose to the Customer the purpose or restrictions for an authorization request.
+For example, a energy upgrade contractor may need to let the Customer know that their historical energy usage data will only be used for the purposes of calculating the feasibility of various energy efficiency upgrade projects.</p>
+
+<p>These disclosures of purpose and data use can be included included in the Authorization Form’s <a href="#purpose-component">Purpose Component</a>, and this section defines an authorization details field that the Client can use to configure which <a href="#purpose-format">Purpose Object</a> to use when rendering the Purpose Component.</p>
+
+<p>To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:</p>
+
+<ul>
+  <li>The <code class="language-plaintext highlighter-rouge">id</code> value MUST be <code class="language-plaintext highlighter-rouge">"purpose"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">format</code> value MUST be <code class="language-plaintext highlighter-rouge">"choice"</code> or <code class="language-plaintext highlighter-rouge">"choice_or_null"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">is_required</code> value MUST be <code class="language-plaintext highlighter-rouge">false</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">choices</code> list MUST contain Choice objects that have an <code class="language-plaintext highlighter-rouge">id</code> value equal to an equivalent <a href="#purpose-format">Purpose Object</a> <code class="language-plaintext highlighter-rouge">id</code> value in the Client object’s <code class="language-plaintext highlighter-rouge">cds_purposes</code> field that also has the field’s Scope listed in the Purpose’s <code class="language-plaintext highlighter-rouge">scopes_supported</code> array.
+For public Server Metadata objects that are not specific to one Client, the Server MUST contain the Choice objects that have <code class="language-plaintext highlighter-rouge">id</code> values that match the Server’s default Purposes that are automatically added to the Client object’s <code class="language-plaintext highlighter-rouge">cds_purposes</code> field when a Client registers for that Scope, and the Choice’s <code class="language-plaintext highlighter-rouge">documentation</code> URL must link to the Server’s documentation that includes the default values for the equivalent Purpose object.</li>
+</ul>
+
+<p>Servers MUST NOT include an object for this authorization field in a Scope Description’s <code class="language-plaintext highlighter-rouge">authorization_details_fields_supported</code> array when the Scope Description’s <code class="language-plaintext highlighter-rouge">response_types_supported</code> list is empty (i.e. no authorization request method is available).</p>
+
+<p>When this authorization field is included in an authorization request, Servers MUST implement the following requirements:</p>
+
+<ul>
+  <li>When this field is not included in a Scope Description, the Server MUST NOT include the <a href="#purpose-component">Purpose Component</a> in the <a href="#auth-form-request">Request Section</a> for that Scope.</li>
+  <li>When the field value is <code class="language-plaintext highlighter-rouge">null</code>, the Server MUST NOT include the <a href="#purpose-component">Purpose Component</a> in the <a href="#auth-form-request">Request Section</a> for that field’s Scope.</li>
+  <li>When the field value is not <code class="language-plaintext highlighter-rouge">null</code>, the Server MUST render the <a href="#purpose-component">Purpose Component</a> in the <a href="#auth-form-request">Request Section</a> for that field’s Scope, where the content is the <a href="#purpose-format">Purpose Object</a> from the Client’s <code class="language-plaintext highlighter-rouge">cds_purposes</code> field.</li>
+</ul>
+
+<h4 id="745-allow-scope-modifications-">7.4.5. Allow Scope Modifications <a id="auth-details-allow-scope-modifications" href="#auth-details-allow-scope-modifications" class="permalink">🔗</a></h4>
 
 <p>For some use cases, a Client may have a specific set of data fields that they are required to have to complete their process.
 For example, an energy audit contractor could be required to obtain the last 12 months of meter usage data from a Customer in order to complete their energy audit report.</p>
@@ -3662,9 +3721,55 @@ This authorization data field is intended to allow Clients a way to configure a 
   <li>When this field value is <code class="language-plaintext highlighter-rouge">false</code>, Servers MUST render the authorization from presented to the user as non-editable, meaning that the user MUST be able to only authorize or decline the authorization request as a whole and cannot modify the requested scope.</li>
 </ul>
 
-<h2 id="8-client-registration-requirements-">8. Client Registration Requirements <a id="client-registration-requirements" href="#client-registration-requirements" class="permalink">🔗</a></h2>
+<p>If the Server supports the ability for a Customer to modify the requested Scope in the <a href="#auth-form">Authorization Form</a>, the Server MUST include this authorization details field for all Scopes that may be used for that Authorization Form.
+This means that in this situation, Servers MUST support a Client’s ability to toggle the ability for a Customer to edit their authorization request.</p>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<h2 id="8-clients-">8. Clients <a id="clients" href="#client" class="permalink">🔗</a></h2>
+
+<p>To enable Customer Data <a href="#scopes">Scopes</a>, this section expands on the Client framework defined in [<a href="#ref-cds-wg1-02">CDS-WG1-02</a>].</p>
+
+<h3 id="81-client-object-extension-">8.1. Client Object Extension <a id="client-extension" href="#client-extension" class="permalink">🔗</a></h3>
+
+<p>This specification extends the CDS’s Client object [<a href="#ref-cds-wg1-02-client-object">CDS-WG1-02 Section 5.1</a>] to define additional fields that are used for configuring functionality related to Customer Data <a href="#scopes">Scopes</a>.</p>
+
+<p>Specifically, the additional Client object fields are defined:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">cds_purposes</code> - <em>Map[<a href="#purpose-format">Purpose</a>]</em> - (OPTIONAL) An object for configuring available disclosures of purpose, data use, and other information that needs to be communicated to the Customer on an <a href="#auth-form">Authorization Form</a>.
+This object MUST be formatted with the value of each entry as a Purpose object, and the key as that Purpose’s <code class="language-plaintext highlighter-rouge">id</code> value.</li>
+</ul>
+
+<h3 id="82-modifying-client-objects-extension-">8.2. Modifying Client Objects Extension <a id="clients-modify-extension" href="#clients-modify-extension" class="permalink">🔗</a></h3>
+
+<p>This specification extends the CDS’s Client modification API [<a href="#ref-cds-wg1-02-modifying-clients">CDS-WG1-02 Section 5.5</a>] to define the following additional requirements:</p>
+
+<ul>
+  <li>When an otherwise valid request contains a modified <code class="language-plaintext highlighter-rouge">cds_purposes</code> value, the Server MUST implement the following requirements:
+    <ul>
+      <li>The Server MUST ignore any removal or modifications to default <a href="#purpose-format">Purpose</a> objects that are included by the Server by default.</li>
+      <li>The Server MUST ignore any changes to Purpose object <code class="language-plaintext highlighter-rouge">id</code> or <code class="language-plaintext highlighter-rouge">scopes_supported</code> values.</li>
+      <li>If a Purpose is currently included in the Client’s <code class="language-plaintext highlighter-rouge">cds_purposes</code> object, but the request does not include that Purpose and the Purpose is not a Server default, the Server MUST treat this as the Client requesting to remove the Purpose and the Server MUST remove the Purpose from the Client’s <code class="language-plaintext highlighter-rouge">cds_purposes</code> object.</li>
+      <li>For included Purpose objects with unknown <code class="language-plaintext highlighter-rouge">id</code> values, the Server MUST treat that Purpose object as a new Purpose object and assign a Server-generated <code class="language-plaintext highlighter-rouge">id</code> value and assign applicable <code class="language-plaintext highlighter-rouge">scopes_supported</code>, ignoring the values submitted submitted for <code class="language-plaintext highlighter-rouge">id</code> and <code class="language-plaintext highlighter-rouge">scopes_supported</code> in the request.
+This allows Clients to request to add new Purposes.
+If the Server requires an asynchronous review of added Purposes, the Server MUST follow the asynchronous procedure defined in [<a href="#ref-cds-wg1-02-modifying-clients">CDS-WG1-02 Section 5.5</a>].</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="83-purpose-object-format-">8.3. Purpose Object Format <a id="purpose-format" href="#purpose-format" class="permalink">🔗</a></h3>
+
+<p>Purpose objects are formatted as JSON objects and contain the following named values:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">id</code> - <em><a href="#string">string</a></em> - (REQUIRED) The unique identifier for the Purpose on the Server’s system.</li>
+  <li><code class="language-plaintext highlighter-rouge">name</code> - <em><a href="#string">string</a></em> - (REQUIRED) The display name for the Client’s own reference.
+This is not shown to the Customer when rendering the <a href="#purpose-component">Purpose Component</a>.</li>
+  <li><code class="language-plaintext highlighter-rouge">content</code> - <em><a href="#string">string</a></em> - (REQUIRED) The contents to be rendered in the <a href="#purpose-component">Purpose Component</a> when this Purpose is configured to be included using the <a href="#auth-details-purpose">Purpose Identifier</a> authorization details field.</li>
+  <li><code class="language-plaintext highlighter-rouge">related_uri</code> - <em><a href="#url">URL</a> or <code class="language-plaintext highlighter-rouge">null</code></em> - (REQUIRED) An additional link that Clients can provide to include in the <a href="#purpose-component">Purpose Component</a> for Customers to review along with the <code class="language-plaintext highlighter-rouge">content</code>.
+This is typically a link to the terms of service for a Client or more detailed documentation about how a Customer’s data will be used for this Purpose.</li>
+  <li><code class="language-plaintext highlighter-rouge">scopes_supported</code> - <em>Array[<a href="#string">string</a>]</em> - (REQUIRED) The list of <a href="#scopes">Scope</a> values for which this Purpose can be included using the <a href="#auth-details-purpose">Purpose Identifier</a> authorization details field.
+If the Purpose is not available for use in any Scopes, this value can be an empty list (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
+</ul>
 
 <h2 id="9-customer-authorizations-">9. Customer Authorizations <a id="customer-authorizations" href="#customer-authorizations" class="permalink">🔗</a></h2>
 
@@ -3675,6 +3780,10 @@ Requirements include how authorization requests are handled and the layout of th
 Servers MAY add additional functionality beyond the requirements defined in this section, so long as the authorization process continues to comply with the requirements of this section.</p>
 
 <p>These requirements are intended to help clarify and streamline the request handling and user interface aspects of the Customer authorization process, so that Servers can start with a base set of functionality onto which they can build their implementations and do not have to figure out the entire authorization process from scratch.</p>
+
+<p>If the Server has regulatory or government requirements that directly conflict with Customer Authorization requirements in this specification, the Server MUST implement the regulatory or government requirements instead of the requirements in this specification.
+If the regulatory or government requirements only partially or incidentally conflicts with requirements in this specification, it is RECOMMENDED that the Server implement functionality that is close to and in the spirit of the requirements of this specification while still remaining in compliance with their regulatory or government requirements.
+For example, if government regulations for a Server require that the Header Section include the Customer always go through the authentication process for each authorization request (e.g. have to login each time they try to load the authorization form), then the Server MUST disregard the requirement in this specification for a retained authenticated session for at least 10 minutes, but instead the Server could implement a feature where they retain the Customer’s username so that field is prefilled when the Customer tries to load the Authorization Form multiple times.</p>
 
 <h3 id="91-authorization-process-">9.1. Authorization Process <a id="auth-process" href="#auth-process" class="permalink">🔗</a></h3>
 
@@ -3775,7 +3884,7 @@ In these cases, the Server MUST include a note of this limitation in their docum
     </ul>
   </li>
   <li>When the Customer successfully completes the authentication process and is redirected back to the Server, the Server MUST be able determine the Customer’s identity so that the Server can render the <a href="#auth-form">Authorization Form</a>.
-Additionally, the Server MUST retain an authenticated session for the Customer for no less than 10 minutes, so that if the Customer returns to the Authorization Form again within a few minutes, they are not required to login again.
+Additionally, the Server MUST retain an authenticated session for the Customer for the duration in which they are active on the Authorization Form plus no less than 10 minutes, so that if the Customer returns to the Authorization Form again within a few minutes, they are not required to login again.
 Exceptions to the 10 minute minimum duration for the Customer’s authenticated session are as follows:
     <ul>
       <li>If the Customer logs out of their session, the Server MUST immediately invalidate the Customer’s authenticated session.</li>
@@ -3787,6 +3896,8 @@ Exceptions to the 10 minute minimum duration for the Customer’s authenticated 
 <h4 id="913-authorization-process-diagram-">9.1.3. Authorization Process Diagram <a id="auth-diagram" href="#auth-diagram" class="permalink">🔗</a></h4>
 
 <p>Below is a sequence diagram showing the overall Customer authorization process, including possible error and failure sequences.</p>
+
+<p><strong>Figure 1: Sequence diagram for the Customer Authorization process</strong> <a id="figure-1" href="#figure-1" class="permalink">🔗</a></p>
 
 <pre><code class="language-mermaid">---
 config:
@@ -3955,7 +4066,7 @@ The Server MAY navigate the Customer away from the Authorization Form in order t
     <ul>
       <li><a href="#auth-form-header">Header Section</a></li>
       <li><a href="#auth-form-requester">Requester Section</a></li>
-      <li><a href="#auth-form-segments">Segments Section</a></li>
+      <li><a href="#auth-form-requests">Requests Container</a></li>
       <li><a href="#auth-form-closing">Closing Section</a></li>
       <li><a href="#auth-form-approval">Approval Section</a></li>
       <li><a href="#auth-form-footer">Footer Section</a></li>
@@ -3965,6 +4076,8 @@ The Server MAY navigate the Customer away from the Authorization Form in order t
 
 <p>Below is a diagram showing the overall layout of the Authorization Form.</p>
 
+<p><strong>Figure 2: Authorization Form layout diagram</strong> <a id="figure-2" href="#figure-2" class="permalink">🔗</a></p>
+
 <pre><code class="language-mermaid">flowchart TB
     subgraph overall ["`*Authorization Form*`"]
         direction TB
@@ -3973,14 +4086,14 @@ The Server MAY navigate the Customer away from the Authorization Form in order t
         headerSection ~~~ requesterSection
 
         requesterSection[&lt;a href="#auth-form-requester"&gt;Requester Section&lt;/a&gt;]
-        requesterSection ~~~ segmentsSection
+        requesterSection ~~~ requestsContainer
 
-        subgraph segmentsSection [&lt;a href="#auth-form-segments"&gt;Segments Section&lt;/a&gt;]
-            style segmentsSection fill:#eeee20
+        subgraph requestsContainer [&lt;a href="#auth-form-requests"&gt;Requests Container&lt;/a&gt;]
+            style requestsContainer fill:#eeee20
             direction TB
 
-            subgraph segment ["`*Individual Segment*`"]
-                style segment fill:#ffffde
+            subgraph requestSection ["`*Request Section*`"]
+                style requestSection fill:#ffffde
                 direction TB
 
                 dataComponent[&lt;a href="#data-component"&gt;Data Component&lt;/a&gt;]
@@ -3990,14 +4103,17 @@ The Server MAY navigate the Customer away from the Authorization Form in order t
                 durationComponent ~~~ selectionComponent
 
                 selectionComponent[&lt;a href="#selection-component"&gt;Selection Component&lt;/a&gt;]
+                selectionComponent ~~~ purposeComponent
+
+                purposeComponent["`&lt;a href="#purpose-component"&gt;Purpose Component&lt;/a&gt;&lt;br/&gt;(if any)`"]
             end
-            segment ~~~ segmentCont
+            requestSection ~~~ requestsCont
 
-            segmentCont["`*...more Segments (if any)*`"]
+            requestsCont["`*...more Request Sections (if any)*`"]
         end
-        segmentsSection ~~~ closingSection
+        requestsContainer ~~~ closingSection
 
-        closingSection[&lt;a href="#auth-form-closing"&gt;Closing Section&lt;/a&gt;]
+        closingSection["`&lt;a href="#auth-form-closing"&gt;Closing Section&lt;/a&gt;&lt;br/&gt;(if any)`"]
         closingSection ~~~ approvalSection
 
         approvalSection[&lt;a href="#auth-form-approval"&gt;Approval Section&lt;/a&gt;]
@@ -4007,7 +4123,10 @@ The Server MAY navigate the Customer away from the Authorization Form in order t
     end
 </code></pre>
 
-<p>Below is a non-normative example of an Authorization Form with the same color coded sections as the layout diagram above.</p>
+<p>Below is a diagram of an Authorization Form with example content.
+This example uses the same colored sections as the layout diagram above to show in which section the content goes.</p>
+
+<p><strong>Figure 3: Authorization Form layout diagram with example content</strong> <a id="figure-3" href="#figure-3" class="permalink">🔗</a></p>
 
 <pre><code class="language-mermaid">flowchart TB
     subgraph overall [" "]
@@ -4016,64 +4135,203 @@ The Server MAY navigate the Customer away from the Authorization Form in order t
         headerSection["`**[Example Utility logo]**&lt;br/&gt;Example Utility Authorization Form`"]
         headerSection ~~~ requesterSection
 
-        requesterSection["`&lt;a href="https://example.com/" target="_blank"&gt;Acme Energy Auditors&lt;/a&gt; is requesting your authorization to access the following information from your accounts:`"]
+        requesterSection["`&lt;a href="https://example.com/" target="_blank" rel="noopener"&gt;Acme Energy Auditors&lt;/a&gt; is requesting your authorization to access the following information from your accounts:`"]
         style requesterSection text-align:left
-        requesterSection ~~~ segmentsSection
+        requesterSection ~~~ requestsContainer
 
-        subgraph segmentsSection [" "]
-            style segmentsSection fill:#eeee20
+        subgraph requestsContainer [" "]
+            style requestsContainer fill:#eeee20
             direction TB
 
-            subgraph segment [" "]
-                style segment fill:#ffffde
+            subgraph requestSection [" "]
+                style requestSection fill:#ffffde
                 direction TB
 
-                dataComponent["`* Your electric service details [&lt;a href="#"&gt;details&lt;/a&gt;]&lt;br/&gt;&lt;br/&gt;* Your interval energy usage [&lt;a href="#"&gt;details&lt;/a&gt;]&lt;br/&gt;&lt;br/&gt;[&lt;a href="#"&gt;edit&lt;/a&gt;]`"]
+                dataComponent["`* Your electric service details [&lt;a href="#"&gt;details&lt;/a&gt;]&lt;br/&gt;&lt;br/&gt;* Your interval energy usage [&lt;a href="#"&gt;details&lt;/a&gt;]`"]
                 style dataComponent text-align:left
                 dataComponent ~~~ durationComponent
 
-                durationComponent["`For this duration:&lt;br/&gt;1 year of historical energy usage intervals and 3 years of ongoing access to your service details&lt;br/&gt;&lt;br/&gt;[&lt;a href="#"&gt;edit&lt;/a&gt;]`"]
+                durationComponent["`For this duration:&lt;br/&gt;1 year of historical energy usage intervals and 3 years of ongoing access to your service details`"]
                 style dataComponent text-align:left
                 durationComponent ~~~ selectionComponent
 
                 selectionComponent["`For these services:&lt;br/&gt;[x] 123 Main St (electric)&lt;br/&gt;[ ] 123 Main St (gas)`"]
+                selectionComponent ~~~ purposeComponent
+
+                purposeComponent["`For this purpose:&lt;br/&gt;*Written by Acme Energy Auditors:* To calculate your home energy efficiency score. [&lt;a href="https://example.com/" target="_blank" rel="noopener"&gt;details&lt;/a&gt;]`"]
             end
         end
-        segmentsSection ~~~ closingSection
+        requestsContainer ~~~ closingSection
 
         closingSection["`When you authorize this access, you are agreeing to our &lt;a href="https://example.com/" target="_blank"&gt;Terms of Service&lt;/a&gt;.`"]
         closingSection ~~~ approvalSection
 
-        approvalSection["`**[Authorize]**    **[Decline]**`"]
+        approvalSection["`**[Authorize]** **[Decline]**`"]
         approvalSection ~~~ footerSection
 
         footerSection["`Need to login as another account? &lt;a href="#"&gt;Re-login&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;Need some help with this form? &lt;a href="https://example.com/" target="_blank"&gt;Contact Support&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;Copyright &lt;a href="https://example.com/" target="_blank"&gt;Example Utility&lt;/a&gt;, 2026`"]
     end
 </code></pre>
 
+<p>Below is the same example of an Authorization form with the same content with the section dividers removed.
+This is typically how a rendered Authorization Form would appear, with the section divisions transparent so the page appears seamless.</p>
+
+<p><strong>Figure 4: Rendered Authorization Form with example content</strong> <a id="figure-4" href="#figure-4" class="permalink">🔗</a></p>
+
+<hr />
+
+<blockquote>
+  <p><strong>[Example Utility logo]</strong></p>
+
+  <p><strong>Example Utility Authorization Form</strong></p>
+
+  <p><a href="https://example.com/" target="_blank" rel="noopener">Acme Energy Auditors</a> is requesting your authorization to access the following information from your accounts:</p>
+
+  <ul>
+    <li>Your electric service details [<a href="#">details</a>]</li>
+    <li>Your interval energy usage [<a href="#">details</a>]</li>
+  </ul>
+
+  <p>For this duration:</p>
+  <ul>
+    <li>1 year of historical energy usage intervals</li>
+    <li>3 years of ongoing access to your service details</li>
+  </ul>
+
+  <p>For these services:<br />
+<code class="language-plaintext highlighter-rouge">[x]</code> 123 Main St (electric)<br />
+<code class="language-plaintext highlighter-rouge">[ ]</code> 123 Main St (gas)</p>
+
+  <p>For this purpose:<br />
+<em>Written by Acme Energy Auditors:</em> To calculate your home energy efficiency score. [<a href="https://example.com/" target="_blank" rel="noopener">details</a>]</p>
+
+  <p>When you authorize this access, you are agreeing to our <a href="https://example.com/" target="_blank">Terms of Service</a>.</p>
+
+  <p><strong>[Authorize]</strong> <strong>[Decline]</strong></p>
+
+  <p>Need to login as another account? <a href="#">Re-login</a><br />
+Need some help with this form? <a href="https://example.com/" target="_blank">Contact Support</a><br />
+Copyright <a href="https://example.com/" target="_blank">Example Utility</a>, 2026</p>
+</blockquote>
+
+<hr />
+
 <h5 id="9211-authorization-form-header-section-">9.2.1.1. Authorization Form Header Section <a id="auth-form-header" href="#auth-form-header" class="permalink">🔗</a></h5>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>The Header Section of the Authorization Form is where the Server identifies itself and communicates to the Customer that this is an authorization request form.
+The following are requirements and recommendations for the Server when implementing the Header Section:</p>
+
+<ul>
+  <li>The Server MUST identify itself or the entity for which it is representing (e.g. a vendor branded as a utility) in this section.</li>
+  <li>The Server MUST have a relevant title in this section that communicates to the Customer that this is an authorization request.
+The Server MAY combine both their identifier and the form’s title (e.g. “Example Utility Authorization Form”).</li>
+  <li>It is RECOMMENDED that the Server include a relevant logo that the Customer would associate with the entity for which the Authorization Form is branded.
+The Server MAY embed the logo as a link to the branded entity’s website, and if it does, the Server MUST configure the link to open in a new tab rather than navigate the user away from the Authorization Form.</li>
+  <li>The Server MUST NOT use logos or branding of entities for which they do not have permission from that entity.
+This means that the Server MUST NOT appear to the Customer as an entity or brand themselves as such if the entity has not approved.</li>
+  <li>The Server MUST NOT include unrelated content in the Authorization Form which may distract or confuse the Customer from the purpose of the Authorization Form (which is that this is an authorization request).
+This means that the Server MUST NOT include typical website header menus that are commonly found on utility websites that link to many different parts of the utility’s website.
+The purpose of this requirement is to keep the focus of the Authorization Form on the actual authorization process and minimize the risk of a Customer navigating away without approving or declining the authorization request.</li>
+  <li>The Server MAY have additional related content and functionality included in this section.
+For example, the Server may include a button that prints the Authorization Form, so that a Customer could keep a copy of the Authorization Form for their records.</li>
+</ul>
 
 <h5 id="9212-authorization-form-requester-section-">9.2.1.2. Authorization Form Requester Section <a id="auth-form-requester" href="#auth-form-requester" class="permalink">🔗</a></h5>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>The Requester Section is where the Server communicates to the Customer who is requesting authorization.
+The following are requirements and recommendations for the Server when implementing the Requester Section:</p>
 
-<h5 id="9213-authorization-form-segments-section-">9.2.1.3. Authorization Form Segments Section <a id="auth-form-segments" href="#auth-form-segments" class="permalink">🔗</a></h5>
+<ul>
+  <li>The Server MUST communicate who is requesting the authorization by including the Client’s name, as well as a statement that this entity is requesting an authorization for access to the Customer’s data.
+The Server MAY render this section as a single sentence that includes both the Client’s name and the request statement (see <a href="#figure-3">Figure 3</a>).</li>
+  <li>If the Client has configured a <code class="language-plaintext highlighter-rouge">client_uri</code> in their Client object and if the Server has confirmed this <code class="language-plaintext highlighter-rouge">client_uri</code> accurately links to the Client’s website, the Server MUST configure the Client’s name in this section to link to the <code class="language-plaintext highlighter-rouge">client_uri</code>.
+When this link is configured, the Server MUST configure the link to open in a new window or tab and configure the link to include the <code class="language-plaintext highlighter-rouge">noopener</code> in the <code class="language-plaintext highlighter-rouge">rel</code> property to prevent the Client’s website from being able to control Authorization Form’s page and potentially navigate the Customer away from the Authorization Form.</li>
+  <li>The Server MAY include other information about the Client for the Customer’s review.
+For example, if the Client has provided a support phone number, the Server could include that information in this section.
+If any information beyond the Client’s name and <code class="language-plaintext highlighter-rouge">client_uri</code> values that are included, the Server MUST disclose this in the documentation linked by the Scope Description’s <code class="language-plaintext highlighter-rouge">documentation</code> value.</li>
+</ul>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<h5 id="9213-authorization-form-requests-container-">9.2.1.3. Authorization Form Requests Container <a id="auth-form-requests" href="#auth-form-requests" class="permalink">🔗</a></h5>
 
-<h5 id="9214-authorization-form-closing-section-">9.2.1.4. Authorization Form Closing Section <a id="auth-form-closing" href="#auth-form-closing" class="permalink">🔗</a></h5>
+<p>The Requests Container is where the Server communicates to the Customer what data access is being requested from the Client.
+This block of the Authorization Form includes one or more <a href="#auth-form-request">Request Sections</a>.
+A multiple entry container for Request Sections is needed because the Client MAY include multiple <a href="#scopes">Scope</a> that do not have the same <a href="#selection-component">Selection Component</a> and thus need the Customer to select from multiple lists of resources.</p>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>The following are requirements and recommendations for the Server when implementing the Requests Container:</p>
 
-<h5 id="9215-authorization-form-approval-section-">9.2.1.5. Authorization Form Approval Section <a id="auth-form-approval" href="#auth-form-approval" class="permalink">🔗</a></h5>
+<ul>
+  <li>When there is more than one Request Section included, the Server MUST clearly delineate a separation between each Request Section so that the Customer can understand that each Request Section is an independent request.</li>
+  <li>If the Server supports a Customer modifying the requested Scopes, the Server MUST also support a Customer being able to remove a Request Section, except if that Request Section is the only remaining Request Section.
+It is RECOMMENDED that the Server supports a Customer’s ability to undo or reset modifications they have made to the Authorization Form so that they can correct any accidental changes.</li>
+</ul>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<h5 id="9214-authorization-form-request-section-">9.2.1.4. Authorization Form Request Section <a id="auth-form-request" href="#auth-form-request" class="permalink">🔗</a></h5>
 
-<h5 id="9216-authorization-form-footer-section-">9.2.1.6. Authorization Form Footer Section <a id="auth-form-footer" href="#auth-form-footer" class="permalink">🔗</a></h5>
+<p>The Request Section is the contents of one or more <a href="#scopes">Scopes</a> that are presented to the Customer as a unified request for authorization.
+Each Request Section MUST be composed of the following <a href="#auth-form-components">Components</a> in this order:</p>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<ul>
+  <li><a href="#data-component">Data Component</a></li>
+  <li><a href="#duration-component">Duration Component</a></li>
+  <li><a href="#selection-component">Selection Component</a></li>
+  <li><a href="#purpose-component">Purpose Component</a> (if any)</li>
+</ul>
+
+<h5 id="9215-authorization-form-closing-section-">9.2.1.5. Authorization Form Closing Section <a id="auth-form-closing" href="#auth-form-closing" class="permalink">🔗</a></h5>
+
+<p>The Closing Section of the Authorization Form is where the Server includes any overall information, disclosures, or requirements for the Customer to review or complete.
+The following are requirements and recommendations for the Server when implementing the Closing Section:</p>
+
+<ul>
+  <li>The Server MUST only include content that is required for the Customer to review or complete in order to approve the authorization request.
+This means that the Server MUST NOT include optional content or form fields, such as surveys or other distracting features that reduces the streamlined and focused nature of the Authorization Form.
+For example, a Server could include a required checkbox requiring the Customer to agree to the Server’s terms and conditions for data sharing, but the Server could not include a field asking for the Customer to provide the square footage of their home as part of a survey on building attributes.</li>
+  <li>If the Server supports a Customer modifying the requested Scopes, the Server MUST dynamically update the content or requirements of the Closing Section to reflect the required content or requirements for the modified Scopes and selections that the Customer has made.
+For example, if some content of the Closing Section was a required disclosure for a specific Scope in a Request Section, and the Customer clicked to remove that Request Section, then the related content in the Closing Section is no longer required and the Server MUST remove it when the Request Section is removed.</li>
+  <li>The Server MAY include disclosures or requirements that is required in some cases, but not all cases, based on the Authorization Form’s Requester Section and Requests Container.
+However, it is RECOMMENDED that the Server attempt to not include this content when it is able to know with certainty that the content or requirements are not required.
+For example, if the Client is requesting access to the <a href="#scope-account-list">Account List</a> for a large commercial Customer, and sometimes those details can take a few hours to compile, the Server could include a disclosure to the Customer that it is possible that their data sharing may be delayed in some cases.</li>
+  <li>If the Server may need may end up needing some additional requirements to complete the data sharing process for some cases, but not all cases, the Server MAY include those requirements as optional in the Closing Section.
+However, it is RECOMMENDED that the Server attempt to not include these potential requirements when it is able to know with certainty that the requirements to not apply to the Client or Customer.
+For example, if the Client is requesting <a href="#scope-meter-usage">Meter Usage</a> from a local city government Customer, and sometimes for special facilities such as police departments the Server requires an extra form to be signed to release data, the Server could include a file attachment option for government Customers to attach the signed release form if they already know they need to included it.</li>
+  <li>If the Server is required to include long blocks of content in the Closing Section, the Server MUST embed the long blocks in independently scrolling blocks on the page so that the Customer does not have to scroll for long periods of time if they need to scroll back and forth between Sections as they review the Authorization Form.
+For example, if a Server is required to include a long set of terms and conditions in the Authorization Form page itself, the Server MUST include that content in an independent scrolling block.</li>
+</ul>
+
+<h5 id="9216-authorization-form-approval-section-">9.2.1.6. Authorization Form Approval Section <a id="auth-form-approval" href="#auth-form-approval" class="permalink">🔗</a></h5>
+
+<p>The Approval Section of the Authorization Form is where the Customer can select to either approve or decline the Client’s authorization request.
+The following are requirements and recommendations for the Server when implementing the Approval Section:</p>
+
+<ul>
+  <li>The Server MUST include a prominent button for approving of the Client’s authorization request and for declining the Client’s authorization request.</li>
+  <li>The Server MUST set the text on the approve and decline buttons to clearly communicate the purpose of the button (e.g. “Approve” and “Decline”).</li>
+  <li>The Server MUST allow a Customer to decline the authorization request with only the requirements for declining the authorization request satisfied.
+For example, if the requested Scopes require that the Customer select which Accounts apply to the request before approving, but do not require selecting Accounts before declining, the Server MUST allow the Customer to decline without selecting any Accounts.</li>
+  <li>The Server MUST NOT require any additional steps beyond clicking the approve or decline buttons to complete the approval or rejection of the authorization request, with the following exceptions:
+    <ul>
+      <li>If there are regulatory or legal requirements that explicitly require additional steps, the Server MUST implement those steps.
+For example, if the Server’s regulator requires that the Customer type their name as part of the approval, the Server MUST include a form field and instructions for the Customer to type their name in addition to selecting to approve.
+However, if additional steps are not explicitly required by the Server’s regulatory or legal jurisdictions, the Server MUST NOT include any additional steps.
+For example, if the Server is not explicitly required by regulatory or legal requirements to add an e-signature step, they cannot add a step where the Customer gets redirected to an e-signature pdf document to complete after they select to approve the authorization request.</li>
+    </ul>
+  </li>
+  <li>If the Customer has not completed or has filled in invalid values on the Authorization Form, the Server MUST show an error message to the Customer that communicates where the need to correct the issue, mark that area as errored on the Authorization Form, and allow the Customer to resubmit the form with an approve or decline selection once they have corrected the incomplete or invalid values.</li>
+  <li>The Server MUST ensure that once a Customer selects to submit either approve or decline, that the Customer cannot accidentally resubmit the Authorization Form and create duplicate authorizations.</li>
+  <li>The Server MAY include a message below the buttons that briefly explain what will happen after the approve and/or decline buttons are clicked.</li>
+</ul>
+
+<h5 id="9217-authorization-form-footer-section-">9.2.1.7. Authorization Form Footer Section <a id="auth-form-footer" href="#auth-form-footer" class="permalink">🔗</a></h5>
+
+<p>The Footer Section of the Authorization Form is where the Server can include related links or additional information.
+The following are requirements and recommendations for the Server when implementing the Footer Section:</p>
+
+<ul>
+  <li>The Server MUST include a link to allow the Customer to reauthenticate and then reload the Authorization Form as the new authenticated Customer.
+This allows Customers who have multiple user accounts, which is common with large enterprise Customers, to switch which account they are using for the Authorization Form.</li>
+  <li>It is RECOMMENDED that the Server link to or otherwise add the ability to contact the customer support of the Server or entity that for which the Authorization Form is branded.</li>
+  <li>It is RECOMMENDED that the Server link to the terms of service and privacy policies of the Server or entity that for which the Authorization Form is branded.</li>
+</ul>
 
 <h4 id="922-authorization-form-components-">9.2.2. Authorization Form Components <a id="auth-form-components" href="#auth-form-components" class="permalink">🔗</a></h4>
 
@@ -4088,6 +4346,10 @@ The Server MAY navigate the Customer away from the Authorization Form in order t
 <p><span style="background-color:yellow">TODO</span></p>
 
 <h5 id="9223-selection-component-">9.2.2.3. Selection Component <a id="selection-component" href="#selection-component" class="permalink">🔗</a></h5>
+
+<p><span style="background-color:yellow">TODO</span></p>
+
+<h5 id="9224-purpose-component-">9.2.2.4. Purpose Component <a id="purpose-component" href="#purpose-component" class="permalink">🔗</a></h5>
 
 <p><span style="background-color:yellow">TODO</span></p>
 
@@ -4876,6 +5138,10 @@ In situations where relevant EACs have the same <code class="language-plaintext 
 <code class="language-plaintext highlighter-rouge">CDS-WG1-02 Section 3.5</code> - “Registration Field Object Format”, CDS-WG1-02, LF Energy Standards and Specifications (LFESS),<br />
 <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02/#registration-field-format">https://cds-registration.lfenergy.org/specs/cds-wg1-02/#registration-field-format</a></p>
 
+<p><a id="ref-cds-wg1-02-registration-field-formats" href="#ref-cds-wg1-02-registration-field-formats" class="permalink">🔗</a>
+<code class="language-plaintext highlighter-rouge">CDS-WG1-02 Section 3.7</code> - “Registration Field Formats”, CDS-WG1-02, LF Energy Standards and Specifications (LFESS),<br />
+<a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02/#registration-field-formats">https://cds-registration.lfenergy.org/specs/cds-wg1-02/#registration-field-formats</a></p>
+
 <p><a id="ref-cds-wg1-02-auth-details-object" href="#ref-cds-wg1-02-auth-details-object" class="permalink">🔗</a>
 <code class="language-plaintext highlighter-rouge">CDS-WG1-02 Section 3.8</code> - “Authorization Details Field Object Format”, CDS-WG1-02, LF Energy Standards and Specifications (LFESS),<br />
 <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02/#auth-details-fields-format">https://cds-registration.lfenergy.org/specs/cds-wg1-02/#auth-details-field-formats</a></p>
@@ -4883,6 +5149,10 @@ In situations where relevant EACs have the same <code class="language-plaintext 
 <p><a id="ref-cds-wg1-02-client-object" href="#ref-cds-wg1-02-client-object" class="permalink">🔗</a>
 <code class="language-plaintext highlighter-rouge">CDS-WG1-02 Section 5.1</code> - “Client Object Format”, CDS-WG1-02, LF Energy Standards and Specifications (LFESS),<br />
 <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02/#client-format">https://cds-registration.lfenergy.org/specs/cds-wg1-02/#client-format</a></p>
+
+<p><a id="ref-cds-wg1-02-modifying-clients" href="#ref-cds-wg1-02-modifying-clients" class="permalink">🔗</a>
+<code class="language-plaintext highlighter-rouge">CDS-WG1-02 Section 5.5</code> - “Modifying Client Objects”, CDS-WG1-02, LF Energy Standards and Specifications (LFESS),<br />
+<a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02/#clients-modify">https://cds-registration.lfenergy.org/specs/cds-wg1-02/#clients-modify</a></p>
 
 <p><a id="ref-cds-wg1-02-grant-object" href="#ref-cds-wg1-02-grant-object" class="permalink">🔗</a>
 <code class="language-plaintext highlighter-rouge">CDS-WG1-02 Section 8.1</code> - “Grant Object Format”, CDS-WG1-02, LF Energy Standards and Specifications (LFESS),<br />
