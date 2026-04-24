@@ -146,7 +146,7 @@
 <h2 id="abstract-">Abstract <a id="abstract" href="#abstract" class="permalink">🔗</a></h2>
 
 <p>This specification defines how utilities and other central entities (“Servers”) may allow vendors, customers, and other external organizations (“Clients”) to securely access account holder data (“Customer Data”), including in situations where Customer consent where needed or data is aggregated.
-This specification extends [<a href="#ref-cds-wg1-02">CDS-WG1-02</a>] (“Client Registration”) to add new authorization <a href="#scopes">Scopes</a> and defines new Application Programming Interfaces (APIs) for Customer Data.</p>
+This specification extends [<a href="#ref-cds-wg1-02">CDS-WG1-02</a>] (“Client Registration”) to add new authorization <a href="#scopes">Scopes</a> and defines new <a href="#api">APIs</a> (Application Programming Interfaces) for Customer Data.</p>
 
 <h2 id="status-">Status <a id="status" href="#status" class="permalink">🔗</a></h2>
 
@@ -170,16 +170,13 @@ For more information, visit <a href="https://lfess.energy/">https://lfess.energy
       <li><a href="#scenario-billing-self-access">4.2. Billing Self-Access</a></li>
       <li><a href="#scenario-self-access">4.3. Usage and Billing Self-Access</a></li>
       <li><a href="#scenario-meter-data">4.4. Meter Data</a></li>
-      <li><a href="#scenario-rate-plan">4.5. Rate Plan</a></li>
-      <li><a href="#scenario-program-participation">4.6. Program Participation</a></li>
-      <li><a href="#scenario-program-analysis">4.7. Program Analysis</a></li>
-      <li><a href="#scenario-bill-amount-due">4.8. Bill Amount Due</a></li>
-      <li><a href="#scenario-bill-statements">4.9. Bill Statements</a></li>
-      <li><a href="#scenario-service-charges">4.10. Service Charges</a></li>
-      <li><a href="#scenario-building-data">4.11. Whole-Building Data</a></li>
-      <li><a href="#scenario-aggregated-data">4.12. Aggregated Data</a></li>
-      <li><a href="#scenario-eac-data">4.13. EAC Data</a></li>
-      <li><a href="#scenario-internal-access">4.14. Internal Access</a></li>
+      <li><a href="#scenario-customer-tariffs">4.5. Customer Tariffs</a></li>
+      <li><a href="#scenario-customer-programs">4.6. Customer Programs</a></li>
+      <li><a href="#scenario-bill-amount-due">4.7. Bill Amount Due</a></li>
+      <li><a href="#scenario-customer-bills">4.8. Customer Bills</a></li>
+      <li><a href="#scenario-service-charges">4.9. Service Charges</a></li>
+      <li><a href="#scenario-building-data">4.10. Whole-Building Data</a></li>
+      <li><a href="#scenario-aggregated-data">4.11. Aggregated Data</a></li>
     </ul>
   </li>
   <li><a href="#server-metadata">5. Server Metadata</a>
@@ -540,7 +537,7 @@ For example, a regulator could define a new Scenario that extends the “Meter D
 It is RECOMMENDED that when requiring new fields for new Scenarios, that defining the new fields follows the <a href="#extensions">Extensions</a> section, including adding a relevant prefix to the new field names (e.g. <code class="language-plaintext highlighter-rouge">CAISO_*</code>).</p>
 
 <p>New Scenarios MAY also define new <a href="#scopes">Scopes</a> that specify a specialized levels of access for Clients of the Scenario’s use cases.
-When defining new Scopes, it is RECOMMENDED that those Scopes are defined either as a list of modifications to one or more Scopes from this specification or, if a completely new Scope, using the same format as the otherScopes defined in this specification.</p>
+When defining new Scopes, it is RECOMMENDED that those Scopes are defined either as a list of modifications to one or more Scopes from this specification or, if a completely new Scope, using the same format as the Scopes defined in this specification.</p>
 
 <p>In addition to implementing requirements for their jurisdiction, Servers MAY implement any Scope or configuration that helps provide Customer Data access for relevant internal or external use cases.
 For example, a utility could enable Scopes that streamline how they transfer program participant meter data to their contracted program administrator vendor for internal program analysis and reporting.</p>
@@ -554,19 +551,62 @@ Instead, Clients MUST parse the <a href="#server-metadata">Server Metadata</a> t
 For example, a commercial customer would like to download their historical meter usage feed for their owned properties, so that their energy management team can evaluate their buildings’ energy profiles.
 Another example is for a data center owner to want to integrate an automatic nightly update of their previous day’s meter usage, so that they can check their operations for discrepancies between their own energy monitoring systems.</p>
 
-<p>To implement the “Usage Self-Access” Scenario, Servers MUST implement the following list of requirements.</p>
+<p>To implement the “Usage Self-Access” Scenario, Servers MUST implement the following requirements:</p>
 
 <ul>
-  <li>Servers MUST include at least one of each <a href="#scope-accounts-query">Accounts Query</a>, <a href="#scope-service-contracts-query">Service Contracts Query</a>, <a href="#scope-service-points-query">Service Points Query</a>, <a href="#scope-meter-devices-query">Meter Devices Query</a>, and <a href="#scope-usage-query">Usage Query</a> Scope Descriptions in the Server Metadata <code class="language-plaintext highlighter-rouge">cds_scope_descriptions</code> object, as well as include those Scope Description <code class="language-plaintext highlighter-rouge">id</code> values in the Server Metadata <code class="language-plaintext highlighter-rouge">scopes_supported</code> list.</li>
+  <li>Servers MUST include support for the following Scopes in their Server Metadata’s <code class="language-plaintext highlighter-rouge">scopes_supported</code> array [<a href="#ref-cds-wg1-02-metadata">CDS-WG1-02 Section 3.2</a>]:
+    <ul>
+      <li><a href="#scope-accounts-query">Accounts Query</a></li>
+      <li><a href="#scope-service-contracts-query">Service Contracts Query</a></li>
+      <li><a href="#scope-service-points-query">Service Points Query</a></li>
+      <li><a href="#scope-meter-devices-query">Meter Devices Query</a></li>
+      <li><a href="#scope-usage-query">Usage Query</a></li>
+    </ul>
+  </li>
   <li>Servers MUST include any required steps for verifying the identity of a Client as the Customer in the Scope Description <code class="language-plaintext highlighter-rouge">registration_requirements</code> list.
 For example, if a Server requires Customers to associate their online web account with Clients they register, the Server would include a Registration Field [<a href="#ref-cds-wg1-02-registration-fields">CDS-WG1-02 Section 3.5</a>] with a <code class="language-plaintext highlighter-rouge">type</code> value of <code class="language-plaintext highlighter-rouge">sso_verification</code>.</li>
   <li>Once Servers have verified the identity of the Client as the Customer, Servers MUST configure the Customer’s Accounts and Service Contracts to be accessible to the Client using the <a href="#scope-accounts-query">Accounts Query</a> and <a href="#scope-service-contracts-query">Service Contracts Query</a> scopes.</li>
   <li>Servers MUST configure any Meter Devices, Service Points, and Usage Segments associated with the Customer’s Accounts and Service Contracts to be accessible to the Client using the <a href="#scope-service-points-query">Service Points Query</a>, <a href="#scope-meter-devices-query">Meter Devices Query</a>, and <a href="#scope-usage-query">Usage Query</a> scopes.</li>
-  <li>Servers MUST keep the list of Accounts, Service Contracts, Service Points, Meter Devices, and Usage Segments that are associated with the Client updated to reflect any changes to the Customer.
-For example, if a Customer builds a new warehouse on their property and installs a new electric service for the warehouse, the Client should see any new Accounts, Service Contracts, Service Points, Meter Devices, and Usage Segments for the new warehouse included in API objects returned when data is next synced from the Server.</li>
-  <li>The <a href="#scope-usage-query">Usage Query</a> Scope Description’s <code class="language-plaintext highlighter-rouge">segment_start</code> authorization details field MUST allow the Client to access for each connected Service Contract’s usage at least 1 year of historical usage data (i.e. <code class="language-plaintext highlighter-rouge">minimum</code> value set to at least <code class="language-plaintext highlighter-rouge">P1Y</code>).</li>
-  <li>The <a href="#scope-usage-query">Usage Query</a> Scope Description’s <code class="language-plaintext highlighter-rouge">segment_end</code> authorization details field MUST have the <code class="language-plaintext highlighter-rouge">maximum</code> field’s value set to <code class="language-plaintext highlighter-rouge">infinite</code>, which means Clients MAY authorize access to.</li>
-  <li><span style="background-color:yellow">TODO: what <code class="language-plaintext highlighter-rouge">include_*</code> auth details</span></li>
+  <li>For the <a href="#scope-accounts-query">Accounts Query</a>, <a href="#scope-service-contracts-query">Service Contracts Query</a>, <a href="#scope-service-points-query">Service Points Query</a>, and <a href="#scope-meter-devices-query">Meter Devices Query</a> Scopes, in addition to the requirements for each Scope, the following <a href="#auth-details-fields">Authorization Details Fields</a> MUST also be supported by the Server:
+    <ul>
+      <li><a href="#auth-details-account-numbers"><code class="language-plaintext highlighter-rouge">account_numbers</code></a></li>
+      <li><a href="#auth-details-contract-numbers"><code class="language-plaintext highlighter-rouge">contract_numbers</code></a></li>
+      <li><a href="#auth-details-servicepoint-numbers"><code class="language-plaintext highlighter-rouge">servicepoint_numbers</code></a></li>
+      <li><a href="#auth-details-premise-numbers"><code class="language-plaintext highlighter-rouge">premise_numbers</code></a></li>
+      <li><a href="#auth-details-meter-numbers"><code class="language-plaintext highlighter-rouge">meter_numbers</code></a></li>
+      <li><a href="#auth-details-include-accounts"><code class="language-plaintext highlighter-rouge">include_accounts</code></a></li>
+      <li><a href="#auth-details-include-account-numbers"><code class="language-plaintext highlighter-rouge">include_account_numbers</code></a></li>
+      <li><a href="#auth-details-include-account-details"><code class="language-plaintext highlighter-rouge">include_account_details</code></a></li>
+      <li><a href="#auth-details-include-service-contracts"><code class="language-plaintext highlighter-rouge">include_service_contracts</code></a></li>
+      <li><a href="#auth-details-include-contract-numbers"><code class="language-plaintext highlighter-rouge">include_contract_numbers</code></a></li>
+      <li><a href="#auth-details-include-rate-plans"><code class="language-plaintext highlighter-rouge">include_rate_plans</code></a></li>
+      <li><a href="#auth-details-include-contract-details"><code class="language-plaintext highlighter-rouge">include_service_contract_details</code></a></li>
+      <li><a href="#auth-details-include-service-points"><code class="language-plaintext highlighter-rouge">include_service_points</code></a></li>
+      <li><a href="#auth-details-include-premises"><code class="language-plaintext highlighter-rouge">include_premises</code></a></li>
+      <li><a href="#auth-details-include-service-point-addresses"><code class="language-plaintext highlighter-rouge">include_service_point_addresses</code></a></li>
+      <li><a href="#auth-details-include-coordinates"><code class="language-plaintext highlighter-rouge">include_coordinates</code></a></li>
+      <li><a href="#auth-details-include-meter-devices"><code class="language-plaintext highlighter-rouge">include_meter_devices</code></a></li>
+      <li><a href="#auth-details-include-meter-numbers"><code class="language-plaintext highlighter-rouge">include_meter_numbers</code></a></li>
+      <li><a href="#auth-details-error-if-no-preselections"><code class="language-plaintext highlighter-rouge">error_if_no_preselections</code></a></li>
+    </ul>
+  </li>
+  <li>For the <a href="#scope-usage-query">Usage Query</a> Scope, in addition to its requirements, the following Authorization Details Fields MUST also be supported by the Server:
+    <ul>
+      <li><a href="#auth-details-meter-numbers"><code class="language-plaintext highlighter-rouge">meter_numbers</code></a></li>
+      <li><a href="#auth-details-include-meter-devices"><code class="language-plaintext highlighter-rouge">include_meter_devices</code></a></li>
+      <li><a href="#auth-details-include-meter-numbers"><code class="language-plaintext highlighter-rouge">include_meter_numbers</code></a></li>
+      <li><a href="#auth-details-error-if-no-preselections"><code class="language-plaintext highlighter-rouge">error_if_no_preselections</code></a></li>
+    </ul>
+  </li>
+  <li>The following are requirements for supported Authorization Details Field Objects [<a href="#ref-cds-wg1-02-auth-details-object">CDS-WG1-02 Section 3.8</a>]:
+    <ul>
+      <li>For the <a href="#auth-details-usage-segment-start"><code class="language-plaintext highlighter-rouge">segment_start</code></a> field, the Server MUST allow the Client to access for each connected Service Contract’s usage at least 1 year of historical usage data (i.e. <code class="language-plaintext highlighter-rouge">minimum</code> value set to at least <code class="language-plaintext highlighter-rouge">P1Y</code>).</li>
+      <li>For the <a href="#auth-details-usage-segment-end"><code class="language-plaintext highlighter-rouge">segment_end</code></a> field, the Server MUST set the <code class="language-plaintext highlighter-rouge">maximum</code> value to <code class="language-plaintext highlighter-rouge">"infinite"</code> (i.e. Clients MAY authorize access to ongoing usage access indefinitely).</li>
+      <li>For the <a href="#auth-details-sync-until"><code class="language-plaintext highlighter-rouge">sync_until</code></a> field, the Server MUST set the <code class="language-plaintext highlighter-rouge">maximum</code> value to <code class="language-plaintext highlighter-rouge">"infinite"</code> (i.e. Clients MAY authorize access to ongoing updates to their Accounts, Service Contracts, Service Points, and Meter Devices indefinitely).</li>
+    </ul>
+  </li>
+  <li>Servers MUST keep the list of Accounts, Service Contracts, Service Points, Meter Devices, and Usage Segments that are associated with the Grant updated to reflect any changes to the Customer, in accordance with the requirements of the <code class="language-plaintext highlighter-rouge">sync_until</code> and <code class="language-plaintext highlighter-rouge">segment_end</code> authorization details fields.
+For example, if a Customer has a <code class="language-plaintext highlighter-rouge">sync_until</code> and <code class="language-plaintext highlighter-rouge">segment_end</code> fields set to <code class="language-plaintext highlighter-rouge">"infinite"</code> and builds a new warehouse on their property, the Client will see any new Accounts, Service Contracts, Service Points, Meter Devices, and Usage Segments for the new warehouse included in API objects returned when data is next synced to the Server from the Server’s source of truth (e.g. the utility’s internal Meter Data Management system).</li>
 </ul>
 
 <h3 id="42-billing-self-access-">4.2. Billing Self-Access <a id="scenario-billing-self-access" href="#scenario-billing-self-access" class="permalink">🔗</a></h3>
@@ -574,21 +614,70 @@ For example, if a Customer builds a new warehouse on their property and installs
 <p>This section defines the Scenario “Billing Self-Access” in which a utility Customer wants to access their own accounts’ utility bills.
 For example, an enterprise customer would like automate importing their utility bills into their accounting software.</p>
 
-<p>To implement the “Billing Self-Access” Scenario, Servers MUST implement the following list of requirements.</p>
+<p>To implement the “Billing Self-Access” Scenario, Servers MUST implement the following requirements:</p>
 
 <ul>
-  <li>Servers MUST include at least one of each <a href="#scope-accounts-query">Accounts Query</a>, <a href="#scope-service-contracts-query">Service Contracts Query</a>, <a href="#scope-bill-statements-query">Bill Statements Query</a>, and <a href="#scope-bill-sections-query">Bill Sections Query</a> Scope Descriptions in the Server Metadata <code class="language-plaintext highlighter-rouge">cds_scope_descriptions</code> object, as well as include those Scope Description <code class="language-plaintext highlighter-rouge">id</code> values in the Server Metadata <code class="language-plaintext highlighter-rouge">scopes_supported</code> list.</li>
+  <li>Servers MUST include support for the following Scopes in their Server Metadata’s <code class="language-plaintext highlighter-rouge">scopes_supported</code> array [<a href="#ref-cds-wg1-02-metadata">CDS-WG1-02 Section 3.2</a>]:
+    <ul>
+      <li><a href="#scope-accounts-query">Accounts Query</a></li>
+      <li><a href="#scope-service-contracts-query">Service Contracts Query</a></li>
+      <li><a href="#scope-bill-statements-query">Bill Statements Query</a></li>
+      <li><a href="#scope-bill-sections-query">Bill Sections Query</a></li>
+    </ul>
+  </li>
   <li>Servers MUST include any required steps for verifying the identity of a Client as the Customer in the Scope Description <code class="language-plaintext highlighter-rouge">registration_requirements</code> list.
 For example, if a Server requires Customers to associate their online web account with Clients they register, the Server would include a Registration Field [<a href="#ref-cds-wg1-02-registration-fields">CDS-WG1-02 Section 3.5</a>] with a <code class="language-plaintext highlighter-rouge">type</code> value of <code class="language-plaintext highlighter-rouge">sso_verification</code>.</li>
   <li>Once Servers have verified the identity of the Client as the Customer, Servers MUST configure the Customer’s Accounts and Service Contracts to be accessible to the Client using the <a href="#scope-accounts-query">Accounts Query</a> and <a href="#scope-service-contracts-query">Service Contracts Query</a> scopes.</li>
   <li>Servers MUST also configure any Bill Statements and Bill Sections associated with the Customer’s Accounts and Service Contracts to be accessible to the Client using the <a href="#scope-bill-statements-query">Bill Statements Query</a> and <a href="#scope-bill-sections-query">Bill Sections Query</a> scopes.</li>
   <li>Servers MUST keep the list of Accounts, Service Contracts, Bill Statements, and Bill Sections that are associated with the Client updated to reflect any changes to the Customer.
 For example, if a Customer buys a property and transfers the utility services for that property to a new account under their profile, the Client should see any new Accounts, Service Contracts, Bill Statements, and Bill Sections for the new account in API objects returned when data is next synced from the Server.</li>
-  <li>Bill Statement object <code class="language-plaintext highlighter-rouge">file_uri</code> and <code class="language-plaintext highlighter-rouge">file_mimetype</code> fields are REQUIRED to be included, so that Clients MAY download copies of their utility bill statements.</li>
-  <li>The <a href="#scope-bill-statements-query">Bill Statements Query</a> Scope Description’s <code class="language-plaintext highlighter-rouge">statement_date_start</code> authorization details field MUST allow the Client to access for each connected Account at least 1 year of historical bill statements (i.e. <code class="language-plaintext highlighter-rouge">minimum</code> value set to at least <code class="language-plaintext highlighter-rouge">P1Y</code>).</li>
-  <li>The <a href="#scope-bill-statements-query">Bill Statements Query</a> Scope Description’s <code class="language-plaintext highlighter-rouge">statement_date_end</code> authorization details field MUST allow the Client to access for each connected Account for any future duration of time (i.e. <code class="language-plaintext highlighter-rouge">maximum</code> value set to at least <code class="language-plaintext highlighter-rouge">in</code>).</li>
-  <li>The <a href="#scope-bill-sections-query">Bill Sections Query</a> Scope Description’s <code class="language-plaintext highlighter-rouge">start_date</code> authorization details field MUST allow the Client to access for each connected Service Contract at least 1 year of historical bill sections (i.e. <code class="language-plaintext highlighter-rouge">minimum</code> value set to at least <code class="language-plaintext highlighter-rouge">P1Y</code>).</li>
-  <li><span style="background-color:yellow">TODO: what <code class="language-plaintext highlighter-rouge">include_*</code> auth details</span></li>
+  <li>For the <a href="#scope-accounts-query">Accounts Query</a> and <a href="#scope-service-contracts-query">Service Contracts Query</a> Scopes, in addition to the requirements for each Scope, the following <a href="#auth-details-fields">Authorization Details Fields</a> MUST also be supported by the Server:
+    <ul>
+      <li><a href="#auth-details-account-numbers"><code class="language-plaintext highlighter-rouge">account_numbers</code></a></li>
+      <li><a href="#auth-details-contract-numbers"><code class="language-plaintext highlighter-rouge">contract_numbers</code></a></li>
+      <li><a href="#auth-details-include-accounts"><code class="language-plaintext highlighter-rouge">include_accounts</code></a></li>
+      <li><a href="#auth-details-include-account-numbers"><code class="language-plaintext highlighter-rouge">include_account_numbers</code></a></li>
+      <li><a href="#auth-details-include-account-details"><code class="language-plaintext highlighter-rouge">include_account_details</code></a></li>
+      <li><a href="#auth-details-include-service-contracts"><code class="language-plaintext highlighter-rouge">include_service_contracts</code></a></li>
+      <li><a href="#auth-details-include-contract-numbers"><code class="language-plaintext highlighter-rouge">include_contract_numbers</code></a></li>
+      <li><a href="#auth-details-include-rate-plans"><code class="language-plaintext highlighter-rouge">include_rate_plans</code></a></li>
+      <li><a href="#auth-details-include-contract-details"><code class="language-plaintext highlighter-rouge">include_service_contract_details</code></a></li>
+      <li><a href="#auth-details-error-if-no-preselections"><code class="language-plaintext highlighter-rouge">error_if_no_preselections</code></a></li>
+    </ul>
+  </li>
+  <li>For the <a href="#scope-bill-statements-query">Bill Statements Query</a> Scope, in addition to its requirements, the following Authorization Details Fields MUST also be supported by the Server:
+    <ul>
+      <li><a href="#auth-details-account-numbers"><code class="language-plaintext highlighter-rouge">account_numbers</code></a></li>
+      <li><a href="#auth-details-include-accounts"><code class="language-plaintext highlighter-rouge">include_accounts</code></a></li>
+      <li><a href="#auth-details-include-account-numbers"><code class="language-plaintext highlighter-rouge">include_account_numbers</code></a></li>
+      <li><a href="#auth-details-include-bill-statement-files"><code class="language-plaintext highlighter-rouge">include_bill_statement_files</code></a></li>
+      <li><a href="#auth-details-include-bill-statement-charges"><code class="language-plaintext highlighter-rouge">include_bill_statement_charges</code></a></li>
+      <li><a href="#auth-details-include-bill-statement-programs"><code class="language-plaintext highlighter-rouge">include_bill_statement_programs</code></a></li>
+      <li><a href="#auth-details-error-if-no-preselections"><code class="language-plaintext highlighter-rouge">error_if_no_preselections</code></a></li>
+    </ul>
+  </li>
+  <li>For the <a href="#scope-bill-sections-query">Bill Sections Query</a> Scope, in addition to its requirements, the following Authorization Details Fields MUST also be supported by the Server:
+    <ul>
+      <li><a href="#auth-details-account-numbers"><code class="language-plaintext highlighter-rouge">account_numbers</code></a></li>
+      <li><a href="#auth-details-contract-numbers"><code class="language-plaintext highlighter-rouge">contract_numbers</code></a></li>
+      <li><a href="#auth-details-include-accounts"><code class="language-plaintext highlighter-rouge">include_accounts</code></a></li>
+      <li><a href="#auth-details-include-account-numbers"><code class="language-plaintext highlighter-rouge">include_account_numbers</code></a></li>
+      <li><a href="#auth-details-include-service-contracts"><code class="language-plaintext highlighter-rouge">include_service_contracts</code></a></li>
+      <li><a href="#auth-details-include-contract-numbers"><code class="language-plaintext highlighter-rouge">include_contract_numbers</code></a></li>
+      <li><a href="#auth-details-include-bill-section-line-items"><code class="language-plaintext highlighter-rouge">include_bill_section_line_items</code></a></li>
+    </ul>
+  </li>
+  <li>The following are requirements for supported Authorization Details Field Objects [<a href="#ref-cds-wg1-02-auth-details-object">CDS-WG1-02 Section 3.8</a>]:
+    <ul>
+      <li>For the <a href="#auth-details-statement-start"><code class="language-plaintext highlighter-rouge">statement_date_start</code></a> field, the Server MUST allow the Client to access for each connected Account at least 1 year of historical bills (i.e. <code class="language-plaintext highlighter-rouge">minimum</code> value set to at least <code class="language-plaintext highlighter-rouge">P1Y</code>).</li>
+      <li>For the <a href="#auth-details-statement-end"><code class="language-plaintext highlighter-rouge">statement_date_end</code></a> field, the Server MUST set the <code class="language-plaintext highlighter-rouge">maximum</code> value to <code class="language-plaintext highlighter-rouge">infinite</code> (i.e. Clients MAY authorize access to ongoing bill access indefinitely).</li>
+      <li>For the <a href="#auth-details-bill-section-start"><code class="language-plaintext highlighter-rouge">start_date</code></a> field, the Server MUST allow the Client to access for each connected Service Contract at least 1 year of historical billing data (i.e. <code class="language-plaintext highlighter-rouge">minimum</code> value set to at least <code class="language-plaintext highlighter-rouge">P1Y</code>).</li>
+      <li>For the <a href="#auth-details-bill-section-end"><code class="language-plaintext highlighter-rouge">end_date</code></a> field, the Server MUST set the <code class="language-plaintext highlighter-rouge">maximum</code> value to <code class="language-plaintext highlighter-rouge">infinite</code> (i.e. Clients MAY authorize access to ongoing service billing data indefinitely).</li>
+      <li>For the <a href="#auth-details-sync-until"><code class="language-plaintext highlighter-rouge">sync_until</code></a> field, the Server MUST set the <code class="language-plaintext highlighter-rouge">maximum</code> value to <code class="language-plaintext highlighter-rouge">infinite</code> (i.e. Clients MAY authorize access to ongoing updates to their Accounts and Service Contracts indefinitely).</li>
+    </ul>
+  </li>
+  <li>Servers MUST keep the list of Accounts, Service Contracts, Bill Statements, and Bill Sections that are associated with the Grant updated to reflect any changes to the Customer, in accordance with the requirements of the <code class="language-plaintext highlighter-rouge">sync_until</code>, <code class="language-plaintext highlighter-rouge">statement_date_end</code>, and <code class="language-plaintext highlighter-rouge">end_date</code> authorization details fields.
+For example, if a Customer has a <code class="language-plaintext highlighter-rouge">sync_until</code> and <code class="language-plaintext highlighter-rouge">statement_date_end</code> fields set to <code class="language-plaintext highlighter-rouge">"infinite"</code> and builds a new warehouse on their property, the Client will see any new Accounts, Service Contracts, and Bill Statements for the new warehouse included in API objects returned when data is next synced to the Server from the Server’s source of truth (e.g. the utility’s internal billing system).</li>
 </ul>
 
 <h3 id="43-usage-and-billing-self-access-">4.3. Usage and Billing Self-Access <a id="scenario-self-access" href="#scenario-self-access" class="permalink">🔗</a></h3>
@@ -596,11 +685,22 @@ For example, if a Customer buys a property and transfers the utility services fo
 <p>This section defines the Scenario “Usage and Billing Self-Access” in which a utility Customer wants to access their own accounts’ usage and bills.
 For example, an enterprise customer would like automate a energy billing.</p>
 
-<p>To implement the “Usage and Billing Self-Access” Scenario, Servers MUST implement the following list of requirements.</p>
+<p>To implement the “Usage and Billing Self-Access” Scenario, Servers MUST implement the following requirements:</p>
 
 <ul>
   <li>Servers MUST implement the <a href="#scenario-usage-self-access">Usage Self-Access</a> Scenario.</li>
   <li>Servers MUST implement the <a href="#scenario-billing-self-access">Billing Self-Access</a> Scenario.</li>
+  <li>For the <a href="#scope-bill-sections-query">Bill Sections Query</a> Scope, in addition to the Billing Self-Access Scenario requirements, the following Authorization Details Fields MUST also be supported by the Server:
+    <ul>
+      <li><a href="#auth-details-include-service-points"><code class="language-plaintext highlighter-rouge">include_service_points</code></a></li>
+      <li><a href="#auth-details-include-meter-devices"><code class="language-plaintext highlighter-rouge">include_meter_devices</code></a></li>
+    </ul>
+  </li>
+  <li>For the <a href="#scope-usage-query">Usage Query</a> Scope, in addition to the Usage Self-Access Scenario requirements, the following Authorization Details Fields MUST also be supported by the Server:
+    <ul>
+      <li><a href="#auth-details-include-bill-sections"><code class="language-plaintext highlighter-rouge">include_bill_sections</code></a></li>
+    </ul>
+  </li>
 </ul>
 
 <h3 id="44-meter-data-">4.4. Meter Data <a id="scenario-meter-data" href="#scenario-meter-data" class="permalink">🔗</a></h3>
@@ -608,80 +708,416 @@ For example, an enterprise customer would like automate a energy billing.</p>
 <p>This section defines the Scenario “Meter Data” in which a Client requests access to a Customer’s historical and/or ongoing usage data.
 For example, an energy efficiency auditor is working with building owner, and needs to download their previous year’s usage.</p>
 
-<p>To implement the “Meter Data” Scenario, Servers MUST implement the following list of requirements.</p>
+<p>To implement the “Meter Data” Scenario, Servers MUST implement the following requirements:</p>
 
 <ul>
-  <li>Servers MUST include at least one of each <a href="#scope-accounts-query">Accounts Query</a>, <a href="#scope-service-contracts-query">Service Contracts Query</a>, <a href="#scope-service-points-query">Service Points Query</a>, <a href="#scope-meter-devices-query">Meter Devices Query</a>, and <a href="#scope-usage-query">Usage Query</a> Scope Descriptions in the Server Metadata <code class="language-plaintext highlighter-rouge">cds_scope_descriptions</code> object, as well as include those Scope Description <code class="language-plaintext highlighter-rouge">id</code> values in the Server Metadata <code class="language-plaintext highlighter-rouge">scopes_supported</code> list.</li>
-  <li>The <a href="#scope-usage-query">Usage Query</a> Scope Description’s <code class="language-plaintext highlighter-rouge">segment_start</code> authorization details field MUST allow the Client to access for each connected Service Contract’s usage at least 1 year of historical usage data (i.e. <code class="language-plaintext highlighter-rouge">minimum</code> value set to at least <code class="language-plaintext highlighter-rouge">P1Y</code>).</li>
+  <li>Servers MUST include support for the following Scopes in their Server Metadata’s <code class="language-plaintext highlighter-rouge">scopes_supported</code> array [<a href="#ref-cds-wg1-02-metadata">CDS-WG1-02 Section 3.2</a>]:
+    <ul>
+      <li><a href="#scope-service-list">Service List</a></li>
+      <li><a href="#scope-meter-list">Meter List</a></li>
+      <li><a href="#scope-meter-usage">Meter Usage</a></li>
+    </ul>
+  </li>
+  <li>Servers MUST include any steps in the <code class="language-plaintext highlighter-rouge">registration_requirements</code> that the Client or Server needs to complete before the Server will create a Client object that has the <code class="language-plaintext highlighter-rouge">production</code> status in it’s <code class="language-plaintext highlighter-rouge">cds_status_options</code> array.
+For example, if the Server requires a manual review of the Client’s registration before approving production access, the Server would include a Registration Field [<a href="#ref-cds-wg1-02-registration-fields">CDS-WG1-02 Section 3.5</a>] with a <code class="language-plaintext highlighter-rouge">type</code> value of <code class="language-plaintext highlighter-rouge">internal_review</code>.</li>
+  <li>For the <a href="#scope-service-list">Service List</a> Scope, in addition to its requirements, the following <a href="#auth-details-fields">Authorization Details Fields</a> MUST also be supported by the Server:
+    <ul>
+      <li><a href="#auth-details-account-numbers"><code class="language-plaintext highlighter-rouge">account_numbers</code></a></li>
+      <li><a href="#auth-details-meter-numbers"><code class="language-plaintext highlighter-rouge">meter_numbers</code></a></li>
+      <li><a href="#auth-details-addresses"><code class="language-plaintext highlighter-rouge">addresses</code></a></li>
+      <li><a href="#auth-details-include-account-numbers"><code class="language-plaintext highlighter-rouge">include_account_numbers</code></a></li>
+      <li><a href="#auth-details-include-rate-plans"><code class="language-plaintext highlighter-rouge">include_rate_plans</code></a></li>
+      <li><a href="#auth-details-include-contract-details"><code class="language-plaintext highlighter-rouge">include_service_contract_details</code></a></li>
+      <li><a href="#auth-details-include-service-points"><code class="language-plaintext highlighter-rouge">include_service_points</code></a></li>
+      <li><a href="#auth-details-include-premises"><code class="language-plaintext highlighter-rouge">include_premises</code></a></li>
+      <li><a href="#auth-details-include-service-point-addresses"><code class="language-plaintext highlighter-rouge">include_service_point_addresses</code></a></li>
+      <li><a href="#auth-details-include-coordinates"><code class="language-plaintext highlighter-rouge">include_coordinates</code></a></li>
+      <li><a href="#auth-details-include-meter-devices"><code class="language-plaintext highlighter-rouge">include_meter_devices</code></a></li>
+    </ul>
+  </li>
+  <li>For the <a href="#scope-meter-list">Meter List</a> Scope, in addition to its requirements, the following Authorization Details Fields MUST also be supported by the Server:
+    <ul>
+      <li><a href="#auth-details-account-numbers"><code class="language-plaintext highlighter-rouge">account_numbers</code></a></li>
+      <li><a href="#auth-details-contract-numbers"><code class="language-plaintext highlighter-rouge">contract_numbers</code></a></li>
+      <li><a href="#auth-details-service-types"><code class="language-plaintext highlighter-rouge">service_types</code></a></li>
+      <li><a href="#auth-details-servicepoint-numbers"><code class="language-plaintext highlighter-rouge">servicepoint_numbers</code></a></li>
+      <li><a href="#auth-details-servicepoint-types"><code class="language-plaintext highlighter-rouge">servicepoint_types</code></a></li>
+      <li><a href="#auth-details-premise-numbers"><code class="language-plaintext highlighter-rouge">premise_numbers</code></a></li>
+      <li><a href="#auth-details-addresses"><code class="language-plaintext highlighter-rouge">addresses</code></a></li>
+      <li><a href="#auth-details-include-accounts"><code class="language-plaintext highlighter-rouge">include_accounts</code></a></li>
+      <li><a href="#auth-details-include-account-numbers"><code class="language-plaintext highlighter-rouge">include_account_numbers</code></a></li>
+      <li><a href="#auth-details-include-service-contracts"><code class="language-plaintext highlighter-rouge">include_service_contracts</code></a></li>
+      <li><a href="#auth-details-include-contract-numbers"><code class="language-plaintext highlighter-rouge">include_contract_numbers</code></a></li>
+      <li><a href="#auth-details-include-rate-plans"><code class="language-plaintext highlighter-rouge">include_rate_plans</code></a></li>
+      <li><a href="#auth-details-include-contract-details"><code class="language-plaintext highlighter-rouge">include_service_contract_details</code></a></li>
+      <li><a href="#auth-details-include-service-points"><code class="language-plaintext highlighter-rouge">include_service_points</code></a></li>
+      <li><a href="#auth-details-include-premises"><code class="language-plaintext highlighter-rouge">include_premises</code></a></li>
+      <li><a href="#auth-details-include-service-point-addresses"><code class="language-plaintext highlighter-rouge">include_service_point_addresses</code></a></li>
+      <li><a href="#auth-details-include-coordinates"><code class="language-plaintext highlighter-rouge">include_coordinates</code></a></li>
+    </ul>
+  </li>
+  <li>For the <a href="#scope-meter-usage">Meter Usage</a> Scope, in addition to its requirements, the following Authorization Details Fields MUST also be supported by the Server:
+    <ul>
+      <li><a href="#auth-details-account-numbers"><code class="language-plaintext highlighter-rouge">account_numbers</code></a></li>
+      <li><a href="#auth-details-contract-numbers"><code class="language-plaintext highlighter-rouge">contract_numbers</code></a></li>
+      <li><a href="#auth-details-service-types"><code class="language-plaintext highlighter-rouge">service_types</code></a></li>
+      <li><a href="#auth-details-servicepoint-numbers"><code class="language-plaintext highlighter-rouge">servicepoint_numbers</code></a></li>
+      <li><a href="#auth-details-servicepoint-types"><code class="language-plaintext highlighter-rouge">servicepoint_types</code></a></li>
+      <li><a href="#auth-details-premise-numbers"><code class="language-plaintext highlighter-rouge">premise_numbers</code></a></li>
+      <li><a href="#auth-details-meter-numbers"><code class="language-plaintext highlighter-rouge">meter_numbers</code></a></li>
+      <li><a href="#auth-details-addresses"><code class="language-plaintext highlighter-rouge">addresses</code></a></li>
+    </ul>
+  </li>
+  <li>For the <a href="#scope-meter-list">Meter List</a> and <a href="#scope-meter-usage">Meter Usage</a> Scopes, the <a href="#auth-details-selection-type"><code class="language-plaintext highlighter-rouge">authorization_form_selection_type</code></a> Authorization Details Field object MUST contain a Choice with the <code class="language-plaintext highlighter-rouge">id</code> value of <a href="#contract-selection"><code class="language-plaintext highlighter-rouge">"service_contract_selection"</code></a> in its <code class="language-plaintext highlighter-rouge">choices</code> array.
+This is to enable Clients to merge any of Service List, Meter List, Meter Usage Scopes into the same <a href="#contract-selection">Service Contract Selection</a> in the <a href="#auth-form">Authorization Form</a> so that Customers only have to make one selection of which Service Contracts to include in an authorization of meter usage data.</li>
+  <li>The following are requirements for supported Authorization Details Field Objects [<a href="#ref-cds-wg1-02-auth-details-object">CDS-WG1-02 Section 3.8</a>]:
+    <ul>
+      <li>For the <a href="#auth-details-usage-segment-start"><code class="language-plaintext highlighter-rouge">segment_start</code></a> field, the Server MUST allow Customers to authorize access to at least 3 years of historical usage (i.e. <code class="language-plaintext highlighter-rouge">minimum</code> value set to at least <code class="language-plaintext highlighter-rouge">P3Y</code>).</li>
+      <li>For the <a href="#auth-details-usage-segment-end"><code class="language-plaintext highlighter-rouge">segment_end</code></a> field, the Server MUST set the <code class="language-plaintext highlighter-rouge">maximum</code> value to <code class="language-plaintext highlighter-rouge">"infinite"</code> (i.e. Customers MAY authorize access to ongoing usage until they choose to revoke it).</li>
+      <li>For the <a href="#auth-details-sync-until"><code class="language-plaintext highlighter-rouge">sync_until</code></a> field, the Server MUST set the <code class="language-plaintext highlighter-rouge">maximum</code> value to <code class="language-plaintext highlighter-rouge">"infinite"</code> (i.e. Customers MAY authorize access to ongoing updates to their Accounts, Service Contracts, Service Points, and Meter Devices until they choose to revoke it).</li>
+    </ul>
+  </li>
+  <li>Servers MUST keep the list of Accounts, Service Contracts, Service Points, Meter Devices, and Usage Segments that are associated with the Grant updated to reflect any changes to the Customer, in accordance with the requirements of the <code class="language-plaintext highlighter-rouge">sync_until</code> and <code class="language-plaintext highlighter-rouge">segment_end</code> authorization details fields.
+For example, if a Customer has authorized <code class="language-plaintext highlighter-rouge">"infinite"</code> as the value for <code class="language-plaintext highlighter-rouge">sync_until</code> and <code class="language-plaintext highlighter-rouge">segment_end</code>, as well as selected <code class="language-plaintext highlighter-rouge">"_include_future"</code> for Service Contracts, then builds a new warehouse on their property, the Client will see any new Accounts, Service Contracts, Service Points, Meter Devices, and Usage Segments for the new warehouse included in API objects returned when data is next synced to the Server from the Server’s source of truth (e.g. the utility’s internal Meter Data Management system).</li>
+  <li>When a Server will provide access to granular meter data that includes <a href="#usage-segment-format">Usage Segment</a> <code class="language-plaintext highlighter-rouge">interval</code> values of less or equal to 90000 (i.e. daily intervals and shorter), the Server MUST sync updates from its source of truth at least once per day, so that Client’s may receive daily updates to meter usage and any changes to the Customer’s resources.</li>
+  <li>When a Server will provide access to granular meter data that includes <a href="#usage-segment-format">Usage Segment</a> <code class="language-plaintext highlighter-rouge">interval</code> values of greater than 90000 (i.e. longer than daily intervals), the Server MUST sync updates from its source of truth at least once per week, so that Client’s may receive changes to the Customer’s resources within a week of their occurrence and meter usage updates within a week of them being saved to the Server’s source of truth.</li>
 </ul>
 
-<h3 id="45-rate-plan-">4.5. Rate Plan <a id="scenario-rate-plan" href="#scenario-rate-plan" class="permalink">🔗</a></h3>
+<h3 id="45-customer-tariffs-">4.5. Customer Tariffs <a id="scenario-customer-tariffs" href="#scenario-customer-tariffs" class="permalink">🔗</a></h3>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>This section defines the Scenario “Customer Tariffs” in which a Client requests access to a Customer’s current rate plan(s).
+For example, an energy rebate app wants to see if a Customer qualifies for certain utility rebate programs while minimizing the Customer Data request.</p>
 
-<h3 id="46-program-participation-">4.6. Program Participation <a id="scenario-program-participation" href="#scenario-program-participation" class="permalink">🔗</a></h3>
+<p>To implement the “Rate Plan” Scenario, Servers MUST implement the following requirements:</p>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<ul>
+  <li>Servers MUST include support for the following Scopes in their Server Metadata’s <code class="language-plaintext highlighter-rouge">scopes_supported</code> array [<a href="#ref-cds-wg1-02-metadata">CDS-WG1-02 Section 3.2</a>]:
+    <ul>
+      <li><a href="#scope-rate-plan">Rate Plan</a></li>
+    </ul>
+  </li>
+  <li>Servers MUST include any steps in the <code class="language-plaintext highlighter-rouge">registration_requirements</code> that the Client or Server needs to complete before the Server will create a Client object that has the <code class="language-plaintext highlighter-rouge">production</code> status in it’s <code class="language-plaintext highlighter-rouge">cds_status_options</code> array.
+For example, if the Server requires a manual review of the Client’s registration before approving production access, the Server would include a Registration Field [<a href="#ref-cds-wg1-02-registration-fields">CDS-WG1-02 Section 3.5</a>] with a <code class="language-plaintext highlighter-rouge">type</code> value of <code class="language-plaintext highlighter-rouge">internal_review</code>.</li>
+  <li>For the <a href="#scope-rate-plan">Rate Plan</a> Scope, in addition to its requirements, the following <a href="#auth-details-fields">Authorization Details Fields</a> MUST also be supported by the Server:
+    <ul>
+      <li><a href="#auth-details-account-numbers"><code class="language-plaintext highlighter-rouge">account_numbers</code></a></li>
+      <li><a href="#auth-details-meter-numbers"><code class="language-plaintext highlighter-rouge">meter_numbers</code></a></li>
+      <li><a href="#auth-details-addresses"><code class="language-plaintext highlighter-rouge">addresses</code></a></li>
+      <li><a href="#auth-details-include-accounts"><code class="language-plaintext highlighter-rouge">include_accounts</code></a></li>
+      <li><a href="#auth-details-include-account-numbers"><code class="language-plaintext highlighter-rouge">include_account_numbers</code></a></li>
+      <li><a href="#auth-details-include-contract-details"><code class="language-plaintext highlighter-rouge">include_service_contract_details</code></a></li>
+      <li><a href="#auth-details-include-meter-devices"><code class="language-plaintext highlighter-rouge">include_meter_devices</code></a></li>
+      <li><a href="#auth-details-include-meter-numbers"><code class="language-plaintext highlighter-rouge">include_meter_numbers</code></a></li>
+    </ul>
+  </li>
+  <li>The following are requirements for supported Authorization Details Field Objects [<a href="#ref-cds-wg1-02-auth-details-object">CDS-WG1-02 Section 3.8</a>]:
+    <ul>
+      <li>For the <a href="#auth-details-sync-until"><code class="language-plaintext highlighter-rouge">sync_until</code></a> field, the Server MUST set the <code class="language-plaintext highlighter-rouge">maximum</code> value to <code class="language-plaintext highlighter-rouge">"infinite"</code> (i.e. Customers MAY authorize access to ongoing updates to their rate plans and associated details until they choose to revoke it).</li>
+    </ul>
+  </li>
+  <li>Servers MUST keep the <a href="#api">API</a> objects that are associated with the Grant updated to reflect any changes to the Customer, in accordance with the requirements of the <code class="language-plaintext highlighter-rouge">sync_until</code> authorization details field.
+For example, if a Customer has authorized <code class="language-plaintext highlighter-rouge">"infinite"</code> as the value for <code class="language-plaintext highlighter-rouge">sync_until</code> and later changes their rate plan from a fixed to time-of-use rate, the Client will see the Service Contract’s <code class="language-plaintext highlighter-rouge">rateplan_code</code> and <code class="language-plaintext highlighter-rouge">rateplan_name</code> values updated when data is next synced to the Server from the Server’s source of truth (e.g. the utility’s internal Customer Resource Management system).</li>
+  <li>The Server MUST sync updates from its source of truth at least once per week, so that Client’s may receive changes to the Customer’s resources within a week of their occurrence.</li>
+</ul>
 
-<h3 id="47-program-analysis-">4.7. Program Analysis <a id="scenario-program-analysis" href="#scenario-program-analysis" class="permalink">🔗</a></h3>
+<h3 id="46-customer-programs-">4.6. Customer Programs <a id="scenario-customer-programs" href="#scenario-customer-programs" class="permalink">🔗</a></h3>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>This section defines the Scenario “Customer Programs” in which a Client requests access to a Customer’s current rate plan(s).
+For example, an energy rebate app wants to see if a Customer is eligible or is currently participating in a list of potentially applicable utility programs.</p>
 
-<h3 id="48-bill-amount-due-">4.8. Bill Amount Due <a id="scenario-bill-amount-due" href="#scenario-bill-amount-due" class="permalink">🔗</a></h3>
+<p>To implement the “Customer Programs” Scenario, Servers MUST implement the following requirements:</p>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<ul>
+  <li>Servers MUST include support for at least one the following Scopes in their Server Metadata’s <code class="language-plaintext highlighter-rouge">scopes_supported</code> array [<a href="#ref-cds-wg1-02-metadata">CDS-WG1-02 Section 3.2</a>]:
+    <ul>
+      <li><a href="#scope-account-program-participation">Account Program Participation</a></li>
+      <li><a href="#scope-service-program-participation">Service Program Participation</a></li>
+    </ul>
+  </li>
+  <li>Servers MUST include any steps in the <code class="language-plaintext highlighter-rouge">registration_requirements</code> that the Client or Server needs to complete before the Server will create a Client object that has the <code class="language-plaintext highlighter-rouge">production</code> status in it’s <code class="language-plaintext highlighter-rouge">cds_status_options</code> array.
+For example, if the Server requires a manual review of the Client’s registration before approving production access, the Server would include a Registration Field [<a href="#ref-cds-wg1-02-registration-fields">CDS-WG1-02 Section 3.5</a>] with a <code class="language-plaintext highlighter-rouge">type</code> value of <code class="language-plaintext highlighter-rouge">internal_review</code>.</li>
+  <li>For <a href="#scope-account-program-participation">Account Program Participation</a> and <a href="#scope-service-program-participation">Service Program Participation</a> Scopes, in addition to their requirements, the following <a href="#auth-details-fields">Authorization Details Fields</a> MUST also be supported by the Server:
+    <ul>
+      <li><a href="#auth-details-account-numbers"><code class="language-plaintext highlighter-rouge">account_numbers</code></a></li>
+      <li><a href="#auth-details-meter-numbers"><code class="language-plaintext highlighter-rouge">meter_numbers</code></a></li>
+      <li><a href="#auth-details-addresses"><code class="language-plaintext highlighter-rouge">addresses</code></a></li>
+      <li><a href="#auth-details-include-accounts"><code class="language-plaintext highlighter-rouge">include_accounts</code></a></li>
+      <li><a href="#auth-details-include-account-numbers"><code class="language-plaintext highlighter-rouge">include_account_numbers</code></a></li>
+      <li><a href="#auth-details-include-service-contracts"><code class="language-plaintext highlighter-rouge">include_service_contracts</code></a></li>
+      <li><a href="#auth-details-include-contract-numbers"><code class="language-plaintext highlighter-rouge">include_contract_numbers</code></a></li>
+      <li><a href="#auth-details-include-rate-plans"><code class="language-plaintext highlighter-rouge">include_rate_plans</code></a></li>
+      <li><a href="#auth-details-include-contract-details"><code class="language-plaintext highlighter-rouge">include_service_contract_details</code></a></li>
+      <li><a href="#auth-details-include-meter-devices"><code class="language-plaintext highlighter-rouge">include_meter_devices</code></a></li>
+      <li><a href="#auth-details-include-meter-numbers"><code class="language-plaintext highlighter-rouge">include_meter_numbers</code></a></li>
+    </ul>
+  </li>
+  <li>The following are requirements for supported Authorization Details Field Objects [<a href="#ref-cds-wg1-02-auth-details-object">CDS-WG1-02 Section 3.8</a>]:
+    <ul>
+      <li>For <a href="#scope-account-program-participation">Account Program Participation</a> Scopes, the <a href="#auth-details-account-programs"><code class="language-plaintext highlighter-rouge">account_programs</code></a> authorization details field for each Scope MUST include a <code class="language-plaintext highlighter-rouge">choices</code> array that includes Choice objects where the <code class="language-plaintext highlighter-rouge">id</code> values are supported <a href="#TODO-account-program-format">Service Program</a> <code class="language-plaintext highlighter-rouge">program_number</code> values for which the Server is providing access.
+This can include programs for which the Customer is eligible, in addition to programs in which the Customer is currently participating or has previously participated.</li>
+      <li>For <a href="#scope-service-program-participation">Service Program Participation</a> Scopes, the <a href="#auth-details-service-programs"><code class="language-plaintext highlighter-rouge">service_programs</code></a> authorization details field for each Scope MUST include a <code class="language-plaintext highlighter-rouge">choices</code> array that includes Choice objects where the <code class="language-plaintext highlighter-rouge">id</code> values are supported <a href="#TODO-service-program-format">Service Program</a> <code class="language-plaintext highlighter-rouge">program_number</code> values for which the Server is providing access.
+This can include programs for which the Customer is eligible, in addition to programs in which the Customer is currently participating or has previously participated.</li>
+      <li>For the <a href="#auth-details-sync-until"><code class="language-plaintext highlighter-rouge">sync_until</code></a> field, the Server MUST set the <code class="language-plaintext highlighter-rouge">maximum</code> value to <code class="language-plaintext highlighter-rouge">"infinite"</code> (i.e. Customers MAY authorize access to ongoing updates to their relevant programs and associated details until they choose to revoke it).</li>
+    </ul>
+  </li>
+  <li>Servers MUST keep the <a href="#api">API</a> objects that are associated with the Grant updated to reflect any changes to the Customer, in accordance with the requirements of the <code class="language-plaintext highlighter-rouge">sync_until</code> authorization details field.
+For example, if a Customer has authorized <code class="language-plaintext highlighter-rouge">"infinite"</code> as the value for <code class="language-plaintext highlighter-rouge">sync_until</code> and later joins a supported utility demand response program, the Client will see that <a href="#TODO-service-program-format">Service Program</a> in the relevant Service Contract be updated to reflect their participation and eligibility status when data is next synced to the Server from the Server’s source of truth (e.g. the utility’s internal Customer Resource Management system).</li>
+  <li>The Server MUST sync updates from its source of truth at least once per week, so that Client’s may receive changes to the Customer’s resources within a week of their occurrence.</li>
+</ul>
 
-<h3 id="49-bill-statements-">4.9. Bill Statements <a id="scenario-bill-statements" href="#scenario-bill-statements" class="permalink">🔗</a></h3>
+<h3 id="47-bill-amount-due-">4.7. Bill Amount Due <a id="scenario-bill-amount-due" href="#scenario-bill-amount-due" class="permalink">🔗</a></h3>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>This section defines the Scenario “Bill Amount Due” in which a Client requests access to a Customer’s <a href="#bill-statement-format">Bill Statement’s</a> amount due.
+For example, a bank wants to integrate the Customer’s utility bill amounts into their banking app.</p>
 
-<h3 id="410-service-charges-">4.10. Service Charges <a id="scenario-service-charges" href="#scenario-service-charges" class="permalink">🔗</a></h3>
+<p>To implement the “Bill Amount Due” Scenario, Servers MUST implement the following requirements:</p>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<ul>
+  <li>Servers MUST include support for the following Scopes in their Server Metadata’s <code class="language-plaintext highlighter-rouge">scopes_supported</code> array [<a href="#ref-cds-wg1-02-metadata">CDS-WG1-02 Section 3.2</a>]:
+    <ul>
+      <li><a href="#scope-bill-statements">Bill Statements</a></li>
+    </ul>
+  </li>
+  <li>Servers MUST include any steps in the <code class="language-plaintext highlighter-rouge">registration_requirements</code> that the Client or Server needs to complete before the Server will create a Client object that has the <code class="language-plaintext highlighter-rouge">production</code> status in it’s <code class="language-plaintext highlighter-rouge">cds_status_options</code> array.
+For example, if the Server requires a manual review of the Client’s registration before approving production access, the Server would include a Registration Field [<a href="#ref-cds-wg1-02-registration-fields">CDS-WG1-02 Section 3.5</a>] with a <code class="language-plaintext highlighter-rouge">type</code> value of <code class="language-plaintext highlighter-rouge">internal_review</code>.</li>
+  <li>For the <a href="#scope-bill-statements">Bill Statements</a> Scope, in addition to its requirements, the following <a href="#auth-details-fields">Authorization Details Fields</a> MUST also be supported by the Server:
+    <ul>
+      <li><a href="#auth-details-addresses"><code class="language-plaintext highlighter-rouge">addresses</code></a></li>
+    </ul>
+  </li>
+  <li>The following are requirements for supported Authorization Details Field Objects [<a href="#ref-cds-wg1-02-auth-details-object">CDS-WG1-02 Section 3.8</a>]:
+    <ul>
+      <li>For the <a href="#auth-details-statement-start"><code class="language-plaintext highlighter-rouge">statement_date_start</code></a> field, the Server MUST ignore any values configured by the Client and always set this value in the relevant Grant’s <code class="language-plaintext highlighter-rouge">authorization_details</code> value to be the date of the Customer’s last bill statement or the creation time of the Grant, whichever is sooner.
+This prevents this Scenario from being used to collect the historical Bill Statement data for Customers, when then intent of this Scenario is for a Customer providing access to their bill amount due going forward.</li>
+      <li>For the <a href="#auth-details-statement-end"><code class="language-plaintext highlighter-rouge">statement_date_end</code></a> field, the Server MUST set the <code class="language-plaintext highlighter-rouge">maximum</code> value to <code class="language-plaintext highlighter-rouge">infinite</code> (i.e. Customers MAY authorize access to ongoing bill amount due access indefinitely).</li>
+    </ul>
+  </li>
+  <li>Servers MUST keep the <a href="#api">API</a> objects that are associated with the Grant updated to reflect any changes to the Customer, in accordance with the requirements of the <code class="language-plaintext highlighter-rouge">statement_date_end</code> authorization details field.
+For example, if a Customer has authorized <code class="language-plaintext highlighter-rouge">"infinite"</code> as the value for <code class="language-plaintext highlighter-rouge">statement_date_end</code>, the Client will see new <a href="#bill-statement-format">Bill Statements</a> when data is next synced to the Server from the Server’s source of truth (e.g. the utility’s internal billing system).</li>
+  <li>The Server MUST sync updates from its source of truth at least once per week, so that Client’s may receive changes to the Customer’s resources within a week of their creation.</li>
+</ul>
 
-<h3 id="411-whole-building-data-">4.11. Whole-Building Data <a id="scenario-building-data" href="#scenario-building-data" class="permalink">🔗</a></h3>
+<h3 id="48-customer-bills-">4.8. Customer Bills <a id="scenario-customer-bills" href="#scenario-customer-bills" class="permalink">🔗</a></h3>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>This section defines the Scenario “Customer Bills” in which a Client requests access to a Customer’s <a href="#bill-statement-format">Bill Statement</a>.
+For example, a loan provider for an energy efficiency upgrade project wants to obtain a Customer’s historical bills to verify the financial feasibility of the project.</p>
 
-<h3 id="412-aggregated-data-">4.12. Aggregated Data <a id="scenario-aggregated-data" href="#scenario-aggregated-data" class="permalink">🔗</a></h3>
+<p>To implement the “Customer Bills” Scenario, Servers MUST implement the following requirements:</p>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<ul>
+  <li>Servers MUST include support for the following Scopes in their Server Metadata’s <code class="language-plaintext highlighter-rouge">scopes_supported</code> array [<a href="#ref-cds-wg1-02-metadata">CDS-WG1-02 Section 3.2</a>]:
+    <ul>
+      <li><a href="#scope-bill-statements">Bill Statements</a></li>
+    </ul>
+  </li>
+  <li>Servers MUST include any steps in the <code class="language-plaintext highlighter-rouge">registration_requirements</code> that the Client or Server needs to complete before the Server will create a Client object that has the <code class="language-plaintext highlighter-rouge">production</code> status in it’s <code class="language-plaintext highlighter-rouge">cds_status_options</code> array.
+For example, if the Server requires a manual review of the Client’s registration before approving production access, the Server would include a Registration Field [<a href="#ref-cds-wg1-02-registration-fields">CDS-WG1-02 Section 3.5</a>] with a <code class="language-plaintext highlighter-rouge">type</code> value of <code class="language-plaintext highlighter-rouge">internal_review</code>.</li>
+  <li>For the <a href="#scope-bill-statements">Bill Statements</a> Scope, in addition to its requirements, the following <a href="#auth-details-fields">Authorization Details Fields</a> MUST also be supported by the Server:
+    <ul>
+      <li><a href="#auth-details-addresses"><code class="language-plaintext highlighter-rouge">addresses</code></a></li>
+      <li><a href="#auth-details-include-bill-statement-files"><code class="language-plaintext highlighter-rouge">include_bill_statement_files</code></a></li>
+      <li><a href="#auth-details-include-bill-statement-charges"><code class="language-plaintext highlighter-rouge">include_bill_statement_charges</code></a></li>
+    </ul>
+  </li>
+  <li>The following are requirements for supported Authorization Details Field Objects [<a href="#ref-cds-wg1-02-auth-details-object">CDS-WG1-02 Section 3.8</a>]:
+    <ul>
+      <li>For the <a href="#auth-details-usage-segment-start"><code class="language-plaintext highlighter-rouge">statement_date_start</code></a> field, the Server MUST allow Customers to authorize access to at least 3 years of historical bills (i.e. <code class="language-plaintext highlighter-rouge">minimum</code> value set to at least <code class="language-plaintext highlighter-rouge">P3Y</code>).</li>
+      <li>For the <a href="#auth-details-usage-segment-end"><code class="language-plaintext highlighter-rouge">statement_date_end</code></a> field, the Server MUST set the <code class="language-plaintext highlighter-rouge">maximum</code> value to <code class="language-plaintext highlighter-rouge">"infinite"</code> (i.e. Customers MAY authorize access to ongoing bills until they choose to revoke it).</li>
+    </ul>
+  </li>
+  <li>Servers MUST keep the <a href="#api">API</a> objects that are associated with the Grant updated to reflect any changes to the Customer, in accordance with the requirements of the <code class="language-plaintext highlighter-rouge">statement_date_end</code> authorization details field.
+For example, if a Customer has authorized <code class="language-plaintext highlighter-rouge">"infinite"</code> as the value for <code class="language-plaintext highlighter-rouge">statement_date_end</code>, the Client will see new <a href="#bill-statement-format">Bill Statements</a> when data is next synced to the Server from the Server’s source of truth (e.g. the utility’s internal billing system).</li>
+  <li>The Server MUST sync updates from its source of truth at least once per week, so that Client’s may receive changes to the Customer’s resources within a week of their creation.</li>
+</ul>
 
-<h3 id="413-eac-data-">4.13. EAC Data <a id="scenario-eac-data" href="#scenario-eac-data" class="permalink">🔗</a></h3>
+<h3 id="49-service-charges-">4.9. Service Charges <a id="scenario-service-charges" href="#scenario-service-charges" class="permalink">🔗</a></h3>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>This section defines the Scenario “Service Charges” in which a Client requests access to a Customer’s <a href="#bill-statement-format">Bill Sections</a>.
+For example, an energy service company (ESCO) wants to request access to a Customer’s billed charges for their buildings so that the ESCO can calculate the shared savings for their contracts with the Customer.</p>
 
-<h3 id="414-internal-access-">4.14. Internal Access <a id="scenario-internal-access" href="#scenario-internal-access" class="permalink">🔗</a></h3>
+<p>To implement the “Service Charges” Scenario, Servers MUST implement the following requirements:</p>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<ul>
+  <li>Servers MUST include support for the following Scopes in their Server Metadata’s <code class="language-plaintext highlighter-rouge">scopes_supported</code> array [<a href="#ref-cds-wg1-02-metadata">CDS-WG1-02 Section 3.2</a>]:
+    <ul>
+      <li><a href="#scope-service-bills">Service Bills</a></li>
+    </ul>
+  </li>
+  <li>Servers MUST include any steps in the <code class="language-plaintext highlighter-rouge">registration_requirements</code> that the Client or Server needs to complete before the Server will create a Client object that has the <code class="language-plaintext highlighter-rouge">production</code> status in it’s <code class="language-plaintext highlighter-rouge">cds_status_options</code> array.
+For example, if the Server requires a manual review of the Client’s registration before approving production access, the Server would include a Registration Field [<a href="#ref-cds-wg1-02-registration-fields">CDS-WG1-02 Section 3.5</a>] with a <code class="language-plaintext highlighter-rouge">type</code> value of <code class="language-plaintext highlighter-rouge">internal_review</code>.</li>
+  <li>For the <a href="#scope-service-bills">Service Bills</a> Scope, in addition to its requirements, the following <a href="#auth-details-fields">Authorization Details Fields</a> MUST also be supported by the Server:
+    <ul>
+      <li><a href="#auth-details-account-numbers"><code class="language-plaintext highlighter-rouge">account_numbers</code></a></li>
+      <li><a href="#auth-details-meter-numbers"><code class="language-plaintext highlighter-rouge">meter_numbers</code></a></li>
+      <li><a href="#auth-details-addresses"><code class="language-plaintext highlighter-rouge">addresses</code></a></li>
+      <li><a href="#auth-details-include-bill-section-line-items"><code class="language-plaintext highlighter-rouge">include_bill_section_line_items</code></a></li>
+    </ul>
+  </li>
+  <li>The following are requirements for supported Authorization Details Field Objects [<a href="#ref-cds-wg1-02-auth-details-object">CDS-WG1-02 Section 3.8</a>]:
+    <ul>
+      <li>For the <a href="#auth-details-usage-segment-start"><code class="language-plaintext highlighter-rouge">start_date</code></a> field, the Server MUST allow Customers to authorize access to at least 3 years of historical service charges (i.e. <code class="language-plaintext highlighter-rouge">minimum</code> value set to at least <code class="language-plaintext highlighter-rouge">P3Y</code>).</li>
+      <li>For the <a href="#auth-details-usage-segment-end"><code class="language-plaintext highlighter-rouge">end_date</code></a> field, the Server MUST set the <code class="language-plaintext highlighter-rouge">maximum</code> value to <code class="language-plaintext highlighter-rouge">"infinite"</code> (i.e. Customers MAY authorize access to ongoing billed charges until they choose to revoke it).</li>
+    </ul>
+  </li>
+  <li>Servers MUST keep the <a href="#api">API</a> objects that are associated with the Grant updated to reflect any changes to the Customer, in accordance with the requirements of the <code class="language-plaintext highlighter-rouge">end_date</code> authorization details field.
+For example, if a Customer has authorized <code class="language-plaintext highlighter-rouge">"infinite"</code> as the value for <code class="language-plaintext highlighter-rouge">end_date</code>, the Client will see new <a href="#bill-statement-format">Bill Sections</a> when data is next synced to the Server from the Server’s source of truth (e.g. the utility’s internal billing system).</li>
+  <li>The Server MUST sync updates from its source of truth at least once per week, so that Client’s may receive changes to the Customer’s resources within a week of their creation.</li>
+</ul>
+
+<h3 id="410-whole-building-data-">4.10. Whole-Building Data <a id="scenario-building-data" href="#scenario-building-data" class="permalink">🔗</a></h3>
+
+<p>This section defines the Scenario “Whole-Building Data” in which a Client requests access to the aggregated energy usage for a set of buildings.
+For example, a building management company wants to request access to the whole-building energy usage for the properties they operate in order to submit the municipality’s required benchmarking reports.</p>
+
+<p>To implement the “Whole-Building Data” Scenario, Servers MUST implement the following requirements:</p>
+
+<ul>
+  <li>Servers MUST include support for the following Scopes in their Server Metadata’s <code class="language-plaintext highlighter-rouge">scopes_supported</code> array [<a href="#ref-cds-wg1-02-metadata">CDS-WG1-02 Section 3.2</a>]:
+    <ul>
+      <li><a href="#scope-aggregations-query">Aggregations Query</a></li>
+      <li><a href="#scope-usage-query">Usage Query</a></li>
+      <li><a href="#scope-aggregation-inclusion">Aggregation Inclusion</a></li>
+    </ul>
+  </li>
+  <li>For the <a href="#scope-aggregations-query">Aggregations Query</a> and <a href="#scope-usage-query">Usage Query</a> Scopes, the Server MUST include the <code class="language-plaintext highlighter-rouge">"client_credentials"</code> value the Scope Description’s <code class="language-plaintext highlighter-rouge">grant_types_supported</code> array.
+This means the Clients will be able to use OAuth’s Client Credentials Grant flow [<a href="#ref-rfc6749-client-credentials">RFC 6749 Section 4.4</a>] to be able to issue access tokens that they can then use to query the <a href="#aggregations-api">Aggregations API</a> and <a href="#usage-segments-api">Usage Segments API</a>.</li>
+  <li>Servers MUST include any steps in the <code class="language-plaintext highlighter-rouge">registration_requirements</code> that the Client or Server needs to complete before the Server will create a Client object that has the <code class="language-plaintext highlighter-rouge">production</code> status in it’s <code class="language-plaintext highlighter-rouge">cds_status_options</code> array.
+For example, if the Server requires a manual review of the Client’s registration before approving production access, the Server would include a Registration Field [<a href="#ref-cds-wg1-02-registration-fields">CDS-WG1-02 Section 3.5</a>] with a <code class="language-plaintext highlighter-rouge">type</code> value of <code class="language-plaintext highlighter-rouge">internal_review</code>.</li>
+  <li>Servers MUST create an <a href="#aggregation-format">Aggregation</a> object with an <code class="language-plaintext highlighter-rouge">aggregation_number</code> value for each building that needs to be accessible for this Scenario.
+Typically, a Server would set the building’s Building Identifier (e.g. BuildingID) as the Aggregation’s <code class="language-plaintext highlighter-rouge">aggregation_number</code>, if that is what Clients have previously used for requesting whole-building energy usage.
+For example, if a utility is required by a municipality to offer whole-building data the buildings in their territory, the utility Server will need to create Aggregation objects for each of the buildings.</li>
+  <li>Servers MUST create <a href="#service-point-format">Service Point</a> objects that are included in aggregated usage data for each Aggregation and include the relevant Service Points in each Aggregation’s <code class="language-plaintext highlighter-rouge">grouped_servicepoints</code> array.
+This let’s Clients see which Service Point <code class="language-plaintext highlighter-rouge">service_point_address</code> and any Premise <code class="language-plaintext highlighter-rouge">premise_number</code> values are associated with the Aggregation.</li>
+  <li>For the <a href="#scope-aggregations-query">Aggregations Query</a> Scope, in addition to its requirements, the following <a href="#auth-details-fields">Authorization Details Fields</a> MUST also be supported by the Server:
+    <ul>
+      <li><a href="#auth-details-servicepoint-numbers"><code class="language-plaintext highlighter-rouge">servicepoint_numbers</code></a></li>
+      <li><a href="#auth-details-aggregation-numbers"><code class="language-plaintext highlighter-rouge">aggregation_numbers</code></a></li>
+      <li><a href="#auth-details-addresses"><code class="language-plaintext highlighter-rouge">addresses</code></a></li>
+      <li><a href="#auth-details-include-service-points"><code class="language-plaintext highlighter-rouge">include_service_points</code></a></li>
+      <li><a href="#auth-details-include-premises"><code class="language-plaintext highlighter-rouge">include_premises</code></a></li>
+      <li><a href="#auth-details-include-service-point-addresses"><code class="language-plaintext highlighter-rouge">include_service_point_addresses</code></a></li>
+      <li><a href="#auth-details-include-aggregation-addresses"><code class="language-plaintext highlighter-rouge">include_aggregation_addresses</code></a></li>
+    </ul>
+  </li>
+  <li>For the <a href="#scope-usage-query">Usage Query</a> Scope, in addition to its requirements, the following Authorization Details Fields MUST also be supported by the Server:
+    <ul>
+      <li><a href="#auth-details-aggregation-numbers"><code class="language-plaintext highlighter-rouge">aggregation_numbers</code></a></li>
+      <li><a href="#auth-details-include-aggregations"><code class="language-plaintext highlighter-rouge">include_aggregations</code></a></li>
+      <li><a href="#auth-details-include-aggregation-addresses"><code class="language-plaintext highlighter-rouge">include_aggregation_addresses</code></a></li>
+    </ul>
+  </li>
+  <li>For the <a href="#scope-aggregations-query">Aggregations Query</a> Scope, the Server MUST only return <a href="#aggregation-format">Aggregations</a> that the Client is authorized to access.
+For example, if a Server restricts Clients to only see their owned properties, the Server MUST configure each Client to be able to query that subset of the Aggregations in the Server’s systems.</li>
+  <li>The Server MAY return an empty <code class="language-plaintext highlighter-rouge">aggregations</code> array for <a href="#aggregation-list">Aggregations listings</a> in which the access token’s Scope does not contain enumerated preselection values.
+This can be useful when the Server wants allow Clients to search for an Aggregation based on an identifier or address, but does not want the Client to be able to enumerate all Aggregations.</li>
+  <li>When the Client makes an Access Token Request [<a href="#ref-rfc6749-token-request">RFC 6749 Section 4.4.2</a>] and the request contains the <a href="#scope-usage-query">Usage Query</a> Scope, the Server MUST reject the request if the <a href="#scope-usage-query">Usage Query</a> Scope does not contain a populated <code class="language-plaintext highlighter-rouge">aggregation_numbers</code> authorization details field.
+This means that Clients will need to specifically enumerate the Aggregation <code class="language-plaintext highlighter-rouge">aggregation_numbers</code> in Scopes for which they wish to access the whole-building usage data.</li>
+  <li>If the Server creates a Grant that has the <a href="#scope-usage-query">Usage Query</a> Scope with <code class="language-plaintext highlighter-rouge">aggregation_numbers</code> for whole-building Aggregations, the Server MUST implement the following requirements:
+    <ul>
+      <li>The Server MUST initially set the Grant’s <code class="language-plaintext highlighter-rouge">status</code> to the value <code class="language-plaintext highlighter-rouge">"pending"</code>.</li>
+      <li>The Server MUST evaluate whether the Client can access Usage Segments for the requested buildings’ <code class="language-plaintext highlighter-rouge">aggregation_numbers</code> with or without Customer authorization.</li>
+      <li>If the Server determines that the Client can access the aggregated usage data (e.g. the number of Customers aggregated is above a threshold to sufficiently anonymize the data), the Server MUST update the Grant’s <code class="language-plaintext highlighter-rouge">status</code> to be the appropriate value (e.g. <code class="language-plaintext highlighter-rouge">"active"</code>) that allows the Client to query the Usage Segments requested.</li>
+      <li>If the Server determines that the Client requires additional Customer authorizations in order to access the aggregated usage (e.g. there are too few Customers in a building to sufficiently anonymize the data), the Server MUST implement the following requirements:
+        <ul>
+          <li>The Server MUST create Grant objects for each required Customer authorization that have the following values:
+            <ul>
+              <li>The <code class="language-plaintext highlighter-rouge">parent</code> value MUST be the <code class="language-plaintext highlighter-rouge">grant_id</code> value of the Grant that contains the Usage Query Scope.
+This makes this a sub-Grant to the originally created Grant.</li>
+              <li>The <code class="language-plaintext highlighter-rouge">status</code> value MUST be <code class="language-plaintext highlighter-rouge">"needs_authorization"</code>.</li>
+              <li>The <code class="language-plaintext highlighter-rouge">client_id</code> value MUST be the Client object <code class="language-plaintext highlighter-rouge">client_id</code> for which the <a href="#scope-aggregation-inclusion">Aggregation Inclusion</a> is an approved Scope.
+This <code class="language-plaintext highlighter-rouge">client_id</code> will not be the same as the parent Grant’s <code class="language-plaintext highlighter-rouge">client_id</code> because the parent Grant’s contains the <a href="#scope-usage-query">Usage Query</a> Scope, and <a href="#scopes-direct-access">Direct Access Scopes</a> like that MUST NOT be included in the same Client object as <a href="#scopes-customer-consent">Customer Consent Scopes</a>.</li>
+              <li>The <code class="language-plaintext highlighter-rouge">scope</code> value MUST contain only the <a href="#scope-aggregation-inclusion">Aggregation Inclusion</a> Scope.</li>
+              <li>The <code class="language-plaintext highlighter-rouge">authorization_details</code> array MUST contain an object with the <a href="#auth-details-aggregation-numbers"><code class="language-plaintext highlighter-rouge">aggregation_numbers</code></a> and <a href="#auth-details-premise-numbers"><code class="language-plaintext highlighter-rouge">premise_numbers</code></a> preselection fields that contain the Aggregation values relevant to that Customer.
+From these authorization details fields, the Client can derive from the Premise numbers which Customer needs to get which Grant’s Authorization Request (by associating the Premise number with a Service Point address using the <a href="#scope-aggregations-query">Aggregations Query</a> Scope).</li>
+              <li>The <code class="language-plaintext highlighter-rouge">authorization_details</code> array MAY contain the <code class="language-plaintext highlighter-rouge">addresses</code> preselection field to further make clear to the Client for which address the sub-Grant is targeted.</li>
+            </ul>
+          </li>
+          <li>The Server MUST update the parent Grant with the following values:
+            <ul>
+              <li>Include the created sub-Grants’ <code class="language-plaintext highlighter-rouge">grant_id</code> values in the parent Grant’s <code class="language-plaintext highlighter-rouge">children</code> array</li>
+              <li>Set the <code class="language-plaintext highlighter-rouge">status</code> value to <code class="language-plaintext highlighter-rouge">"needs_sub_grants"</code></li>
+              <li>Set the <code class="language-plaintext highlighter-rouge">enabled_scope</code> to be an empty string (<code class="language-plaintext highlighter-rouge">""</code>)</li>
+              <li>Set the <code class="language-plaintext highlighter-rouge">enabled_authorization_details</code> to be an empty array (<code class="language-plaintext highlighter-rouge">[]</code>)</li>
+            </ul>
+          </li>
+          <li>The Client can then use the Grant Authorization Request process [<a href="#ref-cds-wg1-02-grant-auth-requests">CDS-WG1-02 Section 8.3</a>] for each sub-Grant to obtain Customer authorization.</li>
+          <li>The Server and Client MAY use the Messages API [<a href="#ref-cds-wg1-02-messages-api">CDS-WG1-02 Section 6</a>] to communicate and modify sub-Grants as needed or to submit paperwork attachments if Customer authorization is obtained using paper forms.</li>
+          <li>If the Server determines a sub-Grant is completed using some other means (e.g. the Client sent a Message with a scanned paper-based Customer authorization form), the Server MUST update or remove sub-Grants accordingly to reflect the current requirements for the sub-Grants and parent Grant.</li>
+          <li>Once the Server has determined that the Client has completed the required Customer consents or other steps required to allow access to an Aggregation’s Usage Segments, the Server MUST update the Grant’s <code class="language-plaintext highlighter-rouge">status</code> to be the appropriate value (e.g. <code class="language-plaintext highlighter-rouge">"active"</code>) that allows the Client to query the Usage Segments requested.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>When the Client makes an Access Token Request, the Server MAY create a Grant that has a <code class="language-plaintext highlighter-rouge">status</code> value of <code class="language-plaintext highlighter-rouge">"pending"</code> if the Server needs to perform some asynchronous tasks before providing access to the requested Scopes.
+For example, if a Client requests an <a href="#scope-aggregations-query">Aggregations Query</a> Scope with the <code class="language-plaintext highlighter-rouge">addresses</code> preselection field set to a list of addresses for which they are searching for Aggregations and the Server needs to asynchronously look up which Aggregations are for those addresses, the Server MAY response with an access token and create a Grant with <code class="language-plaintext highlighter-rouge">status</code> as <code class="language-plaintext highlighter-rouge">"pending"</code> and <code class="language-plaintext highlighter-rouge">enabled_scope</code> as an empty string (<code class="language-plaintext highlighter-rouge">""</code>).
+Then when the Server has completed its asynchronous tasks, the Server MUST update the Grant’s <code class="language-plaintext highlighter-rouge">status</code> to be an appropriate value (e.g. <code class="language-plaintext highlighter-rouge">"active"</code>) based on the asynchronous tasks results.</li>
+</ul>
+
+<h3 id="411-aggregated-data-">4.11. Aggregated Data <a id="scenario-aggregated-data" href="#scenario-aggregated-data" class="permalink">🔗</a></h3>
+
+<p>This section defines the Scenario “Aggregated Data” in which a Client requests access to aggregated energy usage.
+For example, an academic institution wants to obtain energy usage aggregated by zip code from a utility.</p>
+
+<p>To implement the “Aggregated Data” Scenario, Servers MUST implement the following requirements:</p>
+
+<ul>
+  <li>Servers MUST include support for the following Scopes in their Server Metadata’s <code class="language-plaintext highlighter-rouge">scopes_supported</code> array [<a href="#ref-cds-wg1-02-metadata">CDS-WG1-02 Section 3.2</a>]:
+    <ul>
+      <li><a href="#scope-aggregations-query">Aggregations Query</a></li>
+      <li><a href="#scope-usage-query">Usage Query</a></li>
+    </ul>
+  </li>
+  <li>For the <a href="#scope-aggregations-query">Aggregations Query</a> and <a href="#scope-usage-query">Usage Query</a> Scopes, the Server MUST include the <code class="language-plaintext highlighter-rouge">"client_credentials"</code> value the Scope Description’s <code class="language-plaintext highlighter-rouge">grant_types_supported</code> array.
+This means the Clients will be able to use OAuth’s Client Credentials Grant flow [<a href="#ref-rfc6749-client-credentials">RFC 6749 Section 4.4</a>] to be able to issue access tokens that they can then use to query the <a href="#aggregations-api">Aggregations API</a> and <a href="#usage-segments-api">Usage Segments API</a>.</li>
+  <li>Servers MUST include any steps in the <code class="language-plaintext highlighter-rouge">registration_requirements</code> that the Client or Server needs to complete before the Server will create a Client object that has the <code class="language-plaintext highlighter-rouge">production</code> status in it’s <code class="language-plaintext highlighter-rouge">cds_status_options</code> array.
+For example, if the Server requires a manual review of the Client’s registration before approving production access, the Server would include a Registration Field [<a href="#ref-cds-wg1-02-registration-fields">CDS-WG1-02 Section 3.5</a>] with a <code class="language-plaintext highlighter-rouge">type</code> value of <code class="language-plaintext highlighter-rouge">internal_review</code>.</li>
+  <li>Servers MUST create an <a href="#aggregation-format">Aggregation</a> object with an <code class="language-plaintext highlighter-rouge">aggregation_number</code> value for each aggregated set of data that needs to be accessible for this Scenario.
+For example, if a utility is required by their regulator to release regional aggregated usage data, the utility Server will need to create Aggregation objects for each of the regions that need to have aggregated usage.</li>
+  <li>For the <a href="#scope-aggregations-query">Aggregations Query</a> Scope, in addition to its requirements, the following <a href="#auth-details-fields">Authorization Details Fields</a> MUST also be supported by the Server:
+    <ul>
+      <li><a href="#auth-details-aggregation-numbers"><code class="language-plaintext highlighter-rouge">aggregation_numbers</code></a></li>
+    </ul>
+  </li>
+  <li>For the <a href="#scope-usage-query">Usage Query</a> Scope, in addition to its requirements, the following Authorization Details Fields MUST also be supported by the Server:
+    <ul>
+      <li><a href="#auth-details-aggregation-numbers"><code class="language-plaintext highlighter-rouge">aggregation_numbers</code></a></li>
+      <li><a href="#auth-details-include-aggregations"><code class="language-plaintext highlighter-rouge">include_aggregations</code></a></li>
+    </ul>
+  </li>
+  <li>For the <a href="#scope-aggregations-query">Aggregations Query</a> Scope, the Server MUST only return <a href="#aggregation-format">Aggregations</a> that the Client is authorized to access.
+For example, if a Server restricts Clients to only see Aggregations for their home regions, the Server MUST configure each Client to be able to query that subset of the Aggregations in the Server’s systems.</li>
+  <li>When the Client makes an Access Token Request and the request contains the <a href="#scope-usage-query">Usage Query</a> Scope, the Server MUST reject the request if the <a href="#scope-usage-query">Usage Query</a> Scope does not contain a populated <code class="language-plaintext highlighter-rouge">aggregation_numbers</code> authorization details field.
+This means that Clients will need to specifically enumerate the Aggregation <code class="language-plaintext highlighter-rouge">aggregation_numbers</code> in Scopes for which they wish to access the whole-building usage data.</li>
+  <li>When the Client makes an Access Token Request [<a href="#ref-rfc6749-token-request">RFC 6749 Section 4.4.2</a>], the Server MAY create a Grant that has a <code class="language-plaintext highlighter-rouge">status</code> value of <code class="language-plaintext highlighter-rouge">"pending"</code> if the Server needs to perform some asynchronous tasks before providing access to the requested Scopes.
+For example, if a Client requests a <a href="#scope-usage-query">Usage Query</a> Scope with the <code class="language-plaintext highlighter-rouge">aggregation_numbers</code> preselection field set to a list of Aggregations for which they are requesting usage data and the Server needs to asynchronously look up the aggregated usage, the Server MAY response with an access token and create a Grant with <code class="language-plaintext highlighter-rouge">status</code> as <code class="language-plaintext highlighter-rouge">"pending"</code> and <code class="language-plaintext highlighter-rouge">enabled_scope</code> as an empty string (<code class="language-plaintext highlighter-rouge">""</code>).
+Then when the Server has completed its asynchronous tasks, the Server MUST update the Grant’s <code class="language-plaintext highlighter-rouge">status</code> to be an appropriate value (e.g. <code class="language-plaintext highlighter-rouge">"active"</code>) based on the asynchronous tasks results.</li>
+</ul>
 
 <h2 id="5-server-metadata-">5. Server Metadata <a id="server-metadata" href="#server-metadata" class="permalink">🔗</a></h2>
 
 <p>This specification extends CDS’s Authorization Server Metadata object [<a href="#ref-cds-wg1-02-metadata">CDS-WG1-02 Section 3.2</a>] to include the following named values:</p>
 
-<p><span style="background-color:yellow">TODO: check this list</span></p>
-
 <ul>
-  <li><code class="language-plaintext highlighter-rouge">cds_accounts_api</code> - <em><a href="#url">URL</a></em> - (OPTIONAL) The base url for the <a href="#accounts-api">Accounts API</a>.
-This is REQUIRED if a <a href="#scope-rate-plan">Rate Plan</a>, <a href="#scope-rate-plan">Self-Access</a>, or <a href="#scope-accounts-query">Accounts Query</a> Scope is included in the Server Metadata object’s <code class="language-plaintext highlighter-rouge">scopes_supported</code> field.</li>
-  <li><code class="language-plaintext highlighter-rouge">cds_servicecontracts_api</code> - <em><a href="#url">URL</a></em> - (OPTIONAL) The base url for the <a href="#service-contracts-api">Service Contracts API</a>.
-This is REQUIRED if a <a href="#scope-rate-plan">Rate Plan</a> or <a href="#scope-service-contracts-query">Service Contracts Query</a> Scope is included in the Server Metadata object’s <code class="language-plaintext highlighter-rouge">scopes_supported</code> field.</li>
-  <li><code class="language-plaintext highlighter-rouge">cds_servicepoints_api</code> - <em><a href="#url">URL</a></em> - (OPTIONAL) The base url for the <a href="#service-points-api">Service Points API</a>.
-This is REQUIRED if a <a href="#scope-meter-list">Meter List</a> or <a href="#scope-service-points-query">Service Points Query</a> Scope is included in the Server Metadata object’s <code class="language-plaintext highlighter-rouge">scopes_supported</code> field.</li>
-  <li><code class="language-plaintext highlighter-rouge">cds_meterdevices_api</code> - <em><a href="#url">URL</a></em> - (OPTIONAL) The base url for the <a href="#meter-devices-api">Meter Devices API</a>.
-This is REQUIRED if a <a href="#scope-meter-list">Meter List</a> or <a href="#scope-meter-devices-query">Meter Devices Query</a> Scope is included in the Server Metadata object’s <code class="language-plaintext highlighter-rouge">scopes_supported</code> field.</li>
-  <li><code class="language-plaintext highlighter-rouge">cds_billstatement_api</code> - <em><a href="#url">URL</a></em> - (OPTIONAL) The base url for the <a href="#bill-statements-api">Bill Statements API</a>.
-This is REQUIRED if a <a href="#scope-bill-statements">Bill Statements</a> or <a href="#scope-bill-statements-query">Bill Statements Query</a> Scope is included in the Server Metadata object’s <code class="language-plaintext highlighter-rouge">scopes_supported</code> field.</li>
-  <li><code class="language-plaintext highlighter-rouge">cds_billsection_api</code> - <em><a href="#url">URL</a></em> - (OPTIONAL) The base url for the <a href="#bill-sections-api">Bill Sections API</a>.
-This is REQUIRED if a <a href="#scope-service-bills">Service Bills</a> or <a href="#scope-bill-sections-query">Bill Sections Query</a> Scope is included in the Server Metadata object’s <code class="language-plaintext highlighter-rouge">scopes_supported</code> field.</li>
-  <li><code class="language-plaintext highlighter-rouge">cds_aggregations_api</code> - <em><a href="#url">URL</a></em> - (OPTIONAL) The base url for the <a href="#aggregations-api">Aggregations API</a>.
-This is REQUIRED if an <a href="#scope-aggregations-query">Aggregations Query</a> Scope is included in the Server Metadata object’s <code class="language-plaintext highlighter-rouge">scopes_supported</code> field.</li>
-  <li><code class="language-plaintext highlighter-rouge">cds_usagesegments_api</code> - <em><a href="#url">URL</a></em> - (OPTIONAL) The base url for the <a href="#usage-segments-api">Usage Segments API</a>.
-This is REQUIRED if a <a href="#scope-meter-usage">Meter Usage</a> or <a href="#scope-usage-query">Usage Query</a> Scope is included in the Server Metadata object’s <code class="language-plaintext highlighter-rouge">scopes_supported</code> field.</li>
-  <li><code class="language-plaintext highlighter-rouge">cds_eacs_api</code> - <em><a href="#url">URL</a></em> - (OPTIONAL) The base url for the <a href="#usage-segments-api">Usage Segments API</a>.
-This is REQUIRED if any Scope Descriptions <code class="language-plaintext highlighter-rouge">authorization_details_fields_supported</code> list has an <a href="#auth-details-field-include-eacs">Include EACs</a> authorization details field object.</li>
+  <li><code class="language-plaintext highlighter-rouge">cds_accounts_list</code> - <em><a href="#url">URL</a></em> - (OPTIONAL) The base url for the <a href="#accounts-list">Accounts listing API</a>.
+This is REQUIRED if any Scopes included in the <code class="language-plaintext highlighter-rouge">scopes_supported</code> array has the <a href="#auth-details-include-accounts"><code class="language-plaintext highlighter-rouge">include_accounts</code></a> authorization details field or it is required as part of the Scope.</li>
+  <li><code class="language-plaintext highlighter-rouge">cds_servicecontracts_list</code> - <em><a href="#url">URL</a></em> - (OPTIONAL) The base url for the <a href="#service-contracts-list">Service Contracts listing API</a>.
+This is REQUIRED if any Scopes included in the <code class="language-plaintext highlighter-rouge">scopes_supported</code> array has the <a href="#auth-details-include-service-contracts"><code class="language-plaintext highlighter-rouge">include_service_contracts</code></a> authorization details field or it is required as part of the Scope.</li>
+  <li><code class="language-plaintext highlighter-rouge">cds_servicepoints_list</code> - <em><a href="#url">URL</a></em> - (OPTIONAL) The base url for the <a href="#service-points-list">Service Points listing API</a>.
+This is REQUIRED if any Scopes included in the <code class="language-plaintext highlighter-rouge">scopes_supported</code> array has the <a href="#auth-details-include-service-points"><code class="language-plaintext highlighter-rouge">include_service_points</code></a> authorization details field or it is required as part of the Scope.</li>
+  <li><code class="language-plaintext highlighter-rouge">cds_meterdevices_list</code> - <em><a href="#url">URL</a></em> - (OPTIONAL) The base url for the <a href="#meter-devices-list">Meter Devices listing API</a>.
+This is REQUIRED if any Scopes included in the <code class="language-plaintext highlighter-rouge">scopes_supported</code> array has the <a href="#auth-details-include-meter-devices"><code class="language-plaintext highlighter-rouge">include_meter_devices</code></a> authorization details field or it is required as part of the Scope.</li>
+  <li><code class="language-plaintext highlighter-rouge">cds_billstatement_list</code> - <em><a href="#url">URL</a></em> - (OPTIONAL) The base url for the <a href="#bill-statements-list">Bill Statements listing API</a>.
+This is REQUIRED if any Scopes included in the <code class="language-plaintext highlighter-rouge">scopes_supported</code> array has the <a href="#auth-details-include-bill-statements"><code class="language-plaintext highlighter-rouge">include_bill_statements</code></a> authorization details field or it is required as part of the Scope.</li>
+  <li><code class="language-plaintext highlighter-rouge">cds_billsection_list</code> - <em><a href="#url">URL</a></em> - (OPTIONAL) The base url for the <a href="#bill-sections-list">Bill Sections listing API</a>.
+This is REQUIRED if any Scopes included in the <code class="language-plaintext highlighter-rouge">scopes_supported</code> array has the <a href="#auth-details-include-bill-sections"><code class="language-plaintext highlighter-rouge">include_bill_sections</code></a> authorization details field or it is required as part of the Scope.</li>
+  <li><code class="language-plaintext highlighter-rouge">cds_aggregations_list</code> - <em><a href="#url">URL</a></em> - (OPTIONAL) The base url for the <a href="#aggregations-list">Aggregations listing API</a>.
+This is REQUIRED if any Scopes included in the <code class="language-plaintext highlighter-rouge">scopes_supported</code> array has the <a href="#auth-details-include-aggregations"><code class="language-plaintext highlighter-rouge">include_aggregations</code></a> authorization details field or it is required as part of the Scope.</li>
+  <li><code class="language-plaintext highlighter-rouge">cds_usagesegments_list</code> - <em><a href="#url">URL</a></em> - (OPTIONAL) The base url for the <a href="#usage-segments-list">Usage Segments listing API</a>.
+This is REQUIRED if any Scopes included in the <code class="language-plaintext highlighter-rouge">scopes_supported</code> array has the <a href="#auth-details-include-usage-segments"><code class="language-plaintext highlighter-rouge">include_usage_segments</code></a> authorization details field or it is required as part of the Scope.</li>
+  <li><code class="language-plaintext highlighter-rouge">cds_eacs_list</code> - <em><a href="#url">URL</a></em> - (OPTIONAL) The base url for the <a href="#eac-list">Energy Attribute Certificates listing API</a>.
+This is REQUIRED if any Scopes included in the <code class="language-plaintext highlighter-rouge">scopes_supported</code> array has the <a href="#auth-details-include-eacs"><code class="language-plaintext highlighter-rouge">include_eacs</code></a> authorization details field or it is required as part of the Scope.</li>
   <li><code class="language-plaintext highlighter-rouge">cds_eac_formats</code> - <em>Map[<a href="#eac-data-format-descriptions">EACDataFormatDescription</a>]</em> - (OPTIONAL) An object providing additional information about each Energy Attribute Certificate (EAC) data format value that may be provided as the <a href="#eac-format">EAC object</a> <code class="language-plaintext highlighter-rouge">eac_format</code>, with the <a href="#eac-data-format-descriptions">EAC Data Format Description’s</a> <code class="language-plaintext highlighter-rouge">id</code> as the keys of the object and values being the <a href="#eac-data-format-descriptions">EAC Data Format Description</a> object itself.
-This is REQUIRED if the <code class="language-plaintext highlighter-rouge">cds_eacs_api</code> field is populated in the Server Metadata object.</li>
+This is REQUIRED if the <code class="language-plaintext highlighter-rouge">cds_eacs_list</code> field is populated in the Server Metadata object.</li>
 </ul>
 
 <h3 id="51-registration-field-formats-extension-">5.1. Registration Field Formats Extension <a id="registration-field-formats-extension" href="#registration-field-formats-extension" class="permalink">🔗</a></h3>
@@ -918,7 +1354,7 @@ In these relevant use cases, Clients only need access to Customers’ relevant s
     <ul>
       <li>For the object with an <code class="language-plaintext highlighter-rouge">id</code> value of <code class="language-plaintext highlighter-rouge">authorization_form_selection_type</code>, it MUST meet the following requirements:
         <ul>
-          <li>The <code class="language-plaintext highlighter-rouge">choices</code> array MUST contain only one object, and that object MUST have its <code class="language-plaintext highlighter-rouge">id</code> value be -<a href="#contract-selection"><code class="language-plaintext highlighter-rouge">"service_contract_selection"</code></a>.</li>
+          <li>The <code class="language-plaintext highlighter-rouge">choices</code> array MUST contain only one object, and that object MUST have its <code class="language-plaintext highlighter-rouge">id</code> value be <a href="#contract-selection"><code class="language-plaintext highlighter-rouge">"service_contract_selection"</code></a>.</li>
         </ul>
       </li>
     </ul>
@@ -1359,6 +1795,8 @@ In these relevant use cases, Clients need access to a Customer’s Usage Segment
   <li>The <code class="language-plaintext highlighter-rouge">grant_types_supported</code> value MUST contain at least the values <code class="language-plaintext highlighter-rouge">"authorization_code"</code> and <code class="language-plaintext highlighter-rouge">"refresh_token"</code> and MUST NOT contain the value <code class="language-plaintext highlighter-rouge">"client_credentials"</code>.</li>
   <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain at least the following values and support those authorization details fields as defined in the <a href="#auth-details-fields">Authorization Details Fields</a> section:
     <ul>
+      <li><a href="#auth-details-include-meter-devices"><code class="language-plaintext highlighter-rouge">"include_meter_devices"</code></a></li>
+      <li><a href="#auth-details-include-meter-numbers"><code class="language-plaintext highlighter-rouge">"include_meter_numbers"</code></a></li>
       <li><a href="#auth-details-include-usage-segment-formats"><code class="language-plaintext highlighter-rouge">"include_usage_segment_formats"</code></a></li>
       <li><a href="#auth-details-usage-segment-start"><code class="language-plaintext highlighter-rouge">"segment_start"</code></a></li>
       <li><a href="#auth-details-usage-segment-end"><code class="language-plaintext highlighter-rouge">"segment_end"</code></a></li>
@@ -1388,8 +1826,6 @@ In these relevant use cases, Clients need access to a Customer’s Usage Segment
       <li><a href="#auth-details-include-premises"><code class="language-plaintext highlighter-rouge">"include_premises"</code></a></li>
       <li><a href="#auth-details-include-service-point-addresses"><code class="language-plaintext highlighter-rouge">"include_service_point_addresses"</code></a></li>
       <li><a href="#auth-details-include-coordinates"><code class="language-plaintext highlighter-rouge">"include_coordinates"</code></a></li>
-      <li><a href="#auth-details-include-meter-devices"><code class="language-plaintext highlighter-rouge">"include_meter_devices"</code></a></li>
-      <li><a href="#auth-details-include-meter-numbers"><code class="language-plaintext highlighter-rouge">"include_meter_numbers"</code></a></li>
       <li><a href="#auth-details-include-aggregations"><code class="language-plaintext highlighter-rouge">"include_aggregations"</code></a></li>
       <li><a href="#auth-details-include-aggregation-addresses"><code class="language-plaintext highlighter-rouge">"include_aggregation_addresses"</code></a></li>
       <li><a href="#auth-details-include-bill-sections"><code class="language-plaintext highlighter-rouge">"include_bill_sections"</code></a></li>
@@ -1417,6 +1853,8 @@ In these relevant use cases, Clients need access to a Customer’s Usage Segment
           <li><code class="language-plaintext highlighter-rouge">"account_numbers"</code></li>
           <li><code class="language-plaintext highlighter-rouge">"include_accounts"</code></li>
           <li><code class="language-plaintext highlighter-rouge">"include_account_numbers"</code></li>
+          <li><code class="language-plaintext highlighter-rouge">"include_service_contracts"</code></li>
+          <li><code class="language-plaintext highlighter-rouge">"include_contract_numbers"</code></li>
         </ul>
       </li>
       <li>If the Server includes <code class="language-plaintext highlighter-rouge">"service_contract_selection"</code> as a choice in the <code class="language-plaintext highlighter-rouge">authorization_form_selection_type</code> authorization details object, the Server MUST include the following values in the <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array:
@@ -1439,13 +1877,13 @@ In these relevant use cases, Clients need access to a Customer’s Usage Segment
       </li>
       <li>If the Server includes <code class="language-plaintext highlighter-rouge">"meter_device_selection"</code> as a choice in the <code class="language-plaintext highlighter-rouge">authorization_form_selection_type</code> authorization details object, the Server MUST include the following values in the <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array:
         <ul>
+          <li><code class="language-plaintext highlighter-rouge">"sync_until"</code></li>
           <li><code class="language-plaintext highlighter-rouge">"meter_numbers"</code></li>
-          <li><code class="language-plaintext highlighter-rouge">"include_meter_devices"</code></li>
-          <li><code class="language-plaintext highlighter-rouge">"include_meter_numbers"</code></li>
         </ul>
       </li>
       <li>If the Server includes <code class="language-plaintext highlighter-rouge">"aggregation_selection"</code> as a choice in the <code class="language-plaintext highlighter-rouge">authorization_form_selection_type</code> authorization details object, the Server MUST include the following values in the <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array:
         <ul>
+          <li><code class="language-plaintext highlighter-rouge">"sync_until"</code></li>
           <li><code class="language-plaintext highlighter-rouge">"aggregation_numbers"</code></li>
           <li><code class="language-plaintext highlighter-rouge">"include_aggregations"</code></li>
         </ul>
@@ -1511,6 +1949,7 @@ Then, when all relevant Customers have authorized the sub-Grants (which have the
   <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain at least the following values and support those authorization details fields as defined in the <a href="#auth-details-fields">Authorization Details Fields</a> section:
     <ul>
       <li><a href="#auth-details-aggregation-numbers"><code class="language-plaintext highlighter-rouge">"aggregation_numbers"</code></a></li>
+      <li><a href="#auth-details-premise-numbers"><code class="language-plaintext highlighter-rouge">"premise_numbers"</code></a></li>
       <li><a href="#auth-details-expires"><code class="language-plaintext highlighter-rouge">"expires"</code></a></li>
       <li><a href="#auth-details-selection-type"><code class="language-plaintext highlighter-rouge">"authorization_form_selection_type"</code></a></li>
       <li><a href="#auth-details-error-if-no-preselections"><code class="language-plaintext highlighter-rouge">"error_if_no_preselections"</code></a></li>
@@ -1542,6 +1981,7 @@ Then, when all relevant Customers have authorized the sub-Grants (which have the
 
 <ul>
   <li>The Server MUST reject Client authorization requests with an <code class="language-plaintext highlighter-rouge">invalid_authorization_details</code> error [<a href="#ref-rfc9396-error-response">RFC 9396 Section 5</a>] where the <code class="language-plaintext highlighter-rouge">aggregation_numbers</code> authorization details field is set to <code class="language-plaintext highlighter-rouge">null</code>, meaning that Clients MUST specify which Aggregations for which they are requesting the Customer to authorize inclusion.</li>
+  <li>The Server MUST reject Client authorization requests with an <code class="language-plaintext highlighter-rouge">invalid_authorization_details</code> error [<a href="#ref-rfc9396-error-response">RFC 9396 Section 5</a>] where the <code class="language-plaintext highlighter-rouge">premise_numbers</code> authorization details field is set to <code class="language-plaintext highlighter-rouge">null</code>, meaning that Clients MUST specify which Premises for which they are requesting the Customer to authorize inclusion.</li>
   <li>The Server MUST reject Client authorization requests with an <code class="language-plaintext highlighter-rouge">invalid_authorization_details</code> error [<a href="#ref-rfc9396-error-response">RFC 9396 Section 5</a>] where the <code class="language-plaintext highlighter-rouge">error_if_no_preselections</code> authorization details field is set to <code class="language-plaintext highlighter-rouge">false</code>, meaning that Customer MUST have an applicable Aggregation in the <code class="language-plaintext highlighter-rouge">aggregation_numbers</code> included in the authorization request’s authorization details.</li>
   <li>The Server MUST reject Client authorization requests with an <code class="language-plaintext highlighter-rouge">invalid_authorization_details</code> error [<a href="#ref-rfc9396-error-response">RFC 9396 Section 5</a>] where the <code class="language-plaintext highlighter-rouge">allow_scope_modifications</code> authorization details field is set to <code class="language-plaintext highlighter-rouge">true</code>, meaning that the Customer MUST NOT be able to edit the authorization request’s scope, since the request is specifically for requesting consent to be included in a set of Aggregations.</li>
 </ul>
@@ -1581,7 +2021,7 @@ By imposing this limitation, in combination with <a href="#TODO-rate-limiting">R
 
 <h4 id="621-accounts-query-">6.2.1. Accounts Query <a id="scope-accounts-query" href="#scope-accounts-query" class="permalink">🔗</a></h4>
 
-<p>For some use cases, a Client needs to be able to access a list of Accounts.
+<p>For some use cases, a Client needs to be able to access a list of <a href="#account-format">Accounts</a>.
 For example, an enterprise Customer, acting as the Client, may need to review their list of utility accounts from the utility, acting as the Server.
 As another example, a utility vendor Client may need to search for a specific Account in the utility’s Customer list.
 In these relevant use cases, Clients need access to a set of Account objects directly, so this Scope provides the ability for Servers to offer managed access to Account objects.</p>
@@ -1591,7 +2031,6 @@ In these relevant use cases, Clients need access to a set of Account objects dir
 <ul>
   <li>The <code class="language-plaintext highlighter-rouge">type</code> value MUST be <code class="language-plaintext highlighter-rouge">"cds_query_accounts"</code>.</li>
   <li>The <code class="language-plaintext highlighter-rouge">response_types_supported</code> value must be an empty array (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
-  <li>The <code class="language-plaintext highlighter-rouge">grant_types_supported</code> value MUST contain at least the value <code class="language-plaintext highlighter-rouge">"client_credentials"</code>.</li>
   <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain at least the following values and support those authorization details fields as defined in the <a href="#auth-details-fields">Authorization Details Fields</a> section:
     <ul>
       <li><a href="#auth-details-sync-until"><code class="language-plaintext highlighter-rouge">"sync_until"</code></a></li>
@@ -1611,7 +2050,7 @@ In these relevant use cases, Clients need access to a set of Account objects dir
 
 <h4 id="622-service-contracts-query-">6.2.2. Service Contracts Query <a id="scope-service-contracts-query" href="#scope-service-contracts-query" class="permalink">🔗</a></h4>
 
-<p>For some use cases, a Client needs to be able to access a list of Service Contracts.
+<p>For some use cases, a Client needs to be able to access a list of <a href="#service-contract-format">Service Contracts</a>.
 For example, a utility vendor Client working with the utility Server may need to be able to look up a specific set of utility services for analysis as part of their project with the utility.
 In these relevant use cases, Clients need access to a set of Service Contract objects directly, so this Scope provides the ability for Servers to offer managed access to Service Contract objects.</p>
 
@@ -1620,7 +2059,6 @@ In these relevant use cases, Clients need access to a set of Service Contract ob
 <ul>
   <li>The <code class="language-plaintext highlighter-rouge">type</code> value MUST be <code class="language-plaintext highlighter-rouge">"cds_query_service_contracts"</code>.</li>
   <li>The <code class="language-plaintext highlighter-rouge">response_types_supported</code> value must be an empty array (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
-  <li>The <code class="language-plaintext highlighter-rouge">grant_types_supported</code> value MUST contain at least the value <code class="language-plaintext highlighter-rouge">"client_credentials"</code>.</li>
   <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain at least the following values and support those authorization details fields as defined in the <a href="#auth-details-fields">Authorization Details Fields</a> section:
     <ul>
       <li><a href="#auth-details-sync-until"><code class="language-plaintext highlighter-rouge">"sync_until"</code></a></li>
@@ -1641,7 +2079,7 @@ In these relevant use cases, Clients need access to a set of Service Contract ob
 
 <h4 id="623-service-points-query-">6.2.3. Service Points Query <a id="scope-service-points-query" href="#scope-service-points-query" class="permalink">🔗</a></h4>
 
-<p>For some use cases, a Client needs to be able to access a list of Service Points.
+<p>For some use cases, a Client needs to be able to access a list of <a href="#service-point-format">Service Points</a>.
 For example, a utility vendor Client working with the utility Server may need to be able to look up a specific set of service locations in order to create a map as part of their project with the utility.
 In these relevant use cases, Clients need access to a set of Service Point objects directly, so this Scope provides the ability for Servers to offer managed access to Service Point objects.</p>
 
@@ -1650,7 +2088,6 @@ In these relevant use cases, Clients need access to a set of Service Point objec
 <ul>
   <li>The <code class="language-plaintext highlighter-rouge">type</code> value MUST be <code class="language-plaintext highlighter-rouge">"cds_query_service_points"</code>.</li>
   <li>The <code class="language-plaintext highlighter-rouge">response_types_supported</code> value must be an empty array (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
-  <li>The <code class="language-plaintext highlighter-rouge">grant_types_supported</code> value MUST contain at least the value <code class="language-plaintext highlighter-rouge">"client_credentials"</code>.</li>
   <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain at least the following values and support those authorization details fields as defined in the <a href="#auth-details-fields">Authorization Details Fields</a> section:
     <ul>
       <li><a href="#auth-details-sync-until"><code class="language-plaintext highlighter-rouge">"sync_until"</code></a></li>
@@ -1670,7 +2107,7 @@ In these relevant use cases, Clients need access to a set of Service Point objec
 
 <h4 id="624-meter-devices-query-">6.2.4. Meter Devices Query <a id="scope-meter-devices-query" href="#scope-meter-devices-query" class="permalink">🔗</a></h4>
 
-<p>For some use cases, a Client needs to be able to access a list of Meter Devices.
+<p>For some use cases, a Client needs to be able to access a list of <a href="#meter-device-format">Meter Devices</a>.
 For example, a utility vendor Client working with the utility Server may need to be able to look up if a meter exists for a given <code class="language-plaintext highlighter-rouge">meter_number</code> in the utility’s system.
 In these relevant use cases, Clients need access to a set of Meter Device objects directly, so this Scope provides the ability for Servers to offer managed access to Meter Device objects.</p>
 
@@ -1679,7 +2116,6 @@ In these relevant use cases, Clients need access to a set of Meter Device object
 <ul>
   <li>The <code class="language-plaintext highlighter-rouge">type</code> value MUST be <code class="language-plaintext highlighter-rouge">"cds_query_meter_devices"</code>.</li>
   <li>The <code class="language-plaintext highlighter-rouge">response_types_supported</code> value must be an empty array (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
-  <li>The <code class="language-plaintext highlighter-rouge">grant_types_supported</code> value MUST contain at least the value <code class="language-plaintext highlighter-rouge">"client_credentials"</code>.</li>
   <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain at least the following values and support those authorization details fields as defined in the <a href="#auth-details-fields">Authorization Details Fields</a> section:
     <ul>
       <li><a href="#auth-details-sync-until"><code class="language-plaintext highlighter-rouge">"sync_until"</code></a></li>
@@ -1699,7 +2135,7 @@ In these relevant use cases, Clients need access to a set of Meter Device object
 
 <h4 id="625-bill-statements-query-">6.2.5. Bill Statements Query <a id="scope-bill-statements-query" href="#scope-bill-statements-query" class="permalink">🔗</a></h4>
 
-<p>For some use cases, a Client needs to be able to access a list of Bill Statements.
+<p>For some use cases, a Client needs to be able to access a list of <a href="#bill-statement-format">Bill Statements</a>.
 For example, a technical support contractor Client working with the utility Server may need to look up a Customer’s bills while while investigating a customer support ticket.
 In these relevant use cases, Clients need access to a set of Bill Statement objects directly, so this Scope provides the ability for Servers to offer managed access to Bill Statement objects.</p>
 
@@ -1708,7 +2144,6 @@ In these relevant use cases, Clients need access to a set of Bill Statement obje
 <ul>
   <li>The <code class="language-plaintext highlighter-rouge">type</code> value MUST be <code class="language-plaintext highlighter-rouge">"cds_query_bill_statements"</code>.</li>
   <li>The <code class="language-plaintext highlighter-rouge">response_types_supported</code> value must be an empty array (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
-  <li>The <code class="language-plaintext highlighter-rouge">grant_types_supported</code> value MUST contain at least the value <code class="language-plaintext highlighter-rouge">"client_credentials"</code>.</li>
   <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain at least the following values and support those authorization details fields as defined in the <a href="#auth-details-fields">Authorization Details Fields</a> section:
     <ul>
       <li><a href="#auth-details-sync-until"><code class="language-plaintext highlighter-rouge">"sync_until"</code></a></li>
@@ -1730,7 +2165,7 @@ In these relevant use cases, Clients need access to a set of Bill Statement obje
 
 <h4 id="626-bill-sections-query-">6.2.6. Bill Sections Query <a id="scope-bill-sections-query" href="#scope-bill-sections-query" class="permalink">🔗</a></h4>
 
-<p>For some use cases, a Client needs to be able to access a list of Bill Sections.
+<p>For some use cases, a Client needs to be able to access a list of <a href="#bill-section-format">Bill Sections</a>.
 For example, a technical support contractor Client working on customer support ticket for the utility Server may need to look up a Customer’s charges for a specific service to understand why a Customer was charged a certain amount for their electric service last month.
 In these relevant use cases, Clients need access to a set of Bill Section objects directly, so this Scope provides the ability for Servers to offer managed access to Bill Section objects.</p>
 
@@ -1739,7 +2174,6 @@ In these relevant use cases, Clients need access to a set of Bill Section object
 <ul>
   <li>The <code class="language-plaintext highlighter-rouge">type</code> value MUST be <code class="language-plaintext highlighter-rouge">"cds_query_bill_sections"</code>.</li>
   <li>The <code class="language-plaintext highlighter-rouge">response_types_supported</code> value must be an empty array (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
-  <li>The <code class="language-plaintext highlighter-rouge">grant_types_supported</code> value MUST contain at least the value <code class="language-plaintext highlighter-rouge">"client_credentials"</code>.</li>
   <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain at least the following values and support those authorization details fields as defined in the <a href="#auth-details-fields">Authorization Details Fields</a> section:
     <ul>
       <li><a href="#auth-details-sync-until"><code class="language-plaintext highlighter-rouge">"sync_until"</code></a></li>
@@ -1761,7 +2195,7 @@ In these relevant use cases, Clients need access to a set of Bill Section object
 
 <h4 id="627-aggregations-query-">6.2.7. Aggregations Query <a id="scope-aggregations-query" href="#scope-aggregations-query" class="permalink">🔗</a></h4>
 
-<p>For some use cases, a Client needs to be able to access a list of Aggregations.
+<p>For some use cases, a Client needs to be able to access a list of <a href="#aggregation-format">Aggregations</a>.
 For example, an academic researcher Client that needs to look up aggregated energy usage on a utility Server would need to query the list of available regional aggregations available for download.
 Another example is a building owner Client needing to search for their property’s building identifier, which the Server is storing as an Aggregation with the <code class="language-plaintext highlighter-rouge">aggregation_number</code> as the building ID, so that the owner can download the whole-building energy usage for benchmarking reporting.
 In these relevant use cases, Clients need access to a set of Aggregation objects directly, so this Scope provides the ability for Servers to offer managed access to Aggregation objects.</p>
@@ -1771,7 +2205,6 @@ In these relevant use cases, Clients need access to a set of Aggregation objects
 <ul>
   <li>The <code class="language-plaintext highlighter-rouge">type</code> value MUST be <code class="language-plaintext highlighter-rouge">"cds_query_aggregations"</code>.</li>
   <li>The <code class="language-plaintext highlighter-rouge">response_types_supported</code> value must be an empty array (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
-  <li>The <code class="language-plaintext highlighter-rouge">grant_types_supported</code> value MUST contain at least the value <code class="language-plaintext highlighter-rouge">"client_credentials"</code>.</li>
   <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain at least the following values and support those authorization details fields as defined in the <a href="#auth-details-fields">Authorization Details Fields</a> section:
     <ul>
       <li><a href="#auth-details-sync-until"><code class="language-plaintext highlighter-rouge">"sync_until"</code></a></li>
@@ -1791,7 +2224,7 @@ In these relevant use cases, Clients need access to a set of Aggregation objects
 
 <h4 id="628-usage-query-">6.2.8. Usage Query <a id="scope-usage-query" href="#scope-usage-query" class="permalink">🔗</a></h4>
 
-<p>For some use cases, a Client needs to be able to access a list of Usage Segments.
+<p>For some use cases, a Client needs to be able to access a list of <a href="#usage-segment-format">Usage Segments</a>.
 For example, an enterprise Customer, acting as the Client, needs to access their latest month of energy usage from the utility Server so that they can run their monthly energy report for the company’s leadership.
 In these relevant use cases, Clients need access to a set of Usage Segment objects directly, so this Scope provides the ability for Servers to offer managed access to Usage Segment objects.</p>
 
@@ -1800,7 +2233,6 @@ In these relevant use cases, Clients need access to a set of Usage Segment objec
 <ul>
   <li>The <code class="language-plaintext highlighter-rouge">type</code> value MUST be <code class="language-plaintext highlighter-rouge">"cds_query_usage"</code>.</li>
   <li>The <code class="language-plaintext highlighter-rouge">response_types_supported</code> value must be an empty array (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
-  <li>The <code class="language-plaintext highlighter-rouge">grant_types_supported</code> value MUST contain at least the value <code class="language-plaintext highlighter-rouge">"client_credentials"</code>.</li>
   <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain at least the following values and support those authorization details fields as defined in the <a href="#auth-details-fields">Authorization Details Fields</a> section:
     <ul>
       <li><a href="#auth-details-sync-until"><code class="language-plaintext highlighter-rouge">"sync_until"</code></a></li>
@@ -1815,7 +2247,8 @@ In these relevant use cases, Clients need access to a set of Usage Segment objec
 <ul>
   <li>The Server MUST treat this Scope as having included <code class="language-plaintext highlighter-rouge">true</code> values for the following authorization details fields, so that the data defined by those fields is included (this is the default access granted by this Scope):
     <ul>
-      <li><a href="#auth-details-include-bill-sections"><code class="language-plaintext highlighter-rouge">include_usage_segments</code></a></li>
+      <li><a href="#auth-details-include-usage-segments"><code class="language-plaintext highlighter-rouge">include_usage_segments</code></a></li>
+      <li><a href="#auth-details-include-usage-segment-formats"><code class="language-plaintext highlighter-rouge">include_usage_segment_formats</code></a></li>
     </ul>
   </li>
 </ul>
@@ -5089,7 +5522,7 @@ If the Server does not have this information or the Customer is not participatin
 
 <h4 id="1012-listing-accounts-">10.1.2. Listing Accounts <a id="accounts-list" href="#accounts-list" class="permalink">🔗</a></h4>
 
-<p>Clients may request to list Account objects that they have access to by making an HTTPS <code class="language-plaintext highlighter-rouge">GET</code> request, authenticated with a valid Bearer <code class="language-plaintext highlighter-rouge">access_token</code> that is scoped to provide access to a set of Accounts, to the <code class="language-plaintext highlighter-rouge">cds_accounts_api</code> URL included in the <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#registration-response">Client Registration Response</a> or <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#client-format">Clients API</a>.
+<p>Clients may request to list Account objects that they have access to by making an HTTPS <code class="language-plaintext highlighter-rouge">GET</code> request, authenticated with a valid Bearer <code class="language-plaintext highlighter-rouge">access_token</code> that is scoped to provide access to a set of Accounts, to the <code class="language-plaintext highlighter-rouge">cds_accounts_list</code> URL included in the <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#registration-response">Client Registration Response</a> or <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#client-format">Clients API</a>.
 The Account listing request responses are formatted as JSON objects and contain the following named values.</p>
 
 <ul>
@@ -5164,7 +5597,7 @@ If the Server does not have this information or the Customer is not participatin
 
 <h4 id="1022-listing-service-contracts-">10.2.2. Listing Service Contracts <a id="service-contract-list" href="#service-contract-list" class="permalink">🔗</a></h4>
 
-<p>Clients may request to list Service Contract objects that they have access to by making an HTTPS <code class="language-plaintext highlighter-rouge">GET</code> request, authenticated with a valid Bearer <code class="language-plaintext highlighter-rouge">access_token</code> that is scoped to provide access to a set of Service Contracts, to the <code class="language-plaintext highlighter-rouge">cds_servicecontracts_api</code> URL included in the <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#registration-response">Client Registration Response</a> or <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#client-format">Clients API</a>.
+<p>Clients may request to list Service Contract objects that they have access to by making an HTTPS <code class="language-plaintext highlighter-rouge">GET</code> request, authenticated with a valid Bearer <code class="language-plaintext highlighter-rouge">access_token</code> that is scoped to provide access to a set of Service Contracts, to the <code class="language-plaintext highlighter-rouge">cds_servicecontracts_list</code> URL included in the <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#registration-response">Client Registration Response</a> or <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#client-format">Clients API</a>.
 The Service Contract listing request responses are formatted as JSON objects and contain the following named values.</p>
 
 <ul>
@@ -5223,21 +5656,21 @@ If a Server does not have a Customer-facing identifier for a Service Point and t
   <li><code class="language-plaintext highlighter-rouge">servicepoint_address</code> - <em><a href="#string">string</a> or <code class="language-plaintext highlighter-rouge">null</code></em> - (OPTIONAL) The address that a Customer sees on their bill or online user interface as the address for this Service Point, if available.
 Strings MAY have line breaks, such as when the address is multiple lines.
 If a Server does not have a Customer-facing address for a Service Point and the Client is not authorized to see the Server’s internal address for this Service Point, this value is <code class="language-plaintext highlighter-rouge">null</code>.</li>
-  <li><code class="language-plaintext highlighter-rouge">latitude</code> - <em><a href="#decimal">decimal</a></em> - (OPTIONAL) The latitude that a Customer sees on their bill or online user interface as the latitude for this Service Point.
-If a Server does not have a Customer-facing latitude for a Service Point and the Client is not authorized to see the Server’s internal latitude for this Service Point, or the Server does not have latitude stored for this Server Point, this value is <code class="language-plaintext highlighter-rouge">null</code>.</li>
-  <li><code class="language-plaintext highlighter-rouge">longitude</code> - <em><a href="#decimal">decimal</a></em> - (OPTIONAL) The longitude that a Customer sees on their bill or online user interface as the longitude for this Service Point.
-If a Server does not have a Customer-facing longitude for a Service Point and the Client is not authorized to see the Server’s internal longitude for this Service Point, or the Server does not have longitude stored for this Server Point, this value is <code class="language-plaintext highlighter-rouge">null</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">latitude</code> - <em><a href="#decimal">decimal</a> or <code class="language-plaintext highlighter-rouge">null</code></em> - (OPTIONAL) The latitude that a Customer sees on their bill or online user interface as the latitude for this Service Point.
+If a Server does not have a Customer-facing latitude for a Service Point and the Client is not authorized to see the Server’s internal latitude for this Service Point, or the Server does not have latitude stored for this Service Point, this value is <code class="language-plaintext highlighter-rouge">null</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">longitude</code> - <em><a href="#decimal">decimal</a> or <code class="language-plaintext highlighter-rouge">null</code></em> - (OPTIONAL) The longitude that a Customer sees on their bill or online user interface as the longitude for this Service Point.
+If a Server does not have a Customer-facing longitude for a Service Point and the Client is not authorized to see the Server’s internal longitude for this Service Point, or the Server does not have longitude stored for this Service Point, this value is <code class="language-plaintext highlighter-rouge">null</code>.</li>
   <li><code class="language-plaintext highlighter-rouge">current_servicecontracts</code> - <em>Array[<a href="#string">string</a>]</em> - (REQUIRED) The list of <code class="language-plaintext highlighter-rouge">cds_servicecontract_id</code> values that identify Service Contracts that are currently providing a service to a Customer via this Service Point.
 This list MUST only include identifiers that the Client is authorized to see as scoped by their requesting <code class="language-plaintext highlighter-rouge">access_token</code>.</li>
   <li><code class="language-plaintext highlighter-rouge">previous_servicecontracts</code> - <em>Array[<a href="#string">string</a>]</em> - (REQUIRED) The list of <code class="language-plaintext highlighter-rouge">cds_servicecontract_id</code> values that identify Service Contracts that have previously provided a service to a Customer via this Service Point.
 This list MUST only include identifiers that the Client is authorized to see as scoped by their requesting <code class="language-plaintext highlighter-rouge">access_token</code>.</li>
   <li><code class="language-plaintext highlighter-rouge">premises</code> - <em>Array[<a href="#TODO-premise-format">Premise</a>]</em> - (OPTIONAL) A list of related premise identifiers and details that a Customer sees on their bill or online user interface as the premises for this Service Point, if available.
-If a Server does not have any Customer-facing premises for a Service Point or the Client is not authorized to see the Server’s internal premise details for this Service Point, or the Server does not have premises stored for this Server Point, this value is an empty list (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
+If a Server does not have any Customer-facing premises for a Service Point or the Client is not authorized to see the Server’s internal premise details for this Service Point, or the Server does not have premises stored for this Service Point, this value is an empty list (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
 </ul>
 
 <h4 id="1032-listing-service-points-">10.3.2. Listing Service Points <a id="service-point-list" href="#service-point-list" class="permalink">🔗</a></h4>
 
-<p>Clients may request to list Service Point objects that they have access to by making an HTTPS <code class="language-plaintext highlighter-rouge">GET</code> request, authenticated with a valid Bearer <code class="language-plaintext highlighter-rouge">access_token</code> that is scoped to provide access to a set of Service Points, to the <code class="language-plaintext highlighter-rouge">cds_servicepoints_api</code> URL included in the <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#registration-response">Client Registration Response</a> or <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#client-format">Clients API</a>.
+<p>Clients may request to list Service Point objects that they have access to by making an HTTPS <code class="language-plaintext highlighter-rouge">GET</code> request, authenticated with a valid Bearer <code class="language-plaintext highlighter-rouge">access_token</code> that is scoped to provide access to a set of Service Points, to the <code class="language-plaintext highlighter-rouge">cds_servicepoints_list</code> URL included in the <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#registration-response">Client Registration Response</a> or <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#client-format">Clients API</a>.
 The Service Point listing request responses are formatted as JSON objects and contain the following named values.</p>
 
 <ul>
@@ -5296,7 +5729,7 @@ This list MUST only include identifiers that the Client is authorized to see as 
 
 <h4 id="1042-listing-meter-devices-">10.4.2. Listing Meter Devices <a id="meter-device-list" href="#meter-device-list" class="permalink">🔗</a></h4>
 
-<p>Clients may request to list Meter Device objects that they have access to by making an HTTPS <code class="language-plaintext highlighter-rouge">GET</code> request, authenticated with a valid Bearer <code class="language-plaintext highlighter-rouge">access_token</code> that is scoped to provide access to a set of Meter Devices, to the <code class="language-plaintext highlighter-rouge">cds_meterdevices_api</code> URL included in the <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#registration-response">Client Registration Response</a> or <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#client-format">Clients API</a>.
+<p>Clients may request to list Meter Device objects that they have access to by making an HTTPS <code class="language-plaintext highlighter-rouge">GET</code> request, authenticated with a valid Bearer <code class="language-plaintext highlighter-rouge">access_token</code> that is scoped to provide access to a set of Meter Devices, to the <code class="language-plaintext highlighter-rouge">cds_meterdevices_list</code> URL included in the <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#registration-response">Client Registration Response</a> or <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#client-format">Clients API</a>.
 The Meter Device listing request responses are formatted as JSON objects and contain the following named values.</p>
 
 <ul>
@@ -5370,7 +5803,7 @@ If the Server does not have this information or the Customer is not participatin
 
 <h4 id="1052-listing-bill-statements-">10.5.2. Listing Bill Statements <a id="bill-statement-list" href="#bill-statement-list" class="permalink">🔗</a></h4>
 
-<p>Clients may request to list Bill Statement objects that they have access to by making an HTTPS <code class="language-plaintext highlighter-rouge">GET</code> request, authenticated with a valid Bearer <code class="language-plaintext highlighter-rouge">access_token</code> that is scoped to provide access to a set of Bill Statements, to the <code class="language-plaintext highlighter-rouge">cds_billstatement_api</code> URL included in the <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#registration-response">Client Registration Response</a> or <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#client-format">Clients API</a>.
+<p>Clients may request to list Bill Statement objects that they have access to by making an HTTPS <code class="language-plaintext highlighter-rouge">GET</code> request, authenticated with a valid Bearer <code class="language-plaintext highlighter-rouge">access_token</code> that is scoped to provide access to a set of Bill Statements, to the <code class="language-plaintext highlighter-rouge">cds_billstatement_list</code> URL included in the <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#registration-response">Client Registration Response</a> or <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#client-format">Clients API</a>.
 The Bill Statement listing request responses are formatted as JSON objects and contain the following named values.</p>
 
 <ul>
@@ -5440,7 +5873,7 @@ This list MUST only include identifiers that the Client is authorized to see as 
 
 <h4 id="1062-listing-bill-sections-">10.6.2. Listing Bill Sections <a id="bill-section-list" href="#bill-section-list" class="permalink">🔗</a></h4>
 
-<p>Clients may request to list Bill Section objects that they have access to by making an HTTPS <code class="language-plaintext highlighter-rouge">GET</code> request, authenticated with a valid Bearer <code class="language-plaintext highlighter-rouge">access_token</code> that is scoped to provide access to a set of Bill Sections, to the <code class="language-plaintext highlighter-rouge">cds_billsection_api</code> URL included in the <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#registration-response">Client Registration Response</a> or <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#client-format">Clients API</a>.
+<p>Clients may request to list Bill Section objects that they have access to by making an HTTPS <code class="language-plaintext highlighter-rouge">GET</code> request, authenticated with a valid Bearer <code class="language-plaintext highlighter-rouge">access_token</code> that is scoped to provide access to a set of Bill Sections, to the <code class="language-plaintext highlighter-rouge">cds_billsection_list</code> URL included in the <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#registration-response">Client Registration Response</a> or <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#client-format">Clients API</a>.
 The Bill Section listing request responses are formatted as JSON objects and contain the following named values.</p>
 
 <ul>
@@ -5514,7 +5947,7 @@ The intent of this requirement is to enable Servers to use the <a href="#aggrega
 
 <h4 id="1072-listing-aggregations-">10.7.2. Listing Aggregations <a id="aggregation-list" href="#aggregation-list" class="permalink">🔗</a></h4>
 
-<p>Clients may request to list Aggregation objects that they have access to by making an HTTPS <code class="language-plaintext highlighter-rouge">GET</code> request, authenticated with a valid Bearer <code class="language-plaintext highlighter-rouge">access_token</code> that is scoped to provide access to a set of Aggregations, to the <code class="language-plaintext highlighter-rouge">cds_aggregations_api</code> URL included in the <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#registration-response">Client Registration Response</a> or <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#client-format">Clients API</a>.
+<p>Clients may request to list Aggregation objects that they have access to by making an HTTPS <code class="language-plaintext highlighter-rouge">GET</code> request, authenticated with a valid Bearer <code class="language-plaintext highlighter-rouge">access_token</code> that is scoped to provide access to a set of Aggregations, to the <code class="language-plaintext highlighter-rouge">cds_aggregations_list</code> URL included in the <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#registration-response">Client Registration Response</a> or <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#client-format">Clients API</a>.
 The Aggregation listing request responses are formatted as JSON objects and contain the following named values.</p>
 
 <ul>
@@ -5629,7 +6062,7 @@ Servers MUST replace the item in the Value Set with <code class="language-plaint
 
 <h4 id="1085-listing-usage-segments-">10.8.5. Listing Usage Segments <a id="usage-segment-list" href="#usage-segment-list" class="permalink">🔗</a></h4>
 
-<p>Clients may request to list Usage Segment objects that they have access to by making an HTTPS <code class="language-plaintext highlighter-rouge">GET</code> request, authenticated with a valid Bearer <code class="language-plaintext highlighter-rouge">access_token</code> that is scoped to provide access to a set of Usage Segments, to the <code class="language-plaintext highlighter-rouge">cds_usagesegments_api</code> URL included in the <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#registration-response">Client Registration Response</a> or <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#client-format">Clients API</a>.
+<p>Clients may request to list Usage Segment objects that they have access to by making an HTTPS <code class="language-plaintext highlighter-rouge">GET</code> request, authenticated with a valid Bearer <code class="language-plaintext highlighter-rouge">access_token</code> that is scoped to provide access to a set of Usage Segments, to the <code class="language-plaintext highlighter-rouge">cds_usagesegments_list</code> URL included in the <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#registration-response">Client Registration Response</a> or <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#client-format">Clients API</a>.
 The Usage object listing request responses are formatted as JSON objects and contain the following named values.</p>
 
 <ul>
@@ -5734,7 +6167,7 @@ When the <code class="language-plaintext highlighter-rouge">beneficiary_type</co
 
 <h4 id="1094-listing-energy-attribute-certificates-">10.9.4. Listing Energy Attribute Certificates <a id="eac-list" href="#eac-list" class="permalink">🔗</a></h4>
 
-<p>Clients may request to list EAC objects that they have access to by making an HTTPS <code class="language-plaintext highlighter-rouge">GET</code> request, authenticated with a valid Bearer <code class="language-plaintext highlighter-rouge">access_token</code> that is scoped to provide access to a set of EACs, to the <code class="language-plaintext highlighter-rouge">cds_eacs_api</code> URL included in the <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#registration-response">Client Registration Response</a> or <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#client-format">Clients API</a>.
+<p>Clients may request to list EAC objects that they have access to by making an HTTPS <code class="language-plaintext highlighter-rouge">GET</code> request, authenticated with a valid Bearer <code class="language-plaintext highlighter-rouge">access_token</code> that is scoped to provide access to a set of EACs, to the <code class="language-plaintext highlighter-rouge">cds_eacs_list</code> URL included in the <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#registration-response">Client Registration Response</a> or <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02#client-format">Clients API</a>.
 The EAC object listing request responses are formatted as JSON objects and contain the following named values.</p>
 
 <ul>
@@ -5817,6 +6250,10 @@ In situations where relevant EACs have the same <code class="language-plaintext 
 <code class="language-plaintext highlighter-rouge">CDS-WG1-02 Section 5.5</code> - “Modifying Client Objects”, CDS-WG1-02, LF Energy Standards and Specifications (LFESS),<br />
 <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02/#clients-modify">https://cds-registration.lfenergy.org/specs/cds-wg1-02/#clients-modify</a></p>
 
+<p><a id="ref-cds-wg1-02-messages-api" href="#ref-cds-wg1-02-messages-api" class="permalink">🔗</a>
+<code class="language-plaintext highlighter-rouge">CDS-WG1-02 Section 6</code> - “Messages API”, CDS-WG1-02, LF Energy Standards and Specifications (LFESS),<br />
+<a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02/#messages-api">https://cds-registration.lfenergy.org/specs/cds-wg1-02/#messages-api</a></p>
+
 <p><a id="ref-cds-wg1-02-grant-object" href="#ref-cds-wg1-02-grant-object" class="permalink">🔗</a>
 <code class="language-plaintext highlighter-rouge">CDS-WG1-02 Section 8.1</code> - “Grant Object Format”, CDS-WG1-02, LF Energy Standards and Specifications (LFESS),<br />
 <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02/#grant-format">https://cds-registration.lfenergy.org/specs/cds-wg1-02/#grant-format</a></p>
@@ -5860,6 +6297,10 @@ In situations where relevant EACs have the same <code class="language-plaintext 
 <p><a id="ref-rfc6749-client-credentials" href="#ref-rfc6749-client-credentials" class="permalink">🔗</a>
 <code class="language-plaintext highlighter-rouge">RFC 6749 Section 4.4</code> - Section 4.4. Client Credentials Grant, “The OAuth 2.0 Authorization Framework”, RFC 6749, Internet Engineering Task Force (IETF),<br />
 <a href="https://www.rfc-editor.org/rfc/rfc6749#section-4.4">https://www.rfc-editor.org/rfc/rfc6749#section-4.4</a></p>
+
+<p><a id="ref-rfc6749-token-request" href="#ref-rfc6749-token-request" class="permalink">🔗</a>
+<code class="language-plaintext highlighter-rouge">RFC 6749 Section 4.4.2</code> - Section 4.4.2. Access Token Request, “The OAuth 2.0 Authorization Framework”, RFC 6749, Internet Engineering Task Force (IETF),<br />
+<a href="https://www.rfc-editor.org/rfc/rfc6749#section-4.4.2">https://www.rfc-editor.org/rfc/rfc6749#section-4.4.2</a></p>
 
 <p><a id="ref-rfc6838" href="#ref-rfc6838" class="permalink">🔗</a>
 <code class="language-plaintext highlighter-rouge">RFC 6838</code> - “Media Type Specifications and Registration Procedures”, RFC 6838, Internet Engineering Task Force (IETF),<br />
