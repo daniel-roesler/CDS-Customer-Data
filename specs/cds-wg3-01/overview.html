@@ -179,9 +179,9 @@ If you have a use case you think should be listed here, we encourage you to <a h
 By extending <code class="language-plaintext highlighter-rouge">cds-wg1-02</code>, the built-in Client registration, communication, and management features from that specification are also part of this customer data specification, which significantly increases scalability and flexibility for Server operators.
 For example, a utility or other central entity could deploy a small, low cost Server for niche use cases and ad-hoc customer data access needs, then expand the Server’s enabled use cases, scopes, and datasets over time.</p>
 
-<p>As part of the extension, this specification defines new <a href="/CDS-Customer-Data/specs/cds-wg3-01#authorization-scopes">OAuth scope values</a> that standardize various levels of access for common customer data access use cases.
+<p>As part of the extension, this specification defines new <a href="/CDS-Customer-Data/specs/cds-wg3-01#scopes">OAuth scope values</a> that standardize various levels of access for common customer data access use cases.
 These scopes cover use cases where customer consent is required (using the widely adopted OAuth <code class="language-plaintext highlighter-rouge">authorization_code</code> grant flow) and use cases where only Server authorization is required (using the OAuth <code class="language-plaintext highlighter-rouge">client_credentials</code> grant flow).
-When customer consent is required, the specification defines authorization user interface requirements that streamline the customer authorization experience while also keeping the authorization process secure.</p>
+When customer consent is required, the specification defines an <a href="/CDS-Customer-Data/specs/cds-wg3-01#authorizations">OAuth authorization process</a> that streamlines the customer’s experience while also keeping the authorization secure.</p>
 
 <p>Another part of the extension is a set of APIs and data formats for customer data (listed below).</p>
 
