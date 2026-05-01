@@ -464,13 +464,22 @@ For more information, visit <a href="https://lfess.energy/">https://lfess.energy
               <li><a href="#usage-segment-fueloil-usage">10.8.3.5. Fuel Oil Usage</a></li>
               <li><a href="#usage-segment-interval-cost">10.8.3.6. Interval Cost</a></li>
               <li><a href="#usage-segment-supply-mix">10.8.3.7. Electric Supply Mix</a></li>
-              <li><a href="#usage-segment-eacs">10.8.3.8. Energy Attribute Certificates</a></li>
             </ul>
           </li>
-          <li><a href="#usage-segment-value-format-description">10.8.4. Usage Segment Value Format Description Objects</a></li>
-          <li><a href="#usage-segment-value-set-format">10.8.5. Usage Segment Value Sets</a></li>
-          <li><a href="#usage-segment-value-objects">10.8.6. Usage Segment Value Objects</a></li>
-          <li><a href="#usage-segment-list">10.8.7. Listing Usage Segments</a></li>
+          <li><a href="#usage-segment-value-format-field-types">10.8.4. Usage Segment Value Format Field Types</a>
+            <ul>
+              <li><a href="#usage-segment-unit-types">10.8.4.1. Unit Types</a></li>
+              <li><a href="#usage-segment-direction-types">10.8.4.2. Direction Types</a></li>
+              <li><a href="#usage-segment-tou-types">10.8.4.3. Time-of-Use Types</a></li>
+              <li><a href="#usage-segment-tier-types">10.8.4.4. Tier Types</a></li>
+              <li><a href="#usage-segment-season-types">10.8.4.5. Season Types</a></li>
+              <li><a href="#usage-segment-reading-quality-types">10.8.4.6. Reading Quality Types</a></li>
+            </ul>
+          </li>
+          <li><a href="#usage-segment-value-format-description">10.8.5. Usage Segment Value Format Description Objects</a></li>
+          <li><a href="#usage-segment-value-set-format">10.8.6. Usage Segment Value Sets</a></li>
+          <li><a href="#usage-segment-value-objects">10.8.7. Usage Segment Value Objects</a></li>
+          <li><a href="#usage-segment-list">10.8.8. Listing Usage Segments</a></li>
         </ul>
       </li>
       <li><a href="#eac-api">10.9. Energy Attribute Certificates API</a>
@@ -535,7 +544,10 @@ So for the purposes of this specification, anytime the “User” is mentioned i
 
 <p><a id="datetime" href="#datetime" class="permalink">🔗</a> “datetime” - A string representing date and time in the format of <code class="language-plaintext highlighter-rouge">date-time</code> as defined by [<a href="#ref-rfc3339-datetime">RFC 3339 Section 5.6</a>] (e.g. “2024-01-01T00:00:00Z”).</p>
 
-<p><a id="decimal" href="#decimal" class="permalink">🔗</a> “decimal” - A decimal value as defined by <code class="language-plaintext highlighter-rouge">number</code> in [<a href="#ref-rfc8259-numbers">RFC 8259 Section 6</a>].</p>
+<p><a id="decimal" href="#decimal" class="permalink">🔗</a> “decimal” - A decimal value as defined by <code class="language-plaintext highlighter-rouge">number</code> in [<a href="#ref-rfc8259-numbers">RFC 8259 Section 6</a>].
+Decimal values MAY have any number of significant digits after the decimal point.
+When storing a decimal value, Servers MUST preserve the decimal precision of the value exactly.
+This means Servers MUST NOT store a decimal value as a float, since that format does not preserve the significant figures of the decimal value.</p>
 
 <p><a id="get" href="#get" class="permalink">🔗</a> “GET” - A request method defined in [<a href="#ref-rfc9110-methods">RFC 9110 Section 9</a>].</p>
 
@@ -6210,14 +6222,15 @@ If the Server caches the data for this object and periodically synchronizes it w
   <li><code class="language-plaintext highlighter-rouge">related_billsections</code> - <em>Array[<a href="#string">string</a>]</em> - (REQUIRED) The list of <code class="language-plaintext highlighter-rouge">cds_billsection_id</code> values that identify Bill Sections to which this Usage Segment is applicable.</li>
   <li><code class="language-plaintext highlighter-rouge">segment_start</code> - <em><a href="#datetime">datetime</a></em> - (REQUIRED) The starting timestamp for the list of Usage Segment <code class="language-plaintext highlighter-rouge">values</code>.</li>
   <li><code class="language-plaintext highlighter-rouge">segment_end</code> - <em><a href="#datetime">datetime</a></em> - (REQUIRED) The ending timestamp for the list of Usage Segment <code class="language-plaintext highlighter-rouge">values</code>.
-For values that represent a duration (e.g. 15-min usage interval reading), the <code class="language-plaintext highlighter-rouge">segment_end</code> MUST represent the timestamp at the end of the duration.</li>
+For Usage Segments that include Value Objects that represent a duration measurement (e.g. 15-min usage interval reading), the <code class="language-plaintext highlighter-rouge">segment_end</code> MUST represent the timestamp at the end of the duration.</li>
   <li><code class="language-plaintext highlighter-rouge">interval</code> - <em><a href="#decimal">decimal</a></em> - (REQUIRED) How long between values, in seconds.
-For values representing a duration interval (e.g. kwh usage intervals), this <code class="language-plaintext highlighter-rouge">interval</code> represents the duration of each interval, where the next value starts immediately at the end of the prior interval value with no time gap.
-For values representing instantaneous readings (e.g. register read), this <code class="language-plaintext highlighter-rouge">interval</code> represents the time between the readings provided in the <code class="language-plaintext highlighter-rouge">values</code>.
-For usage readings that have varying duration, such as monthly usage readings, Servers MUST create individual Usage Point objects that have an <code class="language-plaintext highlighter-rouge">interval</code> value with the duration of the specific period (e.g. month) and a single Value Set entry in their <code class="language-plaintext highlighter-rouge">values</code> array.</li>
+For values representing a duration interval (e.g. <a href="#usage-segment-electric-usage">Electric Usage</a>), this <code class="language-plaintext highlighter-rouge">interval</code> represents the duration of each interval, where the next value starts immediately at the end of the prior interval value with no time gap.
+For values representing point-in-time readings (e.g. <a href="#usage-segment-meter-readings">Meter Readings</a>), this <code class="language-plaintext highlighter-rouge">interval</code> represents the time between the readings provided in the <code class="language-plaintext highlighter-rouge">values</code>.</li>
   <li><code class="language-plaintext highlighter-rouge">formats</code> - <em>Array[<a href="#usage-segment-value-formats">ValueFormat</a>]</em> - (REQUIRED) For each entry in <code class="language-plaintext highlighter-rouge">values</code>, these are the formats of that are included, presented in the order in which the values are presented.</li>
   <li><code class="language-plaintext highlighter-rouge">values</code> - <em>Array[<a href="#usage-segment-value-set-format">ValueSet</a>]</em> - (REQUIRED) A list of Value Sets that represent the entries included in the Usage Segment.</li>
 </ul>
+
+<p>For data that has varying durations, such as monthly billed usage (e.g. anywhere from 28 days to 31 days), Servers MUST create individual Usage Segment objects that have an <code class="language-plaintext highlighter-rouge">interval</code> value with the duration of the specific period (e.g. month) and a single Value Set entry in their <code class="language-plaintext highlighter-rouge">values</code> array.</p>
 
 <p>Servers MUST only include unique identifiers in <code class="language-plaintext highlighter-rouge">related_aggregations</code>, <code class="language-plaintext highlighter-rouge">related_accounts</code>, <code class="language-plaintext highlighter-rouge">related_servicecontracts</code>, <code class="language-plaintext highlighter-rouge">related_servicepoints</code>, <code class="language-plaintext highlighter-rouge">related_meterdevices</code>, and <code class="language-plaintext highlighter-rouge">related_billsections</code> lists MUST only include identifiers that the Client is authorized to see as scoped by their requesting <code class="language-plaintext highlighter-rouge">access_token</code>.</p>
 
@@ -6228,7 +6241,7 @@ The Value Format object contains the type and details of the Value Set it repres
 Usage Segments are organized this way so that the <code class="language-plaintext highlighter-rouge">formats</code> listing essentially provides a “schema” of object types to expect when parsing the <code class="language-plaintext highlighter-rouge">values</code> Value Sets, which removes the need for each object in each Value Set to include repeated fields, such as an object type and units values.</p>
 
 <p>The Server MAY include multiple Value Format objects with the same <code class="language-plaintext highlighter-rouge">type</code> value if the Value Format’s fields or corresponding Value Set’s values are different.
-For example, if a Server is providing access to bidirectional electric usage interval data, the Server would include three Value Format objects in the <code class="language-plaintext highlighter-rouge">formats</code> array, all with the <code class="language-plaintext highlighter-rouge">type</code> value of <a href="#usage-segment-electric-usage"><code class="language-plaintext highlighter-rouge">electric_usage</code></a>, but with different directions of usage (i.e. the <code class="language-plaintext highlighter-rouge">direction</code> fields set <code class="language-plaintext highlighter-rouge">forward</code>, <code class="language-plaintext highlighter-rouge">reverse</code>, and <code class="language-plaintext highlighter-rouge">net</code>).</p>
+For example, if a Server is providing access to bidirectional electric usage interval data, the Server would include three Value Format objects in the <code class="language-plaintext highlighter-rouge">formats</code> array, all with the <code class="language-plaintext highlighter-rouge">type</code> value of <a href="#usage-segment-electric-usage"><code class="language-plaintext highlighter-rouge">"electric_usage"</code></a>, but with different directions of usage (i.e. the <code class="language-plaintext highlighter-rouge">direction</code> fields set <code class="language-plaintext highlighter-rouge">forward</code>, <code class="language-plaintext highlighter-rouge">reverse</code>, and <code class="language-plaintext highlighter-rouge">net</code>).</p>
 
 <p>The intent is to separate the Value Set’s metadata from the Value Set object so that the Value Set object can be much more compact, since there could be hundreds or thousands of Value Set objects in a single Usage Segment object.
 For example, a daily net metered elected 15 minute interval Usage Segment would be 384 Value Set objects (i.e. 4 data points per interval * 96 intervals per day).</p>
@@ -6253,7 +6266,7 @@ For example, a daily net metered elected 15 minute interval Usage Segment would 
   <li><code class="language-plaintext highlighter-rouge">fueloil_usage</code> - <a href="#usage-segment-fueloil-usage">Fuel Oil Usage</a></li>
   <li><code class="language-plaintext highlighter-rouge">cost</code> - <a href="#usage-segment-interval-cost">Interval Cost</a></li>
   <li><code class="language-plaintext highlighter-rouge">supply_mix</code> - <a href="#usage-segment-supply-mix">Electric Supply Mix</a></li>
-  <li><code class="language-plaintext highlighter-rouge">eacs</code> - <a href="#usage-segment-eacs">Energy Attribute Certificates</a></li>
+  <li><code class="language-plaintext highlighter-rouge">meter_readings</code> - <a href="#usage-segment-meter-readings">Meter Readings</a></li>
 </ul>
 
 <p>Servers MAY include other Value Format <code class="language-plaintext highlighter-rouge">type</code> values in the Usage Segment <code class="language-plaintext highlighter-rouge">formats</code> array, so long as the Value Format <code class="language-plaintext highlighter-rouge">type</code> is included in the <a href="#server-metadata">Server Metadata’s</a> <code class="language-plaintext highlighter-rouge">cds_usage_segment_additional_formats</code> reference object.
@@ -6267,7 +6280,51 @@ It is RECOMMENDED that additional <code class="language-plaintext highlighter-ro
 
 <h5 id="10831-electric-usage-">10.8.3.1. Electric Usage <a id="usage-segment-electric-usage" href="#usage-segment-electric-usage" class="permalink">🔗</a></h5>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>To include electric usage data, both for granular (e.g. 15 minute intervals) and longer period (e.g. monthly data) readings, the Server MUST use the <a href="#usage-segment-electric-usage-value-format">Value Format Object</a> and <a href="#usage-segment-electric-usage-value-object">Value Object</a> defined in this section.</p>
+
+<p><a id="usage-segment-electric-usage-value-format" href="#usage-segment-electric-usage-value-format" class="permalink">🔗</a> <a href="#usage-segment-value-formats">Value Format Objects</a> for electric usage have the following fields:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">type</code> - <em><a href="#string">string</a></em> - (REQUIRED) This value MUST be <code class="language-plaintext highlighter-rouge">electric_usage</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">units</code> - <em><a href="#usage-segment-unit-types">UnitType</a></em> - (REQUIRED) This is the units for the usage data.
+The value of this field MUST be one of the following:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">"Wh"</code> - Watt-hours</li>
+      <li><code class="language-plaintext highlighter-rouge">"kWh"</code> - Kilowatt-hours</li>
+      <li><code class="language-plaintext highlighter-rouge">"MWh"</code> - Megawatt-hours</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">direction</code> - <em><a href="#usage-segment-direction-types">DirectionType</a></em> - (OPTIONAL) This is the direction of electricity flow for the usage data.
+If the Server does not know whether the Meter Device(s) used to measure the usage data are bidirectional (e.g. the meter can spin both directions) or one-way-only (e.g. the meter only records usage going forward), this field MUST NOT be included.
+If the Server does know the accumulation kind for the Meter Device(s), the value of this field MUST be one of the following:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">"net"</code> - Net electric usage (i.e. the Meter Device(s) accumulate electricity flow going in both forward and reverse direction)</li>
+      <li><code class="language-plaintext highlighter-rouge">"forward"</code> - Delivered electricity only (i.e. the Meter Device(s) ignore flow going in the reverse direction and only accumulate forward flowing electricity)</li>
+      <li><code class="language-plaintext highlighter-rouge">"reverse"</code> - Received electricity only (i.e. the Meter Device(s) ignore flow going in the forward direction and only accumulate reverse flowing electricity)</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">tou</code> - <em><a href="#usage-segment-tou-types">TimeOfUseType</a> or <code class="language-plaintext highlighter-rouge">null</code></em> - (OPTIONAL) This is the billing time-of-use (TOU) designation for the usage data.
+If there is no time-of-use designation for the usage data (e.g. the Customer is on a tier-based billing Service Contract), this value MUST be <code class="language-plaintext highlighter-rouge">null</code>.
+If the Server does not know the time-of-use designation, this field MUST NOT be included.</li>
+  <li><code class="language-plaintext highlighter-rouge">tier</code> - <em><a href="#usage-segment-tier-types">TierType</a> or <code class="language-plaintext highlighter-rouge">null</code></em> - (OPTIONAL) This is the billing tier designation for the usage data.
+If there is no tier designation for the usage data (e.g. the Customer is on a time-of-use billing Service Contract), this value MUST be <code class="language-plaintext highlighter-rouge">null</code>.
+If the Server does not know the tier designation, this field MUST NOT be included.</li>
+  <li><code class="language-plaintext highlighter-rouge">season</code> - <em><a href="#usage-segment-season-types">SeasonType</a> or <code class="language-plaintext highlighter-rouge">null</code></em> - (OPTIONAL) This is the billing seasonal designation for the usage data.
+If there is no seasonal designation for the usage data (e.g. the Customer’s rate plan does not differentiate between summer and winter), this value MUST be <code class="language-plaintext highlighter-rouge">null</code>.
+If the Server does not know the seasonal designation, this field MUST NOT be included.</li>
+  <li><code class="language-plaintext highlighter-rouge">quality</code> - <em><a href="#usage-segment-reading-quality-types">ReadingQualityType</a></em> - (OPTIONAL) This is the quality designation of the usage reading.
+If the Server does not have a known the quality designation for the usage data (e.g. the Server), this value MUST be <code class="language-plaintext highlighter-rouge">null</code>.
+If the Server does not know the tier designation, this field MUST NOT be included.</li>
+  <li><code class="language-plaintext highlighter-rouge">related_meterdevices</code> - <em>Array[<a href="#string">string</a>]</em> - (OPTIONAL) The list of <code class="language-plaintext highlighter-rouge">cds_meterdevice_id</code> values that identify Meter Devices from which the corresponding Value Objects were measured.
+If the Server does not know which Meter Devices were used to measure the usage data, this field MUST NOT be included.</li>
+</ul>
+
+<p><a id="usage-segment-electric-usage-value-object" href="#usage-segment-electric-usage-value-object" class="permalink">🔗</a> <a href="#usage-segment-value-objects">Value Objects</a> for electric usage have the following additional fields:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">eu</code> - <em><a href="#decimal">decimal</a></em> - (REQUIRED) The amount of electric usage from the start timestamp of the interval to the end timestamp of the interval, in the corresponding Value Format’s <code class="language-plaintext highlighter-rouge">units</code>.
+For all directions (<code class="language-plaintext highlighter-rouge">net</code>, <code class="language-plaintext highlighter-rouge">forward</code>, and <code class="language-plaintext highlighter-rouge">reverse</code>), a positive value in this field represents electric usage flowing from the central entity to the external entity (e.g. the Customer is using electricity from the grid for that interval), and a negative value represents electric usage flowing from the external entity to the central entity (e.g. the Customer has distributed generation and is sending electricity back to the grid for that interval).</li>
+</ul>
 
 <h5 id="10832-electric-demand-">10.8.3.2. Electric Demand <a id="usage-segment-electric-demand" href="#usage-segment-electric-demand" class="permalink">🔗</a></h5>
 
@@ -6293,11 +6350,124 @@ It is RECOMMENDED that additional <code class="language-plaintext highlighter-ro
 
 <p><span style="background-color:yellow">TODO</span></p>
 
-<h5 id="10838-energy-attribute-certificates-">10.8.3.8. Energy Attribute Certificates <a id="usage-segment-eacs" href="#usage-segment-eacs" class="permalink">🔗</a></h5>
+<h5 id="10838-meter-readings-">10.8.3.8. Meter Readings <a id="usage-segment-meter-readings" href="#usage-segment-meter-readings" class="permalink">🔗</a></h5>
 
 <p><span style="background-color:yellow">TODO</span></p>
 
-<h4 id="1084-usage-segment-value-format-description-objects-">10.8.4. Usage Segment Value Format Description Objects <a id="usage-segment-value-format-description" href="#usage-segment-value-format-description" class="permalink">🔗</a></h4>
+<h4 id="1084-usage-segment-value-format-field-types-">10.8.4. Usage Segment Value Format Field Types <a id="usage-segment-value-format-field-types" href="#usage-segment-value-format-field-types" class="permalink">🔗</a></h4>
+
+<p>Value Format Objects <a href="#usage-segment-value-format-types">Types</a> define additional fields for <a href="#usage-segment-value-formats">Value Format Objects</a> depending on the kind of data they represent.
+Many of the additional fields defined have values that can be choices from a set of enumerated values (e.g. units, time-of-use designations, etc.).
+The enumerated values for these field types are defined in this section.</p>
+
+<h5 id="10841-unit-types-">10.8.4.1. Unit Types <a id="usage-segment-unit-types" href="#usage-segment-unit-types" class="permalink">🔗</a></h5>
+
+<p>Unit Type values MUST be a <a href="#string">string</a> of one of the following:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">Wh</code> - Watt-hours</li>
+  <li><code class="language-plaintext highlighter-rouge">kWh</code> - Kilowatt-hours (i.e. 1,000 Watt-hours)</li>
+  <li><code class="language-plaintext highlighter-rouge">MWh</code> - Megawatt-hours (i.e. 1,000,000 Watt-hours)</li>
+  <li><code class="language-plaintext highlighter-rouge">W</code> - Watts</li>
+  <li><code class="language-plaintext highlighter-rouge">kW</code> - Kilowatts (i.e. 1,000 Watts)</li>
+  <li><code class="language-plaintext highlighter-rouge">MW</code> - Megawatts (i.e. 1,000,000 Watts)</li>
+  <li><code class="language-plaintext highlighter-rouge">m3</code> - Cubic meters</li>
+  <li><code class="language-plaintext highlighter-rouge">ft3</code> - Cubic feet</li>
+  <li><code class="language-plaintext highlighter-rouge">CCF</code> - Hundred cubic feet (i.e. 100 cubic feet)</li>
+  <li><code class="language-plaintext highlighter-rouge">MCF</code> - Thousand cubic feet (i.e. 1,000 cubic feet)</li>
+  <li><code class="language-plaintext highlighter-rouge">MMCF</code> - Million cubic feet (i.e. 1,000,000 cubic feet)</li>
+  <li><code class="language-plaintext highlighter-rouge">MMCFD</code> - Million cubic feet per day (i.e. 1,000,000 cubic feet / day)</li>
+  <li><code class="language-plaintext highlighter-rouge">L</code> - Liters</li>
+  <li><code class="language-plaintext highlighter-rouge">gal</code> - Gallons</li>
+  <li><code class="language-plaintext highlighter-rouge">Btu</code> - British Thermal Units</li>
+  <li><code class="language-plaintext highlighter-rouge">therm</code> - Therm (i.e. 100,000 BTUs)</li>
+  <li><code class="language-plaintext highlighter-rouge">Sm3</code> - standard cubic meter</li>
+  <li><code class="language-plaintext highlighter-rouge">scf</code> - Standard cubic feet</li>
+  <li><code class="language-plaintext highlighter-rouge">SCFM</code> - Standard cubic feet per minute</li>
+  <li><code class="language-plaintext highlighter-rouge">C</code> - Degrees Celsius</li>
+  <li><code class="language-plaintext highlighter-rouge">F</code> - Degrees Fahrenheit</li>
+  <li><code class="language-plaintext highlighter-rouge">var</code> - Volt-ampere reactive</li>
+  <li><code class="language-plaintext highlighter-rouge">kvar</code> - Kilovolt-ampere reactive (i.e. 1,000 volt-ampere reactive)</li>
+  <li><code class="language-plaintext highlighter-rouge">varh</code> - Volt-ampere reactive hours</li>
+  <li><code class="language-plaintext highlighter-rouge">kvarh</code> - Kilovolt-ampere reactive hours (i.e. 1,000 volt-ampere reactive hours)</li>
+  <li><code class="language-plaintext highlighter-rouge">years</code> - Years</li>
+  <li><code class="language-plaintext highlighter-rouge">months</code> - Months</li>
+  <li><code class="language-plaintext highlighter-rouge">days</code> - Days</li>
+  <li><code class="language-plaintext highlighter-rouge">hours</code> - Hours</li>
+  <li><code class="language-plaintext highlighter-rouge">minutes</code> - Minutes</li>
+  <li><code class="language-plaintext highlighter-rouge">seconds</code> - Seconds</li>
+  <li><code class="language-plaintext highlighter-rouge">money</code> - Amount of money (in which currency is based the definition of the object in which this unit is used)</li>
+  <li><code class="language-plaintext highlighter-rouge">count</code> - Number of items (e.g. the number of lamps in an unmetered electric service)</li>
+  <li><code class="language-plaintext highlighter-rouge">percent</code> - Percent (e.g. percent of maximum value)</li>
+</ul>
+
+<h5 id="10842-direction-types-">10.8.4.2. Direction Types <a id="usage-segment-direction-types" href="#usage-segment-direction-types" class="permalink">🔗</a></h5>
+
+<p>Direction Type values MUST be a <a href="#string">string</a> of one of the following:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">net</code> - The data represents the total amount of usage of both directions combined into a net value (e.g. bidirectional meter usage).</li>
+  <li><code class="language-plaintext highlighter-rouge">forward</code> - The data represents the total amount of usage that went from the central entity to the external entity (e.g. energy usage from the utility to the Customer’s building).</li>
+  <li><code class="language-plaintext highlighter-rouge">reverse</code> - The data represents the total amount of usage that went from the external entity to the central entity (e.g. distributed generation flowing usage back to the utility).</li>
+</ul>
+
+<h5 id="10843-time-of-use-types-">10.8.4.3. Time-of-Use Types <a id="usage-segment-tou-types" href="#usage-segment-tou-types" class="permalink">🔗</a></h5>
+
+<p>Time-of-Use (TOU) Type values MUST be a <a href="#string">string</a> of one of the following:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">super_peak</code> - Super Peak, also sometimes called Super On-Peak</li>
+  <li><code class="language-plaintext highlighter-rouge">peak</code> - Peak, also sometimes called On-Peak</li>
+  <li><code class="language-plaintext highlighter-rouge">partial_peak</code> - Partial-Peak, also sometimes called Shoulder</li>
+  <li><code class="language-plaintext highlighter-rouge">off_peak</code> - Off-Peak</li>
+  <li><code class="language-plaintext highlighter-rouge">super_off_peak</code> - Super Off-Peak</li>
+</ul>
+
+<h5 id="10844-tier-types-">10.8.4.4. Tier Types <a id="usage-segment-tier-types" href="#usage-segment-tier-types" class="permalink">🔗</a></h5>
+
+<p>Tier Type values MUST be a <a href="#string">string</a> of one of the following:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">baseline</code> - Baseline Tier</li>
+  <li><code class="language-plaintext highlighter-rouge">tier_1</code> - Tier 1</li>
+  <li><code class="language-plaintext highlighter-rouge">tier_2</code> - Tier 2</li>
+  <li><code class="language-plaintext highlighter-rouge">tier_3</code> - Tier 3</li>
+  <li><code class="language-plaintext highlighter-rouge">tier_4</code> - Tier 4</li>
+  <li><code class="language-plaintext highlighter-rouge">tier_5</code> - Tier 5</li>
+  <li><code class="language-plaintext highlighter-rouge">tier_6</code> - Tier 6</li>
+  <li><code class="language-plaintext highlighter-rouge">tier_7</code> - Tier 7</li>
+  <li><code class="language-plaintext highlighter-rouge">tier_8</code> - Tier 8</li>
+  <li><code class="language-plaintext highlighter-rouge">tier_9</code> - Tier 9</li>
+</ul>
+
+<h5 id="10845-season-types-">10.8.4.5. Season Types <a id="usage-segment-season-types" href="#usage-segment-season-types" class="permalink">🔗</a></h5>
+
+<p>Season Type values MUST be a <a href="#string">string</a> of one of the following:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">spring</code> - Spring season</li>
+  <li><code class="language-plaintext highlighter-rouge">summer</code> - Summer season</li>
+  <li><code class="language-plaintext highlighter-rouge">fall</code> - Fall/Autumn season</li>
+  <li><code class="language-plaintext highlighter-rouge">winter</code> - Winter season</li>
+</ul>
+
+<h5 id="10846-reading-quality-types-">10.8.4.6. Reading Quality Types <a id="usage-segment-reading-quality-types" href="#usage-segment-reading-quality-types" class="permalink">🔗</a></h5>
+
+<p>Reading Quality Type values MUST be a <a href="#string">string</a> of one of the following:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">raw</code> - The values are unchanged from the digital readings from Meter Device(s) and have not gone through any quality assurance checks.</li>
+  <li><code class="language-plaintext highlighter-rouge">manual</code> - The values are unchanged from the visually or manually logged readings from the Meter Device(s) and have not gone through any quality assurance checks.</li>
+  <li><code class="language-plaintext highlighter-rouge">valid</code> - The values have undergone automated quality assurance checks, but have not yet been designated as <code class="language-plaintext highlighter-rouge">revenue</code> quality.</li>
+  <li><code class="language-plaintext highlighter-rouge">revenue</code> - The values are ready to be used for billing purposes or have been used for billing.</li>
+  <li><code class="language-plaintext highlighter-rouge">estimated</code> - The values are estimated.</li>
+  <li><code class="language-plaintext highlighter-rouge">calculated</code> - The values are derived from calculations with other measured values.</li>
+  <li><code class="language-plaintext highlighter-rouge">corrected</code> - The values have been edited or corrected from their previous read value, after the previous value was used for billing purposes (e.g. post-revenue correction).</li>
+  <li><code class="language-plaintext highlighter-rouge">website</code> - The values are the same quality as those provided to the Customer on the Customer’s portal interface.
+This reading quality could be the same quality as any other type, so it is RECOMMENDED that Servers only use this reading quality type when it does not otherwise know a more specific appropriate reading quality type.</li>
+</ul>
+
+<h4 id="1085-usage-segment-value-format-description-objects-">10.8.5. Usage Segment Value Format Description Objects <a id="usage-segment-value-format-description" href="#usage-segment-value-format-description" class="permalink">🔗</a></h4>
 
 <p>The Server MAY include <a href="#usage-segment-value-formats">Value Format</a> object types beyond those that are <a href="#usage-segment-value-format-types">defined</a> in this specification.
 When Servers do include additional Value Format types, the Server MUST include information, represented by a Value Format Description object, for that additional type so that Clients can become compatible with the Value Format and Value Set objects when they are included in a <a href="#usage-segment-format">Usage Segment’s</a> <code class="language-plaintext highlighter-rouge">formats</code> and <code class="language-plaintext highlighter-rouge">values</code> fields.</p>
@@ -6315,7 +6485,7 @@ It is RECOMMENDED that Servers also include examples of what typical Value Forma
 Servers MAY include any other information in their documentation, in addition to the required formatted definition.</li>
 </ul>
 
-<h4 id="1085-usage-segment-value-sets-">10.8.5. Usage Segment Value Sets <a id="usage-segment-value-set-format" href="#usage-segment-value-set-format" class="permalink">🔗</a></h4>
+<h4 id="1086-usage-segment-value-sets-">10.8.6. Usage Segment Value Sets <a id="usage-segment-value-set-format" href="#usage-segment-value-set-format" class="permalink">🔗</a></h4>
 
 <p>The <a href="#usage-segment-format">Usage Segment</a> <code class="language-plaintext highlighter-rouge">values</code> field provides an ordered list of Value Set entries.
 A Value Set entry is an array that contains an ordered list of <a href="#usage-segment-value-objects">Value Objects</a>, where the type of each Value object which is defined by the order of the <code class="language-plaintext highlighter-rouge">formats</code> listing.</p>
@@ -6325,11 +6495,14 @@ For example, if a Usage Segment has a <code class="language-plaintext highlighte
 
 <p>If a Value Object is not available for a specific Value Set (e.g. that interval has missing data), Servers MUST replace the item in the Value Set where the Value Object would have gone with <code class="language-plaintext highlighter-rouge">null</code>.</p>
 
-<h4 id="1086-usage-segment-value-objects-">10.8.6. Usage Segment Value Objects <a id="usage-segment-value-objects" href="#usage-segment-value-objects" class="permalink">🔗</a></h4>
+<h4 id="1087-usage-segment-value-objects-">10.8.7. Usage Segment Value Objects <a id="usage-segment-value-objects" href="#usage-segment-value-objects" class="permalink">🔗</a></h4>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>A Value Object is a JSON object that is included as an entry in a <a href="#usage-segment-value-set-format">Value Set</a> array.
+The index of the Value Object in the Value Set corresponds to the same index of <a href="#usage-segment-value-formats">Value Format Object</a> (which defines the Value Object’s type and format) in the <a href="#usage-segment-format">Usage Segment’s</a> <code class="language-plaintext highlighter-rouge">formats</code> array.</p>
 
-<h4 id="1087-listing-usage-segments-">10.8.7. Listing Usage Segments <a id="usage-segment-list" href="#usage-segment-list" class="permalink">🔗</a></h4>
+<p>The fields within a Value Object are defined by the corresponding Value Format Object’s <a href="#usage-segment-value-format-types">Type</a> definition (e.g. <a href="#usage-segment-electric-usage">Electric Usage</a>).</p>
+
+<h4 id="1088-listing-usage-segments-">10.8.8. Listing Usage Segments <a id="usage-segment-list" href="#usage-segment-list" class="permalink">🔗</a></h4>
 
 <p>Clients may request to list Usage Segment objects that they have access to by making an HTTPS <code class="language-plaintext highlighter-rouge">GET</code> request to the <a href="#server-metadata">Server Metadata’s</a> <code class="language-plaintext highlighter-rouge">cds_usagesegments_list</code> URL.
 The Usage object listing request responses are formatted as JSON objects and contain the following named values.</p>
