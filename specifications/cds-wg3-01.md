@@ -96,7 +96,7 @@ For more information, visit [https://lfess.energy/](https://lfess.energy/).
         * [7.2.7. Include Aggregations](#auth-details-include-aggregations)  
             * [7.2.7.1. Include Aggregation Addresses](#auth-details-include-aggregation-addresses)  
         * [7.2.8. Include Usage Segments](#auth-details-include-usage-segments)  
-            * [7.2.8.1. Include Usage Segment Formats](#auth-details-include-usage-segment-formats)  
+            * [7.2.8.1. Include Usage Segment Value Types](#auth-details-include-usage-segment-value-types)  
         * [7.2.9. Include Energy Attribute Certificates](#auth-details-include-eacs)  
     * [7.3. Duration Fields](#auth-details-duration)  
         * [7.3.1. Sync Until](#auth-details-sync-until)  
@@ -205,26 +205,46 @@ For more information, visit [https://lfess.energy/](https://lfess.energy/).
         * [10.7.6. Consent Requirement Types](#consent-requirement-types)  
         * [10.7.7. Listing Aggregations](#aggregation-list)  
     * [10.8. Usage Segments API](#usage-segments-api)  
-        * [10.8.1. Usage Segment Object Format](#usage-segment-format)  
-        * [10.8.2. Usage Segment Value Format Objects](#usage-segment-value-formats)  
-        * [10.8.3. Usage Segment Value Format Types](#usage-segment-value-format-types)  
-            * [10.8.3.1. Electric Usage](#usage-segment-electric-usage)  
-            * [10.8.3.2. Electric Demand](#usage-segment-electric-demand)  
-            * [10.8.3.3. Water Usage](#usage-segment-water-usage)  
-            * [10.8.3.4. Natural Gas Usage](#usage-segment-gas-usage)  
-            * [10.8.3.5. Fuel Oil Usage](#usage-segment-fueloil-usage)  
-            * [10.8.3.6. Interval Cost](#usage-segment-interval-cost)  
-            * [10.8.3.7. Electric Supply Mix](#usage-segment-supply-mix)  
-        * [10.8.4. Usage Segment Value Format Field Types](#usage-segment-value-format-field-types)  
-            * [10.8.4.1. Unit Types](#usage-segment-unit-types)  
-            * [10.8.4.2. Direction Types](#usage-segment-direction-types)  
-            * [10.8.4.3. Time-of-Use Types](#usage-segment-tou-types)  
-            * [10.8.4.4. Tier Types](#usage-segment-tier-types)  
-            * [10.8.4.5. Season Types](#usage-segment-season-types)  
-            * [10.8.4.6. Reading Quality Types](#usage-segment-reading-quality-types)  
-        * [10.8.5. Usage Segment Value Format Description Objects](#usage-segment-value-format-description)  
-        * [10.8.6. Usage Segment Value Sets](#usage-segment-value-set-format)  
-        * [10.8.7. Usage Segment Value Objects](#usage-segment-value-objects)  
+        * [10.8.1. Usage Segment Objects](#usage-segment-format)  
+        * [10.8.2. Value Format Objects](#usage-segment-value-formats)  
+        * [10.8.3. Value Sets](#usage-segment-value-set-format)  
+        * [10.8.4. Value Objects](#usage-segment-value-objects)  
+        * [10.8.5. Value Types](#usage-segment-value-types)  
+            * [10.8.5.1. Electric Usage](#usage-segment-electric-usage)  
+                * [10.8.5.1.1. Electric Usage Value Format Objects](#usage-segment-electric-usage-value-format)  
+                * [10.8.5.1.2. Electric Usage Value Objects](#usage-segment-electric-usage-value-object)  
+            * [10.8.5.2. Electric Demand](#usage-segment-electric-demand)  
+                * [10.8.5.2.1. Electric Demand Value Format Objects](#usage-segment-electric-demand-value-format)  
+                * [10.8.5.2.2. Electric Demand Value Objects](#usage-segment-electric-demand-value-object)  
+            * [10.8.5.3. Electric Supply Mix](#usage-segment-supply-mix)  
+                * [10.8.5.3.1. Electric Supply Mix Value Format Objects](#usage-segment-supply-mix-value-format)  
+                * [10.8.5.3.2. Electric Supply Mix Value Objects](#usage-segment-supply-mix-value-object)  
+            * [10.8.5.4. Water Usage](#usage-segment-water-usage)  
+                * [10.8.5.4.1. Water Usage Value Format Objects](#usage-segment-water-usage-value-format)  
+                * [10.8.5.4.2. Water Usage Value Objects](#usage-segment-water-usage-value-object)  
+            * [10.8.5.5. Natural Gas Usage](#usage-segment-gas-usage)  
+                * [10.8.5.5.1. Natural Gas Usage Value Format Objects](#usage-segment-gas-usage-value-format)  
+                * [10.8.5.5.2. Natural Gas Usage Value Objects](#usage-segment-gas-usage-value-object)  
+            * [10.8.5.6. Fuel Oil Usage](#usage-segment-fueloil-usage)  
+                * [10.8.5.6.1. Fuel Oil Usage Value Format Objects](#usage-segment-fueloil-usage-value-format)  
+                * [10.8.5.6.2. Fuel Oil Usage Value Objects](#usage-segment-fueloil-usage-value-object)  
+            * [10.8.5.7. Interval Cost](#usage-segment-interval-cost)  
+                * [10.8.5.7.1. Interval Cost Value Format Objects](#usage-segment-interval-cost-value-format)  
+                * [10.8.5.7.2. Interval Cost Value Objects](#usage-segment-interval-cost-value-object)  
+            * [10.8.5.8. Meter Readings](#usage-segment-meter-readings)  
+                * [10.8.5.8.1. Meter Readings Value Format Objects](#usage-segment-meter-readings-value-format)  
+                * [10.8.5.8.2. Meter Readings Value Objects](#usage-segment-meter-readings-value-object)  
+        * [10.8.6. Value Type Description Objects](#usage-segment-value-type-description)  
+        * [10.8.7. Field Types](#usage-segment-value-format-field-types)  
+            * [10.8.7.1. Unit Types](#usage-segment-unit-types)  
+            * [10.8.7.2. Direction Types](#usage-segment-direction-types)  
+            * [10.8.7.3. Time-of-Use Types](#usage-segment-tou-types)  
+            * [10.8.7.4. Tier Types](#usage-segment-tier-types)  
+            * [10.8.7.5. Season Types](#usage-segment-season-types)  
+            * [10.8.7.6. Reading Quality Types](#usage-segment-reading-quality-types)  
+            * [10.8.7.7. Demand Types](#usage-segment-demand-types)  
+            * [10.8.7.8. Supply Attribution Types](#usage-segment-supply-attribution-types)  
+            * [10.8.7.9. Supply Types](#usage-segment-supply-types)  
         * [10.8.8. Listing Usage Segments](#usage-segment-list)  
     * [10.9. Energy Attribute Certificates API](#eac-api)  
         * [10.9.1. Energy Attribute Certificate Object Format](#eac-format)  
@@ -287,6 +307,8 @@ This means Servers MUST NOT store a decimal value as a float, since that format 
 <a id="get" href="#get" class="permalink">🔗</a> "GET" - A request method defined in [[RFC 9110 Section 9](#ref-rfc9110-methods)].
 
 <a id="https" href="#https" class="permalink">🔗</a> "HTTPS" - A secure web request protocol defined in [[RFC 9110 Section 4.2.2](#ref-rfc9110-https)].
+
+<a id="integer" href="#integer" class="permalink">🔗</a> "integer" - A positive integer value as defined by `int` in [[RFC 8259 Section 6](#ref-rfc8259-numbers)].
 
 <a id="json" href="#json" class="permalink">🔗</a> "JSON" - A data format defined in [[RFC 8259](#ref-rfc8259)].
 
@@ -751,30 +773,30 @@ To implement the "Aggregated Data" Scenario, Servers MUST implement the followin
 This specification extends CDS's Authorization Server Metadata object [[CDS-WG1-02 Section 3.2](#ref-cds-wg1-02-metadata)] to include the following named values:
 
 * `cds_customerdata_version` - string - (REQUIRED) The version of the CDS-WG3-01 Customer Data specification that the Server has implemented, which for this version of the specification is v1.
-* `cds_accounts_list` - _[URL](#url)_ - (OPTIONAL) The base url for the [Accounts listing API](#accounts-list).
+* `cds_accounts_api` - _[URL](#url)_ - (OPTIONAL) The base url for the [Accounts listing API](#accounts-list).
   This is REQUIRED if any Scopes included in the `scopes_supported` array has the [`include_accounts`](#auth-details-include-accounts) authorization details field or it is required as part of the Scope.
-* `cds_servicecontracts_list` - _[URL](#url)_ - (OPTIONAL) The base url for the [Service Contracts listing API](#service-contracts-list).
+* `cds_servicecontracts_api` - _[URL](#url)_ - (OPTIONAL) The base url for the [Service Contracts listing API](#service-contracts-list).
   This is REQUIRED if any Scopes included in the `scopes_supported` array has the [`include_service_contracts`](#auth-details-include-service-contracts) authorization details field or it is required as part of the Scope.
-* `cds_servicepoints_list` - _[URL](#url)_ - (OPTIONAL) The base url for the [Service Points listing API](#service-points-list).
+* `cds_servicepoints_api` - _[URL](#url)_ - (OPTIONAL) The base url for the [Service Points listing API](#service-points-list).
   This is REQUIRED if any Scopes included in the `scopes_supported` array has the [`include_service_points`](#auth-details-include-service-points) authorization details field or it is required as part of the Scope.
-* `cds_meterdevices_list` - _[URL](#url)_ - (OPTIONAL) The base url for the [Meter Devices listing API](#meter-devices-list).
+* `cds_meterdevices_api` - _[URL](#url)_ - (OPTIONAL) The base url for the [Meter Devices listing API](#meter-devices-list).
   This is REQUIRED if any Scopes included in the `scopes_supported` array has the [`include_meter_devices`](#auth-details-include-meter-devices) authorization details field or it is required as part of the Scope.
-* `cds_billstatement_list` - _[URL](#url)_ - (OPTIONAL) The base url for the [Bill Statements listing API](#bill-statements-list).
+* `cds_billstatement_api` - _[URL](#url)_ - (OPTIONAL) The base url for the [Bill Statements listing API](#bill-statements-list).
   This is REQUIRED if any Scopes included in the `scopes_supported` array has the [`include_bill_statements`](#auth-details-include-bill-statements) authorization details field or it is required as part of the Scope.
-* `cds_billsection_list` - _[URL](#url)_ - (OPTIONAL) The base url for the [Bill Sections listing API](#bill-sections-list).
+* `cds_billsection_api` - _[URL](#url)_ - (OPTIONAL) The base url for the [Bill Sections listing API](#bill-sections-list).
   This is REQUIRED if any Scopes included in the `scopes_supported` array has the [`include_bill_sections`](#auth-details-include-bill-sections) authorization details field or it is required as part of the Scope.
-* `cds_aggregations_list` - _[URL](#url)_ - (OPTIONAL) The base url for the [Aggregations listing API](#aggregations-list).
+* `cds_aggregations_api` - _[URL](#url)_ - (OPTIONAL) The base url for the [Aggregations listing API](#aggregations-list).
   This is REQUIRED if any Scopes included in the `scopes_supported` array has the [`include_aggregations`](#auth-details-include-aggregations) authorization details field or it is required as part of the Scope.
-* `cds_usagesegments_list` - _[URL](#url)_ - (OPTIONAL) The base url for the [Usage Segments listing API](#usage-segments-list).
+* `cds_usagesegments_api` - _[URL](#url)_ - (OPTIONAL) The base url for the [Usage Segments listing API](#usage-segments-list).
   This is REQUIRED if any Scopes included in the `scopes_supported` array has the [`include_usage_segments`](#auth-details-include-usage-segments) authorization details field or it is required as part of the Scope.
-* `cds_usagesegments_additional_formats` - _Map[[ValueFormatDescription](#usage-segment-value-format-description)]_ - (OPTIONAL) A reference object of possible Usage Segment [Value Format Types](#usage-segment-value-format-types) that the Server could include in a Usage Segment's `formats` array, in addition to the Value Format Types that are defined in this specification.
-  This object is composed of keys that represent the `type` value of the additional Value Format, and values that are the [Value Format Description](#usage-segment-value-format-description) of the additional Value format.
-  This is REQUIRED if the `cds_usagesegments_list` field is populated in the Server Metadata object.
-  If the Server does will not provide any additional Value Format Types in their Usage Segment objects, this is an empty object (`{}`).
-* `cds_eacs_list` - _[URL](#url)_ - (OPTIONAL) The base url for the [Energy Attribute Certificates listing API](#eac-list).
+* `cds_usagesegments_additional_value_types` - _Map[[ValueTypeDescription](#usage-segment-value-type-description)]_ - (OPTIONAL) A reference object of possible Usage Segment [Value Types](#usage-segment-value-types) that the Server could include in a Usage Segment's `formats` array, in addition to the Value Types that are defined in this specification.
+  This object is composed of keys that represent the `type` value of the additional Value Type, and values that are [Value Type Description](#usage-segment-value-type-description) objects of the additional Value Type.
+  This is REQUIRED if the `cds_usagesegments_api` field is populated in the Server Metadata object.
+  If the Server does will not provide any additional Value Types in their Usage Segment objects, this is an empty object (`{}`).
+* `cds_eacs_api` - _[URL](#url)_ - (OPTIONAL) The base url for the [Energy Attribute Certificates listing API](#eac-list).
   This is REQUIRED if any Scopes included in the `scopes_supported` array has the [`include_eacs`](#auth-details-include-eacs) authorization details field or it is required as part of the Scope.
 * `cds_eac_formats` - _Map[[EACDataFormatDescription](#eac-data-format-descriptions)]_ - (OPTIONAL) An object providing additional information about each Energy Attribute Certificate (EAC) data format value that may be provided as the [EAC object](#eac-format) `eac_format`, with the [EAC Data Format Description's](#eac-data-format-descriptions) `id` as the keys of the object and values being the [EAC Data Format Description](#eac-data-format-descriptions) object itself.
-  This is REQUIRED if the `cds_eacs_list` field is populated in the Server Metadata object.
+  This is REQUIRED if the `cds_eacs_api` field is populated in the Server Metadata object.
 
 Clients MUST obtain the correct Server Metadata object from the relevant Client object's `cds_server_metadata` URL [[CDS-WG1-02 Section 5.1](#ref-cds-wg1-02-client-object)], since Servers MAY only provide the above fields in the Client objects for which they are appropriate.
 
@@ -784,8 +806,8 @@ This specification extends the CDS's Registration Field Format options [[CDS-WG1
 
 Specifically, the additional Registration Field Formats are defined:
 
-* `purpose_list` - _Array[[Purpose](#purpose-format)]_ - A list of one or more Purpose objects where each object's `id` value MUST be an empty string (`""`) and `scopes_supported` value MUST be an empty list (`[]`).
-* `purpose_list_or_null` - _Array[[Purpose](#purpose-format)] or `null`_ - Same as `purpose_list`, only with `null` being an additional possible value which indicates that no Purpose objects are submitted.
+* `purposes` - _Array[[Purpose](#purpose-format)]_ - A list of one or more Purpose objects where each object's `id` value MUST be an empty string (`""`) and `scopes_supported` value MUST be an empty list (`[]`).
+* `purposes_or_null` - _Array[[Purpose](#purpose-format)] or `null`_ - Same as `purpose`, only with `null` being an additional possible value which indicates that no Purpose objects are submitted.
 
 ## 6. Scopes Supported <a id="scopes" href="#scopes" class="permalink">🔗</a>
 
@@ -1238,7 +1260,7 @@ To support this Scope, the Scope Description object MUST meet the following requ
 * The `authorization_details_types_supported` array MUST contain at least the following values and support those authorization details fields as defined in the [Authorization Details Fields](#auth-details-fields) section:
     * [`"include_meter_devices"`](#auth-details-include-meter-devices)
     * [`"include_meter_numbers"`](#auth-details-include-meter-numbers)
-    * [`"include_usage_segment_formats"`](#auth-details-include-usage-segment-formats)
+    * [`"include_usage_segment_value_types"`](#auth-details-include-usage-segment-value-types)
     * [`"segment_start"`](#auth-details-usage-segment-start)
     * [`"segment_end"`](#auth-details-usage-segment-end)
     * [`"authorization_form_selection_type"`](#auth-details-selection-type)
@@ -1537,7 +1559,7 @@ Additionally, to support this Scope, the Server MUST implement the following req
 
 * The Server MUST treat this Scope as having included `true` values for the following authorization details fields, so that the data defined by those fields is included (this is the default access granted by this Scope):
     * [`include_usage_segments`](#auth-details-include-usage-segments)
-    * [`include_usage_segment_formats`](#auth-details-include-usage-segment-formats)
+    * [`include_usage_segment_value_types`](#auth-details-include-usage-segment-value-types)
 
 ### 6.3. Scope Extensions <a id="scope-extensions" href="#scope-extensions" class="permalink">🔗</a>
 
@@ -2579,19 +2601,19 @@ Additionally, Servers MUST implement the following behavior to support this auth
     * Usage Segments that have `related_billsections` values that match the `cds_billsection_id` for any included Bill Section object.
 * If this field's value is `false`, Servers MUST NOT include Usage Segment objects in the Client's access.
 
-##### 7.2.8.1. Include Usage Segment Formats <a id="auth-details-include-usage-segment-formats" href="#auth-details-include-usage-segment-formats" class="permalink">🔗</a>
+##### 7.2.8.1. Include Usage Segment Formats <a id="auth-details-include-usage-segment-value-types" href="#auth-details-include-usage-segment-value-types" class="permalink">🔗</a>
 
-For some use cases, Clients need to have access to a specific set of [Usage Segment Value Format Types](#usage-segment-value-format-types) (e.g. both usage kWh and peak kW readings).
+For some use cases, Clients need to have access to [Usage Segments](#usage-segment-format) with a specific set of [Value Types](#usage-segment-value-types) (e.g. both electric usage and demand readings).
 For example, a utility vendor Client may need to access the electric usage, demand, and supply mix for a specific set of Meter Devices with which they are contracted in analyzing.
-To enable which Usage Segment Value Formats access is included in addition to the data normally provided for a scope, this specification defines an authorization details field that controls additional Usage Segment access.
+To enable which Usage Segment Value Types access is included in addition to the data normally provided for a scope, this specification defines an authorization details field that controls additional Usage Segment access.
 
 To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:
 
-* The `id` value MUST be `"include_usage_segment_formats"`.
+* The `id` value MUST be `"include_usage_segment_value_types"`.
 * The `format` value MUST be `"choice_list_or_null"`.
-* The `choices` array contains Choice objects who's `id` values are one of the defined [Usage Segment Value Format Types](#usage-segment-value-format-types) in this specification or included in the [Server Metadata's](#server-metadata) `cds_usage_segment_additional_formats` reference object.
-  Servers MAY include additional Choice objects that do not represent one of the defined Value Formats defined in this specification in order to accommodate extensions and Server-specific use cases (e.g. cloud coverage readings).
-  Servers MUST NOT have custom Choice `id` values that represent an already defined Value Format in this specification, so that Clients can be interoperable with Servers for the set of Value Formats defined in this specification.
+* The `choices` array contains Choice objects who's `id` values are one of the defined [Value Types](#usage-segment-value-types) in this specification or included in the [Server Metadata's](#server-metadata) `cds_usagesegments_additional_value_types` reference object.
+  Servers MAY include additional Choice objects that do not represent one of the defined Value Types defined in this specification in order to accommodate extensions and Server-specific use cases (e.g. cloud coverage readings).
+  Servers MUST NOT have custom Choice `id` values that represent an already defined Value Type in this specification, so that Clients can be interoperable with Servers for the set of Value Types defined in this specification.
   Clients MUST ignore any Choice `id` values that they do not understand, so that Servers are able to include extension and Server-specific `id` values without breaking Client integrations.
 * If this object is included in a Scope Description where the `response_types_supported` field is not empty array (e.g. Customer authorization is supported):
     * The `is_required` value MUST be `false`.
@@ -2600,9 +2622,9 @@ Additionally, Servers MUST implement the following behavior to support this auth
 
 * If the value is `null`, Usage Segments included as part of this field's scope MUST have empty arrays (`[]`) for their `values` and `format` values.
   This can be useful if the Server is only providing durations (e.g. month cutoff dates) for a Usage Segment, but no values, for example as part of an Aggregation.
-* If the value is an array, Usage Segments included as part of this field's scope MUST have `format` values that are an array that contains the same or a subset of Value Formats in this field's array.
-  Servers MAY order the `format` values in any order, so it does not have to be in the same order as this field's array values.
-  Clients MUST be able to parse Usage Segment [Value Formats](#usage-segment-value-formats) in any order and in any subset of this field's array values.
+* If the value is an array, Usage Segments included as part of this field's scope MUST have `format` values that are [Value Formats](#usage-segment-value-formats) that have the same or a subset of [Value Types](#usage-segment-value-types) in this field's array.
+  Servers MAY order Usage Segment `format` arrays in any order, so it does not have to be in the same order as this field's array values.
+  Clients MUST be able to parse Value Format objects in any order and in any subset of this field's array values in the Usage Segment's `format` array.
 
 #### 7.2.9. Include Energy Attribute Certificates <a id="auth-details-include-eacs" href="#auth-details-include-eacs" class="permalink">🔗</a>
 
@@ -4006,7 +4028,7 @@ Account objects are formatted as JSON objects and contain the following named va
 
 #### 10.1.9. Listing Accounts <a id="accounts-list" href="#accounts-list" class="permalink">🔗</a>
 
-Clients may request to list Account objects that they have access to by making an HTTPS `GET` request to the [Server Metadata's](#server-metadata) `cds_accounts_list` URL.
+Clients may request to list Account objects that they have access to by making an HTTPS `GET` request to the [Server Metadata's](#server-metadata) `cds_accounts_api` URL.
 The Account listing request responses are formatted as JSON objects and contain the following named values.
 
 * `accounts` - _Array[[Account](#account-format)]_ - (REQUIRED) A list of Accounts to which the requesting `access_token` is scoped to have access.
@@ -4102,7 +4124,7 @@ Service Contract objects are formatted as JSON objects and contain the following
 
 #### 10.2.9. Listing Service Contracts <a id="service-contract-list" href="#service-contract-list" class="permalink">🔗</a>
 
-Clients may request to list Service Contract objects that they have access to by making an HTTPS `GET` request to the [Server Metadata's](#server-metadata) `cds_servicecontracts_list` URL.
+Clients may request to list Service Contract objects that they have access to by making an HTTPS `GET` request to the [Server Metadata's](#server-metadata) `cds_servicecontracts_api` URL.
 The Service Contract listing request responses are formatted as JSON objects and contain the following named values.
 
 * `service_contracts` - _Array[[ServiceContract](#service-contract-format)]_ - (REQUIRED) A list of Service Contracts to which the requesting `access_token` is scoped to have access.
@@ -4180,7 +4202,7 @@ Service Point objects are formatted as JSON objects and contain the following na
 
 #### 10.3.5. Listing Service Points <a id="service-point-list" href="#service-point-list" class="permalink">🔗</a>
 
-Clients may request to list Service Point objects that they have access to by making an HTTPS `GET` request to the [Server Metadata's](#server-metadata) `cds_servicepoints_list` URL.
+Clients may request to list Service Point objects that they have access to by making an HTTPS `GET` request to the [Server Metadata's](#server-metadata) `cds_servicepoints_api` URL.
 The Service Point listing request responses are formatted as JSON objects and contain the following named values.
 
 * `service_points` - _Array[[ServicePoint](#service-point-format)]_ - (REQUIRED) A list of Service Points to which the requesting `access_token` is scoped to have access.
@@ -4234,7 +4256,7 @@ Meter Device objects are formatted as JSON objects and contain the following nam
 
 #### 10.4.3. Listing Meter Devices <a id="meter-device-list" href="#meter-device-list" class="permalink">🔗</a>
 
-Clients may request to list Meter Device objects that they have access to by making an HTTPS `GET` request to the [Server Metadata's](#server-metadata) `cds_meterdevices_list` URL.
+Clients may request to list Meter Device objects that they have access to by making an HTTPS `GET` request to the [Server Metadata's](#server-metadata) `cds_meterdevices_api` URL.
 The Meter Device listing request responses are formatted as JSON objects and contain the following named values.
 
 * `meter_devices` - _Array[[MeterDevice](#meter-device-format)]_ - (REQUIRED) A list of Meter Devices to which the requesting `access_token` is scoped to have access.
@@ -4306,7 +4328,7 @@ Bill Statement objects are formatted as JSON objects and contain the following n
 
 #### 10.5.4. Listing Bill Statements <a id="bill-statement-list" href="#bill-statement-list" class="permalink">🔗</a>
 
-Clients may request to list Bill Statement objects that they have access to by making an HTTPS `GET` request to the [Server Metadata's](#server-metadata) `cds_billstatement_list` URL.
+Clients may request to list Bill Statement objects that they have access to by making an HTTPS `GET` request to the [Server Metadata's](#server-metadata) `cds_billstatement_api` URL.
 The Bill Statement listing request responses are formatted as JSON objects and contain the following named values.
 
 * `bill_statements` - _Array[[BillStatement](#bill-statement-format)]_ - (REQUIRED) A list of Bill Statements to which the requesting `access_token` is scoped to have access.
@@ -4414,7 +4436,7 @@ Bill Section objects are formatted as JSON objects and contain the following nam
 
 #### 10.6.13. Listing Bill Sections <a id="bill-section-list" href="#bill-section-list" class="permalink">🔗</a>
 
-Clients may request to list Bill Section objects that they have access to by making an HTTPS `GET` request to the [Server Metadata's](#server-metadata) `cds_billsection_list` URL.
+Clients may request to list Bill Section objects that they have access to by making an HTTPS `GET` request to the [Server Metadata's](#server-metadata) `cds_billsection_api` URL.
 The Bill Section listing request responses are formatted as JSON objects and contain the following named values.
 
 * `bill_sections` - _Array[[BillSection](#bill-section-format)]_ - (REQUIRED) A list of Bill Sections to which the requesting `access_token` is scoped to have access.
@@ -4502,7 +4524,7 @@ The intent of this requirement is to enable Servers to use the [Listing Aggregat
 
 #### 10.7.7. Listing Aggregations <a id="aggregation-list" href="#aggregation-list" class="permalink">🔗</a>
 
-Clients may request to list Aggregation objects that they have access to by making an HTTPS `GET` request to the [Server Metadata's](#server-metadata) `cds_aggregations_list` URL.
+Clients may request to list Aggregation objects that they have access to by making an HTTPS `GET` request to the [Server Metadata's](#server-metadata) `cds_aggregations_api` URL.
 The Aggregation listing request responses are formatted as JSON objects and contain the following named values.
 
 * `aggregations` - _Array[[Aggregation](#aggregation-format)]_ - (REQUIRED) A list of Aggregations to which the requesting `access_token` is scoped to have access.
@@ -4531,7 +4553,7 @@ Listings of Aggregation objects MUST be ordered in reverse chronological order b
 
 This specification requires Servers provide a set of APIs allowing Clients to retrieve a Customer's and Server's Usage Segment objects for which they are authorized to access.
 
-#### 10.8.1. Usage Segment Object Format <a id="usage-segment-format" href="#usage-segment-format" class="permalink">🔗</a>
+#### 10.8.1. Usage Segment Objects <a id="usage-segment-format" href="#usage-segment-format" class="permalink">🔗</a>
 
 Usage Segment objects are formatted as JSON objects and contain the following named values:
 
@@ -4560,7 +4582,7 @@ For data that has varying durations, such as monthly billed usage (e.g. anywhere
 
 Servers MUST only include unique identifiers in `related_aggregations`, `related_accounts`, `related_servicecontracts`, `related_servicepoints`, `related_meterdevices`, and `related_billsections` lists MUST only include identifiers that the Client is authorized to see as scoped by their requesting `access_token`.
 
-#### 10.8.2. Usage Segment Value Format Objects <a id="usage-segment-value-formats" href="#usage-segment-value-formats" class="permalink">🔗</a>
+#### 10.8.2. Value Format Objects <a id="usage-segment-value-formats" href="#usage-segment-value-formats" class="permalink">🔗</a>
 
 The [Usage Segment](#usage-segment-format) `formats` field provides an ordered list of Value Format objects that provide details about the objects that are included in each Usage Segment `values` entry's [Value Set](#usage-segment-value-set-format).
 The Value Format object contains the type and details of the Value Set it represents, such as what kind of measurement the Value Set represents (e.g. electric usage) and units (e.g. kilowatt hours).
@@ -4574,37 +4596,56 @@ For example, a daily net metered elected 15 minute interval Usage Segment would 
 
 Value Format objects are formatted as JSON objects and contain the following named values:
 
-* `type` - _[ValueFormatType](#usage-segment-value-format-types)_ - (REQUIRED) The type of object the corresponding Value Set represents.
+* `type` - _[ValueType](#usage-segment-value-types)_ - (REQUIRED) The type of object the corresponding Value Set represents.
 
 Depending on the `type`, the Value Format object can contain other fields, which are defined by the type's documentation.
 
-#### 10.8.3. Usage Segment Value Format Types <a id="usage-segment-value-format-types" href="#usage-segment-value-format-types" class="permalink">🔗</a>
+#### 10.8.3. Value Sets <a id="usage-segment-value-set-format" href="#usage-segment-value-set-format" class="permalink">🔗</a>
 
-Value Format `type` values MAY be one of the following and MUST follow the accompanying definition section:
+The [Usage Segment](#usage-segment-format) `values` field provides an ordered list of Value Set entries.
+A Value Set entry is an array that contains an ordered list of [Value Objects](#usage-segment-value-objects), where the type of each Value object which is defined by the order of the `formats` listing.
 
-* `electric_usage` - [Electric Usage](#usage-segment-electric-usage)
-* `electric_demand` - [Electric Demand](#usage-segment-electric-demand)
-* `water_usage` - [Water Usage](#usage-segment-water-usage)
-* `gas_usage` - [Natural Gas Usage](#usage-segment-gas-usage)
-* `fueloil_usage` - [Fuel Oil Usage](#usage-segment-fueloil-usage)
-* `cost` - [Interval Cost](#usage-segment-interval-cost)
-* `supply_mix` - [Electric Supply Mix](#usage-segment-supply-mix)
-* `meter_readings` - [Meter Readings](#usage-segment-meter-readings)
+Each Value Set entry in the `values` listing represents an increment of `interval` seconds in the Usage Segment from the `segment_start`.
+For example, if a Usage Segment has a `segment_start` of `2025-01-01T00:00:00Z`, an `interval` of `900`, and four Value Set entries in the `values`, the Value Set entries would represent the each 15 minute period of a one hour segment (`2025-01-01T00:00:00Z - 2025-01-01T00:15:00Z`, `2025-01-01T00:15:00Z - 2025-01-01T00:30:00Z`, `2025-01-01T00:30:00Z - 2025-01-01T00:45:00Z`, and `2025-01-01T00:45:00Z - 2025-01-01T01:00:00Z`).
 
-Servers MAY include other Value Format `type` values in the Usage Segment `formats` array, so long as the Value Format `type` is included in the [Server Metadata's](#server-metadata) `cds_usage_segment_additional_formats` reference object.
+If a Value Object is not available for a specific Value Set (e.g. that interval has missing data), Servers MUST replace the item in the Value Set where the Value Object would have gone with `null`.
+
+#### 10.8.4. Value Objects <a id="usage-segment-value-objects" href="#usage-segment-value-objects" class="permalink">🔗</a>
+
+A Value Object is a JSON object that is included as an entry in a [Value Set](#usage-segment-value-set-format) array.
+The index of the Value Object in the Value Set corresponds to the same index of [Value Format](#usage-segment-value-formats) (which defines the Value Object's type and format) in the [Usage Segment's](#usage-segment-format) `formats` array.
+
+The fields within a Value Object are defined by the corresponding Value Format's [Value Type](#usage-segment-value-types) definition (e.g. [Electric Usage](#usage-segment-electric-usage)).
+
+#### 10.8.5. Value Types <a id="usage-segment-value-types" href="#usage-segment-value-types" class="permalink">🔗</a>
+
+The [Value Format](#usage-segment-value-formats) `type` value MAY be a [string](#string) of one of the following values and MUST follow the accompanying Value Type definition:
+
+* `electric_usage` - Defined by [Electric Usage](#usage-segment-electric-usage)
+* `electric_demand` - Defined by [Electric Demand](#usage-segment-electric-demand)
+* `electric_supply_mix` - Defined by [Electric Supply Mix](#usage-segment-supply-mix)
+* `water_usage` - Defined by [Water Usage](#usage-segment-water-usage)
+* `natural_gas_usage` - Defined by [Natural Gas Usage](#usage-segment-gas-usage)
+* `fuel_oil_usage` - Defined by [Fuel Oil Usage](#usage-segment-fueloil-usage)
+* `cost` - Defined by [Interval Cost](#usage-segment-interval-cost)
+* `meter_readings` - Defined by [Meter Readings](#usage-segment-meter-readings)
+
+Servers MAY include other Value Format `type` values in the Usage Segment `formats` array, so long as the Value Format `type` is included in the [Server Metadata's](#server-metadata) `cds_usagesegments_additional_value_types` reference object.
 It is RECOMMENDED that additional `type` values have a prefix relevant to the Server (e.g. `exampleutility_*`) to prevent potential collisions with other Servers and extensions to this specification that define additional `type` values.
 
 Extensions MAY define additional Value Format `type` values.
 It is RECOMMENDED that the definitions for the additional `type` values follow the same format as those defined in this specification.
 It is RECOMMENDED that additional `type` values have a prefix relevant to the Server (e.g. `exampleutility_*`) to prevent potential collisions with other Servers and extensions to this specification that define additional `type` values.
 
-Clients MUST ignore Value Format and Value Set objects for which they do not understand the `type`.
+Clients MUST ignore Value Format and Value Objects for which they do not understand their Value Type.
 
-##### 10.8.3.1. Electric Usage <a id="usage-segment-electric-usage" href="#usage-segment-electric-usage" class="permalink">🔗</a>
+##### 10.8.5.1. Electric Usage <a id="usage-segment-electric-usage" href="#usage-segment-electric-usage" class="permalink">🔗</a>
 
-To include electric usage data, both for granular (e.g. 15 minute intervals) and longer period (e.g. monthly data) readings, the Server MUST use the [Value Format Object](#usage-segment-electric-usage-value-format) and [Value Object](#usage-segment-electric-usage-value-object) defined in this section.
+To include electric usage data, both for granular (e.g. 15 minute intervals) and longer period (e.g. monthly data) data, the Server MUST use the [Electric Usage Value Format](#usage-segment-electric-usage-value-format) and [Electric Usage Value Object](#usage-segment-electric-usage-value-object) defined in this section.
 
-<a id="usage-segment-electric-usage-value-format" href="#usage-segment-electric-usage-value-format" class="permalink">🔗</a> [Value Format Objects](#usage-segment-value-formats) for electric usage have the following fields:
+###### 10.8.5.1.1. Electric Usage Value Format Objects <a id="usage-segment-electric-usage-value-format" href="#usage-segment-electric-usage-value-format" class="permalink">🔗</a>
+
+Electric Usage Value Format objects are [Value Format](#usage-segment-value-formats) objects for electric usage and have the following fields:
 
 * `type` - _[string](#string)_ - (REQUIRED) This value MUST be `electric_usage`.
 * `units` - _[UnitType](#usage-segment-unit-types)_ - (REQUIRED) This is the units for the usage data.
@@ -4614,8 +4655,8 @@ To include electric usage data, both for granular (e.g. 15 minute intervals) and
     * `"MWh"` - Megawatt-hours
 * `direction` - _[DirectionType](#usage-segment-direction-types)_ - (OPTIONAL) This is the direction of electricity flow for the usage data.
   If the Server does not know whether the Meter Device(s) used to measure the usage data are bidirectional (e.g. the meter can spin both directions) or one-way-only (e.g. the meter only records usage going forward), this field MUST NOT be included.
-  If the Server does know the accumulation kind for the Meter Device(s), the value of this field MUST be one of the following:
-    * `"net"` - Net electric usage (i.e. the Meter Device(s) accumulate electricity flow going in both forward and reverse direction)
+  If the Server does know the measurement configuration for the Meter Device(s), the value of this field MUST be one of the following:
+    * `"net"` - Net electric usage (i.e. the Meter Device(s) accumulate electricity flow going in both forward and reverse directions)
     * `"forward"` - Delivered electricity only (i.e. the Meter Device(s) ignore flow going in the reverse direction and only accumulate forward flowing electricity)
     * `"reverse"` - Received electricity only (i.e. the Meter Device(s) ignore flow going in the forward direction and only accumulate reverse flowing electricity)
 * `tou` - _[TimeOfUseType](#usage-segment-tou-types) or `null`_ - (OPTIONAL) This is the billing time-of-use (TOU) designation for the usage data.
@@ -4627,52 +4668,244 @@ To include electric usage data, both for granular (e.g. 15 minute intervals) and
 * `season` - _[SeasonType](#usage-segment-season-types) or `null`_ - (OPTIONAL) This is the billing seasonal designation for the usage data.
   If there is no seasonal designation for the usage data (e.g. the Customer's rate plan does not differentiate between summer and winter), this value MUST be `null`.
   If the Server does not know the seasonal designation, this field MUST NOT be included.
-* `quality` - _[ReadingQualityType](#usage-segment-reading-quality-types)_ - (OPTIONAL) This is the quality designation of the usage reading.
-  If the Server does not have a known the quality designation for the usage data (e.g. the Server), this value MUST be `null`.
-  If the Server does not know the tier designation, this field MUST NOT be included.
+* `quality` - _[ReadingQualityType](#usage-segment-reading-quality-types)_ - (OPTIONAL) This is the quality designation of the usage data.
+  If the Server does not know the quality of the usage data, this field MUST NOT be included.
 * `related_meterdevices` - _Array[[string](#string)]_ - (OPTIONAL) The list of `cds_meterdevice_id` values that identify Meter Devices from which the corresponding Value Objects were measured.
   If the Server does not know which Meter Devices were used to measure the usage data, this field MUST NOT be included.
 
-<a id="usage-segment-electric-usage-value-object" href="#usage-segment-electric-usage-value-object" class="permalink">🔗</a> [Value Objects](#usage-segment-value-objects) for electric usage have the following additional fields:
+###### 10.8.5.1.2. Electric Usage Value Objects <a id="usage-segment-electric-usage-value-object" href="#usage-segment-electric-usage-value-object" class="permalink">🔗</a>
+
+Electric Usage Value Objects are [Value Objects](#usage-segment-value-objects) for electric usage have the following additional fields:
 
 * `eu` - _[decimal](#decimal)_ - (REQUIRED) The amount of electric usage from the start timestamp of the interval to the end timestamp of the interval, in the corresponding Value Format's `units`.
   For all directions (`net`, `forward`, and `reverse`), a positive value in this field represents electric usage flowing from the central entity to the external entity (e.g. the Customer is using electricity from the grid for that interval), and a negative value represents electric usage flowing from the external entity to the central entity (e.g. the Customer has distributed generation and is sending electricity back to the grid for that interval).
 
-##### 10.8.3.2. Electric Demand <a id="usage-segment-electric-demand" href="#usage-segment-electric-demand" class="permalink">🔗</a>
+##### 10.8.5.2. Electric Demand <a id="usage-segment-electric-demand" href="#usage-segment-electric-demand" class="permalink">🔗</a>
 
-<span style="background-color:yellow">TODO</span>
+To include electric demand data, both for granular (e.g. 1 hour peak demand) and longer period (e.g. monthly average demand) data, the Server MUST use the [Electric Demand Value Format](#usage-segment-electric-demand-value-format) and [Electric Demand Value Object](#usage-segment-electric-usage-value-object) defined in this section.
 
-##### 10.8.3.3. Water Usage <a id="usage-segment-water-usage" href="#usage-segment-water-usage" class="permalink">🔗</a>
+###### 10.8.5.2.1. Electric Demand Value Format Objects <a id="usage-segment-electric-demand-value-format" href="#usage-segment-electric-demand-value-format" class="permalink">🔗</a>
 
-<span style="background-color:yellow">TODO</span>
+Electric Demand Value Format objects are [Value Format](#usage-segment-value-formats) objects for electric demand and have the following fields:
 
-##### 10.8.3.4. Natural Gas Usage <a id="usage-segment-gas-usage" href="#usage-segment-gas-usage" class="permalink">🔗</a>
+* `type` - _[string](#string)_ - (REQUIRED) This value MUST be `electric_demand`.
+* `units` - _[UnitType](#usage-segment-unit-types)_ - (REQUIRED) This is the units for the demand data.
+  The value of this field MUST be one of the following:
+    * `"W"` - Watts
+    * `"kW"` - Kilowatts
+    * `"MW"` - Megawatts
+* `demand_type` - _[DemandType](#usage-segment-demand-types)_ - (REQUIRED) This is the type of demand data being provided.
+* `direction` - _[DirectionType](#usage-segment-direction-types)_ - (OPTIONAL) This is the direction of electricity flow for the demand data.
+  If the Server does not know whether the Meter Device(s) used to measure the demand data are bidirectional (e.g. the meter can spin both directions) or one-way-only (e.g. the meter only records demand going forward), this field MUST NOT be included.
+  If the Server does know the measurement configuration for the Meter Device(s), the value of this field MUST be one of the following:
+    * `"net"` - Net demand (i.e. the Meter Device(s) measures electricity demand for both forward and reverse directions)
+    * `"forward"` - Delivered electricity only (i.e. the Meter Device(s) ignore flow going in the reverse direction and only measure demand for forward flowing electricity)
+    * `"reverse"` - Received electricity only (i.e. the Meter Device(s) ignore flow going in the forward direction and only measure demand for reverse flowing electricity)
+* `tou` - _[TimeOfUseType](#usage-segment-tou-types) or `null`_ - (OPTIONAL) This is the billing time-of-use (TOU) designation for the demand data.
+  If there is no time-of-use designation for the demand data (e.g. the Customer is not on a TOU rate plan), this value MUST be `null`.
+  If the Server does not know the time-of-use designation, this field MUST NOT be included.
+* `tier` - _[TierType](#usage-segment-tier-types) or `null`_ - (OPTIONAL) This is the billing tier designation for the demand data.
+  If there is no tier designation for the demand data (e.g. the Customer's rate plan does not have demand charges based on tiers), this value MUST be `null`.
+  If the Server does not know the tier designation, this field MUST NOT be included.
+* `season` - _[SeasonType](#usage-segment-season-types) or `null`_ - (OPTIONAL) This is the billing seasonal designation for the demand data.
+  If there is no seasonal designation for the demand data (e.g. the Customer's rate plan does not differentiate between summer and winter), this value MUST be `null`.
+  If the Server does not know the seasonal designation, this field MUST NOT be included.
+* `quality` - _[ReadingQualityType](#usage-segment-reading-quality-types)_ - (OPTIONAL) This is the quality designation of the demand data.
+  If the Server does not know the quality of the demand data, this field MUST NOT be included.
+* `related_meterdevices` - _Array[[string](#string)]_ - (OPTIONAL) The list of `cds_meterdevice_id` values that identify Meter Devices from which the corresponding Value Objects were measured.
+  If the Server does not know which Meter Devices were used to measure the usage data, this field MUST NOT be included.
 
-<span style="background-color:yellow">TODO</span>
+###### 10.8.5.2.2. Electric Demand Value Objects <a id="usage-segment-electric-demand-value-object" href="#usage-segment-electric-demand-value-object" class="permalink">🔗</a>
 
-##### 10.8.3.5. Fuel Oil Usage <a id="usage-segment-fueloil-usage" href="#usage-segment-fueloil-usage" class="permalink">🔗</a>
+Electric Demand Value Objects are [Value Objects](#usage-segment-value-objects) for electric demand and have the following additional fields:
 
-<span style="background-color:yellow">TODO</span>
+* `ed` - _[decimal](#decimal)_ - (REQUIRED) The amount of electric demand for the interval, in the corresponding Value Format's `units`.
+  The Value Format's `demand_type` defines whether the demand value is a measurement over the duration of the interval (e.g. `"peak"`) or a point-in-time reading (e.g. `"starting"`).
+  For all directions (`net`, `forward`, and `reverse`), a positive value in this field represents electric demand flowing from the central entity to the external entity (e.g. the Customer is using electricity from the grid for that interval), and a negative value represents electric demand flowing from the external entity to the central entity (e.g. the Customer has distributed generation and is sending electricity back to the grid for that interval).
 
-##### 10.8.3.6. Interval Cost <a id="usage-segment-interval-cost" href="#usage-segment-interval-cost" class="permalink">🔗</a>
+##### 10.8.5.3. Electric Supply Mix <a id="usage-segment-supply-mix" href="#usage-segment-supply-mix" class="permalink">🔗</a>
 
-<span style="background-color:yellow">TODO</span>
+Electric Supply Mix is the composition of generation sources and emissions for the other measurements in the same [Value Set](#usage-segment-value-set-format). To include electric supply mix data, the Server MUST use the [Electric Supply Mix Value Format](#usage-segment-supply-mix-value-format) and [Electric Supply Mix Value Object](#usage-segment-supply-mix-value-object) defined in this section.
 
-##### 10.8.3.7. Electric Supply Mix <a id="usage-segment-supply-mix" href="#usage-segment-supply-mix" class="permalink">🔗</a>
+###### 10.8.5.3.1. Electric Supply Mix Value Format Objects <a id="usage-segment-supply-mix-value-format" href="#usage-segment-supply-mix-value-format" class="permalink">🔗</a>
 
-<span style="background-color:yellow">TODO</span>
+Electric Supply Mix Value Format objects are [Value Format](#usage-segment-value-formats) objects for supply mix and have the following fields:
 
-##### 10.8.3.8. Meter Readings <a id="usage-segment-meter-readings" href="#usage-segment-meter-readings" class="permalink">🔗</a>
+* `type` - _[string](#string)_ - (REQUIRED) This value MUST be `electric_supply_mix`.
+* `indexes` - _Array[[integer](#integer)]_ - (REQUIRED) A list of which indexes of the Value Sets the supply mix values represents.
+  For example, if the Server included three Value Format objects in the Usage Segment's `format` array with the Value Types `electric_usage`, `water_usage`, and `electric_supply_mix`, where the supply mix represents the electric usage generation mix, the `indexes` array would be `[0]` (representing that the supply mix values are for the `0` index of the Value Sets in the Usage Segment's `values` array, which is where the electric usage Value Objects are included).
+  If there are no values included in the Value Sets that make up the supply mix (e.g. the measured usage is not included in the Usage Segment), this value MUST be an empty array (`[]`).
+* `attribution` - _[SupplyAttributionType](#usage-segment-supply-attribution-types)_ - (REQUIRED) This is how the supply is attributed (e.g. from base load, individually attributable, or residual).
+* `supply_type` - _[SupplyType](#usage-segment-supply-types)_ - (REQUIRED) This is the type of supply sources.
 
-<span style="background-color:yellow">TODO</span>
+###### 10.8.5.3.2. Electric Supply Mix Value Objects <a id="usage-segment-supply-mix-value-object" href="#usage-segment-supply-mix-value-object" class="permalink">🔗</a>
 
-#### 10.8.4. Usage Segment Value Format Field Types <a id="usage-segment-value-format-field-types" href="#usage-segment-value-format-field-types" class="permalink">🔗</a>
+Electric Supply Mix Value Objects are [Value Objects](#usage-segment-value-objects) for supply mix and have the following additional fields:
 
-Value Format Objects [Types](#usage-segment-value-format-types) define additional fields for [Value Format Objects](#usage-segment-value-formats) depending on the kind of data they represent.
+* `sm` - _[decimal](#decimal)_ - (REQUIRED) The percentage of the associated usage data that is from the associated supply type and attribution, represented by a ratio from 0 to 1.
+* `ci` - _[decimal](#decimal)_ - (OPTIONAL) The carbon intensity of this supply mix component, represented in grams of carbon dioxide equivalents per kilowatt-hour (gCO2e/kwh).
+* `eacs` - _Array[[string](#string)]_ - (OPTIONAL) A list of `cds_eac_id` values that identify [Energy Attribute Certificates](#eac-format) which are applied to this supply mix component.
+
+##### 10.8.5.4. Water Usage <a id="usage-segment-water-usage" href="#usage-segment-water-usage" class="permalink">🔗</a>
+
+To include water usage data, both for granular (e.g. daily intervals) and longer period (e.g. monthly data) data, the Server MUST use the [Water Usage Value Format](#usage-segment-water-usage-value-format) and [Water Usage Value Object](#usage-segment-water-usage-value-object) defined in this section.
+
+###### 10.8.5.3.1. Water Usage Value Format Objects <a id="usage-segment-water-usage-value-format" href="#usage-segment-water-usage-value-format" class="permalink">🔗</a>
+
+Water Usage Value Format objects are [Value Format](#usage-segment-value-formats) objects for water usage and have the following fields:
+
+* `type` - _[string](#string)_ - (REQUIRED) This value MUST be `water_usage`.
+* `units` - _[UnitType](#usage-segment-unit-types)_ - (REQUIRED) This is the units for the usage data.
+  The value of this field MUST be one of the following:
+    * `"m3"` - Cubic meters
+    * `"L"` - Liters
+    * `"gal"` - Gallons
+    * `"ft3"` - Cubic feet
+    * `"CCF"` - Hundred cubic feet (i.e. 100 cubic feet)
+    * `"MCF"` - Thousand cubic feet (i.e. 1,000 cubic feet)
+    * `"MMCF"` - Million cubic feet (i.e. 1,000,000 cubic feet)
+* `tier` - _[TierType](#usage-segment-tier-types) or `null`_ - (OPTIONAL) This is the billing tier designation for the usage data.
+  If there is no tier designation for the usage data (e.g. the Customer is on a flat rate Service Contract), this value MUST be `null`.
+  If the Server does not know the tier designation, this field MUST NOT be included.
+* `season` - _[SeasonType](#usage-segment-season-types) or `null`_ - (OPTIONAL) This is the billing seasonal designation for the usage data.
+  If there is no seasonal designation for the usage data (e.g. the Customer's rate plan does not differentiate between summer and winter), this value MUST be `null`.
+  If the Server does not know the seasonal designation, this field MUST NOT be included.
+* `quality` - _[ReadingQualityType](#usage-segment-reading-quality-types)_ - (OPTIONAL) This is the quality designation of the usage data.
+  If the Server does not know the quality of the usage data, this field MUST NOT be included.
+* `related_meterdevices` - _Array[[string](#string)]_ - (OPTIONAL) The list of `cds_meterdevice_id` values that identify Meter Devices from which the corresponding Value Objects were measured.
+  If the Server does not know which Meter Devices were used to measure the usage data, this field MUST NOT be included.
+
+###### 10.8.5.4.2. Water Usage Value Objects <a id="usage-segment-water-usage-value-object" href="#usage-segment-water-usage-value-object" class="permalink">🔗</a>
+
+Water Usage Value Objects are [Value Objects](#usage-segment-value-objects) for water usage and have the following additional fields:
+
+* `wu` - _[decimal](#decimal)_ - (REQUIRED) The amount of water usage from the start timestamp of the interval to the end timestamp of the interval, in the corresponding Value Format's `units`.
+
+##### 10.8.5.5. Natural Gas Usage <a id="usage-segment-gas-usage" href="#usage-segment-gas-usage" class="permalink">🔗</a>
+
+To include natural gas usage data, both for granular (e.g. daily intervals) and longer period (e.g. monthly data) data, the Server MUST use the [Natural Gas Usage Value Format](#usage-segment-gas-usage-value-format) and [Natural Gas Usage Value Object](#usage-segment-gas-usage-value-object) defined in this section.
+
+###### 10.8.5.5.1. Natural Gas Usage Value Format Objects <a id="usage-segment-gas-usage-value-format" href="#usage-segment-gas-usage-value-format" class="permalink">🔗</a>
+
+Natural Gas Usage Value Format objects are [Value Format](#usage-segment-value-formats) objects for natural gas usage and have the following fields:
+
+* `type` - _[string](#string)_ - (REQUIRED) This value MUST be `natural_gas_usage`.
+* `units` - _[UnitType](#usage-segment-unit-types)_ - (REQUIRED) This is the units for the usage data.
+  The value of this field MUST be one of the following:
+    * `"Btu"` - British Thermal Units
+    * `"therm"` - Therm (i.e. 100,000 BTUs)
+    * `"Sm3"` - standard cubic meter
+    * `"scf"` - Standard cubic feet
+* `tier` - _[TierType](#usage-segment-tier-types) or `null`_ - (OPTIONAL) This is the billing tier designation for the usage data.
+  If there is no tier designation for the usage data (e.g. the Customer is on a flat rate Service Contract), this value MUST be `null`.
+  If the Server does not know the tier designation, this field MUST NOT be included.
+* `season` - _[SeasonType](#usage-segment-season-types) or `null`_ - (OPTIONAL) This is the billing seasonal designation for the usage data.
+  If there is no seasonal designation for the usage data (e.g. the Customer's rate plan does not differentiate between summer and winter), this value MUST be `null`.
+  If the Server does not know the seasonal designation, this field MUST NOT be included.
+* `quality` - _[ReadingQualityType](#usage-segment-reading-quality-types)_ - (OPTIONAL) This is the quality designation of the usage data.
+  If the Server does not know the quality of the usage data, this field MUST NOT be included.
+* `related_meterdevices` - _Array[[string](#string)]_ - (OPTIONAL) The list of `cds_meterdevice_id` values that identify Meter Devices from which the corresponding Value Objects were measured.
+  If the Server does not know which Meter Devices were used to measure the usage data, this field MUST NOT be included.
+
+###### 10.8.5.5.2. Natural Gas Usage Value Objects <a id="usage-segment-gas-usage-value-object" href="#usage-segment-gas-usage-value-object" class="permalink">🔗</a>
+
+Natural Gas Usage Value Objects are [Value Objects](#usage-segment-value-objects) for natural gas usage and have the following additional fields:
+
+* `gu` - _[decimal](#decimal)_ - (REQUIRED) The amount of natural gas usage from the start timestamp of the interval to the end timestamp of the interval, in the corresponding Value Format's `units`.
+
+##### 10.8.5.6. Fuel Oil Usage <a id="usage-segment-fueloil-usage" href="#usage-segment-fueloil-usage" class="permalink">🔗</a>
+
+Fuel oil can sometimes also be called heating oil or furnace oil. To include fuel oil usage data, both for granular (e.g. daily intervals) and longer period (e.g. monthly data) data, the Server MUST use the [Fuel Oil Usage Value Format](#usage-segment-fueloil-usage-value-format) and [Fuel Oil Usage Value Object](#usage-segment-fueloil-usage-value-object) defined in this section.
+
+###### 10.8.5.6.1. Fuel Oil Usage Value Format Objects <a id="usage-segment-fueloil-usage-value-format" href="#usage-segment-fueloil-usage-value-format" class="permalink">🔗</a>
+
+Fuel Oil Usage Value Format objects are [Value Format](#usage-segment-value-formats) objects for water usage and have the following fields:
+
+* `type` - _[string](#string)_ - (REQUIRED) This value MUST be `fuel_oil_usage`.
+* `units` - _[UnitType](#usage-segment-unit-types)_ - (REQUIRED) This is the units for the usage data.
+  The value of this field MUST be one of the following:
+    * `"L"` - Liters
+    * `"gal"` - Gallons
+* `tier` - _[TierType](#usage-segment-tier-types) or `null`_ - (OPTIONAL) This is the billing tier designation for the usage data.
+  If there is no tier designation for the usage data (e.g. the Customer is on a flat rate Service Contract), this value MUST be `null`.
+  If the Server does not know the tier designation, this field MUST NOT be included.
+* `season` - _[SeasonType](#usage-segment-season-types) or `null`_ - (OPTIONAL) This is the billing seasonal designation for the usage data.
+  If there is no seasonal designation for the usage data (e.g. the Customer's rate plan does not differentiate between summer and winter), this value MUST be `null`.
+  If the Server does not know the seasonal designation, this field MUST NOT be included.
+* `quality` - _[ReadingQualityType](#usage-segment-reading-quality-types)_ - (OPTIONAL) This is the quality designation of the usage data.
+  If the Server does not know the quality of the usage data, this field MUST NOT be included.
+* `related_meterdevices` - _Array[[string](#string)]_ - (OPTIONAL) The list of `cds_meterdevice_id` values that identify Meter Devices from which the corresponding Value Objects were measured.
+  If the Server does not know which Meter Devices were used to measure the usage data, this field MUST NOT be included.
+
+###### 10.8.5.6.2. Fuel Oil Usage Value Objects <a id="usage-segment-fueloil-usage-value-object" href="#usage-segment-fueloil-usage-value-object" class="permalink">🔗</a>
+
+Fuel Oil Usage Value Objects are [Value Objects](#usage-segment-value-objects) for fuel oil usage and have the following additional fields:
+
+* `fu` - _[decimal](#decimal)_ - (REQUIRED) The amount of fuel oil usage from the start timestamp of the interval to the end timestamp of the interval, in the corresponding Value Format's `units`.
+
+##### 10.8.5.7. Interval Cost <a id="usage-segment-interval-cost" href="#usage-segment-interval-cost" class="permalink">🔗</a>
+
+Interval cost is the measure of monetary cost for the other measurements in the same [Value Set](#usage-segment-value-set-format). To include interval cost data, the Server MUST use the [Interval Cost Value Format](#usage-segment-interval-cost-value-format) and [Interval Cost Value Object](#usage-segment-interval-cost-value-object) defined in this section.
+
+###### 10.8.5.7.1. Interval Cost Value Format Objects <a id="usage-segment-interval-cost-value-format" href="#usage-segment-interval-cost-value-format" class="permalink">🔗</a>
+
+* `type` - _[string](#string)_ - (REQUIRED) This value MUST be `cost`.
+* `currency` - _[string](#string)_ - (REQUIRED) The currency for the cost values as an [[ISO 4217](#ref-iso4217)] currency code.
+* `indexes` - _Array[[integer](#integer)]_ - (REQUIRED) A list of which indexes of the Value Sets the cost value represents.
+  For example, if the Server included three Value Format objects in the Usage Segment's `format` array with the Value Types `electric_usage`, `electric_demand`, and `cost`, where the cost represented the electric usage cost per interval, the `indexes` array would be `[0]` (representing that the cost values are for the `0` index of the Value Sets in the Usage Segment's `values` array, which is where the electric usage Value Objects are included).
+  If there are no values included in the Value Sets that make up the cost (e.g. the interval time period itself has a flat cost), this value MUST be an empty list (`[]`).
+
+###### 10.8.5.7.2. Interval Cost Value Objects <a id="usage-segment-interval-cost-value-object" href="#usage-segment-interval-cost-value-object" class="permalink">🔗</a>
+
+Interval Cost Value Objects are [Value Objects](#usage-segment-value-objects) for interval cost and have the following additional fields:
+
+* `c` - _[decimal](#decimal)_ - (REQUIRED) The amount of monetary value denoted for the period of the interval, in the corresponding Value Format's `currency`.
+
+##### 10.8.5.8. Meter Readings <a id="usage-segment-meter-readings" href="#usage-segment-meter-readings" class="permalink">🔗</a>
+
+Meter readings are individual value readings directly from the associated [Meter Devices](#meter-device-format). To include meter reading data, the Server MUST use the [Meter Readings Value Format](#usage-segment-interval-cost-value-format) and [Meter Readings Value Object](#usage-segment-interval-cost-value-object) defined in this section.
+
+When including meter
+
+###### 10.8.5.8.1. Meter Readings Value Format Objects <a id="usage-segment-meter-readings-value-format" href="#usage-segment-meter-readings-value-format" class="permalink">🔗</a>
+
+* `type` - _[string](#string)_ - (REQUIRED) This value MUST be `meter_readings`.
+* `related_meterdevice` - _[string](#string)_ - (REQUIRED) The `cds_meterdevice_id` value that identifies a Meter Device from which the corresponding Value Objects were measured.
+  If the Server does not know which Meter Devices were used to measure the usage data, this field MUST NOT be included.
+* `register` - _[string](#string) or `null`_ - (REQUIRED) This is the name or identifier of the register or slot from which the meter reading's values are read.
+  If the Server does not know the name or identifier of the meter reading's register, this value MUST be `null`.
+* `units` - _[UnitType](#usage-segment-unit-types)_ - (REQUIRED) This is the units that are being measured by the meter reading.
+
+###### 10.8.5.8.2. Meter Readings Value Objects <a id="usage-segment-meter-readings-value-object" href="#usage-segment-meter-readings-value-object" class="permalink">🔗</a>
+
+Meter Readings Value Objects are [Value Objects](#usage-segment-value-objects) for meter readings and have the following additional fields:
+
+* `r` - _[string](#string)_ - (REQUIRED) This is the meter reading value as it was read from the associated Meter Device at the starting timestamp of the interval.
+  This value MUST be a [string](#string), and not a [decimal](#decimal), so that Clients do not accidentally confuse this value with an usage amount.
+
+#### 10.8.6. Value Type Description Objects <a id="usage-segment-value-type-description" href="#usage-segment-value-type-description" class="permalink">🔗</a>
+
+The Server MAY include [Value Types](#usage-segment-value-types) beyond those that are defined in this specification in [Usage Segments](#usage-segment-format).
+When Servers do include additional Value Types, the Server MUST include information, represented by a Value Type Description object, for that additional type so that Clients can become compatible with the Value Format and Value Set objects when they are included in a [Usage Segment's](#usage-segment-format) `formats` and `values` fields.
+
+Value Format Description objects are formatted as JSON objects and contain the following named values:
+
+* `type` - _[string](#string)_ - (REQUIRED) The identifier of the `type` value that will be used in a [Value Format](#usage-segment-value-formats) object.
+* `name` - _[string](#string)_ - (REQUIRED) A human-readable name of the Value Type.
+* `description` - _[string](#string)_ - (REQUIRED) A human-readable description of what the Value Set data represents.
+* `documentation` - _[URL](#url)_ - (REQUIRED) A link to developer documentation on the additional Value Type.
+  Servers MUST include a definition in their documentation that is formatted the same as the [Value Types](#usage-segment-value-types) defined in this specification.
+  It is RECOMMENDED that Servers also include details about when they will include the Value Format in Usage Segments.
+  It is RECOMMENDED that Servers also include examples of what typical Value Format objects and Value Set objects could look like.
+  Servers MAY include any other information in their documentation, in addition to the required formatted definition.
+
+#### 10.8.7. Field Types <a id="usage-segment-field-types" href="#usage-segment-field-types" class="permalink">🔗</a>
+
+Usage Segment [Value Types](#usage-segment-value-types) define additional fields for [Value Formats](#usage-segment-value-formats) depending on the kind of data they represent.
 Many of the additional fields defined have values that can be choices from a set of enumerated values (e.g. units, time-of-use designations, etc.).
 The enumerated values for these field types are defined in this section.
 
-##### 10.8.4.1. Unit Types <a id="usage-segment-unit-types" href="#usage-segment-unit-types" class="permalink">🔗</a>
+##### 10.8.7.1. Unit Types <a id="usage-segment-unit-types" href="#usage-segment-unit-types" class="permalink">🔗</a>
 
 Unit Type values MUST be a [string](#string) of one of the following:
 
@@ -4711,7 +4944,7 @@ Unit Type values MUST be a [string](#string) of one of the following:
 * `count` - Number of items (e.g. the number of lamps in an unmetered electric service)
 * `percent` - Percent (e.g. percent of maximum value)
 
-##### 10.8.4.2. Direction Types <a id="usage-segment-direction-types" href="#usage-segment-direction-types" class="permalink">🔗</a>
+##### 10.8.7.2. Direction Types <a id="usage-segment-direction-types" href="#usage-segment-direction-types" class="permalink">🔗</a>
 
 Direction Type values MUST be a [string](#string) of one of the following:
 
@@ -4719,7 +4952,7 @@ Direction Type values MUST be a [string](#string) of one of the following:
 * `forward` - The data represents the total amount of usage that went from the central entity to the external entity (e.g. energy usage from the utility to the Customer's building).
 * `reverse` - The data represents the total amount of usage that went from the external entity to the central entity (e.g. distributed generation flowing usage back to the utility).
 
-##### 10.8.4.3. Time-of-Use Types <a id="usage-segment-tou-types" href="#usage-segment-tou-types" class="permalink">🔗</a>
+##### 10.8.7.3. Time-of-Use Types <a id="usage-segment-tou-types" href="#usage-segment-tou-types" class="permalink">🔗</a>
 
 Time-of-Use (TOU) Type values MUST be a [string](#string) of one of the following:
 
@@ -4729,11 +4962,12 @@ Time-of-Use (TOU) Type values MUST be a [string](#string) of one of the followin
 * `off_peak` - Off-Peak
 * `super_off_peak` - Super Off-Peak
 
-##### 10.8.4.4. Tier Types <a id="usage-segment-tier-types" href="#usage-segment-tier-types" class="permalink">🔗</a>
+##### 10.8.7.4. Tier Types <a id="usage-segment-tier-types" href="#usage-segment-tier-types" class="permalink">🔗</a>
 
 Tier Type values MUST be a [string](#string) of one of the following:
 
 * `baseline` - Baseline Tier
+* `overage` - Over Baseline Tier
 * `tier_1` - Tier 1
 * `tier_2` - Tier 2
 * `tier_3` - Tier 3
@@ -4744,7 +4978,7 @@ Tier Type values MUST be a [string](#string) of one of the following:
 * `tier_8` - Tier 8
 * `tier_9` - Tier 9
 
-##### 10.8.4.5. Season Types <a id="usage-segment-season-types" href="#usage-segment-season-types" class="permalink">🔗</a>
+##### 10.8.7.5. Season Types <a id="usage-segment-season-types" href="#usage-segment-season-types" class="permalink">🔗</a>
 
 Season Type values MUST be a [string](#string) of one of the following:
 
@@ -4753,7 +4987,7 @@ Season Type values MUST be a [string](#string) of one of the following:
 * `fall` - Fall/Autumn season
 * `winter` - Winter season
 
-##### 10.8.4.6. Reading Quality Types <a id="usage-segment-reading-quality-types" href="#usage-segment-reading-quality-types" class="permalink">🔗</a>
+##### 10.8.7.6. Reading Quality Types <a id="usage-segment-reading-quality-types" href="#usage-segment-reading-quality-types" class="permalink">🔗</a>
 
 Reading Quality Type values MUST be a [string](#string) of one of the following:
 
@@ -4767,42 +5001,51 @@ Reading Quality Type values MUST be a [string](#string) of one of the following:
 * `website` - The values are the same quality as those provided to the Customer on the Customer's portal interface.
   This reading quality could be the same quality as any other type, so it is RECOMMENDED that Servers only use this reading quality type when it does not otherwise know a more specific appropriate reading quality type.
 
-#### 10.8.5. Usage Segment Value Format Description Objects <a id="usage-segment-value-format-description" href="#usage-segment-value-format-description" class="permalink">🔗</a>
+##### 10.8.7.7. Demand Types <a id="usage-segment-demand-types" href="#usage-segment-demand-types" class="permalink">🔗</a>
 
-The Server MAY include [Value Format](#usage-segment-value-formats) object types beyond those that are [defined](#usage-segment-value-format-types) in this specification.
-When Servers do include additional Value Format types, the Server MUST include information, represented by a Value Format Description object, for that additional type so that Clients can become compatible with the Value Format and Value Set objects when they are included in a [Usage Segment's](#usage-segment-format) `formats` and `values` fields.
+Demand Type values MUST be a [string](#string) of one of the following:
 
-Value Format Description objects are formatted as JSON objects and contain the following named values:
+* `peak` - The values represent the peak demand over the duration of the interval.
+* `average` - The values represent the average demand over the duration of the interval.
+* `starting` - The values represent instantaneous demand measurements at the start datetime of each interval.
+* `ending` - The values represent instantaneous demand measurements at the end datetime of each interval.
 
-* `type` - _[string](#string)_ - (REQUIRED) The identifier of the `type` value that will be used in a [Value Format](#usage-segment-value-formats) object.
-* `name` - _[string](#string)_ - (REQUIRED) A human-readable name of the Value Format Type.
-* `description` - _[string](#string)_ - (REQUIRED) A human-readable description of what the Value Set data represents.
-* `documentation` - _[URL](#url)_ - (REQUIRED) A link to developer documentation on the additional Value Format Type.
-  Servers MUST include a definition in their documentation that is formatted the same as the [Value Format Types](#usage-segment-value-format-types) defined in this specification.
-  It is RECOMMENDED that Servers also include details about when they will include the Value Format in Usage Segments.
-  It is RECOMMENDED that Servers also include examples of what typical Value Format objects and Value Set objects could look like.
-  Servers MAY include any other information in their documentation, in addition to the required formatted definition.
+##### 10.8.7.8. Supply Attribution Types <a id="usage-segment-supply-attribution-types" href="#usage-segment-supply-attribution-types" class="permalink">🔗</a>
 
-#### 10.8.6. Usage Segment Value Sets <a id="usage-segment-value-set-format" href="#usage-segment-value-set-format" class="permalink">🔗</a>
+Supply Attribution Type values MUST be a [string](#string) of one of the following:
 
-The [Usage Segment](#usage-segment-format) `values` field provides an ordered list of Value Set entries.
-A Value Set entry is an array that contains an ordered list of [Value Objects](#usage-segment-value-objects), where the type of each Value object which is defined by the order of the `formats` listing.
+* `base` - The supply mix values represent supply from the grid that is attributed to the base grid sources.
+* `individual` - The supply mix values represent supply from the grid that is individually attributable to the Customer's Service Contracts (e.g. power purchase agreements).
+* `residual` - The supply mix values represent supply from the grid that is attributed to residual generation sources.
 
-Each Value Set entry in the `values` listing represents an increment of `interval` seconds in the Usage Segment from the `segment_start`.
-For example, if a Usage Segment has a `segment_start` of `2025-01-01T00:00:00Z`, an `interval` of `900`, and four Value Set entries in the `values`, the Value Set entries would represent the each 15 minute period of a one hour segment (`2025-01-01T00:00:00Z - 2025-01-01T00:15:00Z`, `2025-01-01T00:15:00Z - 2025-01-01T00:30:00Z`, `2025-01-01T00:30:00Z - 2025-01-01T00:45:00Z`, and `2025-01-01T00:45:00Z - 2025-01-01T01:00:00Z`).
+##### 10.8.7.9. Supply Types <a id="usage-segment-supply-types" href="#usage-segment-supply-types" class="permalink">🔗</a>
 
-If a Value Object is not available for a specific Value Set (e.g. that interval has missing data), Servers MUST replace the item in the Value Set where the Value Object would have gone with `null`.
+Supply Type values MUST be a [string](#string) of one of the following:
 
-#### 10.8.7. Usage Segment Value Objects <a id="usage-segment-value-objects" href="#usage-segment-value-objects" class="permalink">🔗</a>
-
-A Value Object is a JSON object that is included as an entry in a [Value Set](#usage-segment-value-set-format) array.
-The index of the Value Object in the Value Set corresponds to the same index of [Value Format Object](#usage-segment-value-formats) (which defines the Value Object's type and format) in the [Usage Segment's](#usage-segment-format) `formats` array.
-
-The fields within a Value Object are defined by the corresponding Value Format Object's [Type](#usage-segment-value-format-types) definition (e.g. [Electric Usage](#usage-segment-electric-usage)).
+* `general` - The supply mix values represent the combined generation sources of the associated attribution.
+* `carbonfree` - The supply mix values represent the combined carbon free sources of the associated attribution.
+  Carbon free sources include nuclear power generation, in addition to other carbon free generation sources, such as solar and wind.
+* `peaker` - The supply mix values represent supply coming from peaker unit generation within the associated attribution.
+* `solar` - The supply mix values represent supply coming from solar power generation within the associated attribution.
+* `wind` - The supply mix values represent supply coming from wind power generation within the associated attribution.
+* `hydro` - The supply mix values represent supply coming from hydro power generation within the associated attribution.
+* `geothermal` - The supply mix values represent supply coming from geothermal power generation within the associated attribution.
+* `biomass` - The supply mix values represent supply coming from biomass power generation within the associated attribution.
+* `nuclear` - The supply mix values represent supply coming from nuclear power generation within the associated attribution.
+* `storage` - The supply mix values represent supply coming from stored power generation within the associated attribution.
+* `demand_management` - The supply mix values represent supply as a result of reduction in demand from other grid consumers (e.g. via demand response programs) within the associated attribution.
+* `distributed` - The supply mix values represent supply coming from distributed generation within the associated attribution.
+  This represents power that is generated from distributed (i.e. "behind-the-meter") sources that has been fed back into the grid and supplied to the Customer as part of the supply mix.
+  This does not include any power that the Customer generated and supplied to themselves on-site, because that power is generated and used locally and is not supplied from the grid.
+  If a Customer generates distributed energy at another location, then the power is supplied to the measured location, then that distributed supply is included in supply mix values.
+* `natural_gas` - The supply mix values represent supply coming from natural gas power generation within the associated attribution.
+  This represents all natural gas generation, so peaker generation, base load natural gas, and others are included.
+* `coal` - The supply mix values represent supply coming from coal power generation within the associated attribution.
+* `oil` - The supply mix values represent supply coming from oil power generation within the associated attribution.
 
 #### 10.8.8. Listing Usage Segments <a id="usage-segment-list" href="#usage-segment-list" class="permalink">🔗</a>
 
-Clients may request to list Usage Segment objects that they have access to by making an HTTPS `GET` request to the [Server Metadata's](#server-metadata) `cds_usagesegments_list` URL.
+Clients may request to list Usage Segment objects that they have access to by making an HTTPS `GET` request to the [Server Metadata's](#server-metadata) `cds_usagesegments_api` URL.
 The Usage object listing request responses are formatted as JSON objects and contain the following named values.
 
 * `usage_segments` - _Array[[UsageSegment](#usage-segment-format)]_ - (REQUIRED) A list of Usage Segments to which the requesting `access_token` is scoped to have access.
@@ -4896,7 +5139,7 @@ EAC Data Format Descriptions objects are formatted as JSON objects and contain t
 
 #### 10.9.4. Listing Energy Attribute Certificates <a id="eac-list" href="#eac-list" class="permalink">🔗</a>
 
-Clients may request to list EAC objects that they have access to by making an HTTPS `GET` request to the [Server Metadata's](#server-metadata) `cds_eacs_list` URL.
+Clients may request to list EAC objects that they have access to by making an HTTPS `GET` request to the [Server Metadata's](#server-metadata) `cds_eacs_api` URL.
 The EAC object listing request responses are formatted as JSON objects and contain the following named values.
 
 * `eacs` - _Array[[EnergyAttributeCredit](#eac-format)]_ - (REQUIRED) A list of EACs to which the requesting `access_token` is scoped to have access.
