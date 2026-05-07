@@ -155,8 +155,7 @@ For more information, visit [https://lfess.energy/](https://lfess.energy/).
         * [10.1.5. Account Contact Types](#account-contact-types)  
         * [10.1.6. Account Program Object Format](#account-program-format)  
         * [10.1.7. Account Program Types](#account-program-types)  
-        * [10.1.8. Account Program Statuses](#account-program-statuses)  
-        * [10.1.9. Listing Accounts](#accounts-list)  
+        * [10.1.8. Listing Accounts](#accounts-list)  
     * [10.2. Service Contracts API](#service-contracts-api)  
         * [10.2.1. Service Contract Object Format](#service-contract-format)  
         * [10.2.2. Contract Types](#contract-types)  
@@ -303,6 +302,8 @@ So for the purposes of this specification, anytime the "User" is mentioned it ca
 Decimal values MAY have any number of significant digits after the decimal point.
 When storing a decimal value, Servers MUST preserve the decimal precision of the value exactly.
 This means Servers MUST NOT store a decimal value as a float, since that format does not preserve the significant figures of the decimal value.
+
+<a id="email-address" href="#email-address" class="permalink">🔗</a> "email address" - An electronic mail address as defined by [[RFC 5322 Section 3.4.1](#ref-rfc5322-email-address)].
 
 <a id="get" href="#get" class="permalink">🔗</a> "GET" - A request method defined in [[RFC 9110 Section 9](#ref-rfc9110-methods)].
 
@@ -598,7 +599,7 @@ To implement the "Customer Programs" Scenario, Servers MUST implement the follow
     * [`include_meter_devices`](#auth-details-include-meter-devices)
     * [`include_meter_numbers`](#auth-details-include-meter-numbers)
 * The following are requirements for supported Authorization Details Field Objects [[CDS-WG1-02 Section 3.8](#ref-cds-wg1-02-auth-details-object)]:
-    * For [Account Program Participation](#scope-account-program-participation) Scopes, the [`account_programs`](#auth-details-account-programs) authorization details field for each Scope MUST include a `choices` array that includes Choice objects where the `id` values are supported [Service Program](#account-program-format) `program_number` values for which the Server is providing access.
+    * For [Account Program Participation](#scope-account-program-participation) Scopes, the [`account_programs`](#auth-details-account-programs) authorization details field for each Scope MUST include a `choices` array that includes Choice objects where the `id` values are supported [Service Program](#service-program-format) `program_number` values for which the Server is providing access.
       This can include programs for which the Customer is eligible, in addition to programs in which the Customer is currently participating or has previously participated.
     * For [Service Program Participation](#scope-service-program-participation) Scopes, the [`service_programs`](#auth-details-service-programs) authorization details field for each Scope MUST include a `choices` array that includes Choice objects where the `id` values are supported [Service Program](#service-program-format) `program_number` values for which the Server is providing access.
       This can include programs for which the Customer is eligible, in addition to programs in which the Customer is currently participating or has previously participated.
@@ -2182,7 +2183,7 @@ Additionally, Servers MUST implement the following behavior to support this auth
 
 For some use cases, Clients need to have access to a Customer's account programs for assessing the Customer's eligibility with various utility programs.
 For example, an electric vehicle charging app Client may need to determine if a Customer is eligible for a low-income charging rebate offered by a utility.
-To address these use cases, this specification defines an authorization details field that controls whether account programs access is enabled.
+To address these use cases, this specification defines an authorization details field that controls whether [Account Program](#account-program-format) access is enabled.
 
 To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:
 
@@ -2193,7 +2194,7 @@ To support this authorization details field, the Authorization Details Field Obj
 
 Additionally, Servers MUST implement the following behavior to support this authorization details field:
 
-* If this field's value is `true`, Servers MUST include the following field values in any Account objects accessible using this field's scope:
+* If this field's value is `true`, Servers MUST include the following field values in any [Account](#account-format) objects accessible using this field's scope:
     * `account_programs`
 
 #### 7.2.2. Include Service Contracts <a id="auth-details-include-service-contracts" href="#auth-details-include-service-contracts" class="permalink">🔗</a>
@@ -4000,33 +4001,120 @@ Account objects are formatted as JSON objects and contain the following named va
 
 #### 10.1.2. Account Types <a id="account-types" href="#account-types" class="permalink">🔗</a>
 
-<span style="background-color:yellow">TODO</span>
+Account Type values MUST be a [string](#string) of one of the following:
+
+* `customer` - The account represents a Customer's account.
+  This is what most people think of when they think of a utility account.
+* `thirdparty` - The account represents a contractor, vendor, or other third party entity account.
+  Some utilities designate account numbers to third party vendor or contractors so that they can be assigned resources in the utility's system.
+* `internal` - The account represents the central entity's own account (e.g. admin, internal testing, etc.).
+  Some utilities designate account numbers to internal teams so that they can assign resources or allow that team to test the utility's systems.
+* `parent` - The account has one or more sub-accounts underneath it.
+  This usually happens when a utility combines multiple Customer accounts for an enterprise into a single "parent" account and create bill statements for that primary parent account rather than each individual sub-account.
+* `child` - The account is part of a group and has a parent account above it.
+  This usually happens when many of an enterprise's utility accounts are organized underneath a main "parent" account, so that the utility can bill the various "child" sub-accounts together as one bill statement.
+* `test` - The account represents a fictional test account, not a real entity.
 
 #### 10.1.3. Account Statuses <a id="account-statuses" href="#account-statuses" class="permalink">🔗</a>
 
-<span style="background-color:yellow">TODO</span>
+Account Status values MUST be a [string](#string) of one of the following:
+
+* `active` - The Account is currently active, as of the `cds_synced` timestamp.
+* `suspended` - The Account is currently inactive, as of the `cds_synced` timestamp, but may be reactivated in the future.
+* `closed` - The Account is currently inactive, as of the `cds_synced` timestamp, and will not be reactivated in the future.
 
 #### 10.1.4. Account Contact Object Format <a id="account-contact-format" href="#account-contact-format" class="permalink">🔗</a>
 
-<span style="background-color:yellow">TODO</span>
+Account Contact objects represent a way of contacting the owner or owner's representative of the Account.
+Account Contact objects are formatted as JSON objects and contain the following named values:
+
+* `id` - _[string](#string)_ - (REQUIRED) The unique identifier for the Account Contact.
+* `types` - _Array[[AccountContactType](#account-contact-types)]_ - (REQUIRED) An array of types for the Account Contact.
+  The Server MUST have one of `"phone_number"` or `"email"` in this array.
+  The Server MAY include other Account Contact Types in the array to further define the type of contact (e.g. including `"mobile"` to indicate this it Account's mobile contact).
+* `value` - _[string](#string)_ - (REQUIRED) The contact value, depending on the `type` value.
+  If the `types` array contains `"phone_number"`, this value MUST be an E.164 internationally formatted phone number [[E.164](#ref-e164)] (e.g. `"+15554443333"`).
+  If the `types` array contains `"email"`, this value MUST be an [email address](#email-address) (e.g. `"name@example.com"`).
 
 #### 10.1.5. Account Contact Types <a id="account-contact-types" href="#account-contact-types" class="permalink">🔗</a>
 
-<span style="background-color:yellow">TODO</span>
+Account Contact Type values MUST be a [string](#string) of one of the following:
+
+* `phone_number` - The contact is a phone number.
+* `email` - The contact is an email address.
+* `home` - The contact is a home contact.
+* `work` - The contact is a work contact.
+* `mobile` - The contact is a mobile device contact.
+* `preferred` - The contact is the preferred way of contacting the Customer.
+  This is generally combined with another type (e.g. `phone_number`).
+* `primary` - The contact is the primary value to use when contacting the Customer via that contact method.
+  This is generally combined with another type (e.g. `phone_number`).
+* `secondary` - The contact is a secondary or backup for contacting the Customer.
+  This is generally combined with another type (e.g. `phone_number`).
 
 #### 10.1.6. Account Program Object Format <a id="account-program-format" href="#account-program-format" class="permalink">🔗</a>
 
-<span style="background-color:yellow">TODO</span>
+Account Program objects represent an account-level program in which the Account is participating, has previously participated, or is eligible to participate.
+Account Program objects are formatted as JSON objects and contain the following named values:
+
+* `id` - _[string](#string)_ - (REQUIRED) The unique identifier for the Account Program.
+* `program_number` - _[string](#string)_ - (REQUIRED) The identifier for the program that is used for external entities (Customers, vendors, contractors, etc.).
+  If there is not a designated identifier for the program, the Server MUST generate a `program_number` value to use for continuity, since the `program_name` may change over time.
+* `types` - _Array[[AccountProgramType](#account-program-types)]_ - (REQUIRED) An array of types for the Account Program.
+* `name` - _[string](#string)_ - (REQUIRED) The name of the program.
+* `description` - _[string](#string)_ - (REQUIRED) A short description of the program.
+* `documentation` - _[URL](#url)_ - (REQUIRED) A link to developer documentation about the program.
+* `more_info` - _[URL](#url)_ - (OPTIONAL) A link to where a Customer may learn more about the program.
+  If there is not a link where a Customer may view more information about the program, this field MUST NOT be included.
+* `signup` - _[URL](#url)_ - (OPTIONAL) A link to where a Customer may sign up their Account for the program.
+  If there is not a link where a Customer may sign up for the program, this field MUST NOT be included.
+  If the way to signup cannot be done via an online process, this link MAY be to a webpage that instructs Customers on how to signup (e.g. provides a phone number to call).
+* `settings` - _[URL](#url)_ - (OPTIONAL) A link to where a Customer may view their participation status and/or modify their settings for the program.
+  If there is not a link where a Customer may view their status or modify their settings, this field MUST NOT be included.
+  If the way for a Customer to obtain their status or modify their settings cannot be done via an online process, this link MAY be to a webpage that instructs Customers on how to accomplish those tasks (e.g. provides a phone number to call).
+* `discontinue` - _[URL](#url)_ - (OPTIONAL) A link to where a Customer may stop participating in the program.
+  If there is not a link where a Customer may discontinue participating in the program, this field MUST NOT be included.
+  If the way to stop participating cannot be done via an online process, this link MAY be to a webpage that instructs Customers on how to stopping participating (e.g. provides a phone number to call).
+* `participation_number` - _[string](#string)_ - (OPTIONAL) The identifier for the Account's participation in the program.
+  If the Account has not participated in the program or the Server does not know the Account's participation number, this field MUST NOT be included.
+* `start` - _[date](#date)_ - (OPTIONAL) The date the Account most recently started participating in the program.
+  If the Account has not participated in the program or the Server does not know the Account's most recent start date, this field MUST NOT be included.
+* `end` - _[date](#date)_ - (OPTIONAL) The date the Account most recently stopped participating in the program.
+  If the Account has not participated in the program or the Server does not know the Account's most recent end date, this field MUST NOT be included.
+
+Depending on the values in an Account Program's `types` array, the Account Program MAY have additional fields.
+See each [Account Program Type](#account-program-types) value for what additional fields are defined.
+
+Servers MAY add additional fields to Account Program objects as needed to include program-specific data.
+It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. `exampleutility_*`).
+For example, if the Server has an Account that is participating in a credit bank credit bank program (e.g. NEM tracked charges) and wants to included the tracked amount of energy, the Server could add a `exampleutility_nem_net_kwh` field that provides the net kilowatt hours accumulated for the program.
+
+Clients MUST ignore unknown `types` array values and unknown additional fields.
 
 #### 10.1.7. Account Program Types <a id="account-program-types" href="#account-program-types" class="permalink">🔗</a>
 
-<span style="background-color:yellow">TODO</span>
+Account Program Type values MUST be a [string](#string) of one of the following:
 
-#### 10.1.8. Account Program Statuses <a id="account-program-statuses" href="#account-program-statuses" class="permalink">🔗</a>
+* `active` - The Account is actively participating in the program.
+* `inactive` - The Account was previously active in the program, but is currently inactive.
+* `eligible` - The Account is eligible to participate in the program.
+* `ineligible` - The Account is not eligible to participate in the program.
+* `low_income` - The program is a low-income program, typically for financial assistance for billing and charges.
+* `flat_rate` - The program is a flat-rate billing program, where the Customer pays a fixed or flat amount on their bills that is unrelated to their Service Contract usage or charges.
+* `payment_plan` - The program is a payment plan, where the Customer is paying off previous billed charges in installments.
+* `protected` - The program is one where the Account is designated as protected or critical need, such as when a Customer has medical need for reliable service.
+* `survey` - The program is a survey or information gathering program, such as an academic study.
+* `pilot` - The program is a limited or pilot program, such as a virtual power plant (VPP) pilot.
+* `credit_bank` - The program is is one where the Account accumulates credits or debits over a period of time, then there is a "true-up" where the balance is applied to the Account's bill.
+  For example, some Net Energy Metering (NEM) programs track credits for the net amount of distributed energy produced, which then get annually applied to Account balances.
+  This kind of program is sometimes called a "tracked charges" or "net metering true-up" program.
+  Account Program objects that contain this value in their `types` array MAY have the following additional fields:
+    * `balance` - _[decimal](#decimal)_ - (OPTIONAL) The credit bank's balance in the `currency` unit.
+      If the Server does not know the Account's balance of the credit bank, this field MUST NOT be included.
+    * `currency` - _[string](#string)_ - (OPTIONAL) The currency for the `balance` value as an [[ISO 4217](#ref-iso4217)] currency code.
+      This field is REQUIRED if the `balance` field is included.
 
-<span style="background-color:yellow">TODO</span>
-
-#### 10.1.9. Listing Accounts <a id="accounts-list" href="#accounts-list" class="permalink">🔗</a>
+#### 10.1.8. Listing Accounts <a id="accounts-list" href="#accounts-list" class="permalink">🔗</a>
 
 Clients may request to list Account objects that they have access to by making an HTTPS `GET` request to the [Server Metadata's](#server-metadata) `cds_accounts_api` URL.
 The Account listing request responses are formatted as JSON objects and contain the following named values.
@@ -5238,6 +5326,10 @@ In situations where relevant EACs have the same `period_start` and `cds_created`
 `CDS-WG1-02 Section 8.3` - "Grant Authorization Requests", CDS-WG1-02, LF Energy Standards and Specifications (LFESS),  
 [https://cds-registration.lfenergy.org/specs/cds-wg1-02/#grant-authorization-requests](https://cds-registration.lfenergy.org/specs/cds-wg1-02/#grant-authorization-requests)
 
+<a id="ref-e164" href="#ref-e164" class="permalink">🔗</a>
+`E.164` - "The international public telecommunication numbering plan", E.164, International Telecommunication Union (ITU),  
+[https://www.itu.int/rec/T-REC-E.164/](https://www.itu.int/rec/T-REC-E.164/)
+
 <a id="ref-iso4217" href="#ref-iso4217" class="permalink">🔗</a>
 `ISO 4217` - "Currency Codes", ISO 4217, International Organization for Standardization (ISO),  
 [https://www.iso.org/iso-4217-currency-codes.html](https://www.iso.org/iso-4217-currency-codes.html)
@@ -5249,6 +5341,10 @@ In situations where relevant EACs have the same `period_start` and `cds_created`
 <a id="ref-rfc3986-url" href="#ref-rfc3986-url" class="permalink">🔗</a>
 `RFC 3986 Section 1.1.3` - Section 1.1.3. URI, URL, and URN, "Uniform Resource Identifier (URI): Generic Syntax", RFC 3986, Internet Engineering Task Force (IETF),  
 [https://www.rfc-editor.org/rfc/rfc3986#section-1.1.3](https://www.rfc-editor.org/rfc/rfc3986#section-1.1.3)
+
+<a id="ref-rfc5322-email-address" href="#ref-rfc5322-email-address" class="permalink">🔗</a>
+`RFC 5322 Section 3.4.1` - Section 3.4.1. Addr-Spec, "Internet Message Format", RFC 5322, Internet Engineering Task Force (IETF),  
+[https://www.rfc-editor.org/rfc/rfc5322#section-3.4.1](https://www.rfc-editor.org/rfc/rfc5322#section-3.4.1)
 
 <a id="ref-rfc6749-auth-endpoint" href="#ref-rfc6749-auth-endpoint" class="permalink">🔗</a>
 `RFC 6749 Section 3.1` - Section 3.1. Authorization Endpoint, "The OAuth 2.0 Authorization Framework", RFC 6749, Internet Engineering Task Force (IETF),  
