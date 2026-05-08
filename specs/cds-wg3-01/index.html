@@ -391,11 +391,9 @@ For more information, visit <a href="https://lfess.energy/">https://lfess.energy
           <li><a href="#contract-types">10.2.2. Contract Types</a></li>
           <li><a href="#contract-statuses">10.2.3. Contract Statuses</a></li>
           <li><a href="#service-types">10.2.4. Service Types</a></li>
-          <li><a href="#service-classes">10.2.5. Service Classes</a></li>
-          <li><a href="#service-program-format">10.2.6. Service Program Object Format</a></li>
-          <li><a href="#service-program-types">10.2.7. Service Program Types</a></li>
-          <li><a href="#service-program-statuses">10.2.8. Service Program Statuses</a></li>
-          <li><a href="#service-contract-list">10.2.9. Listing Service Contracts</a></li>
+          <li><a href="#service-program-format">10.2.5. Service Program Object Format</a></li>
+          <li><a href="#service-program-types">10.2.6. Service Program Types</a></li>
+          <li><a href="#service-contract-list">10.2.7. Listing Service Contracts</a></li>
         </ul>
       </li>
       <li><a href="#service-points-api">10.3. Service Points API</a>
@@ -5634,7 +5632,8 @@ If a Server only stores Accounts as the top-level identifier for Customers, or d
   <li><code class="language-plaintext highlighter-rouge">account_address</code> - <em><a href="#string">string</a></em> - (OPTIONAL) The address that a Customer sees on their bill and online user interface as the address for this Account, if available.
 This string MAY have line breaks, such as when the address is multiple lines.</li>
   <li><code class="language-plaintext highlighter-rouge">account_types</code> - <em>Array[<a href="#account-types">AccountType</a>]</em> - (OPTIONAL) A list of types that apply to the Account.
-Multiple Account Types can apply to a single account (e.g. both <code class="language-plaintext highlighter-rouge">utility_customer</code> and <code class="language-plaintext highlighter-rouge">business_account</code>).</li>
+Multiple Account Types can apply to a single account (e.g. both <code class="language-plaintext highlighter-rouge">utility_customer</code> and <code class="language-plaintext highlighter-rouge">business_account</code>).
+When included, this array MUST have at least one entry.</li>
   <li><code class="language-plaintext highlighter-rouge">account_status</code> - <em><a href="#account-statuses">AccountStatus</a></em> - (OPTIONAL) What the Account’s status is.</li>
   <li><code class="language-plaintext highlighter-rouge">account_contacts</code> - <em>Array[<a href="#account-contact-format">AccountContact</a>]</em> - (OPTIONAL) A list of Account Contacts for the Account.</li>
   <li><code class="language-plaintext highlighter-rouge">account_programs</code> - <em>Array[<a href="#account-program-format">AccountProgram</a>]</em> - (OPTIONAL) A list of Account Programs for the Account.
@@ -5657,6 +5656,13 @@ This usually happens when a utility combines multiple Customer accounts for an e
   <li><code class="language-plaintext highlighter-rouge">child</code> - The account is part of a group and has a parent account above it.
 This usually happens when many of an enterprise’s utility accounts are organized underneath a main “parent” account, so that the utility can bill the various “child” sub-accounts together as one bill statement.</li>
   <li><code class="language-plaintext highlighter-rouge">test</code> - The account represents a fictional test account, not a real entity.</li>
+  <li><code class="language-plaintext highlighter-rouge">residential</code> - The account represents an account for residential utility services.</li>
+  <li><code class="language-plaintext highlighter-rouge">commercial</code> - The account represents an account for commercial utility services.</li>
+  <li><code class="language-plaintext highlighter-rouge">industrial</code> - The account represents an account for industrial utility services.</li>
+  <li><code class="language-plaintext highlighter-rouge">agriculture</code> - The account represents an account for agriculture utility services.</li>
+  <li><code class="language-plaintext highlighter-rouge">municipal</code> - The account represents an account for municipal utility services (e.g. city governments, water utilities, etc.).</li>
+  <li><code class="language-plaintext highlighter-rouge">billed_monthly</code> - The account’s bills are generated on a monthly billing cycle.</li>
+  <li><code class="language-plaintext highlighter-rouge">billed_quarterly</code> - The account’s bills are generated on a quarterly billing cycle.</li>
 </ul>
 
 <h4 id="1013-account-statuses-">10.1.3. Account Statuses <a id="account-statuses" href="#account-statuses" class="permalink">🔗</a></h4>
@@ -5664,9 +5670,10 @@ This usually happens when many of an enterprise’s utility accounts are organiz
 <p>Account Status values MUST be a <a href="#string">string</a> of one of the following:</p>
 
 <ul>
-  <li><code class="language-plaintext highlighter-rouge">active</code> - The Account is currently active, as of the <code class="language-plaintext highlighter-rouge">cds_synced</code> timestamp.</li>
-  <li><code class="language-plaintext highlighter-rouge">suspended</code> - The Account is currently inactive, as of the <code class="language-plaintext highlighter-rouge">cds_synced</code> timestamp, but may be reactivated in the future.</li>
-  <li><code class="language-plaintext highlighter-rouge">closed</code> - The Account is currently inactive, as of the <code class="language-plaintext highlighter-rouge">cds_synced</code> timestamp, and will not be reactivated in the future.</li>
+  <li><code class="language-plaintext highlighter-rouge">active</code> - The Account is currently active.</li>
+  <li><code class="language-plaintext highlighter-rouge">suspended</code> - The Account is currently inactive, but may be reactivated in the future.</li>
+  <li><code class="language-plaintext highlighter-rouge">closed</code> - The Account is currently inactive, and will not be reactivated in the future.</li>
+  <li><code class="language-plaintext highlighter-rouge">unknown</code> - The Server does not have access to the Account’s current status.</li>
 </ul>
 
 <h4 id="1014-account-contact-object-format-">10.1.4. Account Contact Object Format <a id="account-contact-format" href="#account-contact-format" class="permalink">🔗</a></h4>
@@ -5708,7 +5715,7 @@ This is generally combined with another type (e.g. <code class="language-plainte
 Account Program objects are formatted as JSON objects and contain the following named values:</p>
 
 <ul>
-  <li><code class="language-plaintext highlighter-rouge">id</code> - <em><a href="#string">string</a></em> - (REQUIRED) The unique identifier for the Account Program.</li>
+  <li><code class="language-plaintext highlighter-rouge">id</code> - <em><a href="#string">string</a></em> - (REQUIRED) The unique identifier for the Account Program object.</li>
   <li><code class="language-plaintext highlighter-rouge">program_number</code> - <em><a href="#string">string</a></em> - (REQUIRED) The identifier for the program that is used for external entities (Customers, vendors, contractors, etc.).
 If there is not a designated identifier for the program, the Server MUST generate a <code class="language-plaintext highlighter-rouge">program_number</code> value to use for continuity, since the <code class="language-plaintext highlighter-rouge">program_name</code> may change over time.</li>
   <li><code class="language-plaintext highlighter-rouge">types</code> - <em>Array[<a href="#account-program-types">AccountProgramType</a>]</em> - (REQUIRED) An array of types for the Account Program.</li>
@@ -5758,7 +5765,8 @@ For example, if the Server has an Account that is participating in a credit bank
   <li><code class="language-plaintext highlighter-rouge">protected</code> - The program is one where the Account is designated as protected or critical need, such as when a Customer has medical need for reliable service.</li>
   <li><code class="language-plaintext highlighter-rouge">survey</code> - The program is a survey or information gathering program, such as an academic study.</li>
   <li><code class="language-plaintext highlighter-rouge">pilot</code> - The program is a limited or pilot program, such as a virtual power plant (VPP) pilot.</li>
-  <li><code class="language-plaintext highlighter-rouge">credit_bank</code> - The program is is one where the Account accumulates credits or debits over a period of time, then there is a “true-up” where the balance is applied to the Account’s bill.
+  <li><code class="language-plaintext highlighter-rouge">rebate</code> - The program is a rebate program being offered by the utility.</li>
+  <li><code class="language-plaintext highlighter-rouge">credit_bank</code> - The program is one where the Account accumulates credits or debits over a period of time, then there is a “true-up” where the balance is applied to the Account’s bill.
 For example, some Net Energy Metering (NEM) programs track credits for the net amount of distributed energy produced, which then get annually applied to Account balances.
 This kind of program is sometimes called a “tracked charges” or “net metering true-up” program.
 Account Program objects that contain this value in their <code class="language-plaintext highlighter-rouge">types</code> array MAY have the following additional fields:
@@ -5832,15 +5840,14 @@ If a Server does not have a Customer-facing identifier for a Service Contract an
   <li><code class="language-plaintext highlighter-rouge">contract_address</code> - <em><a href="#string">string</a></em> - (OPTIONAL) The address that a Customer sees on their bill or online user interface as the address for this Service Contract, if available.
 This string MAY have line breaks, such as when the address is multiple lines.</li>
   <li><code class="language-plaintext highlighter-rouge">contract_types</code> - <em>Array[<a href="#contract-types">ContractType</a>]</em> - (REQUIRED) A list of the types of agreement that this Service Contract represents.
-Multiple Contract Types can apply to a single Service Contract (e.g. both <code class="language-plaintext highlighter-rouge">utility_service</code> and <code class="language-plaintext highlighter-rouge">monthly_billing</code>).</li>
+Multiple Contract Types can apply to a single Service Contract (e.g. both <code class="language-plaintext highlighter-rouge">utility_service</code> and <code class="language-plaintext highlighter-rouge">billed_monthly</code>).</li>
   <li><code class="language-plaintext highlighter-rouge">contract_status</code> - <em><a href="#contract-statuses">ContractStatus</a></em> - (REQUIRED) The current status of the Service Contract.</li>
   <li><code class="language-plaintext highlighter-rouge">contract_entity</code> - <em><a href="#string">string</a></em> - (REQUIRED) With which entity the Customer has agreement for this Service Contract.</li>
   <li><code class="language-plaintext highlighter-rouge">contract_start</code> - <em><a href="#date">date</a></em> - (OPTIONAL) When the agreement that this Service Contract represents started.</li>
   <li><code class="language-plaintext highlighter-rouge">contract_end</code> - <em><a href="#date">date</a> or <code class="language-plaintext highlighter-rouge">null</code></em> - (OPTIONAL) When the agreement that this Service Contract represents ended.
 If the agreement is still ongoing, this value is <code class="language-plaintext highlighter-rouge">null</code>.</li>
   <li><code class="language-plaintext highlighter-rouge">service_types</code> - <em>Array[<a href="#service-types">ServiceType</a>]</em> - (REQUIRED) A list of what services are provided with this Service Contract.
-Multiple Service Types can apply to a single Service Contract (e.g. both <code class="language-plaintext highlighter-rouge">electric</code> and <code class="language-plaintext highlighter-rouge">commercial_electric</code>).</li>
-  <li><code class="language-plaintext highlighter-rouge">service_class</code> - <em><a href="#service-classes">ServiceClass</a></em> - (REQUIRED) The class of service for which this Service Contract is categorized.</li>
+Multiple Service Types can apply to a single Service Contract (e.g. both <code class="language-plaintext highlighter-rouge">electric</code> and <code class="language-plaintext highlighter-rouge">commercial</code>).</li>
   <li><code class="language-plaintext highlighter-rouge">rateplan_code</code> - <em><a href="#string">string</a></em> - (OPTIONAL) A unique code for the current rate plan or tariff on which costs for this Service Contract are calculated.</li>
   <li><code class="language-plaintext highlighter-rouge">rateplan_name</code> - <em><a href="#string">string</a></em> - (OPTIONAL) The name that a Customer sees on their bill or online user interface as the rate plan or tariff that applies to this Service Contract.</li>
   <li><code class="language-plaintext highlighter-rouge">service_programs</code> - <em>Array[<a href="#service-program-format">ServiceProgram</a>]</em> - (OPTIONAL) A list of Service Programs for the Account.
@@ -5849,33 +5856,128 @@ If the Server does not have this information or the Customer is not participatin
 
 <h4 id="1022-contract-types-">10.2.2. Contract Types <a id="contract-types" href="#contract-types" class="permalink">🔗</a></h4>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>Contract Type values MUST be a <a href="#string">string</a> of one of the following:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">utility_service</code> - The Service Contract represents a contract for a utility service.</li>
+  <li><code class="language-plaintext highlighter-rouge">billed_monthly</code> - The contract is billed monthly.</li>
+  <li><code class="language-plaintext highlighter-rouge">billed_quarterly</code> - The contract is billed quarterly.</li>
+</ul>
 
 <h4 id="1023-contract-statuses-">10.2.3. Contract Statuses <a id="contract-statuses" href="#contract-statuses" class="permalink">🔗</a></h4>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>Contract Status values MUST be a <a href="#string">string</a> of one of the following:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">active</code> - The contract and service are currently active.</li>
+  <li><code class="language-plaintext highlighter-rouge">paused</code> - The contract is still active, but the service has been paused and may be restarted again in the future.</li>
+  <li><code class="language-plaintext highlighter-rouge">stopped</code> - The contract is still active, but the service has been stopped and will not be restarted in the future.</li>
+  <li><code class="language-plaintext highlighter-rouge">closed</code> - Both the contract and service are stopped and will not be started again for this Service Contract.</li>
+  <li><code class="language-plaintext highlighter-rouge">unknown</code> - The Server does not have access to the Service Contract’s current status.</li>
+</ul>
 
 <h4 id="1024-service-types-">10.2.4. Service Types <a id="service-types" href="#service-types" class="permalink">🔗</a></h4>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>Service Type values MUST be a <a href="#string">string</a> of one of the following:</p>
 
-<h4 id="1025-service-classes-">10.2.5. Service Classes <a id="service-classes" href="#service-classes" class="permalink">🔗</a></h4>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">electric</code> - The service being provided is an electric utility service.</li>
+  <li><code class="language-plaintext highlighter-rouge">water</code> - The service being provided is a water utility service.</li>
+  <li><code class="language-plaintext highlighter-rouge">natural_gas</code> - The service being provided is a natural gas utility service.</li>
+  <li><code class="language-plaintext highlighter-rouge">fuel_oil</code> - The service being provided is a fuel oil utility service.</li>
+  <li><code class="language-plaintext highlighter-rouge">waste_water</code> - The service being provided is a waste water utility service.</li>
+  <li><code class="language-plaintext highlighter-rouge">solid_waste</code> - The service being provided is a solid waste (i.e. trash) utility service.</li>
+  <li><code class="language-plaintext highlighter-rouge">residential</code> - The service is classified as a residential service.</li>
+  <li><code class="language-plaintext highlighter-rouge">commercial</code> - The service is classified as a commercial service.</li>
+  <li><code class="language-plaintext highlighter-rouge">industrial</code> - The service is classified as an industrial service.</li>
+  <li><code class="language-plaintext highlighter-rouge">agriculture</code> - The service is classified as an agriculture service.</li>
+  <li><code class="language-plaintext highlighter-rouge">metered</code> - The service has one or more meters associated with it to measure the service’s usage.</li>
+  <li><code class="language-plaintext highlighter-rouge">unmetered</code> - The service does not use meters, and billed charges are calculated another way (e.g. the number and type of bulbs on a lighting service).</li>
+</ul>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<h4 id="1025-service-program-object-format-">10.2.5. Service Program Object Format <a id="service-program-format" href="#service-program-format" class="permalink">🔗</a></h4>
 
-<h4 id="1026-service-program-object-format-">10.2.6. Service Program Object Format <a id="service-program-format" href="#service-program-format" class="permalink">🔗</a></h4>
+<p>Service Program objects represent an service-level program in which the Service Contract is participating, has previously participated, or is eligible to participate.
+Service Program objects are formatted as JSON objects and contain the following named values:</p>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">id</code> - <em><a href="#string">string</a></em> - (REQUIRED) The unique identifier for the Service Program object.</li>
+  <li><code class="language-plaintext highlighter-rouge">program_number</code> - <em><a href="#string">string</a></em> - (REQUIRED) The identifier for the program that is used for external entities (Customers, vendors, contractors, etc.).
+If there is not a designated identifier for the program, the Server MUST generate a <code class="language-plaintext highlighter-rouge">program_number</code> value to use for continuity, since the <code class="language-plaintext highlighter-rouge">program_name</code> may change over time.</li>
+  <li><code class="language-plaintext highlighter-rouge">types</code> - <em>Array[<a href="#service-program-types">ServiceProgramType</a>]</em> - (REQUIRED) An array of types for the Service Program.</li>
+  <li><code class="language-plaintext highlighter-rouge">name</code> - <em><a href="#string">string</a></em> - (REQUIRED) The name of the program.</li>
+  <li><code class="language-plaintext highlighter-rouge">description</code> - <em><a href="#string">string</a></em> - (REQUIRED) A short description of the program.</li>
+  <li><code class="language-plaintext highlighter-rouge">documentation</code> - <em><a href="#url">URL</a></em> - (REQUIRED) A link to developer documentation about the program.</li>
+  <li><code class="language-plaintext highlighter-rouge">more_info</code> - <em><a href="#url">URL</a></em> - (OPTIONAL) A link to where a Customer may learn more about the program.
+If there is not a link where a Customer may view more information about the program, this field MUST NOT be included.</li>
+  <li><code class="language-plaintext highlighter-rouge">signup</code> - <em><a href="#url">URL</a></em> - (OPTIONAL) A link to where a Customer may sign up their Service Contract for the program.
+If there is not a link where a Customer may sign up for the program, this field MUST NOT be included.
+If the way to signup cannot be done via an online process, this link MAY be to a webpage that instructs Customers on how to signup (e.g. provides a phone number to call).</li>
+  <li><code class="language-plaintext highlighter-rouge">settings</code> - <em><a href="#url">URL</a></em> - (OPTIONAL) A link to where a Customer may view their participation status and/or modify their settings for the program.
+If there is not a link where a Customer may view their status or modify their settings, this field MUST NOT be included.
+If the way for a Customer to obtain their status or modify their settings cannot be done via an online process, this link MAY be to a webpage that instructs Customers on how to accomplish those tasks (e.g. provides a phone number to call).</li>
+  <li><code class="language-plaintext highlighter-rouge">discontinue</code> - <em><a href="#url">URL</a></em> - (OPTIONAL) A link to where a Customer may stop participating in the program.
+If there is not a link where a Customer may discontinue participating in the program, this field MUST NOT be included.
+If the way to stop participating cannot be done via an online process, this link MAY be to a webpage that instructs Customers on how to stopping participating (e.g. provides a phone number to call).</li>
+  <li><code class="language-plaintext highlighter-rouge">participation_number</code> - <em><a href="#string">string</a></em> - (OPTIONAL) The identifier for the Service Contract’s participation in the program.
+If the Service Contract has not participated in the program or the Server does not know the Service Contract’s participation number, this field MUST NOT be included.</li>
+  <li><code class="language-plaintext highlighter-rouge">start</code> - <em><a href="#date">date</a></em> - (OPTIONAL) The date the Service Contract most recently started participating in the program.
+If the Service Contract has not participated in the program or the Server does not know the Service Contract’s most recent start date, this field MUST NOT be included.</li>
+  <li><code class="language-plaintext highlighter-rouge">end</code> - <em><a href="#date">date</a></em> - (OPTIONAL) The date the Service Contract most recently stopped participating in the program.
+If the Service Contract has not participated in the program or the Server does not know the Service Contract’s most recent end date, this field MUST NOT be included.</li>
+</ul>
 
-<h4 id="1027-service-program-types-">10.2.7. Service Program Types <a id="service-program-types" href="#service-program-types" class="permalink">🔗</a></h4>
+<p>Depending on the values in an Service Program’s <code class="language-plaintext highlighter-rouge">types</code> array, the Service Program MAY have additional fields.
+See each <a href="#service-program-types">Service Program Type</a> value for what additional fields are defined.</p>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>Servers MAY add additional fields to Service Program objects as needed to include program-specific data.
+It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. <code class="language-plaintext highlighter-rouge">exampleutility_*</code>).
+For example, if the Server has an Service Contract that is participating in an electric vehicle charging management program (e.g. EV demand response) and wants to included the model of the Customer’s electric vehicle charging unit, the Server could add a <code class="language-plaintext highlighter-rouge">exampleutility_ev_charger_model</code> field that provides the unit model number as a string.</p>
 
-<h4 id="1028-service-program-statuses-">10.2.8. Service Program Statuses <a id="service-program-statuses" href="#service-program-statuses" class="permalink">🔗</a></h4>
+<p>Clients MUST ignore unknown <code class="language-plaintext highlighter-rouge">types</code> array values and unknown additional fields.</p>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<h4 id="1026-service-program-types-">10.2.6. Service Program Types <a id="service-program-types" href="#service-program-types" class="permalink">🔗</a></h4>
 
-<h4 id="1029-listing-service-contracts-">10.2.9. Listing Service Contracts <a id="service-contract-list" href="#service-contract-list" class="permalink">🔗</a></h4>
+<p>Service Program Type values MUST be a <a href="#string">string</a> of one of the following:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">active</code> - The Service Contract is actively participating in the program.</li>
+  <li><code class="language-plaintext highlighter-rouge">inactive</code> - The Service Contract was previously active in the program, but is currently inactive.</li>
+  <li><code class="language-plaintext highlighter-rouge">eligible</code> - The Service Contract is eligible to participate in the program.</li>
+  <li><code class="language-plaintext highlighter-rouge">ineligible</code> - The Service Contract is not eligible to participate in the program.</li>
+  <li><code class="language-plaintext highlighter-rouge">low_income</code> - The program is a low-income program, typically for offering lower rates on utility services.</li>
+  <li><code class="language-plaintext highlighter-rouge">protected</code> - The program is one where the Service Contract is designated as protected or critical need, such as when a Customer has medical need for reliable service.</li>
+  <li><code class="language-plaintext highlighter-rouge">survey</code> - The program is a survey or information gathering program, such as an academic study.</li>
+  <li><code class="language-plaintext highlighter-rouge">pilot</code> - The program is a limited or pilot program, such as a virtual power plant (VPP) pilot.</li>
+  <li><code class="language-plaintext highlighter-rouge">rebate</code> - The program is a rebate program being offered by the utility.</li>
+  <li><code class="language-plaintext highlighter-rouge">credit_bank</code> - The program is one where the Service Contract accumulates credits or debits over a period of time, then there is a “true-up” where the balance is applied to the Service Contract’s billed charges.
+For example, some Net Energy Metering (NEM) programs track credits for the net amount of distributed energy produced, which then get annually applied as a credit to the Service Contract’s charges.
+This kind of program is sometimes called a “tracked charges” or “net metering true-up” program.
+The credit balance being tracked may not necessarily be money (e.g. it could be tracking the number of kilowatt-hours generated instead of money).
+Service Program objects that contain this value in their <code class="language-plaintext highlighter-rouge">types</code> array MAY have the following additional fields:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">balance</code> - <em><a href="#decimal">decimal</a></em> - (OPTIONAL) The credit bank’s balance in <code class="language-plaintext highlighter-rouge">units</code>.
+If the Server does not know the Service Contract’s balance of the credit bank, this field MUST NOT be included.</li>
+      <li><code class="language-plaintext highlighter-rouge">units</code> - <em><a href="#usage-segment-unit-types">UnitType</a></em> - (OPTIONAL) This is the units for the <code class="language-plaintext highlighter-rouge">balance</code> value.
+This field is REQUIRED if the <code class="language-plaintext highlighter-rouge">balance</code> field is included.</li>
+      <li><code class="language-plaintext highlighter-rouge">currency</code> - <em><a href="#string">string</a></em> - (OPTIONAL) The currency for the <code class="language-plaintext highlighter-rouge">balance</code> value as an [<a href="#ref-iso4217">ISO 4217</a>] currency code.
+This field is REQUIRED if the <code class="language-plaintext highlighter-rouge">units</code> field is included and has the value <code class="language-plaintext highlighter-rouge">"money"</code>.</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">demand_response</code> - The program is one where the service’s demand can be managed by signals from the utility or other centralized infrastructure (e.g. an aggregated demand response provider or an interstate utility (ISO)).
+Service Program objects that contain this value in their <code class="language-plaintext highlighter-rouge">types</code> array MAY have the following additional fields:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">pnode</code> - <em><a href="#string">string</a></em> - (OPTIONAL) The pricing node identifier used for pricing the value of demand response events.</li>
+      <li><code class="language-plaintext highlighter-rouge">anode</code> - <em><a href="#string">string</a></em> - (OPTIONAL) The aggregation node identifier used for measuring demand response events.</li>
+      <li><code class="language-plaintext highlighter-rouge">aggregated</code> - <em><a href="#boolean">boolean</a></em> - (OPTIONAL) Whether the program is an aggregated demand response program.</li>
+      <li><code class="language-plaintext highlighter-rouge">automated</code> - <em><a href="#boolean">boolean</a></em> - (OPTIONAL) Whether the demand response event signaling and demand management are automated.</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">ev</code> - The program is related to a Customer’s electric vehicle (EV).</li>
+  <li><code class="language-plaintext highlighter-rouge">thermostat</code> - The program is related to a Customer’s thermostat.</li>
+</ul>
+
+<h4 id="1027-listing-service-contracts-">10.2.7. Listing Service Contracts <a id="service-contract-list" href="#service-contract-list" class="permalink">🔗</a></h4>
 
 <p>Clients may request to list Service Contract objects that they have access to by making an HTTPS <code class="language-plaintext highlighter-rouge">GET</code> request to the <a href="#server-metadata">Server Metadata’s</a> <code class="language-plaintext highlighter-rouge">cds_servicecontracts_api</code> URL.
 The Service Contract listing request responses are formatted as JSON objects and contain the following named values.</p>
