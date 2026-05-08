@@ -161,11 +161,9 @@ For more information, visit [https://lfess.energy/](https://lfess.energy/).
         * [10.2.2. Contract Types](#contract-types)  
         * [10.2.3. Contract Statuses](#contract-statuses)  
         * [10.2.4. Service Types](#service-types)  
-        * [10.2.5. Service Classes](#service-classes)  
-        * [10.2.6. Service Program Object Format](#service-program-format)  
-        * [10.2.7. Service Program Types](#service-program-types)  
-        * [10.2.8. Service Program Statuses](#service-program-statuses)  
-        * [10.2.9. Listing Service Contracts](#service-contract-list)  
+        * [10.2.5. Service Program Object Format](#service-program-format)  
+        * [10.2.6. Service Program Types](#service-program-types)  
+        * [10.2.7. Listing Service Contracts](#service-contract-list)  
     * [10.3. Service Points API](#service-points-api)  
         * [10.3.1. Service Point Object Format](#service-point-format)  
         * [10.3.2. Service Point Types](#service-point-types)  
@@ -3994,6 +3992,7 @@ Account objects are formatted as JSON objects and contain the following named va
   This string MAY have line breaks, such as when the address is multiple lines.
 * `account_types` - _Array[[AccountType](#account-types)]_ - (OPTIONAL) A list of types that apply to the Account.
   Multiple Account Types can apply to a single account (e.g. both `utility_customer` and `business_account`).
+  When included, this array MUST have at least one entry.
 * `account_status` - _[AccountStatus](#account-statuses)_ - (OPTIONAL) What the Account's status is.
 * `account_contacts` - _Array[[AccountContact](#account-contact-format)]_ - (OPTIONAL) A list of Account Contacts for the Account.
 * `account_programs` - _Array[[AccountProgram](#account-program-format)]_ - (OPTIONAL) A list of Account Programs for the Account.
@@ -4014,14 +4013,22 @@ Account Type values MUST be a [string](#string) of one of the following:
 * `child` - The account is part of a group and has a parent account above it.
   This usually happens when many of an enterprise's utility accounts are organized underneath a main "parent" account, so that the utility can bill the various "child" sub-accounts together as one bill statement.
 * `test` - The account represents a fictional test account, not a real entity.
+* `residential` - The account represents an account for residential utility services.
+* `commercial` - The account represents an account for commercial utility services.
+* `industrial` - The account represents an account for industrial utility services.
+* `agriculture` - The account represents an account for agriculture utility services.
+* `municipal` - The account represents an account for municipal utility services (e.g. city governments, water utilities, etc.).
+* `billed_monthly` - The account's bills are generated on a monthly billing cycle.
+* `billed_quarterly` - The account's bills are generated on a quarterly billing cycle.
 
 #### 10.1.3. Account Statuses <a id="account-statuses" href="#account-statuses" class="permalink">🔗</a>
 
 Account Status values MUST be a [string](#string) of one of the following:
 
-* `active` - The Account is currently active, as of the `cds_synced` timestamp.
-* `suspended` - The Account is currently inactive, as of the `cds_synced` timestamp, but may be reactivated in the future.
-* `closed` - The Account is currently inactive, as of the `cds_synced` timestamp, and will not be reactivated in the future.
+* `active` - The Account is currently active.
+* `suspended` - The Account is currently inactive, but may be reactivated in the future.
+* `closed` - The Account is currently inactive, and will not be reactivated in the future.
+* `unknown` - The Server does not have access to the Account's current status.
 
 #### 10.1.4. Account Contact Object Format <a id="account-contact-format" href="#account-contact-format" class="permalink">🔗</a>
 
@@ -4057,7 +4064,7 @@ Account Contact Type values MUST be a [string](#string) of one of the following:
 Account Program objects represent an account-level program in which the Account is participating, has previously participated, or is eligible to participate.
 Account Program objects are formatted as JSON objects and contain the following named values:
 
-* `id` - _[string](#string)_ - (REQUIRED) The unique identifier for the Account Program.
+* `id` - _[string](#string)_ - (REQUIRED) The unique identifier for the Account Program object.
 * `program_number` - _[string](#string)_ - (REQUIRED) The identifier for the program that is used for external entities (Customers, vendors, contractors, etc.).
   If there is not a designated identifier for the program, the Server MUST generate a `program_number` value to use for continuity, since the `program_name` may change over time.
 * `types` - _Array[[AccountProgramType](#account-program-types)]_ - (REQUIRED) An array of types for the Account Program.
@@ -4105,7 +4112,8 @@ Account Program Type values MUST be a [string](#string) of one of the following:
 * `protected` - The program is one where the Account is designated as protected or critical need, such as when a Customer has medical need for reliable service.
 * `survey` - The program is a survey or information gathering program, such as an academic study.
 * `pilot` - The program is a limited or pilot program, such as a virtual power plant (VPP) pilot.
-* `credit_bank` - The program is is one where the Account accumulates credits or debits over a period of time, then there is a "true-up" where the balance is applied to the Account's bill.
+* `rebate` - The program is a rebate program being offered by the utility.
+* `credit_bank` - The program is one where the Account accumulates credits or debits over a period of time, then there is a "true-up" where the balance is applied to the Account's bill.
   For example, some Net Energy Metering (NEM) programs track credits for the net amount of distributed energy produced, which then get annually applied to Account balances.
   This kind of program is sometimes called a "tracked charges" or "net metering true-up" program.
   Account Program objects that contain this value in their `types` array MAY have the following additional fields:
@@ -4167,15 +4175,14 @@ Service Contract objects are formatted as JSON objects and contain the following
 * `contract_address` - _[string](#string)_ - (OPTIONAL) The address that a Customer sees on their bill or online user interface as the address for this Service Contract, if available.
   This string MAY have line breaks, such as when the address is multiple lines.
 * `contract_types` - _Array[[ContractType](#contract-types)]_ - (REQUIRED) A list of the types of agreement that this Service Contract represents.
-  Multiple Contract Types can apply to a single Service Contract (e.g. both `utility_service` and `monthly_billing`).
+  Multiple Contract Types can apply to a single Service Contract (e.g. both `utility_service` and `billed_monthly`).
 * `contract_status` - _[ContractStatus](#contract-statuses)_ - (REQUIRED) The current status of the Service Contract.
 * `contract_entity` - _[string](#string)_ - (REQUIRED) With which entity the Customer has agreement for this Service Contract.
 * `contract_start` - _[date](#date)_ - (OPTIONAL) When the agreement that this Service Contract represents started.
 * `contract_end` - _[date](#date) or `null`_ - (OPTIONAL) When the agreement that this Service Contract represents ended.
   If the agreement is still ongoing, this value is `null`.
 * `service_types` - _Array[[ServiceType](#service-types)]_ - (REQUIRED) A list of what services are provided with this Service Contract.
-  Multiple Service Types can apply to a single Service Contract (e.g. both `electric` and `commercial_electric`).
-* `service_class` - _[ServiceClass](#service-classes)_ - (REQUIRED) The class of service for which this Service Contract is categorized.
+  Multiple Service Types can apply to a single Service Contract (e.g. both `electric` and `commercial`).
 * `rateplan_code` - _[string](#string)_ - (OPTIONAL) A unique code for the current rate plan or tariff on which costs for this Service Contract are calculated.
 * `rateplan_name` - _[string](#string)_ - (OPTIONAL) The name that a Customer sees on their bill or online user interface as the rate plan or tariff that applies to this Service Contract.
 * `service_programs` - _Array[[ServiceProgram](#service-program-format)]_ - (OPTIONAL) A list of Service Programs for the Account.
@@ -4183,34 +4190,112 @@ Service Contract objects are formatted as JSON objects and contain the following
 
 #### 10.2.2. Contract Types <a id="contract-types" href="#contract-types" class="permalink">🔗</a>
 
-<span style="background-color:yellow">TODO</span>
+Contract Type values MUST be a [string](#string) of one of the following:
+
+* `utility_service` - The Service Contract represents a contract for a utility service.
+* `billed_monthly` - The contract is billed monthly.
+* `billed_quarterly` - The contract is billed quarterly.
 
 #### 10.2.3. Contract Statuses <a id="contract-statuses" href="#contract-statuses" class="permalink">🔗</a>
 
-<span style="background-color:yellow">TODO</span>
+Contract Status values MUST be a [string](#string) of one of the following:
+
+* `active` - The contract and service are currently active.
+* `paused` - The contract is still active, but the service has been paused and may be restarted again in the future.
+* `stopped` - The contract is still active, but the service has been stopped and will not be restarted in the future.
+* `closed` - Both the contract and service are stopped and will not be started again for this Service Contract.
+* `unknown` - The Server does not have access to the Service Contract's current status.
 
 #### 10.2.4. Service Types <a id="service-types" href="#service-types" class="permalink">🔗</a>
 
-<span style="background-color:yellow">TODO</span>
+Service Type values MUST be a [string](#string) of one of the following:
 
-#### 10.2.5. Service Classes <a id="service-classes" href="#service-classes" class="permalink">🔗</a>
+* `electric` - The service being provided is an electric utility service.
+* `water` - The service being provided is a water utility service.
+* `natural_gas` - The service being provided is a natural gas utility service.
+* `fuel_oil` - The service being provided is a fuel oil utility service.
+* `waste_water` - The service being provided is a waste water utility service.
+* `solid_waste` - The service being provided is a solid waste (i.e. trash) utility service.
+* `residential` - The service is classified as a residential service.
+* `commercial` - The service is classified as a commercial service.
+* `industrial` - The service is classified as an industrial service.
+* `agriculture` - The service is classified as an agriculture service.
+* `metered` - The service has one or more meters associated with it to measure the service's usage.
+* `unmetered` - The service does not use meters, and billed charges are calculated another way (e.g. the number and type of bulbs on a lighting service).
 
-<span style="background-color:yellow">TODO</span>
+#### 10.2.5. Service Program Object Format <a id="service-program-format" href="#service-program-format" class="permalink">🔗</a>
 
+Service Program objects represent an service-level program in which the Service Contract is participating, has previously participated, or is eligible to participate.
+Service Program objects are formatted as JSON objects and contain the following named values:
 
-#### 10.2.6. Service Program Object Format <a id="service-program-format" href="#service-program-format" class="permalink">🔗</a>
+* `id` - _[string](#string)_ - (REQUIRED) The unique identifier for the Service Program object.
+* `program_number` - _[string](#string)_ - (REQUIRED) The identifier for the program that is used for external entities (Customers, vendors, contractors, etc.).
+  If there is not a designated identifier for the program, the Server MUST generate a `program_number` value to use for continuity, since the `program_name` may change over time.
+* `types` - _Array[[ServiceProgramType](#service-program-types)]_ - (REQUIRED) An array of types for the Service Program.
+* `name` - _[string](#string)_ - (REQUIRED) The name of the program.
+* `description` - _[string](#string)_ - (REQUIRED) A short description of the program.
+* `documentation` - _[URL](#url)_ - (REQUIRED) A link to developer documentation about the program.
+* `more_info` - _[URL](#url)_ - (OPTIONAL) A link to where a Customer may learn more about the program.
+  If there is not a link where a Customer may view more information about the program, this field MUST NOT be included.
+* `signup` - _[URL](#url)_ - (OPTIONAL) A link to where a Customer may sign up their Service Contract for the program.
+  If there is not a link where a Customer may sign up for the program, this field MUST NOT be included.
+  If the way to signup cannot be done via an online process, this link MAY be to a webpage that instructs Customers on how to signup (e.g. provides a phone number to call).
+* `settings` - _[URL](#url)_ - (OPTIONAL) A link to where a Customer may view their participation status and/or modify their settings for the program.
+  If there is not a link where a Customer may view their status or modify their settings, this field MUST NOT be included.
+  If the way for a Customer to obtain their status or modify their settings cannot be done via an online process, this link MAY be to a webpage that instructs Customers on how to accomplish those tasks (e.g. provides a phone number to call).
+* `discontinue` - _[URL](#url)_ - (OPTIONAL) A link to where a Customer may stop participating in the program.
+  If there is not a link where a Customer may discontinue participating in the program, this field MUST NOT be included.
+  If the way to stop participating cannot be done via an online process, this link MAY be to a webpage that instructs Customers on how to stopping participating (e.g. provides a phone number to call).
+* `participation_number` - _[string](#string)_ - (OPTIONAL) The identifier for the Service Contract's participation in the program.
+  If the Service Contract has not participated in the program or the Server does not know the Service Contract's participation number, this field MUST NOT be included.
+* `start` - _[date](#date)_ - (OPTIONAL) The date the Service Contract most recently started participating in the program.
+  If the Service Contract has not participated in the program or the Server does not know the Service Contract's most recent start date, this field MUST NOT be included.
+* `end` - _[date](#date)_ - (OPTIONAL) The date the Service Contract most recently stopped participating in the program.
+  If the Service Contract has not participated in the program or the Server does not know the Service Contract's most recent end date, this field MUST NOT be included.
 
-<span style="background-color:yellow">TODO</span>
+Depending on the values in an Service Program's `types` array, the Service Program MAY have additional fields.
+See each [Service Program Type](#service-program-types) value for what additional fields are defined.
 
-#### 10.2.7. Service Program Types <a id="service-program-types" href="#service-program-types" class="permalink">🔗</a>
+Servers MAY add additional fields to Service Program objects as needed to include program-specific data.
+It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. `exampleutility_*`).
+For example, if the Server has an Service Contract that is participating in an electric vehicle charging management program (e.g. EV demand response) and wants to included the model of the Customer's electric vehicle charging unit, the Server could add a `exampleutility_ev_charger_model` field that provides the unit model number as a string.
 
-<span style="background-color:yellow">TODO</span>
+Clients MUST ignore unknown `types` array values and unknown additional fields.
 
-#### 10.2.8. Service Program Statuses <a id="service-program-statuses" href="#service-program-statuses" class="permalink">🔗</a>
+#### 10.2.6. Service Program Types <a id="service-program-types" href="#service-program-types" class="permalink">🔗</a>
 
-<span style="background-color:yellow">TODO</span>
+Service Program Type values MUST be a [string](#string) of one of the following:
 
-#### 10.2.9. Listing Service Contracts <a id="service-contract-list" href="#service-contract-list" class="permalink">🔗</a>
+* `active` - The Service Contract is actively participating in the program.
+* `inactive` - The Service Contract was previously active in the program, but is currently inactive.
+* `eligible` - The Service Contract is eligible to participate in the program.
+* `ineligible` - The Service Contract is not eligible to participate in the program.
+* `low_income` - The program is a low-income program, typically for offering lower rates on utility services.
+* `protected` - The program is one where the Service Contract is designated as protected or critical need, such as when a Customer has medical need for reliable service.
+* `survey` - The program is a survey or information gathering program, such as an academic study.
+* `pilot` - The program is a limited or pilot program, such as a virtual power plant (VPP) pilot.
+* `rebate` - The program is a rebate program being offered by the utility.
+* `credit_bank` - The program is one where the Service Contract accumulates credits or debits over a period of time, then there is a "true-up" where the balance is applied to the Service Contract's billed charges.
+  For example, some Net Energy Metering (NEM) programs track credits for the net amount of distributed energy produced, which then get annually applied as a credit to the Service Contract's charges.
+  This kind of program is sometimes called a "tracked charges" or "net metering true-up" program.
+  The credit balance being tracked may not necessarily be money (e.g. it could be tracking the number of kilowatt-hours generated instead of money).
+  Service Program objects that contain this value in their `types` array MAY have the following additional fields:
+    * `balance` - _[decimal](#decimal)_ - (OPTIONAL) The credit bank's balance in `units`.
+      If the Server does not know the Service Contract's balance of the credit bank, this field MUST NOT be included.
+    * `units` - _[UnitType](#usage-segment-unit-types)_ - (OPTIONAL) This is the units for the `balance` value.
+      This field is REQUIRED if the `balance` field is included.
+    * `currency` - _[string](#string)_ - (OPTIONAL) The currency for the `balance` value as an [[ISO 4217](#ref-iso4217)] currency code.
+      This field is REQUIRED if the `units` field is included and has the value `"money"`.
+* `demand_response` - The program is one where the service's demand can be managed by signals from the utility or other centralized infrastructure (e.g. an aggregated demand response provider or an interstate utility (ISO)).
+  Service Program objects that contain this value in their `types` array MAY have the following additional fields:
+    * `pnode` - _[string](#string)_ - (OPTIONAL) The pricing node identifier used for pricing the value of demand response events.
+    * `anode` - _[string](#string)_ - (OPTIONAL) The aggregation node identifier used for measuring demand response events.
+    * `aggregated` - _[boolean](#boolean)_ - (OPTIONAL) Whether the program is an aggregated demand response program.
+    * `automated` - _[boolean](#boolean)_ - (OPTIONAL) Whether the demand response event signaling and demand management are automated.
+* `ev` - The program is related to a Customer's electric vehicle (EV).
+* `thermostat` - The program is related to a Customer's thermostat.
+
+#### 10.2.7. Listing Service Contracts <a id="service-contract-list" href="#service-contract-list" class="permalink">🔗</a>
 
 Clients may request to list Service Contract objects that they have access to by making an HTTPS `GET` request to the [Server Metadata's](#server-metadata) `cds_servicecontracts_api` URL.
 The Service Contract listing request responses are formatted as JSON objects and contain the following named values.
