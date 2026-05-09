@@ -4193,6 +4193,7 @@ Service Contract objects are formatted as JSON objects and contain the following
 Contract Type values MUST be a [string](#string) of one of the following:
 
 * `utility_service` - The Service Contract represents a contract for a utility service.
+* `project` - The Service Contract represents a contract for a specific scoped project, such as a service upgrade or construction project.
 * `billed_monthly` - The contract is billed monthly.
 * `billed_quarterly` - The contract is billed quarterly.
 
@@ -4363,15 +4364,51 @@ Service Point objects are formatted as JSON objects and contain the following na
 
 #### 10.3.2. Service Point Types <a id="service-point-types" href="#service-point-types" class="permalink">🔗</a>
 
-<span style="background-color:yellow">TODO</span>
+Service Point Type values MUST be a [string](#string) of one of the following:
+
+* `electric` - The Service Point provides one or more electric services.
+* `water` - The Service Point provides one or more water services.
+* `natural_gas` - The Service Point provides one or more natural gas services.
+* `fuel_oil` - The Service Point provides one or more fuel oil services.
+* `single_service` - The Service Point provides only one service (e.g. the service point on the side of a single family residence).
+* `multi_service` - The Service Point provides more than one service (e.g. the service point is a panel of meters on the side of an apartment complex).
+* `physical` - The Service Point location is a physical location (e.g. where a meter gets installed).
+* `virtual` - The Service Point doesn't have a virtual location, but is designated a Service Point for organizational or record keeping purposes (e.g. for virtual net metering merged services tracking).
+* `edge` - The Service Point represents an edge that represents the utility's boundary (e.g. the "grid edge").
+  This is what most Customer meter points represent, where the electrical system on the other side of the meter point is the Customer's electrical systems (e.g. "beyond the grid edge").
+* `internal` - The Service Point represents an internal node, where each side of the service point is still considered part of the grid.
+  This type would typically be only be used if the Server is providing Usage Segments for internal nodes in a grid system (i.e. not Customer Data).
 
 #### 10.3.3. Premise Object Format <a id="premise-format" href="#premise-format" class="permalink">🔗</a>
 
-<span style="background-color:yellow">TODO</span>
+Premise objects represent a designated identifier for building, plot of land, or other physical or virtual location in which one or more Service Points are contained.
+Premises are typically defined by utilities or local municipalities to map buildings or land plots to be able to organize city or location information.
+In some instances, premises can be a one-to-one relationship with Service Points, but Clients MUST NOT consider this to always be the case.
+
+Premise objects are formatted as JSON objects and contain the following named values:
+
+* `id` - _[string](#string)_ - (REQUIRED) The Server's unique identifier for the Premise object.
+* `premise_number` - _[string](#string)_ - (REQUIRED) The identifier for the premise that is designated by the entity managing the enumeration of premises (e.g. utility or municipality).
+* `types` - _Array[[PremiseType](#premise-types)]_ - (REQUIRED) A list of types that this Premise represents.
+  Multiple Premise Types can apply to a single Premise (e.g. both `building` and `multifamily`).
+
+Depending on the values in a Premise's `types` array, the Premise MAY have additional fields.
+See each [Premise Type](#premise-types) value for what additional fields are defined.
+
+Servers MAY add additional fields to Premise objects as needed to include premise-specific data.
+It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. `exampleutility_*`).
+For example, if the Server has a Premise that identifies a group of metering point (e.g. the panel on the side of an apartment building) and wants to include panel's model number in the Premise object, the Server could add a `exampleutility_panel_model` field that provides the panel's model number as a string.
+
+Clients MUST ignore unknown `types` array values and unknown additional fields.
 
 #### 10.3.4. Premise Types <a id="premise-types" href="#premise-types" class="permalink">🔗</a>
 
-<span style="background-color:yellow">TODO</span>
+Premise Type values MUST be a [string](#string) of one of the following:
+
+* `service_group` - The Premise is an identifier for a grouping of one or more Service Points (e.g. the panel of metering points on the side of an apartment building).
+* `building` - The Premise is an identifier for a building, house, or other physical structure.
+* `land` - The Premise is an identifier for a plot of land.
+* `zone` - The Premise is a zoning designation by the local utility or government.
 
 #### 10.3.5. Listing Service Points <a id="service-point-list" href="#service-point-list" class="permalink">🔗</a>
 
