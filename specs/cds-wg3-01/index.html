@@ -175,8 +175,9 @@ For more information, visit <a href="https://lfess.energy/">https://lfess.energy
       <li><a href="#scenario-bill-amount-due">4.7. Bill Amount Due</a></li>
       <li><a href="#scenario-customer-bills">4.8. Customer Bills</a></li>
       <li><a href="#scenario-service-charges">4.9. Service Charges</a></li>
-      <li><a href="#scenario-building-data">4.10. Whole-Building Data</a></li>
-      <li><a href="#scenario-aggregated-data">4.11. Aggregated Data</a></li>
+      <li><a href="#scenario-meter-app-transparency">4.10. Meter App Transparency</a></li>
+      <li><a href="#scenario-building-data">4.11. Whole-Building Data</a></li>
+      <li><a href="#scenario-aggregated-data">4.12. Aggregated Data</a></li>
     </ul>
   </li>
   <li><a href="#server-metadata">5. Server Metadata</a>
@@ -229,10 +230,11 @@ For more information, visit <a href="https://lfess.energy/">https://lfess.energy
           <li><a href="#auth-details-premise-numbers">7.1.8. Preselect Premise Numbers</a></li>
           <li><a href="#auth-details-meter-numbers">7.1.9. Preselect Meter Numbers</a></li>
           <li><a href="#auth-details-meter-device-types">7.1.10. Preselect Meter Device Types</a></li>
-          <li><a href="#auth-details-aggregation-numbers">7.1.11. Preselect Aggregation Numbers</a></li>
-          <li><a href="#auth-details-addresses">7.1.12. Preselect Addresses</a>
+          <li><a href="#auth-details-meter-apps">7.1.11. Preselect Meter Apps</a></li>
+          <li><a href="#auth-details-aggregation-numbers">7.1.12. Preselect Aggregation Numbers</a></li>
+          <li><a href="#auth-details-addresses">7.1.13. Preselect Addresses</a>
             <ul>
-              <li><a href="#auth-details-address-matching">7.1.12.1. Address Matching</a></li>
+              <li><a href="#auth-details-address-matching">7.1.13.1. Address Matching</a></li>
             </ul>
           </li>
         </ul>
@@ -264,6 +266,7 @@ For more information, visit <a href="https://lfess.energy/">https://lfess.energy
           <li><a href="#auth-details-include-meter-devices">7.2.4. Include Meter Devices</a>
             <ul>
               <li><a href="#auth-details-include-meter-numbers">7.2.4.1. Include Meter Numbers</a></li>
+              <li><a href="#auth-details-include-meter-apps">7.2.4.2. Include Meter Apps</a></li>
             </ul>
           </li>
           <li><a href="#auth-details-include-bill-statements">7.2.5. Include Bill Statements</a>
@@ -409,7 +412,9 @@ For more information, visit <a href="https://lfess.energy/">https://lfess.energy
         <ul>
           <li><a href="#meter-device-format">10.4.1. Meter Device Object Format</a></li>
           <li><a href="#meter-types">10.4.2. Meter Types</a></li>
-          <li><a href="#meter-device-list">10.4.3. Listing Meter Devices</a></li>
+          <li><a href="#meter-app-format">10.4.3. Meter App Object Format</a></li>
+          <li><a href="#meter-app-types">10.4.4. Meter App Types</a></li>
+          <li><a href="#meter-device-list">10.4.5. Listing Meter Devices</a></li>
         </ul>
       </li>
       <li><a href="#bill-statements-api">10.5. Bill Statements API</a>
@@ -697,6 +702,7 @@ For example, if a Server requires Customers to associate their online web accoun
       <li><a href="#auth-details-include-coordinates"><code class="language-plaintext highlighter-rouge">include_coordinates</code></a></li>
       <li><a href="#auth-details-include-meter-devices"><code class="language-plaintext highlighter-rouge">include_meter_devices</code></a></li>
       <li><a href="#auth-details-include-meter-numbers"><code class="language-plaintext highlighter-rouge">include_meter_numbers</code></a></li>
+      <li><a href="#auth-details-include-meter-apps"><code class="language-plaintext highlighter-rouge">include_meter_apps</code></a></li>
       <li><a href="#auth-details-error-if-no-preselections"><code class="language-plaintext highlighter-rouge">error_if_no_preselections</code></a></li>
     </ul>
   </li>
@@ -1074,7 +1080,32 @@ For example, if a Customer has authorized <code class="language-plaintext highli
   <li>The Server MUST sync updates from its source of truth at least once per week, so that Client’s may receive changes to the Customer’s resources within a week of their creation.</li>
 </ul>
 
-<h3 id="410-whole-building-data-">4.10. Whole-Building Data <a id="scenario-building-data" href="#scenario-building-data" class="permalink">🔗</a></h3>
+<h3 id="410-meter-app-transparency-">4.10. Meter App Transparency <a id="scenario-meter-app-transparency" href="#scenario-meter-app-transparency" class="permalink">🔗</a></h3>
+
+<p>This section defines the Scenario “Meter App Transparency” in which a Client requests access to a Customer’s list of applications that are installed on the Customer’s meters.
+For example, an electric vehicle charging infrastructure installer may need to see if there’s a specific grid edge application is capable of being installed on a Customer’s meter.</p>
+
+<p>To implement the “Meter App Transparency” Scenario, Servers MUST implement the following requirements:</p>
+
+<ul>
+  <li>Servers MUST include support for the following Scopes in their Server Metadata’s <code class="language-plaintext highlighter-rouge">scopes_supported</code> array [<a href="#ref-cds-wg1-02-metadata">CDS-WG1-02 Section 3.2</a>]:
+    <ul>
+      <li><a href="#scope-meter-list">Meter List</a></li>
+    </ul>
+  </li>
+  <li>Servers MUST include any steps in the <code class="language-plaintext highlighter-rouge">registration_requirements</code> that the Client or Server needs to complete before the Server will create a Client object that has the <code class="language-plaintext highlighter-rouge">production</code> status in it’s <code class="language-plaintext highlighter-rouge">cds_status_options</code> array.
+For example, if the Server requires a manual review of the Client’s registration before approving production access, the Server would include a Registration Field [<a href="#ref-cds-wg1-02-registration-fields">CDS-WG1-02 Section 3.5</a>] with a <code class="language-plaintext highlighter-rouge">type</code> value of <code class="language-plaintext highlighter-rouge">internal_review</code>.</li>
+  <li>For the <a href="#scope-meter-list">Meter List</a> Scope, in addition to its requirements, the following Authorization Details Fields MUST also be supported by the Server:
+    <ul>
+      <li><a href="#auth-details-meter-apps"><code class="language-plaintext highlighter-rouge">meter_apps</code></a></li>
+      <li><a href="#auth-details-addresses"><code class="language-plaintext highlighter-rouge">addresses</code></a></li>
+      <li><a href="#auth-details-include-meter-apps"><code class="language-plaintext highlighter-rouge">include_meter_apps</code></a></li>
+    </ul>
+  </li>
+  <li>Servers MUST keep the list of Meter Devices that are associated with the Grant updated to reflect any changes to the Customer, in accordance with the requirements of the <code class="language-plaintext highlighter-rouge">sync_until</code> authorization details fields.</li>
+</ul>
+
+<h3 id="411-whole-building-data-">4.11. Whole-Building Data <a id="scenario-building-data" href="#scenario-building-data" class="permalink">🔗</a></h3>
 
 <p>This section defines the Scenario “Whole-Building Data” in which a Client requests access to the aggregated energy usage for a set of buildings.
 For example, a building management company wants to request access to the whole-building energy usage for the properties they operate in order to submit the municipality’s required benchmarking reports.</p>
@@ -1163,7 +1194,7 @@ For example, if a Client requests an <a href="#scope-aggregations-query">Aggrega
 Then when the Server has completed its asynchronous tasks, the Server MUST update the Grant’s <code class="language-plaintext highlighter-rouge">status</code> to be an appropriate value (e.g. <code class="language-plaintext highlighter-rouge">"active"</code>) based on the asynchronous tasks results.</li>
 </ul>
 
-<h3 id="411-aggregated-data-">4.11. Aggregated Data <a id="scenario-aggregated-data" href="#scenario-aggregated-data" class="permalink">🔗</a></h3>
+<h3 id="412-aggregated-data-">4.12. Aggregated Data <a id="scenario-aggregated-data" href="#scenario-aggregated-data" class="permalink">🔗</a></h3>
 
 <p>This section defines the Scenario “Aggregated Data” in which a Client requests access to aggregated energy usage.
 For example, an academic institution wants to obtain energy usage aggregated by zip code from a utility.</p>
@@ -1596,6 +1627,7 @@ In these relevant use cases, Clients only need access to a Customer’s list of 
       <li><a href="#auth-details-include-service-programs"><code class="language-plaintext highlighter-rouge">"include_service_programs"</code></a></li>
       <li><a href="#auth-details-include-meter-devices"><code class="language-plaintext highlighter-rouge">"include_meter_devices"</code></a></li>
       <li><a href="#auth-details-include-meter-numbers"><code class="language-plaintext highlighter-rouge">"include_meter_numbers"</code></a></li>
+      <li><a href="#auth-details-include-meter-apps"><code class="language-plaintext highlighter-rouge">"include_meter_apps"</code></a></li>
       <li><a href="#auth-details-include-aggregations"><code class="language-plaintext highlighter-rouge">"include_aggregations"</code></a></li>
     </ul>
   </li>
@@ -1690,6 +1722,7 @@ In these relevant use cases, Clients only need access to a Customer’s list of 
       <li><a href="#auth-details-include-premises"><code class="language-plaintext highlighter-rouge">"include_premises"</code></a></li>
       <li><a href="#auth-details-include-service-point-addresses"><code class="language-plaintext highlighter-rouge">"include_service_point_addresses"</code></a></li>
       <li><a href="#auth-details-include-coordinates"><code class="language-plaintext highlighter-rouge">"include_coordinates"</code></a></li>
+      <li><a href="#auth-details-include-meter-apps"><code class="language-plaintext highlighter-rouge">"include_meter_apps"</code></a></li>
       <li><a href="#auth-details-include-aggregations"><code class="language-plaintext highlighter-rouge">"include_aggregations"</code></a></li>
     </ul>
   </li>
@@ -2975,7 +3008,55 @@ In these relevant use cases, Clients benefit from being able to configure an aut
   </li>
 </ul>
 
-<h4 id="7111-preselect-aggregation-numbers-">7.1.11. Preselect Aggregation Numbers <a id="auth-details-aggregation-numbers" href="#auth-details-aggregation-numbers" class="permalink">🔗</a></h4>
+<h4 id="7111-preselect-meter-apps-">7.1.11. Preselect Meter Apps <a id="auth-details-meter-apps" href="#auth-details-meter-apps" class="permalink">🔗</a></h4>
+
+<p>For some use cases, a Client may need to request access to Customer meter details for services related to a set of <a href="#meter-app-format">Meter Apps</a>.
+For example, an electric vehicle charging app Client may need to confirm if their grid edge application is capable of being installed on a Customer’s meters.
+In these relevant use cases, Clients benefit from being able to configure an authorization request that preselects a set of <a href="#meter-app-format">Meter App</a> that have certain <code class="language-plaintext highlighter-rouge">meter_apps</code> objects.</p>
+
+<p>To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:</p>
+
+<ul>
+  <li>The <code class="language-plaintext highlighter-rouge">id</code> value MUST be <code class="language-plaintext highlighter-rouge">"meter_apps"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">format</code> value MUST be <code class="language-plaintext highlighter-rouge">"choice_list_or_null"</code>.</li>
+  <li>If this object is included in a Scope Description where the <code class="language-plaintext highlighter-rouge">response_types_supported</code> field is not empty array (e.g. Customer authorization is supported):
+    <ul>
+      <li>The <code class="language-plaintext highlighter-rouge">is_required</code> value MUST be <code class="language-plaintext highlighter-rouge">false</code>.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>When rendering <a href="#contract-selection">Service Contract Selections</a> for this field’s scope and this field is included, the Server MUST preselect Service Contracts based on the following criteria:</p>
+
+<ul>
+  <li>If the value is an array, Service Contracts are preselected that have a Meter Device with a Meter App with a matching <code class="language-plaintext highlighter-rouge">app_number</code> to any of the array’s values and a Service Point is listed in the Meter Device’s <code class="language-plaintext highlighter-rouge">current_servicepoints</code> array that also has the Service Contract listed in that Service Point’s <code class="language-plaintext highlighter-rouge">current_servicecontracts</code>.</li>
+</ul>
+
+<p>When rendering <a href="#meter-selection">Meter Device Selections</a> for this field’s scope and this field is included, the Server MUST preselect Meter Devices based on the following criteria:</p>
+
+<ul>
+  <li>If the value is an array, Meter Devices are preselected that contain Meter App objects that have a matching <code class="language-plaintext highlighter-rouge">app_number</code> value to any of the array’s values.</li>
+</ul>
+
+<p>For scopes where the Scope Description’s <code class="language-plaintext highlighter-rouge">response_types_supported</code> array is empty (i.e. no authorization request method is available) and this field is included in <code class="language-plaintext highlighter-rouge">authorization_details_fields_supported</code> object, Servers MUST implement the following requirements:</p>
+
+<ul>
+  <li>If the value is <code class="language-plaintext highlighter-rouge">null</code>, this field has no effect on the filtering API responses.</li>
+  <li>If the value is an array, the following filters MUST be applied for API responses:
+    <ul>
+      <li>Meter Device objects in API responses that do not contain Meter App objects that have a matching <code class="language-plaintext highlighter-rouge">app_number</code> value to any of the array’s values MUST NOT be included.</li>
+      <li>The following arrays MUST only include references to Meter Devices that are included:
+        <ul>
+          <li>Bill Section <code class="language-plaintext highlighter-rouge">related_meterdevices</code></li>
+          <li>Aggregation <code class="language-plaintext highlighter-rouge">grouped_meterdevices</code></li>
+          <li>Usage Segment <code class="language-plaintext highlighter-rouge">related_meterdevices</code></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h4 id="7112-preselect-aggregation-numbers-">7.1.12. Preselect Aggregation Numbers <a id="auth-details-aggregation-numbers" href="#auth-details-aggregation-numbers" class="permalink">🔗</a></h4>
 
 <p>For some use cases, a Client may need to request access to datasets for a specific list of Aggregations.
 For example, an energy auditor may need request access to a list of whole-building energy usage aggregrations for region to do a benchmarking analysis for the local municipality.
@@ -3040,7 +3121,7 @@ In these relevant use cases, Clients benefit from being able to configure an aut
   </li>
 </ul>
 
-<h4 id="7112-preselect-addresses-">7.1.12. Preselect Addresses <a id="auth-details-addresses" href="#auth-details-addresses" class="permalink">🔗</a></h4>
+<h4 id="7113-preselect-addresses-">7.1.13. Preselect Addresses <a id="auth-details-addresses" href="#auth-details-addresses" class="permalink">🔗</a></h4>
 
 <p>For some use cases, a Client may need to request access to datasets for a specific list of addresses.
 For example, an energy benchmarking app may request access to the whole-building energy usage aggregration for a building using the building’s address.
@@ -3090,7 +3171,7 @@ This means that that limiting objects by address using this preselection field i
   <li>If the value is an array, Aggregations are preselected that match any of their <code class="language-plaintext highlighter-rouge">addresses</code> values to any of the array’s values.</li>
 </ul>
 
-<h5 id="71121-address-matching-">7.1.12.1. Address Matching <a id="auth-details-address-matching" href="#auth-details-address-matching" class="permalink">🔗</a></h5>
+<h5 id="71131-address-matching-">7.1.13.1. Address Matching <a id="auth-details-address-matching" href="#auth-details-address-matching" class="permalink">🔗</a></h5>
 
 <p>Other preselection authorization details fields that have a <code class="language-plaintext highlighter-rouge">string_list_or_null</code> format as an option (e.g. <code class="language-plaintext highlighter-rouge">account_numbers</code>)  are matched by exact string matching. However, address string syntax is often difficult to reliably match when only using exact string matching.</p>
 
@@ -3607,6 +3688,34 @@ To address these use cases, this specification defines an authorization details 
   <li>If this field’s value is <code class="language-plaintext highlighter-rouge">true</code>, Servers MUST include the following field values in any Meter Device objects accessible using this field’s scope:
     <ul>
       <li><code class="language-plaintext highlighter-rouge">meter_number</code></li>
+    </ul>
+  </li>
+</ul>
+
+<h5 id="7242-include-meter-apps-">7.2.4.2. Include Meter Apps <a id="auth-details-include-meter-apps" href="#auth-details-include-meter-apps" class="permalink">🔗</a></h5>
+
+<p>For some use cases, Clients need to have access to a <a href="#meter-device-format">Meter Device’s</a> installed or capable of being installed applications.
+For example, a Customer may wish to discover what grid edge applications are installed on their own meters by their utility.
+To address these use cases, this specification defines an authorization details field that controls whether <a href="#meter-app-format">Meter App</a> access is enabled.</p>
+
+<p>To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:</p>
+
+<ul>
+  <li>The <code class="language-plaintext highlighter-rouge">id</code> value MUST be <code class="language-plaintext highlighter-rouge">"include_meter_apps"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">format</code> value MUST be <code class="language-plaintext highlighter-rouge">"boolean"</code>.</li>
+  <li>If this object is included in a Scope Description where the <code class="language-plaintext highlighter-rouge">response_types_supported</code> field is not empty array (e.g. Customer authorization is supported):
+    <ul>
+      <li>The <code class="language-plaintext highlighter-rouge">is_required</code> value MUST be <code class="language-plaintext highlighter-rouge">false</code>.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Additionally, Servers MUST implement the following behavior to support this authorization details field:</p>
+
+<ul>
+  <li>If this field’s value is <code class="language-plaintext highlighter-rouge">true</code>, Servers MUST include the following field values in any <a href="#meter-device-format">Meter Device</a> objects accessible using this field’s scope:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">meter_apps</code></li>
     </ul>
   </li>
 </ul>
@@ -5717,7 +5826,7 @@ Account Program objects are formatted as JSON objects and contain the following 
 <ul>
   <li><code class="language-plaintext highlighter-rouge">id</code> - <em><a href="#string">string</a></em> - (REQUIRED) The unique identifier for the Account Program object.</li>
   <li><code class="language-plaintext highlighter-rouge">program_number</code> - <em><a href="#string">string</a></em> - (REQUIRED) The identifier for the program that is used for external entities (Customers, vendors, contractors, etc.).
-If there is not a designated identifier for the program, the Server MUST generate a <code class="language-plaintext highlighter-rouge">program_number</code> value to use for continuity, since the <code class="language-plaintext highlighter-rouge">program_name</code> may change over time.</li>
+If there is not a designated identifier for the program, the Server MUST generate a <code class="language-plaintext highlighter-rouge">program_number</code> value to use for continuity, since the <code class="language-plaintext highlighter-rouge">name</code> may change over time.</li>
   <li><code class="language-plaintext highlighter-rouge">types</code> - <em>Array[<a href="#account-program-types">AccountProgramType</a>]</em> - (REQUIRED) An array of types for the Account Program.</li>
   <li><code class="language-plaintext highlighter-rouge">name</code> - <em><a href="#string">string</a></em> - (REQUIRED) The name of the program.</li>
   <li><code class="language-plaintext highlighter-rouge">description</code> - <em><a href="#string">string</a></em> - (REQUIRED) A short description of the program.</li>
@@ -5904,7 +6013,7 @@ Service Program objects are formatted as JSON objects and contain the following 
 <ul>
   <li><code class="language-plaintext highlighter-rouge">id</code> - <em><a href="#string">string</a></em> - (REQUIRED) The unique identifier for the Service Program object.</li>
   <li><code class="language-plaintext highlighter-rouge">program_number</code> - <em><a href="#string">string</a></em> - (REQUIRED) The identifier for the program that is used for external entities (Customers, vendors, contractors, etc.).
-If there is not a designated identifier for the program, the Server MUST generate a <code class="language-plaintext highlighter-rouge">program_number</code> value to use for continuity, since the <code class="language-plaintext highlighter-rouge">program_name</code> may change over time.</li>
+If there is not a designated identifier for the program, the Server MUST generate a <code class="language-plaintext highlighter-rouge">program_number</code> value to use for continuity, since the <code class="language-plaintext highlighter-rouge">name</code> may change over time.</li>
   <li><code class="language-plaintext highlighter-rouge">types</code> - <em>Array[<a href="#service-program-types">ServiceProgramType</a>]</em> - (REQUIRED) An array of types for the Service Program.</li>
   <li><code class="language-plaintext highlighter-rouge">name</code> - <em><a href="#string">string</a></em> - (REQUIRED) The name of the program.</li>
   <li><code class="language-plaintext highlighter-rouge">description</code> - <em><a href="#string">string</a></em> - (REQUIRED) A short description of the program.</li>
@@ -6159,18 +6268,98 @@ If the Server caches the data for this object and periodically synchronizes it w
   <li><code class="language-plaintext highlighter-rouge">meter_number</code> - <em><a href="#string">string</a> or <code class="language-plaintext highlighter-rouge">null</code></em> - (OPTIONAL) The identifier that a Customer sees on their bill or online user interface or on the face of their physical meter as the identifier for this Meter Device.
 If a Server does not have a Customer-facing identifier for a Meter Device and the Client is not authorized to see the Server’s internal identifier for this Meter Device, this value is <code class="language-plaintext highlighter-rouge">null</code>.</li>
   <li><code class="language-plaintext highlighter-rouge">meter_types</code> - <em>Array[<a href="#meter-types">MeterType</a>]</em> - (REQUIRED) A list of types that this Meter Device represents.
-Multiple Meter Types can apply to a single Meter Device (e.g. both <code class="language-plaintext highlighter-rouge">electric_meter</code> and <code class="language-plaintext highlighter-rouge">bidirectional</code>).</li>
+Multiple Meter Types can apply to a single Meter Device (e.g. both <code class="language-plaintext highlighter-rouge">electric_usage</code> and <code class="language-plaintext highlighter-rouge">bidirectional</code>).</li>
   <li><code class="language-plaintext highlighter-rouge">current_servicepoints</code> - <em>Array[<a href="#string">string</a>]</em> - (REQUIRED) The list of <code class="language-plaintext highlighter-rouge">cds_servicepoint_id</code> values that identify Service Points where this Meter Device is currently installed or associated.
 This list MUST only include identifiers that the Client is authorized to see as scoped by their requesting <code class="language-plaintext highlighter-rouge">access_token</code>.</li>
   <li><code class="language-plaintext highlighter-rouge">previous_servicepoints</code> - <em>Array[<a href="#string">string</a>]</em> - (REQUIRED) The list of <code class="language-plaintext highlighter-rouge">cds_servicepoint_id</code> values that identify Service Points where this Meter Device was previously installed or associated.
 This list MUST only include identifiers that the Client is authorized to see as scoped by their requesting <code class="language-plaintext highlighter-rouge">access_token</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">meter_apps</code> - <em>Array[<a href="#meter-app-format">MeterApp</a>]</em> - (OPTIONAL) A list of Meter App objects associated with the Meter Device.
+If the Server does not have this information or the Customer does not have any meter applications that are installed or available to install on the Meter Device, this value is and empty list (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
 </ul>
 
 <h4 id="1042-meter-types-">10.4.2. Meter Types <a id="meter-types" href="#meter-types" class="permalink">🔗</a></h4>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>Meter Type values MUST be a <a href="#string">string</a> of one of the following:</p>
 
-<h4 id="1043-listing-meter-devices-">10.4.3. Listing Meter Devices <a id="meter-device-list" href="#meter-device-list" class="permalink">🔗</a></h4>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">electric_usage</code> - The Meter Device measures electricity usage.</li>
+  <li><code class="language-plaintext highlighter-rouge">water_usage</code> - The Meter Device measures water usage.</li>
+  <li><code class="language-plaintext highlighter-rouge">natural_gas_usage</code> - The Meter Device measures natural gas usage.</li>
+  <li><code class="language-plaintext highlighter-rouge">fuel_oil_usage</code> - The Meter Device measures fuel oil usage.</li>
+  <li><code class="language-plaintext highlighter-rouge">forward_only</code> - The Meter Device measures usage going from the central entity (e.g. utility grid) to the external entity (e.g. Customer building).
+Usage in the reverse direction will be measured as <code class="language-plaintext highlighter-rouge">null</code> or <code class="language-plaintext highlighter-rouge">0</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">reverse_only</code> - The Meter Device measures usage going from the external entity (e.g. Customer building) to the central entity (e.g. utility grid).
+Usage in the forward direction will be measured as <code class="language-plaintext highlighter-rouge">null</code> or <code class="language-plaintext highlighter-rouge">0</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">bidirectional</code> - The Meter Device measures usage in both directions, where positive measurements are for usage going from the central entity to the external entity, and negative measurements are for usage going from the external entity to the central entity.</li>
+  <li><code class="language-plaintext highlighter-rouge">physical_meter</code> - The Meter Device represents a physical meter.</li>
+  <li><code class="language-plaintext highlighter-rouge">virtual_meter</code> - The Meter Device represents a virtual meter.</li>
+  <li><code class="language-plaintext highlighter-rouge">electric_demand</code> - The Meter Device measures electricity demand.</li>
+  <li><code class="language-plaintext highlighter-rouge">ami_meter</code> - The Meter Device takes measurements digitally and is connected to an Advanced Metering Infrastructure (AMI) network, so that measurements can be sent to the central entity on a frequent basis and remotely queried by the central entity via the AMI network.</li>
+  <li><code class="language-plaintext highlighter-rouge">amr_meter</code> - The Meter Device takes measurements which are stored on the meter.
+Those measurements can then be periodically downloaded via wireless connection with an Automated Meter Reading (AMR) device (e.g. a radio receiver on a utility truck that is driving around).</li>
+  <li><code class="language-plaintext highlighter-rouge">analog_meter</code> - The Meter Device takes measurements using an analog method, which must be read and recorded manually by looking at the meter’s measurement indicators.</li>
+  <li><code class="language-plaintext highlighter-rouge">wifi_capable</code> - The Meter Device has the capability to connect to a local Wi-Fi.</li>
+  <li><code class="language-plaintext highlighter-rouge">wifi_enabled</code> - The Meter Device’s Wi-Fi connectivity is enabled.</li>
+  <li><code class="language-plaintext highlighter-rouge">wifi_configured</code> - The Meter Device is configured to connect with one or more specific local Wi-Fi networks.</li>
+  <li><code class="language-plaintext highlighter-rouge">zigbee_capable</code> - The Meter Device has the capability to connect to a local Zigbee network.</li>
+  <li><code class="language-plaintext highlighter-rouge">zigbee_enabled</code> - The Meter Device’s Zigbee connectivity is enabled.</li>
+  <li><code class="language-plaintext highlighter-rouge">zigbee_configured</code> - The Meter Device is configured to connect with one or more specific local Zigbee networks.</li>
+  <li><code class="language-plaintext highlighter-rouge">central_apps_capable</code> - The Meter Device has the capability to install grid edge applications (e.g. local load management app) onto the Meter Device that are chosen by the central entity (e.g. the utility).</li>
+  <li><code class="language-plaintext highlighter-rouge">customer_apps_capable</code> - The Meter Device has the capability to install grid edge applications (e.g. local load management app) onto the Meter Device that are chosen by the Customer.</li>
+</ul>
+
+<p>Because Wi-Fi and Zigbee connection statuses are highly variable over short periods of time, this specification does not define a connection status Meter Type (e.g. <code class="language-plaintext highlighter-rouge">wifi_connected</code>), since that is more of a live monitoring capability than Customer Data access capability.
+Clients who desire to obtain the current connection status of a meter are encouraged to seek access using protocols of other specifications.</p>
+
+<h4 id="1043-meter-app-object-format-">10.4.3. Meter App Object Format <a id="meter-app-format" href="#meter-app-format" class="permalink">🔗</a></h4>
+
+<p>Meter App objects represent an application that is, was, or is capable of being installed on a Meter Device.
+For example, a utility may install advanced electric meters that are capable of running a grid edge battery control application on a commercial building’s meter.
+Meter App objects are formatted as JSON objects and contain the following named values:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">id</code> - <em><a href="#string">string</a></em> - (REQUIRED) The unique identifier for the Meter App object.</li>
+  <li><code class="language-plaintext highlighter-rouge">app_number</code> - <em><a href="#string">string</a></em> - (REQUIRED) The identifier for the application that is used for external entities (Customers, vendors, contractors, etc.).
+If there is not a designated identifier for the program, the Server MUST generate a <code class="language-plaintext highlighter-rouge">app_number</code> value to use for continuity, since the <code class="language-plaintext highlighter-rouge">app_name</code> may change over time.</li>
+  <li><code class="language-plaintext highlighter-rouge">types</code> - <em>Array[<a href="#meter-app-types">MeterAppType</a>]</em> - (REQUIRED) An array of types for the Meter App.</li>
+  <li><code class="language-plaintext highlighter-rouge">name</code> - <em><a href="#string">string</a></em> - (REQUIRED) The name of the application.</li>
+</ul>
+
+<p>Depending on the values in an Meter App’s <code class="language-plaintext highlighter-rouge">types</code> array, the Meter App MAY have additional fields.
+See each <a href="#meter-app-types">Meter App Type</a> value for what additional fields are defined.</p>
+
+<p>Servers MAY add additional fields to Meter App objects as needed to include app-specific data.
+It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. <code class="language-plaintext highlighter-rouge">exampleutility_*</code>).
+For example, if the Server has a Meter Device that has a battery management app installed (e.g. for controlling a virtual power plan) and wants to include the model numbers of the batteries installed in the building, the Server could add a <code class="language-plaintext highlighter-rouge">exampleutility_battery_models</code> field that provides a list of battery model numbers.</p>
+
+<p>Clients MUST ignore unknown <code class="language-plaintext highlighter-rouge">types</code> array values and unknown additional fields.</p>
+
+<h4 id="1044-meter-app-types-">10.4.4. Meter App Types <a id="meter-app-types" href="#meter-app-types" class="permalink">🔗</a></h4>
+
+<p>Meter App Type values MUST be a <a href="#string">string</a> of one of the following:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">installed</code> - The application is installed on the Meter Device.
+Meter App objects that contain this value in their <code class="language-plaintext highlighter-rouge">types</code> array MAY have the following additional fields:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">start</code> - <em><a href="#datetime">datetime</a></em> - (OPTIONAL) The timestamp on which the Meter App was most recently installed.</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">uinstalled</code> - The application is not installed on the Meter Device.
+Meter App objects that contain this value in their <code class="language-plaintext highlighter-rouge">types</code> array MAY have the following additional fields:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">end</code> - <em><a href="#datetime">datetime</a></em> - (OPTIONAL) The timestamp on which the Meter App was most recently uninstalled.
+If the Meter App has never been installed on the Meter Device, this field MUST NOT be included.</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">compatible</code> - The application is compatible to be installed on the Meter Device.</li>
+  <li><code class="language-plaintext highlighter-rouge">incompatible</code> - The application is not compatible with the Meter Device and cannot be installed.</li>
+  <li><code class="language-plaintext highlighter-rouge">customer_installable</code> - The application may be chosen to be installed by the Customer.
+The protocol and method of a Customer choosing to install the application is outside the scope of this specification.</li>
+  <li><code class="language-plaintext highlighter-rouge">central_installable</code> - The application may be chosen to be installed by the central entity that manages the Meter Device (e.g. utility).</li>
+</ul>
+
+<h4 id="1045-listing-meter-devices-">10.4.5. Listing Meter Devices <a id="meter-device-list" href="#meter-device-list" class="permalink">🔗</a></h4>
 
 <p>Clients may request to list Meter Device objects that they have access to by making an HTTPS <code class="language-plaintext highlighter-rouge">GET</code> request to the <a href="#server-metadata">Server Metadata’s</a> <code class="language-plaintext highlighter-rouge">cds_meterdevices_api</code> URL.
 The Meter Device listing request responses are formatted as JSON objects and contain the following named values.</p>
