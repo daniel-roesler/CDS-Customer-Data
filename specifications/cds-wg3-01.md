@@ -2583,7 +2583,7 @@ Additionally, Servers MUST implement the following behavior to support this auth
 * If this field's value is `true`, in addition to the data access defined with this field's scope, the Server MUST provide access to related Bill Section objects.
   Related Bill Section objects are any of the following:
     * Any Bill Section that have both a `cds_account_id` value equal to an included [Account](#account-format) and contains at least one included [Service Contract](#service-contract-format) listed in the Bill Section's `related_servicecontracts` array.
-    * Any Bill Section that is referenced by `related_billsections` values in any included [Usage Segment](#usage-segment-format) object.
+    * Any Bill Section that is referenced by `related_billsections` values in any included [Usage Segment](#usage-segment-format) or [New Charge](#new-charge-format) object.
 * Servers MUST NOT include OPTIONAL fields for Bill Statements unless those fields are enabled to be included by the Grant's scope or other authorization details fields.
 
 Additional authorization details fields are defined in subsections to this section to enable the inclusion of OPTIONAL Bill statement object fields.
@@ -4670,13 +4670,49 @@ Bill Statement objects are formatted as JSON objects and contain the following n
 * `account_programs` - _Array[[AccountProgram](#account-program-format)]_ - (OPTIONAL) A list of Account-level programs in which the Customer is participating for the Bill Statement period.
   If the Server does not have this information or the Customer is not participating in any Account-level programs, this value is and empty list (`[]`).
 
+The Server MUST ensure that if both `previous_balance_unpaid` and `new_charges` fields are included in a Bill Statement, the sum of the Bill Statement's `previous_balance_unpaid` value and all New Charge `amount` values where the New Charge has a `included_in_amount_due` value of `true` MUST equal the Bill Statement's `amount_due` value.
+For situations where the Customer's bill doesn't actually sum to the amount due (e.g. there's a billing error), the Server MUST include a New Charge object that has a `amout_due_sum_difference` in its `types` array and the difference from the sum to the `amount_due` value as the object's `amount` value.
+This requirement is a confirmation to Clients that the Server has included all New Charge objects that it knows about, and the Server recognizes that there is something unaccounted for in the `amount_due` value, but the Server does not know what has caused that unaccounted for amount.
+
 #### 10.5.2. New Charge Object Format <a id="new-charge-format" href="#new-charge-format" class="permalink">🔗</a>
 
-<span style="background-color:yellow">TODO</span>
+New Charge objects represent a Bill Statement line item that contains a charge or credit that is applied to the Customer's Account balance on that Bill Statement.
+These line items are what a Customer sees at the front of their bills that summarize all the various Service Contract-level charges or credits (e.g. electric service charges) and any Account-level charges or credits (e.g. deposit refund).
+New Charge objects are formatted as JSON objects and contain the following named values:
+
+* `id` - _[string](#string)_ - (REQUIRED) The unique identifier for the New Charge object.
+* `name` - _[string](#string)_ - (REQUIRED) The name of the New Charge line item as it appears on the Customer's bill (e.g. "Electric Service Charges").
+* `types` - _Array[[NewChargeType](#new-charge-types)]_ - (REQUIRED) An array of types for the New Charge.
+* `amount` - _[decimal](#decimal)_ - (REQUIRED) The amount of the charge in the Bill Statement's `currency`.
+  Positive values mean a charge amount, and negative values mean a credit amount.
+* `included_in_amount_due` - _[boolean](#boolean)_ - (REQUIRED) Whether this line item is included in the calculation of the Bill Statement's `amount_due` value.
+  For most situations, this value will be `true`, but for situations where an Account is being billed on a payment plan or as a flat rate, this value could be `false`.
+* `related_billsections` - _Array[[string](#string)]_ - (OPTIONAL) A list of Service Bill `cds_billsection_id` values from which this New Charge is derived.
+  If the Server does not know which Bill Section objects are related to this New Charge or the Scope of the access does not include Bill Section objects, this field MUST NOT be included.
 
 #### 10.5.3. New Charge Types <a id="new-charge-types" href="#new-charge-types" class="permalink">🔗</a>
 
-<span style="background-color:yellow">TODO</span>
+New Charge Type values MUST be a [string](#string) of one of the following:
+
+* `electric_total` - The line item is the total of charges or credits from electric services.
+* `water_total` - The line item is the total of charges or credits from water services.
+* `natural_gas_total` - The line item is the total of charges or credits from natural gas services.
+* `fuel_oil_total` - The line item is the total of charges or credits from fuel oil services.
+* `waste_water_total` - The line item is the total of charges or credits from waste water services.
+* `solid_waste_total` - The line item is the total of charges or credits from sold waste services.
+* `tax` - The line item is an account-level tax charge.
+* `fixed_fee` - The line item is an account-level fixed fee charge.
+* `flat_rate` - The line item is an account-level flat rate charge.
+* `interest` - The line item is an account-level interest charge, typically for when an Account is on a payment plan with interest.
+* `deposit` - The line item is an adjustment that results from the application of deposit the Customer paid, either as a charge (i.e. positive value) if the deposit is being charged on the Bill Statement, or as a credit (i.e. negative value) if the deposit is being refunded on the Bill Statement.
+* `differed` - The line item is the amount of the Account's balance that will is not being included in the `amount_due` because it is differed or carried over to future bills.
+* `credit_bank` - The line item is an adjustment that results from the application of an Account's credit bank (e.g. NEM tracked charges).
+* `program` - The line item is an adjustment to the amount due that is the result of the Account participating in an Account-level program (e.g. the Account being enrolled in a low-income discount program).
+* `adhoc` - The line item is a ad-hoc, one-time, or manual adjustment to the Bill Statement's `amount_due` that appears on the Bill Statement visible to the Customer.
+  For example, a Customer could have a manual one-time credit applied to their bill as the result from a prior misread of their meter that is now being corrected.
+* `amout_due_sum_difference` - The Server is inserting this New Charge object to account for a difference between the `amount_due` value not matching the sum of the `previous_balance_unpaid` and New Charges' `amount` values where `included_in_amount_due` is `true`.
+  This New Charge does not appear on the real world Customer's bill and is only an acknowledgment from the Server that there is a difference between the `amount_due` and account unpaid balance plus new charges that is not listed on the Customer's bill.
+  It is RECOMMENDED that if the Server knows reason for the difference, it include that reason in this New Charge's `name` value (e.g. "VPP pilot program contract credit").
 
 #### 10.5.4. Listing Bill Statements <a id="bill-statement-list" href="#bill-statement-list" class="permalink">🔗</a>
 
