@@ -148,6 +148,7 @@ For more information, visit [https://lfess.energy/](https://lfess.energy/).
     * [9.3. Authorization Errors](#auth-errors)  
         * [9.3.1. Preselection Error](#preselection-error)  
         * [9.3.2. Invalid Request Error](#request-error)  
+        * [9.3.3. Default Redirect Error](#default-redirect-error)  
     * [9.4. Authorization Receipt](#auth-receipt)  
 * [10. Customer Data API](#api)
     * [10.1. Accounts API](#accounts-api)  
@@ -3132,9 +3133,21 @@ When a authorization request is received by a Server, the Server MUST implement 
     * Redirect the Customer back to the Client's `redirect_uri` with an `access_denied` error as defined in [[RFC 6749 Section 4.1.2.1](#ref-rfc6749-error-response)].
 * If the Customer authorizes the authorization request, the Server MUST:
     * Create a Grant as defined by the authorized [Scopes](#scopes), or if the request is a Grant Authorization Request [[CDS-WG1-02 Section 8.3](#ref-cds-wg1-02-grant-auth-requests)], update the referenced Grant.
+    * Create an [Authorization Receipt](#auth-receipt) for the authorization.
     * If the Server has the ability to contact the Customer, send the Customer an [Authorization Receipt](#auth-receipt).
     * If the Customer has an associated online profile or user account, include in the Customer's authenticated interface (e.g. their user settings) a location where the Customer can open and view the [Authorization Receipt](#auth-receipt) for the Grant.
     * Redirect the Customer back to the Client's `redirect_uri` with an Authorization Response as defined in [[RFC 6749 Section 4.1.2](#ref-rfc6749-auth-response)].
+* If the authorization request's `redirect_uri` paramter is the Server's default `redirect_uri` value that is created by the Server as part of the Client object setup [[CDS-WG1-02 Section 4.2](#ref-cds-wg1-02-registration-response)], the Server will end up redirecting the User to a Server controlled endpoint and not to the Client's interfaces.
+  This means that the User will end their authorization process without being redirected back to the Client's interface with success (e.g. `code=...`) or error (e.g. `error=...`) parameters, and the Client will not know the outcome of the authorization request.
+  This result is expected behavior, be Client deliberately set the authorization request `redirect_uri` parameter to the Server's default `redirect_uri` value, meaning they knew that the User would not be redirected back to the Client's interfaces and instead be redirected to the Server's default redirect interfaces.
+  Thus, when the authorization request's `redirect_uri` parameter is set to the Server's default `redirect_uri` value, the Server MUST implement the following:
+    * If the redirect contains success parameters (e.g. `code=...`), the Server MUST further redirect the Customer to the [Authorization Receipt](#auth-receipt) website page.
+      This allows the Customer to view a confirmation of their authorization approval.
+    * If the redirect contains error parameters (e.g. `error=...`), the Server MUST render and show the User the [Default Redirect Error](#default-redirect-error) page.
+    * The Server MUST allow the Client to use their Client with the Grant Admin Scope to obtain an `access_token` that is able to access the Grant's enabled scope as required in [[CDS-WG1-02 Section 3.3.2](#ref-cds-wg1-02-grant-admin)].
+      This is how Client's will be able access Customer authorized data when the Server's default `redirect_uri` is used.
+      Additionally, if the Client included a `state` parameter in the authorization request, the Client can query for the Grant, if any, that was created or updated as a result of the authorization request by querying the Grants API listing endpoint with the `states` request parameter, which filters for Grants with matching `states` values [[CDS-WG1-02 Section 8.4](#ref-cds-wg1-02-grant-list)].
+      Alternatively, if the Customer provides a Client with their [Authorization Receipt](#auth-receipt) confirmation number, and the Client can query the Grants API listing endpoint with the `receipt_confirmations` request parameter to get the Grant that is associated with the Authorization Receipt confirmation number.
 
 #### 9.1.2. Customer Authentication <a id="customer-authentication" href="#customer-authentication" class="permalink">🔗</a>
 
@@ -3929,7 +3942,20 @@ In these situations the Server MUST display an Invalid Request Error page to the
 * The Server MAY include a [Header Section](#auth-form-header) above the error message, so long as it does not hide the required error message.
 * Below the required options, the Server MAY include additional content and functionality, so long as it appears secondary to the required error message.
 
-### 9.4. Authorization Receipt <a id="auth-receipt" href="#auth-errors" class="permalink">🔗</a>
+#### 9.3.3. Default Redirect Error <a id="default-redirect-error" href="#default-redirect-error" class="permalink">🔗</a>
+
+As part of the requirements for managing Clients, the Server MUST create a default `redirect_uri` for Clients with non-empty `response_types` arrays [[CDS-WG1-02 Section 4.2](#ref-cds-wg1-02-registration-response)].
+This means that for authorization requests, a Client could set the `redirect_uri` parameter to be the Server's created `redirect_uri`, and the Server will need to handle any resulting redirects as a result of the authorization request.
+
+For situations where the redirect is to the Server's default `redirect_uri`, and the resulting redirect contains error parameters (e.g. when the Customer declines an authorization request), the Server MUST display a Default Redirect Error page to the User, and the following are requirements and recommendations for the Server when implementing the Default Redirect Error:
+
+* If the request's `error` parameter is `access_denied`, the Server MUST render a message that clearly communicates to the User that they have declined the authorization request and this is their confirmation that they have declined the request.
+* If the request's `error` parameter is not `access_denied`, the Server MUST an error message that clearly communicates to the User that the authorization request is unable to be completed and explain why the request is unable to be completed (e.g. because the request had an invalid scope).
+  Additionally, the Server MUST communicate to the User the they should contact the website or app that provided them with the link to this authorization request and let that entity know their request could not be completed.
+* The Server MAY include a [Header Section](#auth-form-header) above the required messages, so long as it does not hide the required messages.
+* Below the required messages, the Server MAY include additional content and functionality, so long as it appears secondary to the required error message.
+
+### 9.4. Authorization Receipt <a id="auth-receipt" href="#auth-receipt" class="permalink">🔗</a>
 
 The Authorization Receipt is intended to provide the Customer with a written record of their authorization approval.
 The following are requirements and recommendations for the Server when implementing the Authorization Receipt:
@@ -5586,6 +5612,10 @@ In situations where relevant EACs have the same `period_start` and `cds_created`
 `CDS-WG1-02 Section 3.3` - "Scopes Supported", CDS-WG1-02, LF Energy Standards and Specifications (LFESS),  
 [https://cds-registration.lfenergy.org/specs/cds-wg1-02/#scopes](https://cds-registration.lfenergy.org/specs/cds-wg1-02/#scopes)
 
+<a id="ref-cds-wg1-02-grant-admin" href="#ref-cds-wg1-02-grant-admin" class="permalink">🔗</a>
+`CDS-WG1-02 Section 3.3.2` - "Grant Admin Scope", CDS-WG1-02, LF Energy Standards and Specifications (LFESS),  
+[https://cds-registration.lfenergy.org/specs/cds-wg1-02/#scopes-grant-admin](https://cds-registration.lfenergy.org/specs/cds-wg1-02/#scopes-grant-admin)
+
 <a id="ref-cds-wg1-02-scope-descriptions" href="#ref-cds-wg1-02-scope-descriptions" class="permalink">🔗</a>
 `CDS-WG1-02 Section 3.4` - "Scope Descriptions Object Format", CDS-WG1-02, LF Energy Standards and Specifications (LFESS),  
 [https://cds-registration.lfenergy.org/specs/cds-wg1-02/#scope-descriptions-format](https://cds-registration.lfenergy.org/specs/cds-wg1-02/#scope-descriptions-format)
@@ -5601,6 +5631,10 @@ In situations where relevant EACs have the same `period_start` and `cds_created`
 <a id="ref-cds-wg1-02-auth-details-object" href="#ref-cds-wg1-02-auth-details-object" class="permalink">🔗</a>
 `CDS-WG1-02 Section 3.8` - "Authorization Details Field Object Format", CDS-WG1-02, LF Energy Standards and Specifications (LFESS),  
 [https://cds-registration.lfenergy.org/specs/cds-wg1-02/#auth-details-field-formats](https://cds-registration.lfenergy.org/specs/cds-wg1-02/#auth-details-fields-format)
+
+<a id="ref-cds-wg1-02-registration-response" href="#ref-cds-wg1-02-registration-response" class="permalink">🔗</a>
+`CDS-WG1-02 Section 4.2` - "Client Registration Response", CDS-WG1-02, LF Energy Standards and Specifications (LFESS),  
+[https://cds-registration.lfenergy.org/specs/cds-wg1-02/#registration-response](https://cds-registration.lfenergy.org/specs/cds-wg1-02/#registration-response)
 
 <a id="ref-cds-wg1-02-client-object" href="#ref-cds-wg1-02-client-object" class="permalink">🔗</a>
 `CDS-WG1-02 Section 5.1` - "Client Object Format", CDS-WG1-02, LF Energy Standards and Specifications (LFESS),  
@@ -5625,6 +5659,10 @@ In situations where relevant EACs have the same `period_start` and `cds_created`
 <a id="ref-cds-wg1-02-grant-auth-requests" href="#ref-cds-wg1-02-grant-auth-requests" class="permalink">🔗</a>
 `CDS-WG1-02 Section 8.3` - "Grant Authorization Requests", CDS-WG1-02, LF Energy Standards and Specifications (LFESS),  
 [https://cds-registration.lfenergy.org/specs/cds-wg1-02/#grant-authorization-requests](https://cds-registration.lfenergy.org/specs/cds-wg1-02/#grant-authorization-requests)
+
+<a id="ref-cds-wg1-02-grant-list" href="#ref-cds-wg1-02-grant-list" class="permalink">🔗</a>
+`CDS-WG1-02 Section 8.4` - "Listing Grants", CDS-WG1-02, LF Energy Standards and Specifications (LFESS),  
+[https://cds-registration.lfenergy.org/specs/cds-wg1-02/#grants-list](https://cds-registration.lfenergy.org/specs/cds-wg1-02/#grants-list)
 
 <a id="ref-e164" href="#ref-e164" class="permalink">🔗</a>
 `E.164` - "The international public telecommunication numbering plan", E.164, International Telecommunication Union (ITU),  
