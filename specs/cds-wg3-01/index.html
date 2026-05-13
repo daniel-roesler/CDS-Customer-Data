@@ -369,6 +369,7 @@ For more information, visit <a href="https://lfess.energy/">https://lfess.energy
         <ul>
           <li><a href="#preselection-error">9.3.1. Preselection Error</a></li>
           <li><a href="#request-error">9.3.2. Invalid Request Error</a></li>
+          <li><a href="#default-redirect-error">9.3.3. Default Redirect Error</a></li>
         </ul>
       </li>
       <li><a href="#auth-receipt">9.4. Authorization Receipt</a></li>
@@ -3862,7 +3863,7 @@ To enable whether Bill Section objects access is included in addition to the dat
 Related Bill Section objects are any of the following:
     <ul>
       <li>Any Bill Section that have both a <code class="language-plaintext highlighter-rouge">cds_account_id</code> value equal to an included <a href="#account-format">Account</a> and contains at least one included <a href="#service-contract-format">Service Contract</a> listed in the Bill Section’s <code class="language-plaintext highlighter-rouge">related_servicecontracts</code> array.</li>
-      <li>Any Bill Section that is referenced by <code class="language-plaintext highlighter-rouge">related_billsections</code> values in any included <a href="#usage-segment-format">Usage Segment</a> object.</li>
+      <li>Any Bill Section that is referenced by <code class="language-plaintext highlighter-rouge">related_billsections</code> values in any included <a href="#usage-segment-format">Usage Segment</a> or <a href="#new-charge-format">New Charge</a> object.</li>
     </ul>
   </li>
   <li>Servers MUST NOT include OPTIONAL fields for Bill Statements unless those fields are enabled to be included by the Grant’s scope or other authorization details fields.</li>
@@ -4598,9 +4599,24 @@ If there are no <a href="#selection-component">selections</a>, the Server MUST s
   <li>If the Customer authorizes the authorization request, the Server MUST:
     <ul>
       <li>Create a Grant as defined by the authorized <a href="#scopes">Scopes</a>, or if the request is a Grant Authorization Request [<a href="#ref-cds-wg1-02-grant-auth-requests">CDS-WG1-02 Section 8.3</a>], update the referenced Grant.</li>
+      <li>Create an <a href="#auth-receipt">Authorization Receipt</a> for the authorization.</li>
       <li>If the Server has the ability to contact the Customer, send the Customer an <a href="#auth-receipt">Authorization Receipt</a>.</li>
       <li>If the Customer has an associated online profile or user account, include in the Customer’s authenticated interface (e.g. their user settings) a location where the Customer can open and view the <a href="#auth-receipt">Authorization Receipt</a> for the Grant.</li>
       <li>Redirect the Customer back to the Client’s <code class="language-plaintext highlighter-rouge">redirect_uri</code> with an Authorization Response as defined in [<a href="#ref-rfc6749-auth-response">RFC 6749 Section 4.1.2</a>].</li>
+    </ul>
+  </li>
+  <li>If the authorization request’s <code class="language-plaintext highlighter-rouge">redirect_uri</code> paramter is the Server’s default <code class="language-plaintext highlighter-rouge">redirect_uri</code> value that is created by the Server as part of the Client object setup [<a href="#ref-cds-wg1-02-registration-response">CDS-WG1-02 Section 4.2</a>], the Server will end up redirecting the User to a Server controlled endpoint and not to the Client’s interfaces.
+This means that the User will end their authorization process without being redirected back to the Client’s interface with success (e.g. <code class="language-plaintext highlighter-rouge">code=...</code>) or error (e.g. <code class="language-plaintext highlighter-rouge">error=...</code>) parameters, and the Client will not know the outcome of the authorization request.
+This result is expected behavior, be Client deliberately set the authorization request <code class="language-plaintext highlighter-rouge">redirect_uri</code> parameter to the Server’s default <code class="language-plaintext highlighter-rouge">redirect_uri</code> value, meaning they knew that the User would not be redirected back to the Client’s interfaces and instead be redirected to the Server’s default redirect interfaces.
+Thus, when the authorization request’s <code class="language-plaintext highlighter-rouge">redirect_uri</code> parameter is set to the Server’s default <code class="language-plaintext highlighter-rouge">redirect_uri</code> value, the Server MUST implement the following:
+    <ul>
+      <li>If the redirect contains success parameters (e.g. <code class="language-plaintext highlighter-rouge">code=...</code>), the Server MUST further redirect the Customer to the <a href="#auth-receipt">Authorization Receipt</a> website page.
+This allows the Customer to view a confirmation of their authorization approval.</li>
+      <li>If the redirect contains error parameters (e.g. <code class="language-plaintext highlighter-rouge">error=...</code>), the Server MUST render and show the User the <a href="#default-redirect-error">Default Redirect Error</a> page.</li>
+      <li>The Server MUST allow the Client to use their Client with the Grant Admin Scope to obtain an <code class="language-plaintext highlighter-rouge">access_token</code> that is able to access the Grant’s enabled scope as required in [<a href="#ref-cds-wg1-02-grant-admin">CDS-WG1-02 Section 3.3.2</a>].
+This is how Client’s will be able access Customer authorized data when the Server’s default <code class="language-plaintext highlighter-rouge">redirect_uri</code> is used.
+Additionally, if the Client included a <code class="language-plaintext highlighter-rouge">state</code> parameter in the authorization request, the Client can query for the Grant, if any, that was created or updated as a result of the authorization request by querying the Grants API listing endpoint with the <code class="language-plaintext highlighter-rouge">states</code> request parameter, which filters for Grants with matching <code class="language-plaintext highlighter-rouge">states</code> values [<a href="#ref-cds-wg1-02-grant-list">CDS-WG1-02 Section 8.4</a>].
+Alternatively, if the Customer provides a Client with their <a href="#auth-receipt">Authorization Receipt</a> confirmation number, and the Client can query the Grants API listing endpoint with the <code class="language-plaintext highlighter-rouge">receipt_confirmations</code> request parameter to get the Grant that is associated with the Authorization Receipt confirmation number.</li>
     </ul>
   </li>
 </ul>
@@ -5580,7 +5596,22 @@ In these situations the Server MUST display an Invalid Request Error page to the
   <li>Below the required options, the Server MAY include additional content and functionality, so long as it appears secondary to the required error message.</li>
 </ul>
 
-<h3 id="94-authorization-receipt-">9.4. Authorization Receipt <a id="auth-receipt" href="#auth-errors" class="permalink">🔗</a></h3>
+<h4 id="933-default-redirect-error-">9.3.3. Default Redirect Error <a id="default-redirect-error" href="#default-redirect-error" class="permalink">🔗</a></h4>
+
+<p>As part of the requirements for managing Clients, the Server MUST create a default <code class="language-plaintext highlighter-rouge">redirect_uri</code> for Clients with non-empty <code class="language-plaintext highlighter-rouge">response_types</code> arrays [<a href="#ref-cds-wg1-02-registration-response">CDS-WG1-02 Section 4.2</a>].
+This means that for authorization requests, a Client could set the <code class="language-plaintext highlighter-rouge">redirect_uri</code> parameter to be the Server’s created <code class="language-plaintext highlighter-rouge">redirect_uri</code>, and the Server will need to handle any resulting redirects as a result of the authorization request.</p>
+
+<p>For situations where the redirect is to the Server’s default <code class="language-plaintext highlighter-rouge">redirect_uri</code>, and the resulting redirect contains error parameters (e.g. when the Customer declines an authorization request), the Server MUST display a Default Redirect Error page to the User, and the following are requirements and recommendations for the Server when implementing the Default Redirect Error:</p>
+
+<ul>
+  <li>If the request’s <code class="language-plaintext highlighter-rouge">error</code> parameter is <code class="language-plaintext highlighter-rouge">access_denied</code>, the Server MUST render a message that clearly communicates to the User that they have declined the authorization request and this is their confirmation that they have declined the request.</li>
+  <li>If the request’s <code class="language-plaintext highlighter-rouge">error</code> parameter is not <code class="language-plaintext highlighter-rouge">access_denied</code>, the Server MUST an error message that clearly communicates to the User that the authorization request is unable to be completed and explain why the request is unable to be completed (e.g. because the request had an invalid scope).
+Additionally, the Server MUST communicate to the User the they should contact the website or app that provided them with the link to this authorization request and let that entity know their request could not be completed.</li>
+  <li>The Server MAY include a <a href="#auth-form-header">Header Section</a> above the required messages, so long as it does not hide the required messages.</li>
+  <li>Below the required messages, the Server MAY include additional content and functionality, so long as it appears secondary to the required error message.</li>
+</ul>
+
+<h3 id="94-authorization-receipt-">9.4. Authorization Receipt <a id="auth-receipt" href="#auth-receipt" class="permalink">🔗</a></h3>
 
 <p>The Authorization Receipt is intended to provide the Customer with a written record of their authorization approval.
 The following are requirements and recommendations for the Server when implementing the Authorization Receipt:</p>
@@ -6432,13 +6463,53 @@ If <code class="language-plaintext highlighter-rouge">shutoff_prevention_minimum
 If the Server does not have this information or the Customer is not participating in any Account-level programs, this value is and empty list (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
 </ul>
 
+<p>The Server MUST ensure that if both <code class="language-plaintext highlighter-rouge">previous_balance_unpaid</code> and <code class="language-plaintext highlighter-rouge">new_charges</code> fields are included in a Bill Statement, the sum of the Bill Statement’s <code class="language-plaintext highlighter-rouge">previous_balance_unpaid</code> value and all New Charge <code class="language-plaintext highlighter-rouge">amount</code> values where the New Charge has a <code class="language-plaintext highlighter-rouge">included_in_amount_due</code> value of <code class="language-plaintext highlighter-rouge">true</code> MUST equal the Bill Statement’s <code class="language-plaintext highlighter-rouge">amount_due</code> value.
+For situations where the Customer’s bill doesn’t actually sum to the amount due (e.g. there’s a billing error), the Server MUST include a New Charge object that has a <code class="language-plaintext highlighter-rouge">amout_due_sum_difference</code> in its <code class="language-plaintext highlighter-rouge">types</code> array and the difference from the sum to the <code class="language-plaintext highlighter-rouge">amount_due</code> value as the object’s <code class="language-plaintext highlighter-rouge">amount</code> value.
+This requirement is a confirmation to Clients that the Server has included all New Charge objects that it knows about, and the Server recognizes that there is something unaccounted for in the <code class="language-plaintext highlighter-rouge">amount_due</code> value, but the Server does not know what has caused that unaccounted for amount.</p>
+
 <h4 id="1052-new-charge-object-format-">10.5.2. New Charge Object Format <a id="new-charge-format" href="#new-charge-format" class="permalink">🔗</a></h4>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>New Charge objects represent a Bill Statement line item that contains a charge or credit that is applied to the Customer’s Account balance on that Bill Statement.
+These line items are what a Customer sees at the front of their bills that summarize all the various Service Contract-level charges or credits (e.g. electric service charges) and any Account-level charges or credits (e.g. deposit refund).
+New Charge objects are formatted as JSON objects and contain the following named values:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">id</code> - <em><a href="#string">string</a></em> - (REQUIRED) The unique identifier for the New Charge object.</li>
+  <li><code class="language-plaintext highlighter-rouge">name</code> - <em><a href="#string">string</a></em> - (REQUIRED) The name of the New Charge line item as it appears on the Customer’s bill (e.g. “Electric Service Charges”).</li>
+  <li><code class="language-plaintext highlighter-rouge">types</code> - <em>Array[<a href="#new-charge-types">NewChargeType</a>]</em> - (REQUIRED) An array of types for the New Charge.</li>
+  <li><code class="language-plaintext highlighter-rouge">amount</code> - <em><a href="#decimal">decimal</a></em> - (REQUIRED) The amount of the charge in the Bill Statement’s <code class="language-plaintext highlighter-rouge">currency</code>.
+Positive values mean a charge amount, and negative values mean a credit amount.</li>
+  <li><code class="language-plaintext highlighter-rouge">included_in_amount_due</code> - <em><a href="#boolean">boolean</a></em> - (REQUIRED) Whether this line item is included in the calculation of the Bill Statement’s <code class="language-plaintext highlighter-rouge">amount_due</code> value.
+For most situations, this value will be <code class="language-plaintext highlighter-rouge">true</code>, but for situations where an Account is being billed on a payment plan or as a flat rate, this value could be <code class="language-plaintext highlighter-rouge">false</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">related_billsections</code> - <em>Array[<a href="#string">string</a>]</em> - (OPTIONAL) A list of Service Bill <code class="language-plaintext highlighter-rouge">cds_billsection_id</code> values from which this New Charge is derived.
+If the Server does not know which Bill Section objects are related to this New Charge or the Scope of the access does not include Bill Section objects, this field MUST NOT be included.</li>
+</ul>
 
 <h4 id="1053-new-charge-types-">10.5.3. New Charge Types <a id="new-charge-types" href="#new-charge-types" class="permalink">🔗</a></h4>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>New Charge Type values MUST be a <a href="#string">string</a> of one of the following:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">electric_total</code> - The line item is the total of charges or credits from electric services.</li>
+  <li><code class="language-plaintext highlighter-rouge">water_total</code> - The line item is the total of charges or credits from water services.</li>
+  <li><code class="language-plaintext highlighter-rouge">natural_gas_total</code> - The line item is the total of charges or credits from natural gas services.</li>
+  <li><code class="language-plaintext highlighter-rouge">fuel_oil_total</code> - The line item is the total of charges or credits from fuel oil services.</li>
+  <li><code class="language-plaintext highlighter-rouge">waste_water_total</code> - The line item is the total of charges or credits from waste water services.</li>
+  <li><code class="language-plaintext highlighter-rouge">solid_waste_total</code> - The line item is the total of charges or credits from sold waste services.</li>
+  <li><code class="language-plaintext highlighter-rouge">tax</code> - The line item is an account-level tax charge.</li>
+  <li><code class="language-plaintext highlighter-rouge">fixed_fee</code> - The line item is an account-level fixed fee charge.</li>
+  <li><code class="language-plaintext highlighter-rouge">flat_rate</code> - The line item is an account-level flat rate charge.</li>
+  <li><code class="language-plaintext highlighter-rouge">interest</code> - The line item is an account-level interest charge, typically for when an Account is on a payment plan with interest.</li>
+  <li><code class="language-plaintext highlighter-rouge">deposit</code> - The line item is an adjustment that results from the application of deposit the Customer paid, either as a charge (i.e. positive value) if the deposit is being charged on the Bill Statement, or as a credit (i.e. negative value) if the deposit is being refunded on the Bill Statement.</li>
+  <li><code class="language-plaintext highlighter-rouge">differed</code> - The line item is the amount of the Account’s balance that will is not being included in the <code class="language-plaintext highlighter-rouge">amount_due</code> because it is differed or carried over to future bills.</li>
+  <li><code class="language-plaintext highlighter-rouge">credit_bank</code> - The line item is an adjustment that results from the application of an Account’s credit bank (e.g. NEM tracked charges).</li>
+  <li><code class="language-plaintext highlighter-rouge">program</code> - The line item is an adjustment to the amount due that is the result of the Account participating in an Account-level program (e.g. the Account being enrolled in a low-income discount program).</li>
+  <li><code class="language-plaintext highlighter-rouge">adhoc</code> - The line item is a ad-hoc, one-time, or manual adjustment to the Bill Statement’s <code class="language-plaintext highlighter-rouge">amount_due</code> that appears on the Bill Statement visible to the Customer.
+For example, a Customer could have a manual one-time credit applied to their bill as the result from a prior misread of their meter that is now being corrected.</li>
+  <li><code class="language-plaintext highlighter-rouge">amout_due_sum_difference</code> - The Server is inserting this New Charge object to account for a difference between the <code class="language-plaintext highlighter-rouge">amount_due</code> value not matching the sum of the <code class="language-plaintext highlighter-rouge">previous_balance_unpaid</code> and New Charges’ <code class="language-plaintext highlighter-rouge">amount</code> values where <code class="language-plaintext highlighter-rouge">included_in_amount_due</code> is <code class="language-plaintext highlighter-rouge">true</code>.
+This New Charge does not appear on the real world Customer’s bill and is only an acknowledgment from the Server that there is a difference between the <code class="language-plaintext highlighter-rouge">amount_due</code> and account unpaid balance plus new charges that is not listed on the Customer’s bill.
+It is RECOMMENDED that if the Server knows reason for the difference, it include that reason in this New Charge’s <code class="language-plaintext highlighter-rouge">name</code> value (e.g. “VPP pilot program contract credit”).</li>
+</ul>
 
 <h4 id="1054-listing-bill-statements-">10.5.4. Listing Bill Statements <a id="bill-statement-list" href="#bill-statement-list" class="permalink">🔗</a></h4>
 
@@ -7424,6 +7495,10 @@ In situations where relevant EACs have the same <code class="language-plaintext 
 <code class="language-plaintext highlighter-rouge">CDS-WG1-02 Section 3.3</code> - “Scopes Supported”, CDS-WG1-02, LF Energy Standards and Specifications (LFESS),<br />
 <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02/#scopes">https://cds-registration.lfenergy.org/specs/cds-wg1-02/#scopes</a></p>
 
+<p><a id="ref-cds-wg1-02-grant-admin" href="#ref-cds-wg1-02-grant-admin" class="permalink">🔗</a>
+<code class="language-plaintext highlighter-rouge">CDS-WG1-02 Section 3.3.2</code> - “Grant Admin Scope”, CDS-WG1-02, LF Energy Standards and Specifications (LFESS),<br />
+<a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02/#scopes-grant-admin">https://cds-registration.lfenergy.org/specs/cds-wg1-02/#scopes-grant-admin</a></p>
+
 <p><a id="ref-cds-wg1-02-scope-descriptions" href="#ref-cds-wg1-02-scope-descriptions" class="permalink">🔗</a>
 <code class="language-plaintext highlighter-rouge">CDS-WG1-02 Section 3.4</code> - “Scope Descriptions Object Format”, CDS-WG1-02, LF Energy Standards and Specifications (LFESS),<br />
 <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02/#scope-descriptions-format">https://cds-registration.lfenergy.org/specs/cds-wg1-02/#scope-descriptions-format</a></p>
@@ -7439,6 +7514,10 @@ In situations where relevant EACs have the same <code class="language-plaintext 
 <p><a id="ref-cds-wg1-02-auth-details-object" href="#ref-cds-wg1-02-auth-details-object" class="permalink">🔗</a>
 <code class="language-plaintext highlighter-rouge">CDS-WG1-02 Section 3.8</code> - “Authorization Details Field Object Format”, CDS-WG1-02, LF Energy Standards and Specifications (LFESS),<br />
 <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02/#auth-details-fields-format">https://cds-registration.lfenergy.org/specs/cds-wg1-02/#auth-details-field-formats</a></p>
+
+<p><a id="ref-cds-wg1-02-registration-response" href="#ref-cds-wg1-02-registration-response" class="permalink">🔗</a>
+<code class="language-plaintext highlighter-rouge">CDS-WG1-02 Section 4.2</code> - “Client Registration Response”, CDS-WG1-02, LF Energy Standards and Specifications (LFESS),<br />
+<a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02/#registration-response">https://cds-registration.lfenergy.org/specs/cds-wg1-02/#registration-response</a></p>
 
 <p><a id="ref-cds-wg1-02-client-object" href="#ref-cds-wg1-02-client-object" class="permalink">🔗</a>
 <code class="language-plaintext highlighter-rouge">CDS-WG1-02 Section 5.1</code> - “Client Object Format”, CDS-WG1-02, LF Energy Standards and Specifications (LFESS),<br />
@@ -7463,6 +7542,10 @@ In situations where relevant EACs have the same <code class="language-plaintext 
 <p><a id="ref-cds-wg1-02-grant-auth-requests" href="#ref-cds-wg1-02-grant-auth-requests" class="permalink">🔗</a>
 <code class="language-plaintext highlighter-rouge">CDS-WG1-02 Section 8.3</code> - “Grant Authorization Requests”, CDS-WG1-02, LF Energy Standards and Specifications (LFESS),<br />
 <a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02/#grant-authorization-requests">https://cds-registration.lfenergy.org/specs/cds-wg1-02/#grant-authorization-requests</a></p>
+
+<p><a id="ref-cds-wg1-02-grant-list" href="#ref-cds-wg1-02-grant-list" class="permalink">🔗</a>
+<code class="language-plaintext highlighter-rouge">CDS-WG1-02 Section 8.4</code> - “Listing Grants”, CDS-WG1-02, LF Energy Standards and Specifications (LFESS),<br />
+<a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02/#grants-list">https://cds-registration.lfenergy.org/specs/cds-wg1-02/#grants-list</a></p>
 
 <p><a id="ref-e164" href="#ref-e164" class="permalink">🔗</a>
 <code class="language-plaintext highlighter-rouge">E.164</code> - “The international public telecommunication numbering plan”, E.164, International Telecommunication Union (ITU),<br />
