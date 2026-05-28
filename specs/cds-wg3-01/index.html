@@ -382,11 +382,13 @@ For more information, visit <a href="https://lfess.energy/">https://lfess.energy
           <li><a href="#account-format">10.1.1. Account Object Format</a></li>
           <li><a href="#account-types">10.1.2. Account Types</a></li>
           <li><a href="#account-statuses">10.1.3. Account Statuses</a></li>
-          <li><a href="#account-contact-format">10.1.4. Account Contact Object Format</a></li>
-          <li><a href="#account-contact-types">10.1.5. Account Contact Types</a></li>
-          <li><a href="#account-program-format">10.1.6. Account Program Object Format</a></li>
-          <li><a href="#account-program-types">10.1.7. Account Program Types</a></li>
-          <li><a href="#accounts-list">10.1.8. Listing Accounts</a></li>
+          <li><a href="#entity-format">10.1.4. Entity Object Format</a></li>
+          <li><a href="#entity-types">10.1.5. Entity Types</a></li>
+          <li><a href="#account-contact-format">10.1.6. Account Contact Object Format</a></li>
+          <li><a href="#account-contact-types">10.1.7. Account Contact Types</a></li>
+          <li><a href="#account-program-format">10.1.8. Account Program Object Format</a></li>
+          <li><a href="#account-program-types">10.1.9. Account Program Types</a></li>
+          <li><a href="#accounts-list">10.1.10. Listing Accounts</a></li>
         </ul>
       </li>
       <li><a href="#service-contracts-api">10.2. Service Contracts API</a>
@@ -430,17 +432,13 @@ For more information, visit <a href="https://lfess.energy/">https://lfess.energy
         <ul>
           <li><a href="#bill-section-format">10.6.1. Bill Section Object Format</a></li>
           <li><a href="#bill-section-types">10.6.2. Bill Section Types</a></li>
-          <li><a href="#distribution-entity-format">10.6.3. Distribution Entity Object Format</a></li>
-          <li><a href="#distribution-entity-types">10.6.4. Distribution Entity Types</a></li>
-          <li><a href="#load-serving-entity-format">10.6.5. Load Serving Entity Object Format</a></li>
-          <li><a href="#load-serving-entity-types">10.6.6. Load Serving Entity Types</a></li>
-          <li><a href="#bill-section-usage-detail-format">10.6.7. Bill Section Usage Detail Object Format</a></li>
-          <li><a href="#bill-section-usage-detail-types">10.6.8. Bill Section Usage Detail Types</a></li>
-          <li><a href="#bill-section-cost-detail-format">10.6.9. Bill Section Cost Detail Object Format</a></li>
-          <li><a href="#bill-section-cost-detail-types">10.6.10. Bill Section Cost Detail Types</a></li>
-          <li><a href="#bill-section-line-item-format">10.6.11. Bill Section Line Item Object Format</a></li>
-          <li><a href="#bill-section-line-item-types">10.6.12. Bill Section Line Item Types</a></li>
-          <li><a href="#bill-section-list">10.6.13. Listing Bill Sections</a></li>
+          <li><a href="#bill-section-usage-detail-format">10.6.3. Bill Section Usage Detail Object Format</a></li>
+          <li><a href="#bill-section-usage-detail-types">10.6.4. Bill Section Usage Detail Types</a></li>
+          <li><a href="#bill-section-cost-detail-format">10.6.5. Bill Section Cost Detail Object Format</a></li>
+          <li><a href="#bill-section-cost-detail-types">10.6.6. Bill Section Cost Detail Types</a></li>
+          <li><a href="#bill-section-line-item-format">10.6.7. Bill Section Line Item Object Format</a></li>
+          <li><a href="#bill-section-line-item-types">10.6.8. Bill Section Line Item Types</a></li>
+          <li><a href="#bill-section-list">10.6.9. Listing Bill Sections</a></li>
         </ul>
       </li>
       <li><a href="#aggregations-api">10.7. Aggregations API</a>
@@ -5768,6 +5766,8 @@ If the Account is not a part of a parent grouping, this value is <code class="la
   <li><code class="language-plaintext highlighter-rouge">customer_number</code> - <em><a href="#string">string</a> or <code class="language-plaintext highlighter-rouge">null</code></em> - (OPTIONAL) The identifier that a Customer has access to that identifies a collection of Accounts as being for the same Customer.
 If a Server only stores Accounts as the top-level identifier for Customers, or does not have a Customer-accessible identifier set for this Account, this value is <code class="language-plaintext highlighter-rouge">null</code>.</li>
   <li><code class="language-plaintext highlighter-rouge">account_number</code> - <em><a href="#string">string</a></em> - (OPTIONAL) The number that a Customer sees on their bill and online user interface as the identifier for this Account.</li>
+  <li><code class="language-plaintext highlighter-rouge">account_entity</code> - <em><a href="#entity-format">Entity</a> or <code class="language-plaintext highlighter-rouge">null</code></em> - (OPTIONAL) The central entity with which the Customer has established this Account.
+If the Server does not know the Entity for the Account, this value is <code class="language-plaintext highlighter-rouge">null</code>.</li>
   <li><code class="language-plaintext highlighter-rouge">account_name</code> - <em><a href="#string">string</a></em> - (OPTIONAL) The name that a Customer sees on their bill and online user interface as the name for this Account, if available.</li>
   <li><code class="language-plaintext highlighter-rouge">account_address</code> - <em><a href="#string">string</a></em> - (OPTIONAL) The address that a Customer sees on their bill and online user interface as the address for this Account, if available.
 This string MAY have line breaks, such as when the address is multiple lines.</li>
@@ -5793,7 +5793,7 @@ Some utilities designate account numbers to third party vendor or contractors so
 Some utilities designate account numbers to internal teams so that they can assign resources or allow that team to test the utility’s systems.</li>
   <li><code class="language-plaintext highlighter-rouge">parent</code> - The account has one or more sub-accounts underneath it.
 This usually happens when a utility combines multiple Customer accounts for an enterprise into a single “parent” account and create bill statements for that primary parent account rather than each individual sub-account.</li>
-  <li><code class="language-plaintext highlighter-rouge">child</code> - The account is part of a group and has a parent account above it.
+  <li><code class="language-plaintext highlighter-rouge">child</code> - The account is part of a group of sub-accounts and has a parent account above it.
 This usually happens when many of an enterprise’s utility accounts are organized underneath a main “parent” account, so that the utility can bill the various “child” sub-accounts together as one bill statement.</li>
   <li><code class="language-plaintext highlighter-rouge">test</code> - The account represents a fictional test account, not a real entity.</li>
   <li><code class="language-plaintext highlighter-rouge">residential</code> - The account represents an account for residential utility services.</li>
@@ -5816,7 +5816,49 @@ This usually happens when many of an enterprise’s utility accounts are organiz
   <li><code class="language-plaintext highlighter-rouge">unknown</code> - The Server does not have access to the Account’s current status.</li>
 </ul>
 
-<h4 id="1014-account-contact-object-format-">10.1.4. Account Contact Object Format <a id="account-contact-format" href="#account-contact-format" class="permalink">🔗</a></h4>
+<h4 id="1014-entity-object-format-">10.1.4. Entity Object Format <a id="entity-format" href="#entity-format" class="permalink">🔗</a></h4>
+
+<p>Entity objects represent a utility or other central entity for a Customer’s Account or Service Contract.
+Entity objects are formatted as JSON objects and contain the following named values:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">id</code> - <em><a href="#string">string</a></em> - (REQUIRED) The Server’s unique identifier for this Entity object.</li>
+  <li><code class="language-plaintext highlighter-rouge">types</code> - <em>Array[<a href="#entity-types">EntityType</a>]</em> - (REQUIRED)  An array of types for the Entity.</li>
+  <li><code class="language-plaintext highlighter-rouge">entity_number</code> - <em><a href="#string">string</a></em> - (REQUIRED) A value that acts as a unique identifier for the Entity (e.g. “US-CA-IOU-EE&amp;E”).
+If no prior value exists for uniquely identifying the Entity or the Server does not know a unique identifier for the Entity, the Server MUST use the Entity’s <code class="language-plaintext highlighter-rouge">id</code> value as the <code class="language-plaintext highlighter-rouge">entity_number</code> value.
+If a Server includes Coverage Entries for the same entity in it’s Server Metadata <code class="language-plaintext highlighter-rouge">coverage</code> endpoint [<a href="#ref-cds-wg1-01-coverage-endpoint">CDS-WG1-01 Section 4</a>], the Server MUST use the same value for both this Entity’s <code class="language-plaintext highlighter-rouge">entity_number</code> value and the Coverage Entry’s <code class="language-plaintext highlighter-rouge">entity_number</code> value [<a href="#ref-cds-wg1-01-coverage-entry">CDS-WG1-01 Section 4.3</a>].</li>
+  <li><code class="language-plaintext highlighter-rouge">entity_name</code> - <em><a href="#string">string</a></em> - (REQUIRED) The name of the entity (e.g. “Example Gas &amp; Electric”).</li>
+  <li><code class="language-plaintext highlighter-rouge">entity_abbreviation</code> - <em><a href="#string">string</a> or <code class="language-plaintext highlighter-rouge">null</code></em> - (REQUIRED) An abbreviation of the Entity’s name that is commonly used to identify that entity (e.g. “EG&amp;E”).
+If no abbreviation is available or the Server does not know an abbreviation for the Entity, this value is <code class="language-plaintext highlighter-rouge">null</code>.</li>
+</ul>
+
+<h4 id="1015-entity-types-">10.1.5. Entity Types <a id="entity-types" href="#entity-types" class="permalink">🔗</a></h4>
+
+<p>Entity Type values MUST be a <a href="#string">string</a> of one of the following:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">distributor</code> - The Entity provides distribution services.
+For electricity services, a distributor is typically called the distributor, utility, or operator.</li>
+  <li><code class="language-plaintext highlighter-rouge">supplier</code> - The Entity provides supply services.
+For electricity services, a supplier is typically called the energy supplier, retailer, retail electric provider (REP), or load serving entity (LSE).
+Vertically integrated utilities typically act as both the distributor and supplier, so both <code class="language-plaintext highlighter-rouge">distributor</code> and <code class="language-plaintext highlighter-rouge">supplier</code> values can be included in the Entity’s <code class="language-plaintext highlighter-rouge">types</code> array.</li>
+  <li><code class="language-plaintext highlighter-rouge">iou</code> - The Entity provides distribution services and is privately owned.
+This type of Entity is typically called an investor-owned utility, or “IOU”.
+An Entity that includes this type MUST also include</li>
+  <li><code class="language-plaintext highlighter-rouge">muni</code> - The Entity provides distribution services and is government owned.
+This type of Entity is typically called an municipal utilitym, or “muni”.</li>
+  <li><code class="language-plaintext highlighter-rouge">cca</code> - The Entity provides supply services and is government owned, typically by a collection of local city or regional governments.
+This type of Entity is typically called a community choice aggregator, or “CCA”.</li>
+  <li><code class="language-plaintext highlighter-rouge">retailer</code> - The Entity provides supply services and is privately owned.
+This type of Entity is typically called a retail electric provider (“REP”) or electric service company (“ESCO”).</li>
+  <li><code class="language-plaintext highlighter-rouge">generator</code> - The Entity provides generation services directly to end Customers.
+This type of Entity is typically called an asset owner, direct access provider, or power purchase agreement (“PPA”) generator.</li>
+  <li><code class="language-plaintext highlighter-rouge">dso</code> - The Entity acts as a distribution system operator (“DSO”).</li>
+  <li><code class="language-plaintext highlighter-rouge">tso</code> - The Entity acts as a transmission system operator (“TSO”).</li>
+  <li><code class="language-plaintext highlighter-rouge">iso</code> - The Entity acts as an interstate system operator (“ISO”).</li>
+</ul>
+
+<h4 id="1016-account-contact-object-format-">10.1.6. Account Contact Object Format <a id="account-contact-format" href="#account-contact-format" class="permalink">🔗</a></h4>
 
 <p>Account Contact objects represent a way of contacting the owner or owner’s representative of the Account.
 Account Contact objects are formatted as JSON objects and contain the following named values:</p>
@@ -5831,7 +5873,7 @@ If the <code class="language-plaintext highlighter-rouge">types</code> array con
 If the <code class="language-plaintext highlighter-rouge">types</code> array contains <code class="language-plaintext highlighter-rouge">"email"</code>, this value MUST be an <a href="#email-address">email address</a> (e.g. <code class="language-plaintext highlighter-rouge">"name@example.com"</code>).</li>
 </ul>
 
-<h4 id="1015-account-contact-types-">10.1.5. Account Contact Types <a id="account-contact-types" href="#account-contact-types" class="permalink">🔗</a></h4>
+<h4 id="1017-account-contact-types-">10.1.7. Account Contact Types <a id="account-contact-types" href="#account-contact-types" class="permalink">🔗</a></h4>
 
 <p>Account Contact Type values MUST be a <a href="#string">string</a> of one of the following:</p>
 
@@ -5849,7 +5891,7 @@ This is generally combined with another type (e.g. <code class="language-plainte
 This is generally combined with another type (e.g. <code class="language-plaintext highlighter-rouge">phone_number</code>).</li>
 </ul>
 
-<h4 id="1016-account-program-object-format-">10.1.6. Account Program Object Format <a id="account-program-format" href="#account-program-format" class="permalink">🔗</a></h4>
+<h4 id="1018-account-program-object-format-">10.1.8. Account Program Object Format <a id="account-program-format" href="#account-program-format" class="permalink">🔗</a></h4>
 
 <p>Account Program objects represent an account-level program in which the Account is participating, has previously participated, or is eligible to participate.
 Account Program objects are formatted as JSON objects and contain the following named values:</p>
@@ -5890,7 +5932,7 @@ For example, if the Server has an Account that is participating in a credit bank
 
 <p>Clients MUST ignore unknown <code class="language-plaintext highlighter-rouge">types</code> array values and unknown additional fields.</p>
 
-<h4 id="1017-account-program-types-">10.1.7. Account Program Types <a id="account-program-types" href="#account-program-types" class="permalink">🔗</a></h4>
+<h4 id="1019-account-program-types-">10.1.9. Account Program Types <a id="account-program-types" href="#account-program-types" class="permalink">🔗</a></h4>
 
 <p>Account Program Type values MUST be a <a href="#string">string</a> of one of the following:</p>
 
@@ -5919,7 +5961,7 @@ This field is REQUIRED if the <code class="language-plaintext highlighter-rouge"
   </li>
 </ul>
 
-<h4 id="1018-listing-accounts-">10.1.8. Listing Accounts <a id="accounts-list" href="#accounts-list" class="permalink">🔗</a></h4>
+<h4 id="10110-listing-accounts-">10.1.10. Listing Accounts <a id="accounts-list" href="#accounts-list" class="permalink">🔗</a></h4>
 
 <p>Clients may request to list Account objects that they have access to by making an HTTPS <code class="language-plaintext highlighter-rouge">GET</code> request to the <a href="#server-metadata">Server Metadata’s</a> <code class="language-plaintext highlighter-rouge">cds_accounts_api</code> URL.
 The Account listing request responses are formatted as JSON objects and contain the following named values.</p>
@@ -5981,8 +6023,9 @@ If a Server does not have a Customer-facing identifier for a Service Contract an
 This string MAY have line breaks, such as when the address is multiple lines.</li>
   <li><code class="language-plaintext highlighter-rouge">contract_types</code> - <em>Array[<a href="#contract-types">ContractType</a>]</em> - (REQUIRED) A list of the types of agreement that this Service Contract represents.
 Multiple Contract Types can apply to a single Service Contract (e.g. both <code class="language-plaintext highlighter-rouge">utility_service</code> and <code class="language-plaintext highlighter-rouge">billed_monthly</code>).</li>
+  <li><code class="language-plaintext highlighter-rouge">contract_entity</code> - <em><a href="#entity-format">Entity</a> or <code class="language-plaintext highlighter-rouge">null</code></em> - (OPTIONAL) The central entity with which the Service Contract agreement is made.
+If the Server does not know the Entity for the Service Contract, this value is <code class="language-plaintext highlighter-rouge">null</code>.</li>
   <li><code class="language-plaintext highlighter-rouge">contract_status</code> - <em><a href="#contract-statuses">ContractStatus</a></em> - (REQUIRED) The current status of the Service Contract.</li>
-  <li><code class="language-plaintext highlighter-rouge">contract_entity</code> - <em><a href="#string">string</a></em> - (REQUIRED) With which entity the Customer has agreement for this Service Contract.</li>
   <li><code class="language-plaintext highlighter-rouge">contract_start</code> - <em><a href="#date">date</a></em> - (OPTIONAL) When the agreement that this Service Contract represents started.</li>
   <li><code class="language-plaintext highlighter-rouge">contract_end</code> - <em><a href="#date">date</a> or <code class="language-plaintext highlighter-rouge">null</code></em> - (OPTIONAL) When the agreement that this Service Contract represents ended.
 If the agreement is still ongoing, this value is <code class="language-plaintext highlighter-rouge">null</code>.</li>
@@ -6034,6 +6077,14 @@ If the Server does not have this information or the Customer is not participatin
   <li><code class="language-plaintext highlighter-rouge">agriculture</code> - The service is classified as an agriculture service.</li>
   <li><code class="language-plaintext highlighter-rouge">metered</code> - The service has one or more meters associated with it to measure the service’s usage.</li>
   <li><code class="language-plaintext highlighter-rouge">unmetered</code> - The service does not use meters, and billed charges are calculated another way (e.g. the number and type of bulbs on a lighting service).</li>
+  <li><code class="language-plaintext highlighter-rouge">distribution</code> - The service includes distribution of the commodity to the recipient.
+When this type is included, it means that the Service Contract’s <code class="language-plaintext highlighter-rouge">contract_entity</code> is acting as the distributor (e.g. the electric utility that runs the wires to a Customer’s building).</li>
+  <li><code class="language-plaintext highlighter-rouge">supply</code> - The service includes procuring or supplying the commodity that is delivered to the recipient.
+When this type is included, it means that the Service Contract’s <code class="language-plaintext highlighter-rouge">contract_entity</code> is acting as the supply entity.
+For electricity services, a supply entity is typically called the energy supplier, retailer, retail electric provider (REP), or load serving entity (LSE).
+For vertically integrated utilities, both distribution and supply can be bundled into a single Service Contract, so both <code class="language-plaintext highlighter-rouge">distribution</code> and <code class="language-plaintext highlighter-rouge">supply</code> values can be included in the Service Contract’s <code class="language-plaintext highlighter-rouge">service_types</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">generation</code> - The service includes generation of the commodity that is delivered to the recipient.
+When this type is included, it means that the Service Contract’s <code class="language-plaintext highlighter-rouge">contract_entity</code> is acting as the generator (e.g. the power plant generating the electricity).</li>
 </ul>
 
 <h4 id="1025-service-program-object-format-">10.2.5. Service Program Object Format <a id="service-program-format" href="#service-program-format" class="permalink">🔗</a></h4>
@@ -6563,11 +6614,13 @@ Multiple Bill Section Types can apply to a single Bill Section (e.g. both <code 
   <li><code class="language-plaintext highlighter-rouge">start_date</code> - <em><a href="#date">date</a></em> - (REQUIRED) The start date of services provided for which this Bill Section covers.</li>
   <li><code class="language-plaintext highlighter-rouge">end_date</code> - <em><a href="#date">date</a></em> - (REQUIRED) The end date of services provided for which this Bill Section covers.</li>
   <li><code class="language-plaintext highlighter-rouge">currency</code> - <em><a href="#string">string</a></em> - (REQUIRED) The currency for this Bill Section’s charge values as an [<a href="#ref-iso4217">ISO 4217</a>] currency code.</li>
-  <li><code class="language-plaintext highlighter-rouge">distribution_entity</code> - <em><a href="#distribution-entity-format">DistributionEntity</a> or <code class="language-plaintext highlighter-rouge">null</code></em> - (REQUIRED) The details for the utility or other entity providing distribution for the services that this Bill Section covers.
-If the services provided that are covered by this Bill Section do not have distribution, this value is <code class="language-plaintext highlighter-rouge">null</code>.</li>
-  <li><code class="language-plaintext highlighter-rouge">load_serving_entity</code> - <em><a href="#load-serving-entity-format">LoadServingEntity</a> or <code class="language-plaintext highlighter-rouge">null</code></em> - (REQUIRED) The details for the utility or other entity providing distribution for the services that this Bill Section covers.
-If the services provided that are covered by this Bill Section do not have a supply or retailer component, this value is <code class="language-plaintext highlighter-rouge">null</code>.
-If the load serving entity is the same as the distributor, the Load Serving Entity <code class="language-plaintext highlighter-rouge">type</code> value MUST be <code class="language-plaintext highlighter-rouge">distributor</code> and no other fields are populated in the Load Serving Entity object.</li>
+  <li><code class="language-plaintext highlighter-rouge">distribution_entity</code> - <em><a href="#entity-format">Entity</a> or <code class="language-plaintext highlighter-rouge">null</code></em> - (REQUIRED) The utility or other central entity that is providing distribution for services covered by this Bill Statement.
+For electricity services, the distribution Entity is typically called the distributor, utility, or operator.
+If the services that are covered by this Bill Section do not have a distribution component, this value is <code class="language-plaintext highlighter-rouge">null</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">supply_entity</code> - <em><a href="#entity-format">Entity</a> or <code class="language-plaintext highlighter-rouge">null</code></em> - (REQUIRED) The utility or other central entity that is providing the supply for services covered by this Bill Statement.
+For electricity services, the supply Entity is typically called the energy supplier, retailer, retail electric provider (REP), or load serving entity (LSE).
+If the services that are covered by this Bill Section do not have a supply component, this value is <code class="language-plaintext highlighter-rouge">null</code>.
+If the Entity is providing both the distribution and supply components of the service (i.e. a vertically integrated utility) and this Bill Section covers both distribution and supply components of the service, the Bill Section’s <code class="language-plaintext highlighter-rouge">distribution_entity</code> and <code class="language-plaintext highlighter-rouge">supply_entity</code> values MUST be the same Entity object.</li>
   <li><code class="language-plaintext highlighter-rouge">related_servicecontracts</code> - <em>Array[<a href="#string">string</a>]</em> - (REQUIRED) The list of <code class="language-plaintext highlighter-rouge">cds_servicecontract_id</code> values that identify Service Contracts to which this Bill Section is applicable.
 This list MUST only include identifiers that the Client is authorized to see as scoped by their requesting <code class="language-plaintext highlighter-rouge">access_token</code>.</li>
   <li><code class="language-plaintext highlighter-rouge">related_servicepoints</code> - <em>Array[<a href="#string">string</a>]</em> - (REQUIRED) The list of <code class="language-plaintext highlighter-rouge">cds_servicepoint_id</code> values that identify Service Points to which this Bill Section is applicable.
@@ -6583,49 +6636,46 @@ This list MUST only include identifiers that the Client is authorized to see as 
 
 <h4 id="1062-bill-section-types-">10.6.2. Bill Section Types <a id="bill-section-types" href="#bill-section-types" class="permalink">🔗</a></h4>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>Bill Section Type values MUST be a <a href="#string">string</a> of one of the following:</p>
 
-<h4 id="1063-distribution-entity-object-format-">10.6.3. Distribution Entity Object Format <a id="distribution-entity-format" href="#distribution-entity-format" class="permalink">🔗</a></h4>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">service_contract</code> - The Bill Section represents billed charges for a <a href="#service-contract-format">Service Contract</a>.</li>
+  <li><code class="language-plaintext highlighter-rouge">sub_account</code> - The Bill Section represents the aggregated billed charges for a sub-account that is underneath a parent account (see <code class="language-plaintext highlighter-rouge">parent</code> and <code class="language-plaintext highlighter-rouge">child</code> types of Account Types), where the billed charges for the sub-accounts do not have their own individual Bill Statements (e.g. the Customer’s only bill is a combined Bill Statement for a parent account, and that Bill Statement has Bill Sections that have the breakdown of charges for each sub-account).
+If a Bill Section includes this type, the Bill Section’s <code class="language-plaintext highlighter-rouge">cds_account_id</code> and <code class="language-plaintext highlighter-rouge">account_number</code> MUST be for the sub-account’s Account object, and not for the parent account’s Account object, which means that the Bill Section <code class="language-plaintext highlighter-rouge">cds_billstatement_id</code> value will be for a Bill Statement.</li>
+  <li><code class="language-plaintext highlighter-rouge">other_section</code> - The Bill Section represents billed charges for one-time, ad-hoc, or other charges that are not related to any Service Contracts or sub-accounts (e.g. transformer upgrade charges for a distribution line that the Customer requested).</li>
+  <li><code class="language-plaintext highlighter-rouge">electric</code> - The Bill Section represents billed charges for an electric service.</li>
+  <li><code class="language-plaintext highlighter-rouge">water</code> - The Bill Section represents billed charges for a water service.</li>
+  <li><code class="language-plaintext highlighter-rouge">natural_gas</code> - The Bill Section represents billed charges for a natural gas service.</li>
+  <li><code class="language-plaintext highlighter-rouge">fuel_oil</code> - The Bill Section represents billed charges for a fuel oil service.</li>
+  <li><code class="language-plaintext highlighter-rouge">distribution</code> - The Bill Section includes billed charges from the Bill Section’s <code class="language-plaintext highlighter-rouge">distribution_entity</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">supply</code> - The Bill Section includes billed charges from the Bill Section’s <code class="language-plaintext highlighter-rouge">supply_entity</code>.</li>
+</ul>
 
-<p><span style="background-color:yellow">TODO</span></p>
-
-<h4 id="1064-distribution-entity-types-">10.6.4. Distribution Entity Types <a id="distribution-entity-types" href="#distribution-entity-types" class="permalink">🔗</a></h4>
-
-<p><span style="background-color:yellow">TODO</span></p>
-
-<h4 id="1065-load-serving-entity-object-format-">10.6.5. Load Serving Entity Object Format <a id="load-serving-entity-format" href="#load-serving-entity-format" class="permalink">🔗</a></h4>
-
-<p><span style="background-color:yellow">TODO</span></p>
-
-<h4 id="1066-load-serving-entity-types-">10.6.6. Load Serving Entity Types <a id="load-serving-entity-types" href="#load-serving-entity-types" class="permalink">🔗</a></h4>
-
-<p><span style="background-color:yellow">TODO</span></p>
-
-<h4 id="1067-bill-section-usage-detail-object-format-">10.6.7. Bill Section Usage Detail Object Format <a id="bill-section-usage-detail-format" href="#bill-section-usage-detail-format" class="permalink">🔗</a></h4>
+<h4 id="1063-bill-section-usage-detail-object-format-">10.6.3. Bill Section Usage Detail Object Format <a id="bill-section-usage-detail-format" href="#bill-section-usage-detail-format" class="permalink">🔗</a></h4>
 
 <p><span style="background-color:yellow">TODO</span></p>
 
-<h4 id="1068-bill-section-usage-detail-types-">10.6.8. Bill Section Usage Detail Types <a id="bill-section-usage-detail-types" href="#bill-section-usage-detail-types" class="permalink">🔗</a></h4>
+<h4 id="1064-bill-section-usage-detail-types-">10.6.4. Bill Section Usage Detail Types <a id="bill-section-usage-detail-types" href="#bill-section-usage-detail-types" class="permalink">🔗</a></h4>
 
 <p><span style="background-color:yellow">TODO</span></p>
 
-<h4 id="1069-bill-section-cost-detail-object-format-">10.6.9. Bill Section Cost Detail Object Format <a id="bill-section-cost-detail-format" href="#bill-section-cost-detail-format" class="permalink">🔗</a></h4>
+<h4 id="1065-bill-section-cost-detail-object-format-">10.6.5. Bill Section Cost Detail Object Format <a id="bill-section-cost-detail-format" href="#bill-section-cost-detail-format" class="permalink">🔗</a></h4>
 
 <p><span style="background-color:yellow">TODO</span></p>
 
-<h4 id="10610-bill-section-cost-detail-types-">10.6.10. Bill Section Cost Detail Types <a id="bill-section-cost-detail-types" href="#bill-section-cost-detail-types" class="permalink">🔗</a></h4>
+<h4 id="1066-bill-section-cost-detail-types-">10.6.6. Bill Section Cost Detail Types <a id="bill-section-cost-detail-types" href="#bill-section-cost-detail-types" class="permalink">🔗</a></h4>
 
 <p><span style="background-color:yellow">TODO</span></p>
 
-<h4 id="10611-bill-section-line-item-object-format-">10.6.11. Bill Section Line Item Object Format <a id="bill-section-line-item-format" href="#bill-section-line-item-format" class="permalink">🔗</a></h4>
+<h4 id="1067-bill-section-line-item-object-format-">10.6.7. Bill Section Line Item Object Format <a id="bill-section-line-item-format" href="#bill-section-line-item-format" class="permalink">🔗</a></h4>
 
 <p><span style="background-color:yellow">TODO</span></p>
 
-<h4 id="10612-bill-section-line-item-types-">10.6.12. Bill Section Line Item Types <a id="bill-section-line-item-types" href="#bill-section-line-item-types" class="permalink">🔗</a></h4>
+<h4 id="1068-bill-section-line-item-types-">10.6.8. Bill Section Line Item Types <a id="bill-section-line-item-types" href="#bill-section-line-item-types" class="permalink">🔗</a></h4>
 
 <p><span style="background-color:yellow">TODO</span></p>
 
-<h4 id="10613-listing-bill-sections-">10.6.13. Listing Bill Sections <a id="bill-section-list" href="#bill-section-list" class="permalink">🔗</a></h4>
+<h4 id="1069-listing-bill-sections-">10.6.9. Listing Bill Sections <a id="bill-section-list" href="#bill-section-list" class="permalink">🔗</a></h4>
 
 <p>Clients may request to list Bill Section objects that they have access to by making an HTTPS <code class="language-plaintext highlighter-rouge">GET</code> request to the <a href="#server-metadata">Server Metadata’s</a> <code class="language-plaintext highlighter-rouge">cds_billsection_api</code> URL.
 The Bill Section listing request responses are formatted as JSON objects and contain the following named values.</p>
@@ -7482,6 +7532,14 @@ In situations where relevant EACs have the same <code class="language-plaintext 
 <p><a id="ref-bcp14" href="#ref-bcp14" class="permalink">🔗</a>
 <code class="language-plaintext highlighter-rouge">BCP 14</code> - “Best Current Practice 14”, Internet Engineering Task Force (IETF),<br />
 <a href="https://www.rfc-editor.org/info/bcp14">https://www.rfc-editor.org/info/bcp14</a></p>
+
+<p><a id="ref-cds-wg1-01-coverage-endpoint" href="#ref-cds-wg1-01-coverage-endpoint" class="permalink">🔗</a>
+<code class="language-plaintext highlighter-rouge">CDS-WG1-01 Section 4</code> - “Coverage Endpoint”, CDS-WG1-01, LF Energy Standards and Specifications (LFESS),<br />
+<a href="https://cds-registration.lfenergy.org/specs/cds-wg1-01/#coverage-endpoint">https://cds-registration.lfenergy.org/specs/cds-wg1-01/#coverage-endpoint</a></p>
+
+<p><a id="ref-cds-wg1-01-coverage-entry" href="#ref-cds-wg1-01-coverage-entry" class="permalink">🔗</a>
+<code class="language-plaintext highlighter-rouge">CDS-WG1-01 Section 4.3</code> - “Coverage Entry Format”, CDS-WG1-01, LF Energy Standards and Specifications (LFESS),<br />
+<a href="https://cds-registration.lfenergy.org/specs/cds-wg1-01/#coverage-entry-format">https://cds-registration.lfenergy.org/specs/cds-wg1-01/#coverage-entry-format</a></p>
 
 <p><a id="ref-cds-wg1-02" href="#ref-cds-wg1-02" class="permalink">🔗</a>
 <code class="language-plaintext highlighter-rouge">CDS-WG1-02</code> - “Client Registration”, CDS-WG1-02, LF Energy Standards and Specifications (LFESS),<br />
