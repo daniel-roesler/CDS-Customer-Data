@@ -193,6 +193,7 @@ For more information, visit [https://lfess.energy/](https://lfess.energy/).
         * [10.6.3. Bill Section Usage Detail Object Format](#bill-section-usage-detail-format)  
         * [10.6.4. Bill Section Usage Detail Types](#bill-section-usage-detail-types)  
         * [10.6.5. Bill Section Cost Detail Object Format](#bill-section-cost-detail-format)  
+          * [10.6.5.1. Cost Detail Summation Clarifications](#bill-section-cost-detail-sums)  
         * [10.6.6. Bill Section Cost Detail Types](#bill-section-cost-detail-types)  
         * [10.6.7. Bill Section Line Item Object Format](#bill-section-line-item-format)  
         * [10.6.8. Bill Section Line Item Types](#bill-section-line-item-types)  
@@ -4870,27 +4871,175 @@ Bill Section Type values MUST be a [string](#string) of one of the following:
 
 #### 10.6.3. Bill Section Usage Detail Object Format <a id="bill-section-usage-detail-format" href="#bill-section-usage-detail-format" class="permalink">🔗</a>
 
-<span style="background-color:yellow">TODO</span>
+Bill Section Usage Detail objects represent measurement readings, aggretated totals, or summary values that are relevant to the Bill Section.
+Typically, the values in these objects are visible on the Customer's utility bill, but Servers MAY include other types of values as needed to support the Server's intended use cases.
+Additionally, while it is likely that most of the objects have values that represent usage (e.g. total gallons of water consumed during the billing period), other values may also be included that do not technically represent usage (e.g. peak electric demand).
+The name of the object as "Usage Detail" is for convenience and to match how these values are typically referred on Customer bills, but do not necessarily always have to have values representing usage.
+
+Bill Section Usage Detail objects are formatted as JSON objects and contain the following named values:
+
+* `id` - _[string](#string)_ - (REQUIRED) The unique identifier for the Bill Section Usage Detail object.
+* `name` - _[string](#string)_ - (REQUIRED) The name of the Bill Section Usage Detail entry as it appears on the Customer's bill (e.g. "Total kWh").
+  If the usage detail value does not appear on the Customer's bill, or the value appears without a name, the Server MUST generate a name that accurately describes what kind of usage detail value this object represents.
+* `types` - _Array[[BillSectionUsageDetailType](#bill-section-usage-detail-types)]_ - (REQUIRED) An array of types for the Bill Section Usage Detail.
+  The values in this array determine what the `value` value represents, as well as any additional fields included in this object.
+* `value` - _[decimal](#decimal) or [string](#string)_ - (REQUIRED) The measurement or amount represented by this object, based on the `types` values.
+* `units` - _[UnitType](#usage-segment-unit-types)_ - (OPTIONAL) The units for the `value`.
+  If the `value` is a decimal, this field MUST be included.
+* `start_date` - _[date](#date)_ - (OPTIONAL) The start date of the date range covered by the `value`.
+  Whether this field is included is determined by this object's `types` values.
+* `end_date` - _[date](#date)_ - (OPTIONAL) The last date of the date range covered by the `value`.
+  Whether this field is included is determined by this object's `types` values.
+
+Depending on the values in a Bill Section Usage Detail's `types` array, the Bill Section Usage Detail MAY have additional fields.
+See each [Bill Section Usage Detail Type](#bill-section-usage-detail-types) value for what additional fields are defined.
+
+Servers MAY add additional fields to Bill Section Usage Detail objects as needed to include usage-specific data.
+It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. `exampleutility_*`).
+For example, if the Server has a Bill Section Usage Detail that identifies a group of metering points (e.g. the panel on the side of an apartment building) and wants to include panel's model number in the Bill Section Usage Detail object, the Server could add a `exampleutility_panel_model` field that provides the panel's model number as a string.
+
+Clients MUST ignore unknown `types` array values and unknown additional fields.
 
 #### 10.6.4. Bill Section Usage Detail Types <a id="bill-section-usage-detail-types" href="#bill-section-usage-detail-types" class="permalink">🔗</a>
 
-<span style="background-color:yellow">TODO</span>
+Bill Section Usage Detail Type values MUST be a [string](#string) of one of the following:
+
+* `electric_usage` - The `value` in the Bill Section Usage Detail object represents electrical usage.
+  When this type is included, the object's `value` MUST be a decimal, `start_date` MUST be included, and `end_date` MUST be included.
+* `water_usage` - The `value` in the Bill Section Usage Detail object represents water usage.
+  When this type is included, the object's `value` MUST be a decimal, `start_date` MUST be included, and `end_date` MUST be included.
+* `natural_gas_usage` - The `value` in the Bill Section Usage Detail object represents natural gas usage.
+  When this type is included, the object's `value` MUST be a decimal, `start_date` MUST be included, and `end_date` MUST be included.
+* `fuel_oil_usage` - The `value` in the Bill Section Usage Detail object represents fuel oil usage.
+  When this type is included, the object's `value` MUST be a decimal, `start_date` MUST be included, and `end_date` MUST be included.
+* `electric_demand` - The `value` in the Bill Section Usage Detail object represents a measurement of electricity demand.
+  When this type is included, the object's `value` MUST be a decimal, `start_date` MUST be included, and `end_date` MUST be included.
+  Additionally, a `demand_type` field MUST be included in the object with a value of [DemandType](#usage-segment-demand-types).
+* `time_of_use` - The `value` in the Bill Section Usage Detail object represents a measurement for a specific time-of-use period during the billing cycle.
+  When this type is included, an additional `tou` field MUST be included in the object with a value of [TimeOfUseType](#usage-segment-tou-types).
+* `tiered` - The `value` in the Bill Section Usage Detail object represents a measurement for a specific usage tier during the billing cycle.
+  When this type is included, an additional `tier` field MUST be included in the object with a value of [TierType](#usage-segment-tier-types).
+* `directional` - The `value` in the Bill Section Usage Detail object represents a measurement for a specific direction of electric usage.
+  When this type is included, an additional `direction` field MUST be included in the object with a value of [DirectionType](#usage-segment-direction-types).
+* `seasonal` - The `value` in the Bill Section Usage Detail object represents a measurement for a specific season of the rate plan.
+  When this type is included, an additional `season` field MUST be included in the object with a value of [SeasonType](#usage-segment-season-types).
+* `ami_reading` - The `value` in the Bill Section Usage Detail object was measured by a smart meter, where the reading was accumulated digitally over the billing cycle.
+* `amr_reading` - The `value` in the Bill Section Usage Detail object was measured by an automated meter reading device, where the reading was compared to the previous reading to determine the usage value.
+  When this type is included, the Server MUST include additional `start_read`, `end_read`, and `multiplier` fields in the object, all of which MUST have decimal values.
+* `analog_meter` - The `value` in the Bill Section Usage Detail object was measured manually, where the meter's reading was manually recorded and compared to the previous reading to determine the usage value.
+  When this type is included, the Server MUST include additional `start_read`, `end_read`, and `multiplier` fields in the object, all of which MUST have decimal values.
+* `customer_provided` - The `value` in the Bill Section Usage Detail object was measured by the Customer self-reporting a meter reading, where the Customer-provided meter reading was compared to the previous reading to determine the usage value.
+  When this type is included, the Server MUST include additional `start_read`, `end_read`, and `multiplier` fields in the object, all of which MUST have decimal values.
+* `estimated` - The `value` in the Bill Section Usage Detail object is an estimated value, which can happen if a utility was not able measure the Service Contract's actual usage, so an estimated usage value was used for billing instead, and the real measured usage will be accounted for in a future billing cycle.
 
 #### 10.6.5. Bill Section Cost Detail Object Format <a id="bill-section-cost-detail-format" href="#bill-section-cost-detail-format" class="permalink">🔗</a>
 
-<span style="background-color:yellow">TODO</span>
+Bill Section Cost Detail objects represent charge and cost summaries for the Bill Section.
+Typically, these objects are visible as the totals for subsets of line item charges on the Customer's utility bill (e.g. total electric delivery charges) or groups of charges on the Customer's bill (e.g. total taxes and fees).
+These objects are not intended to represent individual line items, which MUST be represented as [Bill Section Line Item objects](#bill-section-line-item-format).
+Bill Section Cost Detail objects are formatted as JSON objects and contain the following named values:
+
+* `id` - _[string](#string)_ - (REQUIRED) The unique identifier for the Bill Section Cost Detail object.
+* `name` - _[string](#string)_ - (REQUIRED) The name of the Bill Section Cost Detail entry as it appears on the Customer's bill (e.g. "Total Electric Supply Charges").
+  If the usage detail value does not appear on the Customer's bill, or the value appears without a name, the Server MUST generate a name that accurately describes what kind of usage detail value this object represents.
+* `types` - _Array[[BillSectionCostDetailType](#bill-section-cost-detail-types)]_ - (REQUIRED) An array of types for the Bill Section Cost Detail.
+  The values in this array determine what the `cost` value represents, as well as any additional fields included in this object.
+* `cost` - _[decimal](#decimal) or [string](#string)_ - (REQUIRED) The amount of cost for this cost detail, in the currency defined by the Bill Section's `currency` value.
+
+Depending on the values in a Bill Section Cost Detail's `types` array, the Bill Section Cost Detail MAY have additional fields.
+See each [Bill Section Cost Detail Type](#bill-section-cost-detail-types) value for what additional fields are defined.
+
+Servers MAY add additional fields to Bill Section Cost Detail objects as needed to include utility-specific data.
+It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. `exampleutility_*`).
+For example, if the Server has a Bill Section Cost Detail that identifies a utility-specific grouping type (e.g. this cost detail is the total nuclear decommisioning charge) and wants to include the tariff's designation number in the Bill Section Cost Detail object, the Server could add a `exampleutility_tariff_designation` field that provides the tariff designation number number as a string.
+
+Clients MUST ignore unknown `types` array values and unknown additional fields.
+
+##### 10.6.5.1. Cost Detail Summation Clarifications <a id="bill-section-cost-detail-sums" href="#bill-section-cost-detail-sums" class="permalink">🔗</a>
+
+Because utility bills may break down summary cost information in different ways, the to sum of `cost` values in the objects will not necessarily match the overall total charges for the Bill Section.
+
+For example, a Customer's utility bill may summarize the charges for a Service Contract's usage during a billing period two different ways: by distributions vs. supply charges, and by usage vs. demand charges.
+In this example, there would be four Bill Section Cost Detail objects in a Bill Section's `cost_details` array: one object for total distribution charges, one object for total supply charges, one object for total usage charges, and one object for total demand charges.
+Because these summarized charges are for different overlapping aspects of the Bill Section's line item charges, the sum of the `cost` values in the Bill Section Cost Detail objects will sum to more than the overall total charges for this Bill Section.
+
+Clients MUST NOT use the sum of the Bill Section Cost Detail objects' `cost` values as the overall total charges for the Bill Section.
+
+It is RECOMMENDED that Servers include one Bill Section Cost Detail object that includes a `bill_section_total` type in its `types` array, which indicates that object's `cost` is the overall total charge for the Bill Section.
 
 #### 10.6.6. Bill Section Cost Detail Types <a id="bill-section-cost-detail-types" href="#bill-section-cost-detail-types" class="permalink">🔗</a>
 
-<span style="background-color:yellow">TODO</span>
+Bill Section Cost Detail Type values MUST be a [string](#string) of one of the following:
+
+* `overall_total` - The `cost` in the Bill Section Cost Detail object represents the overall total charges for the Bill Section (e.g. the total at the bottom of all of the line items on a Customer's utility bill).
+  This type MUST only be included when the `cost` value matches what a Customer would see on their actual bill, which often includes non-usage related line item charges such as local taxes and fixed charges.
+* `subtotal` - The `cost` in the Bill Section Cost Detail object represents the total for the specific subset of charges described by the other type values included in the `types` array.
+  For example, if the `types` array includes `subtotal`, `fixed_charges`, and `distribution`, the `cost` value would represent the total distribution fixed charges for the Bill Section.
+* `fixed_charges` - The `cost` in the Bill Section Cost Detail object represents service-related fixed charges (e.g. base customer charge).
+  The `cost` MAY include charges that are variable based on non-usage factors, such as parcel area or substation size, since the intent of this type is to capture non-usage related charges that would still be assessed even if the Customer had no usage for the billing period.
+* `usage_charges` - The `cost` in the Bill Section Cost Detail object represents charges related to usage and other service-related measurements (e.g. demand charges).
+  When delivery and supply charges are different line items, this type indicates that the `cost` value of the Bill Section Cost Detail object includes both the delivery and supply charges for usage.
+* `taxes` - The `cost` in the Bill Section Cost Detail object represents the total taxes and jurisdiction fees.
+  The `cost` MUST only include taxes and fees that get paid entirely to the Customer's government jurisdictions (e.g. parcel inspection fee) and MUST NOT include fees that get paid to the utility or other central entity (e.g. customer service fee or transmission access fee), even if the fees are specifically mandated by governmental regulators (these fees would be designated as a fixed charges).
+* `distribution` - The `cost` in the Bill Section Cost Detail object represents the charges related to service distribution, which can also sometimes be called delivery charges.
+  The `cost` MAY include transmission related charges, if the Customer's utility bill does not break out transmission charges as a separate category.
+* `supply` - The `cost` in the Bill Section Cost Detail object represents the charges related to service supply, which can also sometimes be called generation charges or retail charges.
+* `transmission` - The `cost` in the Bill Section Cost Detail object represents the charges related to grid transmission, if it is broken out separately from service distribution on the Customer's utility bill.
+* `other` - The `cost` in the Bill Section Cost Detail object represents the charges related to charges not related to the distribution, supply, or transmission of the Customer's Service Contract.
+  The intent is for this type to include charges unrelated to the normal operations of services for a Customer, which are typically broken out on an "Other" section on a Customer's utility bill.
+  The `cost` MAY include one-time construction or upgrade charges, such as a transformer upgrade or building distribution lines to a Customer's property.
 
 #### 10.6.7. Bill Section Line Item Object Format <a id="bill-section-line-item-format" href="#bill-section-line-item-format" class="permalink">🔗</a>
 
-<span style="background-color:yellow">TODO</span>
+Bill Section Line Item objects represent individual line item charges for the Bill Section.
+These objects are formatted as JSON objects and contain the following named values:
+
+* `id` - _[string](#string)_ - (REQUIRED) The unique identifier for the Bill Section Line Item object.
+* `name` - _[string](#string)_ - (REQUIRED) The name of the Bill Section Line Item entry (e.g. "Distribution kWh charge").
+  This value MUST be formatted such that it can be easily found on a Customer's utility bill.
+  This may be as straightforward as copying the line item name exactly if the line item as it appears on the bill is sufficiently unique and descriptive (e.g. "Electric generation charge").
+  However, if the line item as it appears on the Customer's utility bill is abiguous, the Server MUST set this object's `name` value to be something that will allow the Client to clearly understand for what the line item charge is assessed.
+  For example, if the Customer's utility bill has a table of individual usage and demand charges under a header called "Distribution", the Server could set the `name` value to "Distribution - Usage" of Bill Section Line Item object that represents usage charge row of the table, where the header and row name of the table are combined into the object's `name` value.
+* `types` - _Array[[BillSectionLineItemType](#bill-section-line-item-types)]_ - (REQUIRED) An array of types for the Bill Section Line Item object.
+  The values in this array determine what the line item represents, as well as any additional fields included in this object.
+* `start_date` - _[date](#date)_ - (REQUIRED) The start date of the date range covered by the line item.
+* `end_date` - _[date](#date)_ - (REQUIRED) The last date of the date range covered by the line item.
+* `cost` - _[decimal](#decimal)_ - (REQUIRED) The total cost assessed for the line item, where a positive value represents a charge, and a negative value represents a credit.
+* `value` - _[decimal](#decimal) or `null`_ - (REQUIRED) The amount used to multiply by the `rate` value to determine the charged amount for the line item.
+  If the line item does not have an associated measurement, such as for taxes or fees, this value is `null`.
+* `units` - _[UnitType](#usage-segment-unit-types)_ - (OPTIONAL) The units for the `value`.
+  If the `value` is a decimal, this field MUST be included.
+* `rate` - _[decimal](#decimal) or `null`_ - (REQUIRED) The rate of charge per unit value to determine the `cost`.
+  If the line item does not have or display a rate on the Customer's utility bill, this value is `null`.
+* `related_usage_details` - _Array[[string](#string)]_ - (REQUIRED)  The list of [Bill Section Usage Detail](#bill-section-usage-detail-format) `id` values that identify related usage details in which this line item's `value` is included.
+  If the Server does include or does not know which Bill Section Usage Details objects includes the `value` of this line item, this is an empty array (`[]`).
+* `related_cost_details` - _Array[[string](#string)]_ - (REQUIRED)  The list of [Bill Section Cost Detail](#bill-section-cost-detail-format) `id` values that identify related summary cost details in which this line item's `cost` is included.
+  If the Server does include or does not know which Bill Section Cost Details objects includes the `cost` of this line item, this is an empty array (`[]`).
+
+Depending on the values in a Bill Section Line Item's `types` array, the Bill Section Line Item MAY have additional fields.
+See each [Bill Section Line Item Type](#bill-section-line-item-types) value for what additional fields are defined.
+
+Servers MAY add additional fields to Bill Section Line Item objects as needed to include utility-specific data.
+It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. `exampleutility_*`).
+For example, if the Server has a Bill Section Line Item that identifies a demand response participation credit and wants to include the participation number for the Customer in the Bill Section Line Item object, the Server could add a `exampleutility_dr_participant` field that provides the Customer's participant number as a string.
+
+Clients MUST ignore unknown `types` array values and unknown additional fields.
 
 #### 10.6.8. Bill Section Line Item Types <a id="bill-section-line-item-types" href="#bill-section-line-item-types" class="permalink">🔗</a>
 
-<span style="background-color:yellow">TODO</span>
+Bill Section Line Item Type values MUST be a [string](#string) of one of the following:
+
+* `fixed_charge` - The line item represents a service-related fixed charge (e.g. base customer charge).
+* `usage_charge` - The line item represents a charge related to usage and other service-related measurements (e.g. demand charges).
+* `tax` - The line item represents a tax or jurisdiction fee.
+  Bill Section Line Item objects that have this type MUST only be taxes and fees that get paid entirely to the Customer's government jurisdictions (e.g. parcel inspection fee) and MUST NOT be fees that get paid to the utility or other central entity (e.g. customer service fee or transmission access fee), even if the fees are specifically mandated by governmental regulators (these fees would be designated fixed charges).
+* `distribution` - The line item represents a charge related to service distribution, which can also sometimes be called delivery.
+  If the Customer's utility bill does not break out transmission charges separately, line items that include transmission charges MAY have this type.
+* `supply` - The line item represents a charge related to service supply, which can also sometimes be called generation or retail provider.
+* `transmission` - The line item represents a charge related to grid transmission, if it is broken out separately from service distribution on the Customer's utility bill.
+* `other` - The line item represents a charge not related to the distribution, supply, or transmission of the Customer's Service Contract.
+  The intent is for this type to include charges unrelated to the normal operations of services for a Customer, which are typically broken out on an "Other" section on a Customer's utility bill.
+  Bill Section Line Item objects that have this type MAY represent one-time construction or upgrade charges, such as a transformer upgrade or building distribution lines to a Customer's property.
 
 #### 10.6.9. Listing Bill Sections <a id="bill-section-list" href="#bill-section-list" class="permalink">🔗</a>
 
