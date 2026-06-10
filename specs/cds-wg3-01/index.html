@@ -434,7 +434,11 @@ For more information, visit <a href="https://lfess.energy/">https://lfess.energy
           <li><a href="#bill-section-types">10.6.2. Bill Section Types</a></li>
           <li><a href="#bill-section-usage-detail-format">10.6.3. Bill Section Usage Detail Object Format</a></li>
           <li><a href="#bill-section-usage-detail-types">10.6.4. Bill Section Usage Detail Types</a></li>
-          <li><a href="#bill-section-cost-detail-format">10.6.5. Bill Section Cost Detail Object Format</a></li>
+          <li><a href="#bill-section-cost-detail-format">10.6.5. Bill Section Cost Detail Object Format</a>
+            <ul>
+              <li><a href="#bill-section-cost-detail-sums">10.6.5.1. Cost Detail Summation Clarifications</a></li>
+            </ul>
+          </li>
           <li><a href="#bill-section-cost-detail-types">10.6.6. Bill Section Cost Detail Types</a></li>
           <li><a href="#bill-section-line-item-format">10.6.7. Bill Section Line Item Object Format</a></li>
           <li><a href="#bill-section-line-item-types">10.6.8. Bill Section Line Item Types</a></li>
@@ -6653,27 +6657,187 @@ If a Bill Section includes this type, the Bill Section’s <code class="language
 
 <h4 id="1063-bill-section-usage-detail-object-format-">10.6.3. Bill Section Usage Detail Object Format <a id="bill-section-usage-detail-format" href="#bill-section-usage-detail-format" class="permalink">🔗</a></h4>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>Bill Section Usage Detail objects represent measurement readings, aggretated totals, or summary values that are relevant to the Bill Section.
+Typically, the values in these objects are visible on the Customer’s utility bill, but Servers MAY include other types of values as needed to support the Server’s intended use cases.
+Additionally, while it is likely that most of the objects have values that represent usage (e.g. total gallons of water consumed during the billing period), other values may also be included that do not technically represent usage (e.g. peak electric demand).
+The name of the object as “Usage Detail” is for convenience and to match how these values are typically referred on Customer bills, but do not necessarily always have to have values representing usage.</p>
+
+<p>Bill Section Usage Detail objects are formatted as JSON objects and contain the following named values:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">id</code> - <em><a href="#string">string</a></em> - (REQUIRED) The unique identifier for the Bill Section Usage Detail object.</li>
+  <li><code class="language-plaintext highlighter-rouge">name</code> - <em><a href="#string">string</a></em> - (REQUIRED) The name of the Bill Section Usage Detail entry as it appears on the Customer’s bill (e.g. “Total kWh”).
+If the usage detail value does not appear on the Customer’s bill, or the value appears without a name, the Server MUST generate a name that accurately describes what kind of usage detail value this object represents.</li>
+  <li><code class="language-plaintext highlighter-rouge">types</code> - <em>Array[<a href="#bill-section-usage-detail-types">BillSectionUsageDetailType</a>]</em> - (REQUIRED) An array of types for the Bill Section Usage Detail.
+The values in this array determine what the <code class="language-plaintext highlighter-rouge">value</code> value represents, as well as any additional fields included in this object.</li>
+  <li><code class="language-plaintext highlighter-rouge">value</code> - <em><a href="#decimal">decimal</a> or <a href="#string">string</a></em> - (REQUIRED) The measurement or amount represented by this object, based on the <code class="language-plaintext highlighter-rouge">types</code> values.</li>
+  <li><code class="language-plaintext highlighter-rouge">units</code> - <em><a href="#usage-segment-unit-types">UnitType</a></em> - (OPTIONAL) The units for the <code class="language-plaintext highlighter-rouge">value</code>.
+If the <code class="language-plaintext highlighter-rouge">value</code> is a decimal, this field MUST be included.</li>
+  <li><code class="language-plaintext highlighter-rouge">start_date</code> - <em><a href="#date">date</a></em> - (OPTIONAL) The start date of the date range covered by the <code class="language-plaintext highlighter-rouge">value</code>.
+Whether this field is included is determined by this object’s <code class="language-plaintext highlighter-rouge">types</code> values.</li>
+  <li><code class="language-plaintext highlighter-rouge">end_date</code> - <em><a href="#date">date</a></em> - (OPTIONAL) The last date of the date range covered by the <code class="language-plaintext highlighter-rouge">value</code>.
+Whether this field is included is determined by this object’s <code class="language-plaintext highlighter-rouge">types</code> values.</li>
+</ul>
+
+<p>Depending on the values in a Bill Section Usage Detail’s <code class="language-plaintext highlighter-rouge">types</code> array, the Bill Section Usage Detail MAY have additional fields.
+See each <a href="#bill-section-usage-detail-types">Bill Section Usage Detail Type</a> value for what additional fields are defined.</p>
+
+<p>Servers MAY add additional fields to Bill Section Usage Detail objects as needed to include usage-specific data.
+It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. <code class="language-plaintext highlighter-rouge">exampleutility_*</code>).
+For example, if the Server has a Bill Section Usage Detail that identifies a group of metering points (e.g. the panel on the side of an apartment building) and wants to include panel’s model number in the Bill Section Usage Detail object, the Server could add a <code class="language-plaintext highlighter-rouge">exampleutility_panel_model</code> field that provides the panel’s model number as a string.</p>
+
+<p>Clients MUST ignore unknown <code class="language-plaintext highlighter-rouge">types</code> array values and unknown additional fields.</p>
 
 <h4 id="1064-bill-section-usage-detail-types-">10.6.4. Bill Section Usage Detail Types <a id="bill-section-usage-detail-types" href="#bill-section-usage-detail-types" class="permalink">🔗</a></h4>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>Bill Section Usage Detail Type values MUST be a <a href="#string">string</a> of one of the following:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">electric_usage</code> - The <code class="language-plaintext highlighter-rouge">value</code> in the Bill Section Usage Detail object represents electrical usage.
+When this type is included, the object’s <code class="language-plaintext highlighter-rouge">value</code> MUST be a decimal, <code class="language-plaintext highlighter-rouge">start_date</code> MUST be included, and <code class="language-plaintext highlighter-rouge">end_date</code> MUST be included.</li>
+  <li><code class="language-plaintext highlighter-rouge">water_usage</code> - The <code class="language-plaintext highlighter-rouge">value</code> in the Bill Section Usage Detail object represents water usage.
+When this type is included, the object’s <code class="language-plaintext highlighter-rouge">value</code> MUST be a decimal, <code class="language-plaintext highlighter-rouge">start_date</code> MUST be included, and <code class="language-plaintext highlighter-rouge">end_date</code> MUST be included.</li>
+  <li><code class="language-plaintext highlighter-rouge">natural_gas_usage</code> - The <code class="language-plaintext highlighter-rouge">value</code> in the Bill Section Usage Detail object represents natural gas usage.
+When this type is included, the object’s <code class="language-plaintext highlighter-rouge">value</code> MUST be a decimal, <code class="language-plaintext highlighter-rouge">start_date</code> MUST be included, and <code class="language-plaintext highlighter-rouge">end_date</code> MUST be included.</li>
+  <li><code class="language-plaintext highlighter-rouge">fuel_oil_usage</code> - The <code class="language-plaintext highlighter-rouge">value</code> in the Bill Section Usage Detail object represents fuel oil usage.
+When this type is included, the object’s <code class="language-plaintext highlighter-rouge">value</code> MUST be a decimal, <code class="language-plaintext highlighter-rouge">start_date</code> MUST be included, and <code class="language-plaintext highlighter-rouge">end_date</code> MUST be included.</li>
+  <li><code class="language-plaintext highlighter-rouge">electric_demand</code> - The <code class="language-plaintext highlighter-rouge">value</code> in the Bill Section Usage Detail object represents a measurement of electricity demand.
+When this type is included, the object’s <code class="language-plaintext highlighter-rouge">value</code> MUST be a decimal, <code class="language-plaintext highlighter-rouge">start_date</code> MUST be included, and <code class="language-plaintext highlighter-rouge">end_date</code> MUST be included.
+Additionally, a <code class="language-plaintext highlighter-rouge">demand_type</code> field MUST be included in the object with a value of <a href="#usage-segment-demand-types">DemandType</a>.</li>
+  <li><code class="language-plaintext highlighter-rouge">time_of_use</code> - The <code class="language-plaintext highlighter-rouge">value</code> in the Bill Section Usage Detail object represents a measurement for a specific time-of-use period during the billing cycle.
+When this type is included, an additional <code class="language-plaintext highlighter-rouge">tou</code> field MUST be included in the object with a value of <a href="#usage-segment-tou-types">TimeOfUseType</a>.</li>
+  <li><code class="language-plaintext highlighter-rouge">tiered</code> - The <code class="language-plaintext highlighter-rouge">value</code> in the Bill Section Usage Detail object represents a measurement for a specific usage tier during the billing cycle.
+When this type is included, an additional <code class="language-plaintext highlighter-rouge">tier</code> field MUST be included in the object with a value of <a href="#usage-segment-tier-types">TierType</a>.</li>
+  <li><code class="language-plaintext highlighter-rouge">directional</code> - The <code class="language-plaintext highlighter-rouge">value</code> in the Bill Section Usage Detail object represents a measurement for a specific direction of electric usage.
+When this type is included, an additional <code class="language-plaintext highlighter-rouge">direction</code> field MUST be included in the object with a value of <a href="#usage-segment-direction-types">DirectionType</a>.</li>
+  <li><code class="language-plaintext highlighter-rouge">seasonal</code> - The <code class="language-plaintext highlighter-rouge">value</code> in the Bill Section Usage Detail object represents a measurement for a specific season of the rate plan.
+When this type is included, an additional <code class="language-plaintext highlighter-rouge">season</code> field MUST be included in the object with a value of <a href="#usage-segment-season-types">SeasonType</a>.</li>
+  <li><code class="language-plaintext highlighter-rouge">ami_reading</code> - The <code class="language-plaintext highlighter-rouge">value</code> in the Bill Section Usage Detail object was measured by a smart meter, where the reading was accumulated digitally over the billing cycle.</li>
+  <li><code class="language-plaintext highlighter-rouge">amr_reading</code> - The <code class="language-plaintext highlighter-rouge">value</code> in the Bill Section Usage Detail object was measured by an automated meter reading device, where the reading was compared to the previous reading to determine the usage value.
+When this type is included, the Server MUST include additional <code class="language-plaintext highlighter-rouge">start_read</code>, <code class="language-plaintext highlighter-rouge">end_read</code>, and <code class="language-plaintext highlighter-rouge">multiplier</code> fields in the object, all of which MUST have decimal values.</li>
+  <li><code class="language-plaintext highlighter-rouge">analog_meter</code> - The <code class="language-plaintext highlighter-rouge">value</code> in the Bill Section Usage Detail object was measured manually, where the meter’s reading was manually recorded and compared to the previous reading to determine the usage value.
+When this type is included, the Server MUST include additional <code class="language-plaintext highlighter-rouge">start_read</code>, <code class="language-plaintext highlighter-rouge">end_read</code>, and <code class="language-plaintext highlighter-rouge">multiplier</code> fields in the object, all of which MUST have decimal values.</li>
+  <li><code class="language-plaintext highlighter-rouge">customer_provided</code> - The <code class="language-plaintext highlighter-rouge">value</code> in the Bill Section Usage Detail object was measured by the Customer self-reporting a meter reading, where the Customer-provided meter reading was compared to the previous reading to determine the usage value.
+When this type is included, the Server MUST include additional <code class="language-plaintext highlighter-rouge">start_read</code>, <code class="language-plaintext highlighter-rouge">end_read</code>, and <code class="language-plaintext highlighter-rouge">multiplier</code> fields in the object, all of which MUST have decimal values.</li>
+  <li><code class="language-plaintext highlighter-rouge">estimated</code> - The <code class="language-plaintext highlighter-rouge">value</code> in the Bill Section Usage Detail object is an estimated value, which can happen if a utility was not able measure the Service Contract’s actual usage, so an estimated usage value was used for billing instead, and the real measured usage will be accounted for in a future billing cycle.</li>
+</ul>
 
 <h4 id="1065-bill-section-cost-detail-object-format-">10.6.5. Bill Section Cost Detail Object Format <a id="bill-section-cost-detail-format" href="#bill-section-cost-detail-format" class="permalink">🔗</a></h4>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>Bill Section Cost Detail objects represent charge and cost summaries for the Bill Section.
+Typically, these objects are visible as the totals for subsets of line item charges on the Customer’s utility bill (e.g. total electric delivery charges) or groups of charges on the Customer’s bill (e.g. total taxes and fees).
+These objects are not intended to represent individual line items, which MUST be represented as <a href="#bill-section-line-item-format">Bill Section Line Item objects</a>.
+Bill Section Cost Detail objects are formatted as JSON objects and contain the following named values:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">id</code> - <em><a href="#string">string</a></em> - (REQUIRED) The unique identifier for the Bill Section Cost Detail object.</li>
+  <li><code class="language-plaintext highlighter-rouge">name</code> - <em><a href="#string">string</a></em> - (REQUIRED) The name of the Bill Section Cost Detail entry as it appears on the Customer’s bill (e.g. “Total Electric Supply Charges”).
+If the usage detail value does not appear on the Customer’s bill, or the value appears without a name, the Server MUST generate a name that accurately describes what kind of usage detail value this object represents.</li>
+  <li><code class="language-plaintext highlighter-rouge">types</code> - <em>Array[<a href="#bill-section-cost-detail-types">BillSectionCostDetailType</a>]</em> - (REQUIRED) An array of types for the Bill Section Cost Detail.
+The values in this array determine what the <code class="language-plaintext highlighter-rouge">cost</code> value represents, as well as any additional fields included in this object.</li>
+  <li><code class="language-plaintext highlighter-rouge">cost</code> - <em><a href="#decimal">decimal</a> or <a href="#string">string</a></em> - (REQUIRED) The amount of cost for this cost detail, in the currency defined by the Bill Section’s <code class="language-plaintext highlighter-rouge">currency</code> value.</li>
+</ul>
+
+<p>Depending on the values in a Bill Section Cost Detail’s <code class="language-plaintext highlighter-rouge">types</code> array, the Bill Section Cost Detail MAY have additional fields.
+See each <a href="#bill-section-cost-detail-types">Bill Section Cost Detail Type</a> value for what additional fields are defined.</p>
+
+<p>Servers MAY add additional fields to Bill Section Cost Detail objects as needed to include utility-specific data.
+It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. <code class="language-plaintext highlighter-rouge">exampleutility_*</code>).
+For example, if the Server has a Bill Section Cost Detail that identifies a utility-specific grouping type (e.g. this cost detail is the total nuclear decommisioning charge) and wants to include the tariff’s designation number in the Bill Section Cost Detail object, the Server could add a <code class="language-plaintext highlighter-rouge">exampleutility_tariff_designation</code> field that provides the tariff designation number number as a string.</p>
+
+<p>Clients MUST ignore unknown <code class="language-plaintext highlighter-rouge">types</code> array values and unknown additional fields.</p>
+
+<h5 id="10651-cost-detail-summation-clarifications-">10.6.5.1. Cost Detail Summation Clarifications <a id="bill-section-cost-detail-sums" href="#bill-section-cost-detail-sums" class="permalink">🔗</a></h5>
+
+<p>Because utility bills may break down summary cost information in different ways, the to sum of <code class="language-plaintext highlighter-rouge">cost</code> values in the objects will not necessarily match the overall total charges for the Bill Section.</p>
+
+<p>For example, a Customer’s utility bill may summarize the charges for a Service Contract’s usage during a billing period two different ways: by distributions vs. supply charges, and by usage vs. demand charges.
+In this example, there would be four Bill Section Cost Detail objects in a Bill Section’s <code class="language-plaintext highlighter-rouge">cost_details</code> array: one object for total distribution charges, one object for total supply charges, one object for total usage charges, and one object for total demand charges.
+Because these summarized charges are for different overlapping aspects of the Bill Section’s line item charges, the sum of the <code class="language-plaintext highlighter-rouge">cost</code> values in the Bill Section Cost Detail objects will sum to more than the overall total charges for this Bill Section.</p>
+
+<p>Clients MUST NOT use the sum of the Bill Section Cost Detail objects’ <code class="language-plaintext highlighter-rouge">cost</code> values as the overall total charges for the Bill Section.</p>
+
+<p>It is RECOMMENDED that Servers include one Bill Section Cost Detail object that includes a <code class="language-plaintext highlighter-rouge">bill_section_total</code> type in its <code class="language-plaintext highlighter-rouge">types</code> array, which indicates that object’s <code class="language-plaintext highlighter-rouge">cost</code> is the overall total charge for the Bill Section.</p>
 
 <h4 id="1066-bill-section-cost-detail-types-">10.6.6. Bill Section Cost Detail Types <a id="bill-section-cost-detail-types" href="#bill-section-cost-detail-types" class="permalink">🔗</a></h4>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>Bill Section Cost Detail Type values MUST be a <a href="#string">string</a> of one of the following:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">overall_total</code> - The <code class="language-plaintext highlighter-rouge">cost</code> in the Bill Section Cost Detail object represents the overall total charges for the Bill Section (e.g. the total at the bottom of all of the line items on a Customer’s utility bill).
+This type MUST only be included when the <code class="language-plaintext highlighter-rouge">cost</code> value matches what a Customer would see on their actual bill, which often includes non-usage related line item charges such as local taxes and fixed charges.</li>
+  <li><code class="language-plaintext highlighter-rouge">subtotal</code> - The <code class="language-plaintext highlighter-rouge">cost</code> in the Bill Section Cost Detail object represents the total for the specific subset of charges described by the other type values included in the <code class="language-plaintext highlighter-rouge">types</code> array.
+For example, if the <code class="language-plaintext highlighter-rouge">types</code> array includes <code class="language-plaintext highlighter-rouge">subtotal</code>, <code class="language-plaintext highlighter-rouge">fixed_charges</code>, and <code class="language-plaintext highlighter-rouge">distribution</code>, the <code class="language-plaintext highlighter-rouge">cost</code> value would represent the total distribution fixed charges for the Bill Section.</li>
+  <li><code class="language-plaintext highlighter-rouge">fixed_charges</code> - The <code class="language-plaintext highlighter-rouge">cost</code> in the Bill Section Cost Detail object represents service-related fixed charges (e.g. base customer charge).
+The <code class="language-plaintext highlighter-rouge">cost</code> MAY include charges that are variable based on non-usage factors, such as parcel area or substation size, since the intent of this type is to capture non-usage related charges that would still be assessed even if the Customer had no usage for the billing period.</li>
+  <li><code class="language-plaintext highlighter-rouge">usage_charges</code> - The <code class="language-plaintext highlighter-rouge">cost</code> in the Bill Section Cost Detail object represents charges related to usage and other service-related measurements (e.g. demand charges).
+When delivery and supply charges are different line items, this type indicates that the <code class="language-plaintext highlighter-rouge">cost</code> value of the Bill Section Cost Detail object includes both the delivery and supply charges for usage.</li>
+  <li><code class="language-plaintext highlighter-rouge">taxes</code> - The <code class="language-plaintext highlighter-rouge">cost</code> in the Bill Section Cost Detail object represents the total taxes and jurisdiction fees.
+The <code class="language-plaintext highlighter-rouge">cost</code> MUST only include taxes and fees that get paid entirely to the Customer’s government jurisdictions (e.g. parcel inspection fee) and MUST NOT include fees that get paid to the utility or other central entity (e.g. customer service fee or transmission access fee), even if the fees are specifically mandated by governmental regulators (these fees would be designated as a fixed charges).</li>
+  <li><code class="language-plaintext highlighter-rouge">distribution</code> - The <code class="language-plaintext highlighter-rouge">cost</code> in the Bill Section Cost Detail object represents the charges related to service distribution, which can also sometimes be called delivery charges.
+The <code class="language-plaintext highlighter-rouge">cost</code> MAY include transmission related charges, if the Customer’s utility bill does not break out transmission charges as a separate category.</li>
+  <li><code class="language-plaintext highlighter-rouge">supply</code> - The <code class="language-plaintext highlighter-rouge">cost</code> in the Bill Section Cost Detail object represents the charges related to service supply, which can also sometimes be called generation charges or retail charges.</li>
+  <li><code class="language-plaintext highlighter-rouge">transmission</code> - The <code class="language-plaintext highlighter-rouge">cost</code> in the Bill Section Cost Detail object represents the charges related to grid transmission, if it is broken out separately from service distribution on the Customer’s utility bill.</li>
+  <li><code class="language-plaintext highlighter-rouge">other</code> - The <code class="language-plaintext highlighter-rouge">cost</code> in the Bill Section Cost Detail object represents the charges related to charges not related to the distribution, supply, or transmission of the Customer’s Service Contract.
+The intent is for this type to include charges unrelated to the normal operations of services for a Customer, which are typically broken out on an “Other” section on a Customer’s utility bill.
+The <code class="language-plaintext highlighter-rouge">cost</code> MAY include one-time construction or upgrade charges, such as a transformer upgrade or building distribution lines to a Customer’s property.</li>
+</ul>
 
 <h4 id="1067-bill-section-line-item-object-format-">10.6.7. Bill Section Line Item Object Format <a id="bill-section-line-item-format" href="#bill-section-line-item-format" class="permalink">🔗</a></h4>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>Bill Section Line Item objects represent individual line item charges for the Bill Section.
+These objects are formatted as JSON objects and contain the following named values:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">id</code> - <em><a href="#string">string</a></em> - (REQUIRED) The unique identifier for the Bill Section Line Item object.</li>
+  <li><code class="language-plaintext highlighter-rouge">name</code> - <em><a href="#string">string</a></em> - (REQUIRED) The name of the Bill Section Line Item entry (e.g. “Distribution kWh charge”).
+This value MUST be formatted such that it can be easily found on a Customer’s utility bill.
+This may be as straightforward as copying the line item name exactly if the line item as it appears on the bill is sufficiently unique and descriptive (e.g. “Electric generation charge”).
+However, if the line item as it appears on the Customer’s utility bill is abiguous, the Server MUST set this object’s <code class="language-plaintext highlighter-rouge">name</code> value to be something that will allow the Client to clearly understand for what the line item charge is assessed.
+For example, if the Customer’s utility bill has a table of individual usage and demand charges under a header called “Distribution”, the Server could set the <code class="language-plaintext highlighter-rouge">name</code> value to “Distribution - Usage” of Bill Section Line Item object that represents usage charge row of the table, where the header and row name of the table are combined into the object’s <code class="language-plaintext highlighter-rouge">name</code> value.</li>
+  <li><code class="language-plaintext highlighter-rouge">types</code> - <em>Array[<a href="#bill-section-line-item-types">BillSectionLineItemType</a>]</em> - (REQUIRED) An array of types for the Bill Section Line Item object.
+The values in this array determine what the line item represents, as well as any additional fields included in this object.</li>
+  <li><code class="language-plaintext highlighter-rouge">start_date</code> - <em><a href="#date">date</a></em> - (REQUIRED) The start date of the date range covered by the line item.</li>
+  <li><code class="language-plaintext highlighter-rouge">end_date</code> - <em><a href="#date">date</a></em> - (REQUIRED) The last date of the date range covered by the line item.</li>
+  <li><code class="language-plaintext highlighter-rouge">cost</code> - <em><a href="#decimal">decimal</a></em> - (REQUIRED) The total cost assessed for the line item, where a positive value represents a charge, and a negative value represents a credit.</li>
+  <li><code class="language-plaintext highlighter-rouge">value</code> - <em><a href="#decimal">decimal</a> or <code class="language-plaintext highlighter-rouge">null</code></em> - (REQUIRED) The amount used to multiply by the <code class="language-plaintext highlighter-rouge">rate</code> value to determine the charged amount for the line item.
+If the line item does not have an associated measurement, such as for taxes or fees, this value is <code class="language-plaintext highlighter-rouge">null</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">units</code> - <em><a href="#usage-segment-unit-types">UnitType</a></em> - (OPTIONAL) The units for the <code class="language-plaintext highlighter-rouge">value</code>.
+If the <code class="language-plaintext highlighter-rouge">value</code> is a decimal, this field MUST be included.</li>
+  <li><code class="language-plaintext highlighter-rouge">rate</code> - <em><a href="#decimal">decimal</a> or <code class="language-plaintext highlighter-rouge">null</code></em> - (REQUIRED) The rate of charge per unit value to determine the <code class="language-plaintext highlighter-rouge">cost</code>.
+If the line item does not have or display a rate on the Customer’s utility bill, this value is <code class="language-plaintext highlighter-rouge">null</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">related_usage_details</code> - <em>Array[<a href="#string">string</a>]</em> - (REQUIRED)  The list of <a href="#bill-section-usage-detail-format">Bill Section Usage Detail</a> <code class="language-plaintext highlighter-rouge">id</code> values that identify related usage details in which this line item’s <code class="language-plaintext highlighter-rouge">value</code> is included.
+If the Server does include or does not know which Bill Section Usage Details objects includes the <code class="language-plaintext highlighter-rouge">value</code> of this line item, this is an empty array (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
+  <li><code class="language-plaintext highlighter-rouge">related_cost_details</code> - <em>Array[<a href="#string">string</a>]</em> - (REQUIRED)  The list of <a href="#bill-section-cost-detail-format">Bill Section Cost Detail</a> <code class="language-plaintext highlighter-rouge">id</code> values that identify related summary cost details in which this line item’s <code class="language-plaintext highlighter-rouge">cost</code> is included.
+If the Server does include or does not know which Bill Section Cost Details objects includes the <code class="language-plaintext highlighter-rouge">cost</code> of this line item, this is an empty array (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
+</ul>
+
+<p>Depending on the values in a Bill Section Line Item’s <code class="language-plaintext highlighter-rouge">types</code> array, the Bill Section Line Item MAY have additional fields.
+See each <a href="#bill-section-line-item-types">Bill Section Line Item Type</a> value for what additional fields are defined.</p>
+
+<p>Servers MAY add additional fields to Bill Section Line Item objects as needed to include utility-specific data.
+It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. <code class="language-plaintext highlighter-rouge">exampleutility_*</code>).
+For example, if the Server has a Bill Section Line Item that identifies a demand response participation credit and wants to include the participation number for the Customer in the Bill Section Line Item object, the Server could add a <code class="language-plaintext highlighter-rouge">exampleutility_dr_participant</code> field that provides the Customer’s participant number as a string.</p>
+
+<p>Clients MUST ignore unknown <code class="language-plaintext highlighter-rouge">types</code> array values and unknown additional fields.</p>
 
 <h4 id="1068-bill-section-line-item-types-">10.6.8. Bill Section Line Item Types <a id="bill-section-line-item-types" href="#bill-section-line-item-types" class="permalink">🔗</a></h4>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>Bill Section Line Item Type values MUST be a <a href="#string">string</a> of one of the following:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">fixed_charge</code> - The line item represents a service-related fixed charge (e.g. base customer charge).</li>
+  <li><code class="language-plaintext highlighter-rouge">usage_charge</code> - The line item represents a charge related to usage and other service-related measurements (e.g. demand charges).</li>
+  <li><code class="language-plaintext highlighter-rouge">tax</code> - The line item represents a tax or jurisdiction fee.
+Bill Section Line Item objects that have this type MUST only be taxes and fees that get paid entirely to the Customer’s government jurisdictions (e.g. parcel inspection fee) and MUST NOT be fees that get paid to the utility or other central entity (e.g. customer service fee or transmission access fee), even if the fees are specifically mandated by governmental regulators (these fees would be designated fixed charges).</li>
+  <li><code class="language-plaintext highlighter-rouge">distribution</code> - The line item represents a charge related to service distribution, which can also sometimes be called delivery.
+If the Customer’s utility bill does not break out transmission charges separately, line items that include transmission charges MAY have this type.</li>
+  <li><code class="language-plaintext highlighter-rouge">supply</code> - The line item represents a charge related to service supply, which can also sometimes be called generation or retail provider.</li>
+  <li><code class="language-plaintext highlighter-rouge">transmission</code> - The line item represents a charge related to grid transmission, if it is broken out separately from service distribution on the Customer’s utility bill.</li>
+  <li><code class="language-plaintext highlighter-rouge">other</code> - The line item represents a charge not related to the distribution, supply, or transmission of the Customer’s Service Contract.
+The intent is for this type to include charges unrelated to the normal operations of services for a Customer, which are typically broken out on an “Other” section on a Customer’s utility bill.
+Bill Section Line Item objects that have this type MAY represent one-time construction or upgrade charges, such as a transformer upgrade or building distribution lines to a Customer’s property.</li>
+</ul>
 
 <h4 id="1069-listing-bill-sections-">10.6.9. Listing Bill Sections <a id="bill-section-list" href="#bill-section-list" class="permalink">🔗</a></h4>
 
