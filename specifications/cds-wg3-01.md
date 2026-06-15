@@ -169,24 +169,24 @@ For more information, visit [https://lfess.energy/](https://lfess.energy/).
         * [10.2.4. Service Types](#service-types)  
         * [10.2.5. Service Program Object Format](#service-program-format)  
         * [10.2.6. Service Program Types](#service-program-types)  
-        * [10.2.7. Listing Service Contracts](#service-contract-list)  
+        * [10.2.7. Listing Service Contracts](#service-contracts-list)  
     * [10.3. Service Points API](#service-points-api)  
         * [10.3.1. Service Point Object Format](#service-point-format)  
         * [10.3.2. Service Point Types](#service-point-types)  
         * [10.3.3. Premise Object Format](#premise-format)  
         * [10.3.4. Premise Types](#premise-types)  
-        * [10.3.5. Listing Service Points](#service-point-list)  
+        * [10.3.5. Listing Service Points](#service-points-list)  
     * [10.4. Meter Devices API](#meter-devices-api)  
         * [10.4.1. Meter Device Object Format](#meter-device-format)  
         * [10.4.2. Meter Types](#meter-types)  
         * [10.4.3. Meter App Object Format](#meter-app-format)  
         * [10.4.4. Meter App Types](#meter-app-types)  
-        * [10.4.5. Listing Meter Devices](#meter-device-list)  
+        * [10.4.5. Listing Meter Devices](#meter-devices-list)  
     * [10.5. Bill Statements API](#bill-statements-api)  
         * [10.5.1. Bill Statement Object Format](#bill-statement-format)  
         * [10.5.2. New Charge Object Format](#new-charge-format)  
         * [10.5.3. New Charge Types](#new-charge-types)  
-        * [10.5.4. Listing Bill Statements](#bill-statement-list)  
+        * [10.5.4. Listing Bill Statements](#bill-statements-list)  
     * [10.6. Bill Sections API](#bill-sections-api)  
         * [10.6.1. Bill Section Object Format](#bill-section-format)  
         * [10.6.2. Bill Section Types](#bill-section-types)  
@@ -197,7 +197,7 @@ For more information, visit [https://lfess.energy/](https://lfess.energy/).
         * [10.6.6. Bill Section Cost Detail Types](#bill-section-cost-detail-types)  
         * [10.6.7. Bill Section Line Item Object Format](#bill-section-line-item-format)  
         * [10.6.8. Bill Section Line Item Types](#bill-section-line-item-types)  
-        * [10.6.9. Listing Bill Sections](#bill-section-list)  
+        * [10.6.9. Listing Bill Sections](#bill-sections-list)  
     * [10.7. Aggregations API](#aggregations-api)  
         * [10.7.1. Aggregation Object Format](#aggregation-format)  
         * [10.7.2. Aggregation Types](#aggregation-types)  
@@ -205,7 +205,8 @@ For more information, visit [https://lfess.energy/](https://lfess.energy/).
         * [10.7.4. Aggregation Region Types](#aggregation-region-types)  
         * [10.7.5. Consent Requirement Object Format](#consent-requirement-format)  
         * [10.7.6. Consent Requirement Types](#consent-requirement-types)  
-        * [10.7.7. Listing Aggregations](#aggregation-list)  
+        * [10.7.7. Accessing Data for Aggregations](#aggregation-data-access)  
+        * [10.7.8. Listing Aggregations](#aggregations-list)  
     * [10.8. Usage Segments API](#usage-segments-api)  
         * [10.8.1. Usage Segment Objects](#usage-segment-format)  
         * [10.8.2. Value Format Objects](#usage-segment-value-formats)  
@@ -247,12 +248,12 @@ For more information, visit [https://lfess.energy/](https://lfess.energy/).
             * [10.8.7.7. Demand Types](#usage-segment-demand-types)  
             * [10.8.7.8. Supply Attribution Types](#usage-segment-supply-attribution-types)  
             * [10.8.7.9. Supply Types](#usage-segment-supply-types)  
-        * [10.8.8. Listing Usage Segments](#usage-segment-list)  
+        * [10.8.8. Listing Usage Segments](#usage-segments-list)  
     * [10.9. Energy Attribute Certificates API](#eac-api)  
         * [10.9.1. Energy Attribute Certificate Object Format](#eac-format)  
         * [10.9.2. Beneficiary Types](#eac-beneficiary-types)  
         * [10.9.3. EAC Data Format Description Object](#eac-data-format-descriptions)  
-        * [10.9.4. Listing Energy Attribute Certificates](#eac-list)  
+        * [10.9.4. Listing Energy Attribute Certificates](#eacs-list)  
 * [11. Extensions](#extensions)  
 * [12. Security Considerations](#security)  
     * [12.1. Rate Limiting](#rate-limiting)  
@@ -297,6 +298,8 @@ So for the purposes of this specification, anytime the "User" is mentioned it ca
 
 <a id="array" href="#array" class="permalink">🔗</a> "Array" - A list of objects or values as defined by `Arrays` in [[RFC 8259 Section 5](#ref-rfc8259-arrays)].
 
+<a id="country-code" href="#country-code" class="permalink">🔗</a> "country code" - A two-character string representing a country as defined in [ISO 3166](#ref-iso3166) (e.g. "US").
+
 <a id="date" href="#date" class="permalink">🔗</a> "date" - A string representing date in the format of `full-date` as defined by [[RFC 3339 Section 5.6](#ref-rfc3339-datetime)] (e.g. "2024-01-01").
 
 <a id="datetime" href="#datetime" class="permalink">🔗</a> "datetime" - A string representing date and time in the format of `date-time` as defined by [[RFC 3339 Section 5.6](#ref-rfc3339-datetime)] (e.g. "2024-01-01T00:00:00Z").
@@ -307,6 +310,8 @@ When storing a decimal value, Servers MUST preserve the decimal precision of the
 This means Servers MUST NOT store a decimal value as a float, since that format does not preserve the significant figures of the decimal value.
 
 <a id="email-address" href="#email-address" class="permalink">🔗</a> "email address" - An electronic mail address as defined by [[RFC 5322 Section 3.4.1](#ref-rfc5322-email-address)].
+
+<a id="geojson" href="#geojson" class="permalink">🔗</a> "GeoJSON" - A [JSON](#json) object that defines a geographic territory as specified in [[RFC 7946 Section 3](#ref-rfc7946-geojson)].
 
 <a id="get" href="#get" class="permalink">🔗</a> "GET" - A request method defined in [[RFC 9110 Section 9](#ref-rfc9110-methods)].
 
@@ -729,7 +734,7 @@ To implement the "Whole-Building Data" Scenario, Servers MUST implement the foll
     * [`include_aggregation_addresses`](#auth-details-include-aggregation-addresses)
 * For the [Aggregations Query](#scope-aggregations-query) Scope, the Server MUST only return [Aggregations](#aggregation-format) that the Client is authorized to access.
   For example, if a Server restricts Clients to only see their owned properties, the Server MUST configure each Client to be able to query that subset of the Aggregations in the Server's systems.
-* The Server MAY return an empty `aggregations` array for [Aggregations listings](#aggregation-list) in which the access token's Scope does not contain enumerated preselection values.
+* The Server MAY return an empty `aggregations` array for [Aggregations listings](#aggregations-list) in which the access token's Scope does not contain enumerated preselection values.
   This can be useful when the Server wants allow Clients to search for an Aggregation based on an identifier or address, but does not want the Client to be able to enumerate all Aggregations.
 * When the Client makes an Access Token Request [[RFC 6749 Section 4.4.2](#ref-rfc6749-token-request)] and the request contains the [Usage Query](#scope-usage-query) Scope, the Server MUST reject the request if the [Usage Query](#scope-usage-query) Scope does not contain a populated `aggregation_numbers` authorization details field.
   This means that Clients will need to specifically enumerate the Aggregation `aggregation_numbers` in Scopes for which they wish to access the whole-building usage data.
@@ -815,7 +820,7 @@ This specification extends CDS's Authorization Server Metadata object [[CDS-WG1-
   This object is composed of keys that represent the `type` value of the additional Value Type, and values that are [Value Type Description](#usage-segment-value-type-description) objects of the additional Value Type.
   This is REQUIRED if the `cds_usagesegments_api` field is populated in the Server Metadata object.
   If the Server does will not provide any additional Value Types in their Usage Segment objects, this is an empty object (`{}`).
-* `cds_eacs_api` - _[URL](#url)_ - (OPTIONAL) The base url for the [Energy Attribute Certificates listing API](#eac-list).
+* `cds_eacs_api` - _[URL](#url)_ - (OPTIONAL) The base url for the [Energy Attribute Certificates listing API](#eacs-list).
   This is REQUIRED if any Scopes included in the `scopes_supported` array has the [`include_eacs`](#auth-details-include-eacs) authorization details field or it is required as part of the Scope.
 * `cds_eac_formats` - _Map[[EACDataFormatDescription](#eac-data-format-descriptions)]_ - (OPTIONAL) An object providing additional information about each Energy Attribute Certificate (EAC) data format value that may be provided as the [EAC object](#eac-format) `eac_format`, with the [EAC Data Format Description's](#eac-data-format-descriptions) `id` as the keys of the object and values being the [EAC Data Format Description](#eac-data-format-descriptions) object itself.
   This is REQUIRED if the `cds_eacs_api` field is populated in the Server Metadata object.
@@ -1428,7 +1433,7 @@ The following are some examples of possible additional restrictions:
 * If the Server has limited the Client to only be able to access objects for Grants with [Preselection Fields](#auth-details-preselection), the Server MAY reject Client Credentials requests [[RFC 6749 Section 4.4](#ref-rfc6749-client-credentials)] that do not have or have invalid Preselection Field values.
   For example, if a utility vendor Client is only permitted to access [Accounts](#account-api) for which they have obtained the Account number (e.g. as part of a rebate program verification contract), the utility Server can limit the vendor's Client by requiring they always include the `account_numbers` preselection field in Client Credentials requests, so if the vendor Client requests to create an access token that is unbounded (i.e. no `account_numbers` included), the Server is able to reject the request.
 * If the Server wants to limit a Client's ability to enumerate all objects on an API, the Server MAY return an error response for API requests that do not have granular enough request parameters.
-  For example, if a building owner Client has been given the ability to search a Server's list of building identifiers (stored by the server as [Aggregation](#aggregation-format) objects with the building ID as the `aggregation_number`) for their own building, the Server can limit the [Aggregations listing API](#aggregation-list) to only respond successfully to requests that use request parameters (e.g. `q={building_address}`) and return a limited number of results, and return an error response if there are too many results.
+  For example, if a building owner Client has been given the ability to search a Server's list of building identifiers (stored by the server as [Aggregation](#aggregation-format) objects with the building ID as the `aggregation_number`) for their own building, the Server can limit the [Aggregations listing API](#aggregations-list) to only respond successfully to requests that use request parameters (e.g. `q={building_address}`) and return a limited number of results, and return an error response if there are too many results.
   By imposing this limitation, in combination with [Rate Limiting](#rate-limiting), the Client will not be able to enumerate all building IDs stored on the Server.
 
 #### 6.2.1. Accounts Query <a id="scope-accounts-query" href="#scope-accounts-query" class="permalink">🔗</a>
@@ -3145,7 +3150,7 @@ When a authorization request is received by a Server, the Server MUST implement 
     * If the redirect contains error parameters (e.g. `error=...`), the Server MUST render and show the User the [Default Redirect Error](#default-redirect-error) page.
     * The Server MUST allow the Client to use their Client with the Grant Admin Scope to obtain an `access_token` that is able to access the Grant's enabled scope as required in [[CDS-WG1-02 Section 3.3.2](#ref-cds-wg1-02-grant-admin)].
       This is how Client's will be able access Customer authorized data when the Server's default `redirect_uri` is used.
-      Additionally, if the Client included a `state` parameter in the authorization request, the Client can query for the Grant, if any, that was created or updated as a result of the authorization request by querying the Grants API listing endpoint with the `states` request parameter, which filters for Grants with matching `states` values [[CDS-WG1-02 Section 8.4](#ref-cds-wg1-02-grant-list)].
+      Additionally, if the Client included a `state` parameter in the authorization request, the Client can query for the Grant, if any, that was created or updated as a result of the authorization request by querying the Grants API listing endpoint with the `states` request parameter, which filters for Grants with matching `states` values [[CDS-WG1-02 Section 8.5](#ref-cds-wg1-02-grant-list)].
       Alternatively, if the Customer provides a Client with their [Authorization Receipt](#auth-receipt) confirmation number, and the Client can query the Grants API listing endpoint with the `receipt_confirmations` request parameter to get the Grant that is associated with the Authorization Receipt confirmation number.
 
 #### 9.1.2. Customer Authentication <a id="customer-authentication" href="#customer-authentication" class="permalink">🔗</a>
@@ -5076,6 +5081,8 @@ This specification requires Servers provide a set of APIs allowing Clients to re
 
 #### 10.7.1. Aggregation Object Format <a id="aggregation-format" href="#aggregation-format" class="permalink">🔗</a>
 
+Aggregation objects represent an aggregated dataset that can be accessed via the [Usage Segments API](#usage-segments-api).
+For example, an Aggregation object could represent the combined electric usage of a multifamily apartment building, where the Aggregation object's related Usage Segment objects are the aggregated kWh data for the whole building.
 Aggregation objects are formatted as JSON objects and contain the following named values:
 
 * `cds_aggregation_id` - _[string](#string)_ - (REQUIRED) The Server's unique identifier for this Aggregation object.
@@ -5088,6 +5095,10 @@ Aggregation objects are formatted as JSON objects and contain the following name
   Multiple Aggregation Types can apply to a single Aggreation (e.g. both `regional` and `public`).
 * `aggregation_number` - _[string](#string) or `null`_ - (REQUIRED) The aggregation identifier that a Client sees in Server documentation or other online interfaces as the aggregation identifier for this Aggregation, if available.
   If a Server does not have a Client-facing aggregation identifier for an Aggregation and the Client is not authorized to see the Server's internal aggregation identifier for this Aggregation, or the Server does not have aggregation identifiers stored for this Aggregation, this value is `null`.
+* `scope` - _[string](#string)_ - (REQUIRED) The scopes for accessing the Aggregation's dataset.
+  If no data is available for the Aggregation, this value is an empty string (`""`).
+* `authorization_details` - _Array[[OAuth AuthorizationDetail](#ref-rfc9396-auth-details)]_ - (REQUIRED) An authorization details list as defined by [[RFC 9396 Section 7.1](#ref-rfc9396-auth-details)] which contains scopes that are included in addition to this object's `scope` value.
+  If no authorization details scopes are configured in addition to the `scope` string, this value is an empty array (`[]`).
 * `grouped_accounts` - _Array[[string](#string)]_ - (REQUIRED) The list of `cds_account_id` values that identify Accounts that are part of this Aggregation.
   For Aggregations that do not have or the Client does not have authorization to access Accounts that are part of the Aggregation, this is an empty array (`[]`).
 * `grouped_servicecontracts` - _Array[[string](#string)]_ - (REQUIRED) The list of `cds_servicecontract_id` values that identify Service Contracts that are part of this Aggregation.
@@ -5103,33 +5114,191 @@ Aggregation objects are formatted as JSON objects and contain the following name
   For Aggregations that do not have or the Client does not have authorization to access addresses that are part of the parent Aggregation, this is an empty array (`[]`).
 * `grouped_regions` - _Array[[AggregationRegion](#aggregation-region-format)]_ - (REQUIRED) A list of Aggregation Regions that are associated with this Aggregation, if applicable for the `aggregation_types`.
   For Aggregations that do not have or the Client does not have authorization to access regions that are part of the parent Aggregation, this is an empty array (`[]`).
-* `consents_required` - _Array[[ConsentRequirement](#consent-requirement-format)]_ - (REQUIRED) A list of Consent Requirements that are required for this Aggregation, if applicable for the `aggregation_types`.
+* `consent_requirements` - _Array[[ConsentRequirement](#consent-requirement-format)]_ - (REQUIRED) A list of Consent Requirements that apply to this Aggregation.
   If there are no consent requirements for this Aggregation, this value is an empty array (`[]`).
 
 For Aggregations that have more than 1000 grouped items in any of the Aggregation object's `grouped_*` arrays, so as to not create overly large individual Aggregation objects, the Server MUST create Aggregation objects that group the items in groups of 1000 or fewer items, then include those Aggregations in the original Aggregation's `groupd_aggregations` array.
-The intent of this requirement is to enable Servers to use the [Listing Aggregations](#aggregation-list) API as a means for breaking up and paginating very large groupings of Account, Service Contract, Service Point, Meter Devices, or Aggregation objects.
+The intent of this requirement is to enable Servers to use the [Listing Aggregations](#aggregations-list) API as a means for breaking up and paginating very large groupings of Account, Service Contract, Service Point, Meter Devices, or Aggregation objects.
+
+Depending on the values in a Aggregation's `aggregation_types` array, the Aggregation MAY have additional fields.
+See each [Aggregation Type](#aggregation-types) value for what additional fields are defined.
+
+Servers MAY add additional fields to Aggregation objects as needed to include utility-specific data.
+It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. `exampleutility_*`).
+For example, if the Server has a Aggregation that aggregates usage by neighborhood and wants to include the list of neighborhoods included in the Aggregation object, the Server could add a `exampleutility_neighborhoods` field that provides an array of neighborhood name strings for which the Aggregation applies.
+
+Clients MUST ignore unknown `aggregation_types` array values and unknown additional fields.
 
 #### 10.7.2. Aggregation Types <a id="aggregation-types" href="#aggregation-types" class="permalink">🔗</a>
 
-<span style="background-color:yellow">TODO</span>
+Aggregation Type values MUST be a [string](#string) of one of the following:
+
+* `public` - The Aggregation object and the data provided for the aggregation is public, so the Aggregation object and data related to the Aggregation can be made public by the Client.
+  For example, an Aggregation object with this type may represent the total aggregated usage across a large region that is mandated to be publicly accessible by the region's regulator, so the Aggregation as well as the Usage Segments related to the Aggregation can be shared publicly.
+* `listed` - The Aggregation object can be made public by the Client, but the data related to the Aggregation is confidential and MUST NOT be disclosed by the Client except within the terms of the Server's disclosure requirements.
+  For example, an Aggregation object with this type may represent the total aggregated usage for a multifamily apartment building, where the building identifier (i.e. `aggregation_number`) and address designated as public by local authorities, but the whole-building usage is not public and is only shared with the Client under the confidentiality requirements of the Server.
+* `confidential` - The Aggregation object and the data provided for the aggregation is confidential, so the Aggregation object and data related to the Aggregation MUST NOT be disclosed by the Client except within the terms of the Server's disclosure requirements.
+* `region` - The Aggregation object represents aggregated data for one or more geographic regions.
+  When this type is included, it is RECOMMENDED that the Server include one or more [Aggregation Region objects](#aggregation-region-format) in the Aggregation's `grouped_regions` array.
+* `country` - The Aggregation object represents aggregated data for one or more nation-states.
+  Aggregation objects that contain this value in their `aggregation_types` array MUST have the following additional fields:
+    * `countries` - _Array[[country code](#country-code)]_ - (REQUIRED) A list of countries for which the Aggregation applies.
+* `province` - The Aggregation object represents aggregated data for one or more provinces, also called states or territories in some countries.
+  Aggregation objects that contain this value in their `aggregation_types` array MUST have the following additional fields:
+    * `provinces` - _Array[[string](#string)]_ - (REQUIRED) A list of province names for which the Aggregation applies.
+* `municipality` - The Aggregation object represents aggregated data for one or more local municipalities, which include cities and towns.
+  Aggregation objects that contain this value in their `aggregation_types` array MUST have the following additional fields:
+    * `municipalities` - _Array[[string](#string)]_ - (REQUIRED) A list of municipal names for which the Aggregation applies.
+* `local` - The Aggregation object represents aggregated data for one or more small local regions, such as a neighborhood or city block.
+  When this type is included, it is RECOMMENDED that the Server include one or more [Aggregation Region objects](#aggregation-region-format) in the Aggregation's `grouped_regions` array.
+* `building` - The Aggregation object represents aggregated data for one or more buildings, such as an office building or university campus.
+  When this type is included, it is RECOMMENDED that the Server include one or more addresses listed in the Aggregation's `grouped_addresses` array.
+* `account_number` - The Aggregation object represents aggregated data for a specific group of [Account objects](#account-format) that were selected by their `account_number` values.
+  When this type is included, the Server MUST populate the Aggregation's `grouped_accounts` array with the list of relevant Account object `cds_account_id` or, if the number of aggregated Accounts is more than 100, populate the Aggregation's `grouped_aggregations` with Aggregation objects that represent subsets of the aggregated Accounts.
+* `account_type` - The Aggregation object represents aggregated data for [Account objects](#account-format) that have specific `account_types` values.
+  Aggregation objects that contain this value in their `aggregation_types` array MUST have the following additional fields:
+    * `account_types` - _Array[[AccountType](#account-types)]_ - (REQUIRED) A list of [Account Type](#account-types) values that were used to filter the Account objects to form the Aggregation.
+* `account_program_number` - The Aggregation object represents aggregated data for [Account objects](#account-format) that have [Account Program objects](#account-program-format) with specific `program_number` values.
+  Aggregation objects that contain this value in their `aggregation_types` array MUST have the following additional fields:
+    * `account_program_numbers` - _Array[[string](#string)]_ - (REQUIRED) A list of Account Program `program_number` values that were used to filter the Account objects to form the Aggregation.
+* `contract_number` - The Aggregation object represents aggregated data for a specific group of [Service Contract objects](#service-contract-format) that were selected by their `contract_number` values.
+  When this type is included, the Server MUST populate the Aggregation's `grouped_servicecontracts` array with the list of relevant Service Contract object `cds_servicecontract_id` or, if the number of aggregated Service Contracts is more than 100, populate the Aggregation's `grouped_aggregations` with Aggregation objects that represent subsets of the aggregated Service Contracts.
+* `service_type` - The Aggregation object represents aggregated data for [Service Contract objects](#service-contract-format) that have specific `service_types` values.
+  Aggregation objects that contain this value in their `aggregation_types` array MUST have the following additional fields:
+    * `service_types` - _Array[[ServiceType](#service-types)]_ - (REQUIRED) A list of [Service Type](#service-types) values that were used to filter the Service Contract objects to form the Aggregation.
+* `rateplan_code` - The Aggregation object represents aggregated data for [Service Contract objects](#service-contract-format) that have specific `rateplan_code` values.
+  Aggregation objects that contain this value in their `aggregation_types` array MUST have the following additional fields:
+    * `rateplan_code` - _Array[[string](#string)]_ - (REQUIRED) A list of Service Contract `rateplan_code` values that were used to filter the Service Contract objects to form the Aggregation.
+* `service_program_number` - The Aggregation object represents aggregated data for [Service Contract objects](service-contract-format) that have [Service Program objects](#service-program-format) with specific `program_number` values.
+  Aggregation objects that contain this value in their `aggregation_types` array MUST have the following additional fields:
+    * `service_program_numbers` - _Array[[string](#string)]_ - (REQUIRED) A list of Service Program `program_number` values that were used to filter the Service Contract objects to form the Aggregation.
+* `servicepoint_number` - The Aggregation object represents aggregated data for a specific group of [Service Point objects](#service-point-format) that were selected by their `servicepoint_number` values.
+  When this type is included, the Server MUST populate the Aggregation's `grouped_servicepoints` array with the list of relevant Service Point object `cds_servicepoint_id` or, if the number of aggregated Service Points is more than 100, populate the Aggregation's `grouped_aggregations` with Aggregation objects that represent subsets of the aggregated Service Points.
+* `servicepoint_type` - The Aggregation object represents aggregated data for [Service Point objects](#service-point-format) that have specific `servicepoint_types` values.
+  Aggregation objects that contain this value in their `aggregation_types` array MUST have the following additional fields:
+    * `servicepoint_types` - _Array[[ServicePointType](#service-point-types)]_ - (REQUIRED) A list of [Service Point Type](#service-point-types) values that were used to filter the Service Point objects to form the Aggregation.
+* `premise_number` - The Aggregation object represents aggregated data for [Service Point objects](#service-point-format) that have [Premise objects](#premise-format) with specific `premise_number` values.
+  Aggregation objects that contain this value in their `aggregation_types` array MUST have the following additional fields:
+    * `premise_numbers` - _Array[[string](#string)]_ - (REQUIRED) A list of Premise `premise_number` values that were used to filter the Service Point objects to form the Aggregation.
+* `meter_number` - The Aggregation object represents aggregated data for a specific group of [Meter Device objects](#meter-device-format) that were selected by their `servicepoint_number` values.
+  When this type is included, the Server MUST populate the Aggregation's `grouped_meterdevices` array with the list of relevant Meter Device object `cds_meterdevice_id` or, if the number of aggregated Meter Devices is more than 100, populate the Aggregation's `grouped_aggregations` with Aggregation objects that represent subsets of the aggregated Meter Devices.
+* `meter_type` - The Aggregation object represents aggregated data for [Service Point objects](#service-point-format) that have specific `servicepoint_types` values.
+  Aggregation objects that contain this value in their `aggregation_types` array MUST have the following additional fields:
+    * `meter_types` - _Array[[MeterType](#meter-types)]_ - (REQUIRED) A list of [Meter Type](#meter-types) values that were used to filter the Meter Device objects to form the Aggregation.
+* `meter_app_number` - The Aggregation object represents aggregated data for [Meter Device objects](#meter-device-format) that have [Meter App objects](#meter-app-format) with specific `app_number` values.
+  Aggregation objects that contain this value in their `aggregation_types` array MUST have the following additional fields:
+    * `meter_app_numbers` - _Array[[string](#string)]_ - (REQUIRED) A list of Meter App `app_number` values that were used to filter the Meter Device objects to form the Aggregation.
 
 #### 10.7.3. Aggregation Region Object Format <a id="aggregation-region-format" href="#aggregation-region-format" class="permalink">🔗</a>
 
-<span style="background-color:yellow">TODO</span>
+Aggregation Region objects contain details about a region that is part of an Aggregation object.
+Typically, these are geographic territories that have been isolated for specific analysis (e.g. aggregating electric usage by postal code).
+Aggregation Region objects are formatted as JSON objects and contain the following named values:
+
+* `id` - _[string](#string)_ - (REQUIRED) The unique identifier for the Aggregation Region object.
+* `name` - _[string](#string)_ - (REQUIRED) The name of the Aggregation Region entry.
+* `types` - _Array[[AggregationRegionType](#aggregation-region-types)]_ - (REQUIRED) An array of types for the Aggregation Region.
+  The values in this array determine what additional fields are included in this object.
+
+Depending on the values in an Aggregation Region's `types` array, the Aggregation Region MAY have additional fields.
+See each [Aggregation Region Type](#aggregation-region-types) value for what additional fields are defined.
+
+Servers MAY add additional fields to Aggregation Region objects as needed to include utility-specific data.
+It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. `exampleutility_*`).
+For example, if the Server has an Aggregation Region that identifies a utility-specific grouping type (e.g. meters that are for residences along coastlines) and wants to include the length of shores for which the aggregation covers in the Aggregation Region object, the Server could add a `exampleutility_shoreline_length` field that provides the total shoreline distance covered for the Aggregation Region as a decimal.
+
+Clients MUST ignore unknown `types` array values and unknown additional fields.
 
 #### 10.7.4. Aggregation Region Types <a id="aggregation-region-types" href="#aggregation-region-types" class="permalink">🔗</a>
 
-<span style="background-color:yellow">TODO</span>
+Aggregation Region Type values MUST be a [string](#string) of one of the following:
+
+* `geographic` - The Aggregation Region object is a reference to a geographic territory included in the Aggregation.
+  Aggregation Region objects that contain this value in their `types` array MUST have the following additional fields:
+    * `map_resource` - _[URL](#url) or `null`_ - (REQUIRED) Link to a map file of the coverage territory.
+      This value MUST NOT be `null` if the `geojson_resource` value is `null`.
+      If this value is not `null`, the object linked by the URL value MUST have the same authentication requirements for accessing it as this Aggregation object.
+    * `map_content_type` - _[MIME type](#mime-type) or `null`_ - (REQUIRED) Content-Type format of the `map_resource`.
+      This value is MUST NOT be `null` if the `map_resource` value is not `null`.
+    * `geojson_resource` - _[URL](#url) or `null`_ - (REQUIRED) Link to a [GeoJSON](#geojson) object that maps the geographic territory.
+      If this value is not `null`, the linked GeoJSON object MUST use the default WGS 84 coordinate system.
+      This value MUST NOT be `null` if the `map_resource` value is `null`.
+      If this value is not `null`, the object linked by the URL value MUST have the same authentication requirements for accessing it as this Aggregation object.
+* `postal_code` - The Aggregation Region object is a reference to one or more postal codes, which are also called zip codes in some countries.
+  It is RECOMMENDED to use this type in combination with the `cds_coverage` type to provide geographic maps or shapefiles for the postal codes.
+  Aggregation Region objects that contain this value in their `types` array MUST have the following additional fields:
+    * `postal_codes` - _Array[[string](#string)]_ - (REQUIRED) A list of postal code values represented by the Aggregation Region.
+* `county` - The Aggregation Region object is a reference to one or more counties, which are administrative divisions between provinces and municipalities.
+  Counties are also called boroughs, parishes, and shires in some countries or provinces.
+  It is RECOMMENDED to use this type in combination with the `cds_coverage` type to provide geographic maps or shapefiles for the counties.
+  Aggregation Region objects that contain this value in their `types` array MUST have the following additional fields:
+    * `counties` - _Array[[string](#string)]_ - (REQUIRED) A list of county names represented by the Aggregation Region.
+* `neighborhood` - The Aggregation Region object is a reference to one or more local neighborhoods, which are smaller regions within a municipality typically composed of a contiguous group of city blocks.
+  Aggregation Region objects that contain this value in their `types` array MUST have the following additional fields:
+    * `neighborhoods` - _Array[[string](#string)]_ - (REQUIRED) A list of neighborhood names represented by the Aggregation Region.
+* `city_block` - The Aggregation Region object is a reference to one or more local city blocks, which are a collection of parcels and buildings along a section of municipal street.
+  Aggregation Region objects that contain this value in their `types` array MUST have the following additional fields:
+    * `city_blocks` - _Array[[string](#string)]_ - (REQUIRED) A list of city block names represented by the Aggregation Region.
+      It is RECOMMENDED that the format of the city block names includes the address range for the section of the street, name of the street, municipality, province, and [country code](#country-code) (e.g. "1700-1800 Avenue A, Example Town, California, US").
 
 #### 10.7.5. Consent Requirement Object Format <a id="consent-requirement-format" href="#consent-requirement-format" class="permalink">🔗</a>
 
-<span style="background-color:yellow">TODO</span>
+Consent Requirement objects contain details about the consent requirements for being able to access [Usage Segment](#usage-segment-format) objects related to the the [Aggregation](#aggregation-format).
+For example, if a regulator requires consent from the tenants to a building in order to access the aggregated electric usage for that building (i.e. whole-building electric usage) if any one tenant is greater than 25% of the total electric usage for the aggregated period, that requirement can be disclosed using Consent Requirement objects, as well as which Customers need to consent.
+Consent Requirement objects are formatted as JSON objects and contain the following named values:
+
+* `id` - _[string](#string)_ - (REQUIRED) The unique identifier for the Consent Requirement object.
+* `name` - _[string](#string)_ - (REQUIRED) The name of the Consent Requirement entry.
+* `types` - _Array[[ConsentRequirementType](#consent-requirement-types)]_ - (REQUIRED) An array of types for the Consent Requirement.
+  The values in this array determine what additional fields are included in this object.
+* `documentation` - _[URL](#url)_ - (REQUIRED) A link to developer documentation on the Consent Requirement.
+
+Depending on the values in an Consent Requirement's `types` array, the Consent Requirement MAY have additional fields.
+See each [Consent Requirement Type](#consent-requirement-types) value for what additional fields are defined.
+
+Servers MAY add additional fields to Consent Requirement objects as needed to include utility-specific data.
+It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. `exampleutility_*`).
+For example, if the Server has a Consent Requirement that identifies the municipal code from which the requirement is derived and wants to include the municipal code in the Consent Requirement object, the Server could add a `exampleutility_examplecity_code` field that cites the relevant municipal code as a string.
+
+Clients MUST ignore unknown `types` array values and unknown additional fields.
 
 #### 10.7.6. Consent Requirement Types <a id="consent-requirement-types" href="#consent-requirement-types" class="permalink">🔗</a>
 
-<span style="background-color:yellow">TODO</span>
+Consent Requirement Type values MUST be a [string](#string) of one of the following:
 
-#### 10.7.7. Listing Aggregations <a id="aggregation-list" href="#aggregation-list" class="permalink">🔗</a>
+* `always` - It is always prerequisite to complete this consent requirement to enable access to Usage Segments and other objects related to this Aggregation.
+* `sometimes` - It is possible that this consent requirement must be completed to enable access to Usage Segments and other objects related to this Aggregation, but the Server has not yet determined whether that is the case for this Aggregation.
+  This situation often happens when a Server only queries backend datasets to determine whether a specific Aggregation meets the anonymization thresholds when the Client specifically requests the Aggregation's data, but has not scanned all Aggregations to pre-determine which Aggregations meet anonymization thresholds.
+* `never` - It was possible that this consent requirement would need to be completed, but the Server has determined that this consent requirement is not needed for accessing this Aggregation's Usage Segments and other related objects.
+  This situation often happens when a Server pre-determines if regulated anonymization thresholds are met for Aggregations (e.g. whole-building energy usage) and marks the relevant Consent Requirement for that regulatory threshold as `always` or `never`.
+
+#### 10.7.7. Accessing Data for Aggregations <a id="aggregation-data-access" href="#aggregation-data-access" class="permalink">🔗</a>
+
+Aggregation objects represent a combined dataset, but the Aggregation object itself does not contain the actual combined data.
+Instead, the combined data is available via other APIs, typically the [Usage Segments API](#usage-segments-api).
+This organization structure allows Clients to be able to query and search the [Aggregations Listing API](#aggregations-list), so that they can find the Aggregation for which they want data and submit the correct scope to obtain access.
+
+The following are the typical steps for a Client to find the correct Aggregation and then obtain access to the Aggregation's dataset:
+
+* The Client uses OAuth's Client Credentials Grant Flow [[RFC 6749 Section 4.4](#ref-rfc6749-client-credentials)] with the scope [`"cds_query_aggregations"`](#scope-aggregations-query) to obtain an access token that can query the [Aggregations listing API](#aggregations-list).
+* The Client looks up the base URL for the Aggregations listing API, which is the [Server Metadata's](#server-metadata) `cds_aggregations_api` value (e.g. "https://cds.example.com/aggregations").
+* The Client makes a request to the Aggregations listing API with the desired query parameters (e.g. GET "https://cds.example.com/aggregations?q=BID-1234", which filters for Aggregations for Building ID 1234).
+  The Server returns a list of the matching Aggregation objects, and the Client scans the list for the desired Aggregation (e.g. the Aggregation object that has an `aggregation_number` value of `"BID-1234"`).
+* The Client parses the [Aggregation object's](#aggregation-format) `consent_requirements` to see what, if any, [Consent Requirements](#consent-requirement-format) need to be completed to access the Aggregation's `scope`.
+* The Client uses OAuth's Client Credentials Grant Flow [[RFC 6749 Section 4.4](#ref-rfc6749-client-credentials)] with the Aggrgation's `scope` (e.g. `"cds_query_usage"`) to obtain an access token (`"access_token": "bbbbb..."`) and the Grant object ids (`"cds_grant_ids": ["aaaaa..."]`) for accessing the Aggregation's dataset [[CDS-WG1-02 Section 8.4](#ref-cds-wg1-02-grants-in-tokens)].
+* The Client uses OAuth's Client Credentials Grant Flow [[RFC 6749 Section 4.4](#ref-rfc6749-client-credentials)] with the scope `"cds_client_admin"` [[CDS-WG1-02 Section 3.3.1](#ref-cds-wg1-02-client-admin)] to obtain an access token that can query the Grants API [[CDS-WG1-02 Section 8](#ref-cds-wg1-02-grants-api)].
+* The Client looks up the URL for the Grants API, which is the Server Metadata's `cds_grants_api` value (e.g. "https://cds.example.com/grants") [[CDS-WG1-02 Section 3.2](#ref-cds-wg1-02-metadata)].
+* The Client makes a request to the Grants listing API [[CDS-WG1-02 Section 8.5](#ref-cds-wg1-02-grant-list)] with the appropriate query parameters to obtain the relevant Grant object (e.g. GET "https://cds.example.com/grants?grant_ids=aaaaa...").
+* The Client parses the Grant object [[CDS-WG1-02 Section 8.1](#ref-cds-wg1-02-grant-object)] for its current `status` to see if the Grant needs consents from Customers (i.e. the `status` value is `"needs_sub_grants"`) or does not need consents and is ready to be accessed (i.e. the `status` value is `"active"`).
+* If the Grant needs individual Customer consents, the Server will make child Grant objects for each needed authorization.
+  The Client obtains these child Grant objects by making another request to the Grants listing API with the appropriate query parameters (e.g. GET "https://cds.example.com/grants?parents=aaaaa...").
+* The Client parses the child Grant objects, which should all have a `status` value of `"needs_authorization"` and `"scope"` value of [`"cds_aggregation_consent"`](#scope-aggregation-inclusion), for what consent authorizations they are required to obtain in order to enable access to the Aggregation's dataset Grant (i.e. the parent Grant object).
+* The Client sends the relevant Customers an authorization request following the Grant Authorization Request process [[CDS-WG1-02 Section 8.3](#ref-cds-wg1-02-grant-auth-requests)] to complete the consent requirements in order to enable access to the Aggregation's dataset.
+* Once Customers authorize access for the child Grants, the Aggregation's dataset Grant (i.e. the parent Grant) will change status from `"needs_sub_grants"` to `"active"`.
+* The Client looks up the base URL for the Usage Segments API, which is the [Server Metadata's](#server-metadata) `cds_usagesegments_api` value (e.g. "https://cds.example.com/usage-segments").
+* The Client can now use OAuth's Client Credentials Grant Flow [[RFC 6749 Section 4.4](#ref-rfc6749-client-credentials)] with the Aggrgation's `scope` (e.g. `"cds_query_usage"`) to obtain an access token (`"access_token": "bbbbb..."`), or use the previously obtained access token for the same scope if it has not yet expired, to query the [Usage Segments listing API](#usage-segment-list) (e.g. GET "https://cds.example.com/usage-segments") and obtain the Aggregation's Usage Segment objects (i.e. the Aggregation's dataset).
+
+#### 10.7.8. Listing Aggregations <a id="aggregation-list" href="#aggregation-list" class="permalink">🔗</a>
 
 Clients may request to list Aggregation objects that they have access to by making an HTTPS `GET` request to the [Server Metadata's](#server-metadata) `cds_aggregations_api` URL.
 The Aggregation listing request responses are formatted as JSON objects and contain the following named values.
@@ -5813,6 +5982,10 @@ In situations where relevant EACs have the same `period_start` and `cds_created`
 `CDS-WG1-02 Section 3.3` - "Scopes Supported", CDS-WG1-02, LF Energy Standards and Specifications (LFESS),  
 [https://cds-registration.lfenergy.org/specs/cds-wg1-02/#scopes](https://cds-registration.lfenergy.org/specs/cds-wg1-02/#scopes)
 
+<a id="ref-cds-wg1-02-client-admin" href="#ref-cds-wg1-02-client-admin" class="permalink">🔗</a>
+`CDS-WG1-02 Section 3.3.1` - "Client Admin Scope", CDS-WG1-02, LF Energy Standards and Specifications (LFESS),  
+[https://cds-registration.lfenergy.org/specs/cds-wg1-02/#scopes-client-admin](https://cds-registration.lfenergy.org/specs/cds-wg1-02/#scopes-client-admin)
+
 <a id="ref-cds-wg1-02-grant-admin" href="#ref-cds-wg1-02-grant-admin" class="permalink">🔗</a>
 `CDS-WG1-02 Section 3.3.2` - "Grant Admin Scope", CDS-WG1-02, LF Energy Standards and Specifications (LFESS),  
 [https://cds-registration.lfenergy.org/specs/cds-wg1-02/#scopes-grant-admin](https://cds-registration.lfenergy.org/specs/cds-wg1-02/#scopes-grant-admin)
@@ -5861,13 +6034,21 @@ In situations where relevant EACs have the same `period_start` and `cds_created`
 `CDS-WG1-02 Section 8.3` - "Grant Authorization Requests", CDS-WG1-02, LF Energy Standards and Specifications (LFESS),  
 [https://cds-registration.lfenergy.org/specs/cds-wg1-02/#grant-authorization-requests](https://cds-registration.lfenergy.org/specs/cds-wg1-02/#grant-authorization-requests)
 
+<a id="ref-cds-wg1-02-grants-in-tokens" href="#ref-cds-wg1-02-grants-in-tokens" class="permalink">🔗</a>
+`CDS-WG1-02 Section 8.4` - "Grants in Token Responses", CDS-WG1-02, LF Energy Standards and Specifications (LFESS),  
+[https://cds-registration.lfenergy.org/specs/cds-wg1-02/#grant-token-responses](https://cds-registration.lfenergy.org/specs/cds-wg1-02/#grant-token-responses)
+
 <a id="ref-cds-wg1-02-grant-list" href="#ref-cds-wg1-02-grant-list" class="permalink">🔗</a>
-`CDS-WG1-02 Section 8.4` - "Listing Grants", CDS-WG1-02, LF Energy Standards and Specifications (LFESS),  
+`CDS-WG1-02 Section 8.5` - "Listing Grants", CDS-WG1-02, LF Energy Standards and Specifications (LFESS),  
 [https://cds-registration.lfenergy.org/specs/cds-wg1-02/#grants-list](https://cds-registration.lfenergy.org/specs/cds-wg1-02/#grants-list)
 
 <a id="ref-e164" href="#ref-e164" class="permalink">🔗</a>
 `E.164` - "The international public telecommunication numbering plan", E.164, International Telecommunication Union (ITU),  
 [https://www.itu.int/rec/T-REC-E.164/](https://www.itu.int/rec/T-REC-E.164/)
+
+<a id="ref-iso3166" href="#ref-iso3166" class="permalink">🔗</a>
+`ISO 3166` - "Country Codes", ISO 3166, International Organization for Standardization (ISO),
+[https://www.iso.org/iso-3166-country-codes.html](https://www.iso.org/iso-3166-country-codes.html)
 
 <a id="ref-iso4217" href="#ref-iso4217" class="permalink">🔗</a>
 `ISO 4217` - "Currency Codes", ISO 4217, International Organization for Standardization (ISO),  
@@ -5916,6 +6097,10 @@ In situations where relevant EACs have the same `period_start` and `cds_created`
 <a id="ref-rfc6838" href="#ref-rfc6838" class="permalink">🔗</a>
 `RFC 6838` - "Media Type Specifications and Registration Procedures", RFC 6838, Internet Engineering Task Force (IETF),  
 [https://www.rfc-editor.org/rfc/rfc6838](https://www.rfc-editor.org/rfc/rfc6838)
+
+<a id="ref-rfc7946-geojson" href="#ref-rfc7946-geojson" class="permalink">🔗</a>
+`RFC 7946` - Section 3. GeoJSON Object, "The GeoJSON Format", RFC 7946, Internet Engineering Task Force (IETF),
+[https://datatracker.ietf.org/doc/html/rfc7946#section-3](https://datatracker.ietf.org/doc/html/rfc7946#section-3)
 
 <a id="ref-rfc8259" href="#ref-rfc8259" class="permalink">🔗</a>
 `RFC 8259` - "The JavaScript Object Notation (JSON) Data Interchange Format", RFC 8259, Internet Engineering Task Force (IETF),  
@@ -5973,6 +6158,9 @@ In situations where relevant EACs have the same `period_start` and `cds_created`
 `RFC 9396 Section 7` - Section 7. Token Response, "OAuth 2.0 Rich Authorization Requests", RFC 9396, Internet Engineering Task Force (IETF),  
 [https://www.rfc-editor.org/rfc/rfc9396#section-7](https://www.rfc-editor.org/rfc/rfc9396#section-7)
 
+<a id="ref-rfc9396-auth-details" href="#ref-rfc9396-auth-details" class="permalink">🔗</a>
+`RFC 9396 Section 7.1` - Section 7.1. Enriched Authorization Details in Token Response, "OAuth 2.0 Rich Authorization Requests", RFC 9396, Internet Engineering Task Force (IETF),  
+[https://www.rfc-editor.org/rfc/rfc9396#section-7.1](https://www.rfc-editor.org/rfc/rfc9396#section-7.1)
 
 ## 15. Acknowledgments <a id="acknowledgments" href="#acknowledgments" class="permalink">🔗</a>
 
