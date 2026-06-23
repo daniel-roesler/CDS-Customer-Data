@@ -262,7 +262,9 @@ For more information, visit [https://lfess.energy/](https://lfess.energy/).
     * [11.6. Data Object Extensions](#object-extensions)  
     * [11.7. Enumerated Values Extensions](#enum-extensions)  
 * [12. Security Considerations](#security)  
-    * [12.1. Rate Limiting](#rate-limiting)  
+    * [12.1. Inherited Security Considerations](#security-inheritance)  
+    * [12.2. Obligation to Server Jurisdiction Requirements](#security-jurisdiction-requirements)  
+    * [12.3. Data Anonymization](#security-data-anonymization)  
 * [13. Examples](#examples)  
 * [14. References](#references)  
 * [15. Acknowledgments](#acknowledgments)  
@@ -6178,11 +6180,52 @@ Extensions MAY define new enumerated value lists as needed.
 
 ## 12. Security Considerations <a id="security" href="#security" class="permalink">🔗</a>
 
-<span style="background-color:yellow">TODO</span>
+This specification defines methods with which a Client can access Customer Data on a Server, including in situations where a Customer needs to authorize the access.
+Customer Data access is a highly sensitive and often highly regulated topic in much of the energy and utility grid sectors, so Servers that implement this specification have an obligation to properly secure and manage Clients and their Customer Data access abilities.
 
-### 12.1. Rate Limiting <a id="rate-limiting" href="#rate-limiting" class="permalink">🔗</a>
+### 12.1. Inherited Security Considerations <a id="security-inheritance" href="#security-inheritance" class="permalink">🔗</a>
 
-<span style="background-color:yellow">TODO</span>
+Because this specification is an extension of the [[CDS-WG1-02](#ref-cds-wg1-02)] specification, the Security Considerations in that specification [[CDS-WG1-02 Section 11](#ref-cds-wg1-02-security)], as well as any inherited by that specification, also apply to this specification.
+For example, the requirement to define appropriate `registration_requirements` for Clients also applies to this specification [[CDS-WG1-02 Section 11.1](#ref-cds-wg1-02-security-clients)].
+
+Additionally, Security Considerations are inherited from any other specifications referenced by this specification where that specification's protocols or methods are also by this specification.
+For example, since the OAuth authorization protocol is used for [Customer Authorizations](#authorizations), the Security Considerations and Best Practices for OAuth [[RFC 9700](#ref-rfc9700-oauth-security)] also apply to this specification.
+
+### 12.2. Obligation to Server Jurisdiction Requirements <a id="security-jurisdiction-requirements" href="#security-jurisdiction-requirements" class="permalink">🔗</a>
+
+While this specification makes efforts to require a base level of security requirements and best practices (e.g. HTTPS for encrypted data transfer), it is common for jurisdictions to have specific laws, regulations, or policies that require or recommend specific security controls and best practices in addition to the base levels of security in this specification.
+For example, a utility's regulator may require that a Server obtain and maintain a specific audit certification for their CDS-WG3-01 implementation.
+
+Therefore, to ensure compliance with local requirements and best practices, Servers MUST implement any additional security controls required by their jurisdiction's governing authorities, even if those requirements are not included in this specification.
+If a jurisdiction's security requirements are incompatible with security requirements in this specification, a Server MUST defer to the jurisdiction's security requirements and implement those and not implement the incompatible requirements in this specification.
+
+### 12.3. Data Anonymization <a id="security-data-anonymization" href="#security-data-anonymization" class="permalink">🔗</a>
+
+The default [Customer Data API](#api) objects' included fields and the default level of access to Customer Data for [Scopes](#scopes) does not include what would typically be called Personal Identifying Information ("PII"), such as Customer account numbers, names, phone numbers, emails, or addresses.
+Clients that need to access Customer Data objects that include PII MUST use the appropriate [Authorization Details Fields](#auth-details-fields) in their requests (e.g. adding the [`include_account_details`](#auth-details-include-account-details) to an authorization request).
+This default behavior lets Clients minimize and opt-in to how much identifying information is requested and included in Customer Data they access.
+
+However, just because a Client's requested scope of access to Customer Data does not include authorization details fields for PII, it does not make the Customer Data objects for that scope of access anonymous, merely de-identified.
+Since Customer Data objects are often associated with individual Customers, even non-PII data fields can be enough to match data to a Customer.
+For example, if de-identified electric interval Usage Segment objects are combined with public social media posts, a Client could scan which Customers were not at home based on their social media post history, then analyze the interval Usage Segment data for matches of vacancy electric usage patterns to figure out which Customer's usage data they have.
+
+Therefore, this specification defines the following anonymization categories for Customer Data:
+
+* **PII Data** - These are Customer Data objects that contain PII data fields, as defined by the Server's local jurisdiction (e.g. addresses, contact details, etc.).
+* **Potentially Identifying Individual Data** - These are Customer Data objects that do not contain PII data fields, but still represent data for an individual Customer.
+  This category can sometimes be called "de-identified", but this specification assumes and Servers MUST treat any Customer Data objects that are associated with an individual Customer as Potentially Identifying Individual Data (i.e. not anonymous), whether or not they have PII data fields included.
+* **Potentially Identifying Aggregated Data** - These are Customer Data objects that represent [aggregated Customer Data](#aggregation-data-access) (e.g. whole-building electric usage) that do not meet the local jurisdiction's requirements for properly anonymizing aggregated data.
+  For example, if local regulation specifies that Customer consent is required unless aggregated electric usage data combines at least ten Customers where no one Customer's usage accounts for greater than 50% of the usage for any given interval period, then the Server would need to treat all usage data aggregations that do not meet this threshold as Potentially Identifying Aggregated Data (i.e. requiring Customer authorization from each relevant Customer).
+* **Anonymized Aggregated Data** - These are Customer Data objects that represent aggregated Customer Data (e.g. regional electric usage) that meet the local jurisdiction's requirements for properly anonymizing aggregated data.
+* **Non-Customer Server Data** - These are Customer Data objects that are neither associated with an individual Customer's data nor the aggregated Customer Data for an Aggregation.
+  [Aggregation objects](#aggregation-format) are Non-Customer Server Data, when the Aggregation object itself does not contain PII or Potentially Identifying data, even if the Aggregation object represents aggregated data that is Potentially Identifying Aggregated Data.
+  For example, the Aggregation object representing a neighborhood's aggregated electric usage would be considered Non-Customer Server Data, no matter if the aggregated usage data meets local jurisdiction anonymization requirements.
+  [Energy Attribute Certificates (EAC) objects](#eac-format) can also be Non-Customer Server Data, so long as they do not contain PII or Potentially Identifying data.
+  For example, an EAC object representing a utility's generation asset EAC record would be considered Non-Customer Server Data.
+
+Servers and Clients MUST comply with local jurisdiction requirements for handling all anonymization categories of Customer Data.
+This specification defers local regulations about when Customer authorization is required for which specific Customer Data object fields.
+For example, if a local municipal district requires Customer consent for a contractor to obtain the Customer's PII, but not their rate plan, a Server could allow Client access to the [Service Contracts Query](#scope-service-contracts-query) Scope with the [`include_rate_plans`](#auth-details-include-rate-plans) authorization details field enabled, but require Customer authorization (i.e. the [Service List](#scope-service-list) Scope) for access to Service Contract objects with additional data fields.
 
 ## 13. Examples <a id="examples" href="#examples" class="permalink">🔗</a>
 
@@ -6273,6 +6316,10 @@ Extensions MAY define new enumerated value lists as needed.
 <a id="ref-cds-wg1-02-grant-list" href="#ref-cds-wg1-02-grant-list" class="permalink">🔗</a>
 `CDS-WG1-02 Section 8.5` - "Listing Grants", CDS-WG1-02, LF Energy Standards and Specifications (LFESS),  
 [https://cds-registration.lfenergy.org/specs/cds-wg1-02/#grants-list](https://cds-registration.lfenergy.org/specs/cds-wg1-02/#grants-list)
+
+<a id="ref-cds-wg1-02-security" href="#ref-cds-wg1-02-security" class="permalink">🔗</a>
+`CDS-WG1-02 Section 11` - "Security Considerations", CDS-WG1-02, LF Energy Standards and Specifications (LFESS),  
+[https://cds-registration.lfenergy.org/specs/cds-wg1-02/#security](https://cds-registration.lfenergy.org/specs/cds-wg1-02/#security)
 
 <a id="ref-e164" href="#ref-e164" class="permalink">🔗</a>
 `E.164` - "The international public telecommunication numbering plan", E.164, International Telecommunication Union (ITU),  
@@ -6393,6 +6440,10 @@ Extensions MAY define new enumerated value lists as needed.
 <a id="ref-rfc9396-auth-details" href="#ref-rfc9396-auth-details" class="permalink">🔗</a>
 `RFC 9396 Section 7.1` - Section 7.1. Enriched Authorization Details in Token Response, "OAuth 2.0 Rich Authorization Requests", RFC 9396, Internet Engineering Task Force (IETF),  
 [https://www.rfc-editor.org/rfc/rfc9396#section-7.1](https://www.rfc-editor.org/rfc/rfc9396#section-7.1)
+
+<a id="ref-rfc9700-oauth-security" href="#ref-rfc9700-oauth-security" class="permalink">🔗</a>
+`RFC 9700` - "Best Current Practice for OAuth 2.0 Security", RFC 9700, Internet Engineering Task Force (IETF),  
+[https://www.rfc-editor.org/rfc/rfc9700](https://www.rfc-editor.org/rfc/rfc9700)
 
 ## 15. Acknowledgments <a id="acknowledgments" href="#acknowledgments" class="permalink">🔗</a>
 
