@@ -56,7 +56,6 @@ For more information, visit [https://lfess.energy/](https://lfess.energy/).
         * [6.2.6. Bill Sections Query](#scope-bill-sections-query)  
         * [6.2.7. Aggregations Query](#scope-aggregations-query)  
         * [6.2.8. Usage Query](#scope-usage-query)  
-    * [6.3. Scope Extensions](#scope-extensions)  
 * [7. Authorization Details Fields](#auth-details-fields)  
     * [7.1. Preselection Fields](#auth-details-preselection)  
         * [7.1.1. Preselect Account Numbers](#auth-details-account-numbers)  
@@ -255,6 +254,13 @@ For more information, visit [https://lfess.energy/](https://lfess.energy/).
         * [10.9.3. EAC Data Format Description Object](#eac-data-format-descriptions)  
         * [10.9.4. Listing Energy Attribute Certificates](#eacs-list)  
 * [11. Extensions](#extensions)  
+    * [11.1. Scenario Extensions](#scenario-extensions)  
+    * [11.2. Scope Extensions](#scope-extensions)  
+    * [11.3. Authorization Details Field Extensions](#auth-details-field-extensions)  
+    * [11.4. Customer Authorization Extensions](#customer-authorization-extensions)  
+    * [11.5. API Endpoint Extensions](#api-extensions)  
+    * [11.6. Data Object Extensions](#object-extensions)  
+    * [11.7. Enumerated Values Extensions](#enum-extensions)  
 * [12. Security Considerations](#security)  
     * [12.1. Rate Limiting](#rate-limiting)  
 * [13. Examples](#examples)  
@@ -359,14 +365,8 @@ Because Scenarios are defined sets of Scopes and configuration requirements, the
 Rather, Scenarios are intended to aide regulators, governing authorities, and [Extensions](#extensions) in choosing which Scopes, data fields, and functionality they require Servers to implement.
 
 Regulators, governing authorities, and extensions MAY choose to require implementation of any combination of Scenarios defined in this specification or choose to define new Scenarios.
-When defining new Scenarios, it is RECOMMENDED that those Scenarios are defined either as a list of modifications to one or more Scenarios from this specification or, if a completely new Scenario, using the same format as the Scenarios defined in this specification.
-
-New Scenarios MAY include requirements to extend various object formats or numerated values to include additional fields.
-For example, a regulator could define a new Scenario that extends the "Meter Data" Scenario by requiring an additional `CAISO_pricing_node` field be included in the [Service Contract](#service-contract-format) object.
-It is RECOMMENDED that when requiring new fields for new Scenarios, that defining the new fields follows the [Extensions](#extensions) section, including adding a relevant prefix to the new field names (e.g. `CAISO_*`).
-
-New Scenarios MAY also define new [Scopes](#scopes) that specify a specialized levels of access for Clients of the Scenario's use cases.
-When defining new Scopes, it is RECOMMENDED that those Scopes are defined either as a list of modifications to one or more Scopes from this specification or, if a completely new Scope, using the same format as the Scopes defined in this specification.
+For example, a regulator could define a new Scenario that extends the [Meter Data](#scenario-meter-data) Scenario by requiring an additional `CAISO_zone_id` field be included in the [Service Contract](#service-contract-format) object.
+See the [Scenario Extensions](#scenario-extensions) section for details on how to modify and extend Scenarios.
 
 In addition to implementing requirements for their jurisdiction, Servers MAY implement any Scope or configuration that helps provide Customer Data access for relevant internal or external use cases.
 For example, a utility could enable Scopes that streamline how they transfer program participant meter data to their contracted program administrator vendor for internal program analysis and reporting.
@@ -1590,27 +1590,6 @@ Additionally, to support this Scope, the Server MUST implement the following req
     * [`include_usage_segments`](#auth-details-include-usage-segments)
     * [`include_usage_segment_value_types`](#auth-details-include-usage-segment-value-types)
 
-### 6.3. Scope Extensions <a id="scope-extensions" href="#scope-extensions" class="permalink">🔗</a>
-
-While this specification defines [Scopes](#scopes) that can meet many use cases, extensions to this specifications are encouraged to modify Scopes or define additional Scopes to meet other use cases.
-However, it is RECOMMENDED that if extensions or use cases can define their needs using existing Scopes defined in this specification, combined with authorization details requirements, that they define those authorization details requirements, rather than creating a new Scope with new requirements.
-The [Scenarios](#scenarios) section of this specification are some examples of how to defined combined Scope and authorization details requirements.
-This is so that Clients who support the Scopes and authorization details defined in this specification will already be compatible with extensions and new use cases.
-
-Extensions that modify a Scope defined in this specification MUST define those modifications as a new Scope with a new Scope Type identifier that references the existing Scope in this specification followed by the description of modifications.
-This is so that Clients do not mix up the Scope defined in this specification with the modified Scope defined in an extension.
-
-It is RECOMMENDED that extensions that create new Scopes define them in the same same format structure as those defined in this specification.
-This is so that Client developers who are familiar with this specification can easily add support for other Scopes in extensions.
-The format for Scope definitions in this specification use the following structure:
-
-* Brief explanation and example of the use cases the Scope is intending to address.
-  This allows Clients to understand why this Scope exists.
-* Definition of Scope Description [[CDS-WG1-02 Section 3.4](#ref-cds-wg1-02-scope-descriptions)] requirements.
-  This allows Clients to understand how to use this Scope in their requests to Servers.
-* Definition of Server access and behavior requirements.
-  This allows Clients to understand what access and behavior Servers will provide when this Scope is part of a request or Grant.
-
 ## 7. Authorization Details Fields <a id="auth-details-fields" href="#auth-details-fields" class="permalink">🔗</a>
 
 This section defines Authorization Details Fields that are available to be included in [Scope](#scopes) definitions.
@@ -1623,9 +1602,6 @@ For all authorization details fields specified in this section, if the Server de
 Additionally, when Servers use an authorization details field's default value as part of issuing a Grant, the Server MUST include that value for the authorization field's value in the Token response's `authorization_details` array, so that the Client may see which values are used in that Grant's authorization details.
 By including the default values used in each Grant, Servers MAY change the default values in their Scope Descriptions as needed because those default values are only intended for new Client requests and not for prior issued Grants.
 Clients MUST use the authorization details values in a Grant to determine that Grant's scope and authorization details and treat default values in the Server's Scope Descriptions as the default values going forward and not representative of past default values.
-
-Extensions of this specification MAY define additional Authorization Details Fields that define additional behavior for [Scope](#scopes) defined in this specification.
-When defining additional Authorization Details Fields, it is RECOMMENDED to define them in the same format as those defined in this section.
 
 ### 7.1. Preselection Fields <a id="auth-details-preselection" href="#auth-details-preselection" class="permalink">🔗</a>
 
@@ -3078,6 +3054,8 @@ Purpose objects are formatted as JSON objects and contain the following named va
 * `scopes_supported` - _Array[[string](#string)]_ - (REQUIRED) The list of [Scope](#scopes) values for which this Purpose can be included using the [Purpose Identifier](#auth-details-purpose) authorization details field.
   If the Purpose is not available for use in any Scopes, this value can be an empty list (`[]`).
 
+Clients MUST ignore unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
+
 ## 9. Customer Authorizations <a id="authorizations" href="#authorizations" class="permalink">🔗</a>
 
 This section defines a set of requirements that Servers MUST follow when implementing the Customer authorization process required for [Customer Consent Scopes](#scopes-customer-consent).
@@ -4104,6 +4082,8 @@ Account objects are formatted as JSON objects and contain the following named va
 * `account_programs` - _Array[[AccountProgram](#account-program-format)]_ - (OPTIONAL) A list of Account Programs for the Account.
   If the Server does not have this information or the Customer is not participating in any Account-level programs, this value is and empty list (`[]`).
 
+Clients MUST ignore unknown `account_types` values, unknown `account_status` values, and unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
+
 #### 10.1.2. Account Types <a id="account-types" href="#account-types" class="permalink">🔗</a>
 
 Account Type values MUST be a [string](#string) of one of the following:
@@ -4149,6 +4129,8 @@ Entity objects are formatted as JSON objects and contain the following named val
 * `entity_name` - _[string](#string)_ - (REQUIRED) The name of the entity (e.g. "Example Gas & Electric").
 * `entity_abbreviation` - _[string](#string) or `null`_ - (REQUIRED) An abbreviation of the Entity's name that is commonly used to identify that entity (e.g. "EG&E").
   If no abbreviation is available or the Server does not know an abbreviation for the Entity, this value is `null`.
+
+Clients MUST ignore unknown `types` values and unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
 #### 10.1.5. Entity Types <a id="entity-types" href="#entity-types" class="permalink">🔗</a>
 
@@ -4240,7 +4222,7 @@ Servers MAY add additional fields to Account Program objects as needed to includ
 It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. `exampleutility_*`).
 For example, if the Server has an Account that is participating in a credit bank credit bank program (e.g. NEM tracked charges) and wants to included the tracked amount of energy, the Server could add a `exampleutility_nem_net_kwh` field that provides the net kilowatt hours accumulated for the program.
 
-Clients MUST ignore unknown `types` array values and unknown additional fields.
+Clients MUST ignore unknown `types` values and unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
 #### 10.1.9. Account Program Types <a id="account-program-types" href="#account-program-types" class="permalink">🔗</a>
 
@@ -4278,6 +4260,8 @@ The Account listing request responses are formatted as JSON objects and contain 
   If no next segment exists (i.e. the requester is at the end of the list), this value is `null`.
 * `previous` - _[URL](#url)_ or `null` - Where to request the previous segment of the list of Accounts.
   If no previous segment exists (i.e. the requester is at the front of the list), this value is `null`.
+
+Clients MUST ignore unknown unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
 Servers MUST support Clients adding any of the following URL parameters to the `GET` request, which will filter the list of Accounts to be the intersection of results for each of the URL parameters filters:
 
@@ -4332,6 +4316,8 @@ Service Contract objects are formatted as JSON objects and contain the following
 * `rateplan_name` - _[string](#string)_ - (OPTIONAL) The name that a Customer sees on their bill or online user interface as the rate plan or tariff that applies to this Service Contract.
 * `service_programs` - _Array[[ServiceProgram](#service-program-format)]_ - (OPTIONAL) A list of Service Programs for the Account.
   If the Server does not have this information or the Customer is not participating in any Service Contract-level programs, this value is and empty list (`[]`).
+
+Clients MUST ignore unknown `contract_types` values, unknown `contract_status` values, and unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
 #### 10.2.2. Contract Types <a id="contract-types" href="#contract-types" class="permalink">🔗</a>
 
@@ -4414,7 +4400,7 @@ Servers MAY add additional fields to Service Program objects as needed to includ
 It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. `exampleutility_*`).
 For example, if the Server has an Service Contract that is participating in an electric vehicle charging management program (e.g. EV demand response) and wants to included the model of the Customer's electric vehicle charging unit, the Server could add a `exampleutility_ev_charger_model` field that provides the unit model number as a string.
 
-Clients MUST ignore unknown `types` array values and unknown additional fields.
+Clients MUST ignore unknown `types` values and unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
 #### 10.2.6. Service Program Types <a id="service-program-types" href="#service-program-types" class="permalink">🔗</a>
 
@@ -4461,6 +4447,8 @@ The Service Contract listing request responses are formatted as JSON objects and
   If no next segment exists (i.e. the requester is at the end of the list), this value is `null`.
 * `previous` - _[URL](#url)_ or `null` - Where to request the previous segment of the list of Service Contracts.
   If no previous segment exists (i.e. the requester is at the front of the list), this value is `null`.
+
+Clients MUST ignore unknown unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
 Servers MUST support Clients adding any of the following URL parameters to the `GET` request, which will filter the list of Service Contracts to be the intersection of results for each of the URL parameters filters:
 
@@ -4515,6 +4503,8 @@ Service Point objects are formatted as JSON objects and contain the following na
 * `premises` - _Array[[Premise](#premise-format)]_ - (OPTIONAL) A list of related premise identifiers and details that a Customer sees on their bill or online user interface as the premises for this Service Point, if available.
   If a Server does not have any Customer-facing premises for a Service Point or the Client is not authorized to see the Server's internal premise details for this Service Point, or the Server does not have premises stored for this Service Point, this value is an empty list (`[]`).
 
+Clients MUST ignore unknown `servicepoint_types` values and unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
+
 #### 10.3.2. Service Point Types <a id="service-point-types" href="#service-point-types" class="permalink">🔗</a>
 
 Service Point Type values MUST be a [string](#string) of one of the following:
@@ -4552,7 +4542,7 @@ Servers MAY add additional fields to Premise objects as needed to include premis
 It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. `exampleutility_*`).
 For example, if the Server has a Premise that identifies a group of metering point (e.g. the panel on the side of an apartment building) and wants to include panel's model number in the Premise object, the Server could add a `exampleutility_panel_model` field that provides the panel's model number as a string.
 
-Clients MUST ignore unknown `types` array values and unknown additional fields.
+Clients MUST ignore unknown `types` values and unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
 #### 10.3.4. Premise Types <a id="premise-types" href="#premise-types" class="permalink">🔗</a>
 
@@ -4575,6 +4565,8 @@ The Service Point listing request responses are formatted as JSON objects and co
   If no next segment exists (i.e. the requester is at the end of the list), this value is `null`.
 * `previous` - _[URL](#url)_ or `null` - Where to request the previous segment of the list of Service Points.
   If no previous segment exists (i.e. the requester is at the front of the list), this value is `null`.
+
+Clients MUST ignore unknown unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
 Servers MUST support Clients adding any of the following URL parameters to the `GET` request, which will filter the list of Service Points to be the intersection of results for each of the URL parameters filters:
 
@@ -4614,6 +4606,8 @@ Meter Device objects are formatted as JSON objects and contain the following nam
   This list MUST only include identifiers that the Client is authorized to see as scoped by their requesting `access_token`.
 * `meter_apps` - _Array[[MeterApp](#meter-app-format)]_ - (OPTIONAL) A list of Meter App objects associated with the Meter Device.
   If the Server does not have this information or the Customer does not have any meter applications that are installed or available to install on the Meter Device, this value is and empty list (`[]`).
+
+Clients MUST ignore unknown `meter_types` values and unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
 #### 10.4.2. Meter Types <a id="meter-types" href="#meter-types" class="permalink">🔗</a>
 
@@ -4666,7 +4660,7 @@ Servers MAY add additional fields to Meter App objects as needed to include app-
 It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. `exampleutility_*`).
 For example, if the Server has a Meter Device that has a battery management app installed (e.g. for controlling a virtual power plan) and wants to include the model numbers of the batteries installed in the building, the Server could add a `exampleutility_battery_models` field that provides a list of battery model numbers.
 
-Clients MUST ignore unknown `types` array values and unknown additional fields.
+Clients MUST ignore unknown `types` values and unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
 #### 10.4.4. Meter App Types <a id="meter-app-types" href="#meter-app-types" class="permalink">🔗</a>
 
@@ -4697,6 +4691,8 @@ The Meter Device listing request responses are formatted as JSON objects and con
   If no next segment exists (i.e. the requester is at the end of the list), this value is `null`.
 * `previous` - _[URL](#url)_ or `null` - Where to request the previous segment of the list of Meter Devices.
   If no previous segment exists (i.e. the requester is at the front of the list), this value is `null`.
+
+Clients MUST ignore unknown unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
 Servers MUST support Clients adding any of the following URL parameters to the `GET` request, which will filter the list of Meter Devices to be the intersection of results for each of the URL parameters filters:
 
@@ -4753,6 +4749,8 @@ The Server MUST ensure that if both `previous_balance_unpaid` and `new_charges` 
 For situations where the Customer's bill doesn't actually sum to the amount due (e.g. there's a billing error), the Server MUST include a New Charge object that has a `amout_due_sum_difference` in its `types` array and the difference from the sum to the `amount_due` value as the object's `amount` value.
 This requirement is a confirmation to Clients that the Server has included all New Charge objects that it knows about, and the Server recognizes that there is something unaccounted for in the `amount_due` value, but the Server does not know what has caused that unaccounted for amount.
 
+Clients MUST ignore unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
+
 #### 10.5.2. New Charge Object Format <a id="new-charge-format" href="#new-charge-format" class="permalink">🔗</a>
 
 New Charge objects represent a Bill Statement line item that contains a charge or credit that is applied to the Customer's Account balance on that Bill Statement.
@@ -4768,6 +4766,8 @@ New Charge objects are formatted as JSON objects and contain the following named
   For most situations, this value will be `true`, but for situations where an Account is being billed on a payment plan or as a flat rate, this value could be `false`.
 * `related_billsections` - _Array[[string](#string)]_ - (OPTIONAL) A list of Service Bill `cds_billsection_id` values from which this New Charge is derived.
   If the Server does not know which Bill Section objects are related to this New Charge or the Scope of the access does not include Bill Section objects, this field MUST NOT be included.
+
+Clients MUST ignore unknown `types` values and unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
 #### 10.5.3. New Charge Types <a id="new-charge-types" href="#new-charge-types" class="permalink">🔗</a>
 
@@ -4805,6 +4805,8 @@ The Bill Statement listing request responses are formatted as JSON objects and c
   If no next segment exists (i.e. the requester is at the end of the list), this value is `null`.
 * `previous` - _[URL](#url)_ or `null` - Where to request the previous segment of the list of Bill Statements.
   If no previous segment exists (i.e. the requester is at the front of the list), this value is `null`.
+
+Clients MUST ignore unknown unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
 Servers MUST support Clients adding any of the following URL parameters to the `GET` request, which will filter the list of Bill Statements to be the intersection of results for each of the URL parameters filters:
 
@@ -4859,6 +4861,8 @@ Bill Section objects are formatted as JSON objects and contain the following nam
 * `cost_details` - _Array[[BillSectionCostDetail](#bill-section-cost-detail-format)]_ - (REQUIRED) A list of the Bill Section Cost Detail objects that summarize the service's total and subtotal costs on the Customer-facing bill statement section represented by this Bill Section.
 * `line_items` - _Array[[BillSectionLineItem](#bill-section-line-item-format)]_ - (OPTIONAL) A list of the Bill Section Line Item objects that denote the individual charges listed on the Customer-facing bill statement section represented by this Bill Section.
 
+Clients MUST ignore unknown `section_types` values and unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
+
 #### 10.6.2. Bill Section Types <a id="bill-section-types" href="#bill-section-types" class="permalink">🔗</a>
 
 Bill Section Type values MUST be a [string](#string) of one of the following:
@@ -4903,7 +4907,7 @@ Servers MAY add additional fields to Bill Section Usage Detail objects as needed
 It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. `exampleutility_*`).
 For example, if the Server has a Bill Section Usage Detail that identifies a group of metering points (e.g. the panel on the side of an apartment building) and wants to include panel's model number in the Bill Section Usage Detail object, the Server could add a `exampleutility_panel_model` field that provides the panel's model number as a string.
 
-Clients MUST ignore unknown `types` array values and unknown additional fields.
+Clients MUST ignore unknown `types` values, unknown `units` values, and unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
 #### 10.6.4. Bill Section Usage Detail Types <a id="bill-section-usage-detail-types" href="#bill-section-usage-detail-types" class="permalink">🔗</a>
 
@@ -4958,7 +4962,7 @@ Servers MAY add additional fields to Bill Section Cost Detail objects as needed 
 It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. `exampleutility_*`).
 For example, if the Server has a Bill Section Cost Detail that identifies a utility-specific grouping type (e.g. this cost detail is the total nuclear decommisioning charge) and wants to include the tariff's designation number in the Bill Section Cost Detail object, the Server could add a `exampleutility_tariff_designation` field that provides the tariff designation number number as a string.
 
-Clients MUST ignore unknown `types` array values and unknown additional fields.
+Clients MUST ignore unknown `types` values and unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
 ##### 10.6.5.1. Cost Detail Summation Clarifications <a id="bill-section-cost-detail-sums" href="#bill-section-cost-detail-sums" class="permalink">🔗</a>
 
@@ -5028,7 +5032,7 @@ Servers MAY add additional fields to Bill Section Line Item objects as needed to
 It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. `exampleutility_*`).
 For example, if the Server has a Bill Section Line Item that identifies a demand response participation credit and wants to include the participation number for the Customer in the Bill Section Line Item object, the Server could add a `exampleutility_dr_participant` field that provides the Customer's participant number as a string.
 
-Clients MUST ignore unknown `types` array values and unknown additional fields.
+Clients MUST ignore unknown `types` values, unknown `units` values, and unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
 #### 10.6.8. Bill Section Line Item Types <a id="bill-section-line-item-types" href="#bill-section-line-item-types" class="permalink">🔗</a>
 
@@ -5058,6 +5062,8 @@ The Bill Section listing request responses are formatted as JSON objects and con
   If no next segment exists (i.e. the requester is at the end of the list), this value is `null`.
 * `previous` - _[URL](#url)_ or `null` - Where to request the previous segment of the list of Bill Sections.
   If no previous segment exists (i.e. the requester is at the front of the list), this value is `null`.
+
+Clients MUST ignore unknown unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
 Servers MUST support Clients adding any of the following URL parameters to the `GET` request, which will filter the list of Bill Sections to be the intersection of results for each of the URL parameters filters:
 
@@ -5127,7 +5133,7 @@ Servers MAY add additional fields to Aggregation objects as needed to include ut
 It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. `exampleutility_*`).
 For example, if the Server has a Aggregation that aggregates usage by neighborhood and wants to include the list of neighborhoods included in the Aggregation object, the Server could add a `exampleutility_neighborhoods` field that provides an array of neighborhood name strings for which the Aggregation applies.
 
-Clients MUST ignore unknown `aggregation_types` array values and unknown additional fields.
+Clients MUST ignore unknown `aggregation_types` values and unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
 #### 10.7.2. Aggregation Types <a id="aggregation-types" href="#aggregation-types" class="permalink">🔗</a>
 
@@ -5207,7 +5213,7 @@ Servers MAY add additional fields to Aggregation Region objects as needed to inc
 It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. `exampleutility_*`).
 For example, if the Server has an Aggregation Region that identifies a utility-specific grouping type (e.g. meters that are for residences along coastlines) and wants to include the length of shores for which the aggregation covers in the Aggregation Region object, the Server could add a `exampleutility_shoreline_length` field that provides the total shoreline distance covered for the Aggregation Region as a decimal.
 
-Clients MUST ignore unknown `types` array values and unknown additional fields.
+Clients MUST ignore unknown `types` values and unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
 #### 10.7.4. Aggregation Region Types <a id="aggregation-region-types" href="#aggregation-region-types" class="permalink">🔗</a>
 
@@ -5260,7 +5266,7 @@ Servers MAY add additional fields to Consent Requirement objects as needed to in
 It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. `exampleutility_*`).
 For example, if the Server has a Consent Requirement that identifies the municipal code from which the requirement is derived and wants to include the municipal code in the Consent Requirement object, the Server could add a `exampleutility_examplecity_code` field that cites the relevant municipal code as a string.
 
-Clients MUST ignore unknown `types` array values and unknown additional fields.
+Clients MUST ignore unknown `types` values and unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
 #### 10.7.6. Consent Requirement Types <a id="consent-requirement-types" href="#consent-requirement-types" class="permalink">🔗</a>
 
@@ -5311,6 +5317,8 @@ The Aggregation listing request responses are formatted as JSON objects and cont
 * `previous` - _[URL](#url)_ or `null` - Where to request the previous segment of the list of Aggregations.
   If no previous segment exists (i.e. the requester is at the front of the list), this value is `null`.
 
+Clients MUST ignore unknown unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
+
 Servers MUST support Clients adding any of the following URL parameters to the `GET` request, which will filter the list of Aggregations to be the intersection of results for each of the URL parameters filters:
 
 * `cds_aggregation_ids` - A space-separated list of `cds_aggregation_id` values for which the Servers MUST filter the Aggregations.
@@ -5358,6 +5366,8 @@ For data that has varying durations, such as monthly billed usage (e.g. anywhere
 
 Servers MUST only include unique identifiers in `related_aggregations`, `related_accounts`, `related_servicecontracts`, `related_servicepoints`, `related_meterdevices`, and `related_billsections` lists MUST only include identifiers that the Client is authorized to see as scoped by their requesting `access_token`.
 
+Clients MUST ignore unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
+
 #### 10.8.2. Value Format Objects <a id="usage-segment-value-formats" href="#usage-segment-value-formats" class="permalink">🔗</a>
 
 The [Usage Segment](#usage-segment-format) `formats` field provides an ordered list of Value Format objects that provide details about the objects that are included in each Usage Segment `values` entry's [Value Set](#usage-segment-value-set-format).
@@ -5376,6 +5386,8 @@ Value Format objects are formatted as JSON objects and contain the following nam
 
 Depending on the `type`, the Value Format object can contain other fields, which are defined by the type's documentation.
 
+Clients MUST ignore unknown `type` values and unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
+
 #### 10.8.3. Value Sets <a id="usage-segment-value-set-format" href="#usage-segment-value-set-format" class="permalink">🔗</a>
 
 The [Usage Segment](#usage-segment-format) `values` field provides an ordered list of Value Set entries.
@@ -5392,6 +5404,8 @@ A Value Object is a JSON object that is included as an entry in a [Value Set](#u
 The index of the Value Object in the Value Set corresponds to the same index of [Value Format](#usage-segment-value-formats) (which defines the Value Object's type and format) in the [Usage Segment's](#usage-segment-format) `formats` array.
 
 The fields within a Value Object are defined by the corresponding Value Format's [Value Type](#usage-segment-value-types) definition (e.g. [Electric Usage](#usage-segment-electric-usage)).
+
+Clients MUST ignore unknown fields in Value Objects, such as those added by Servers or [Extensions](#extensions).
 
 #### 10.8.5. Value Types <a id="usage-segment-value-types" href="#usage-segment-value-types" class="permalink">🔗</a>
 
@@ -5410,10 +5424,10 @@ Servers MAY include other Value Format `type` values in the Usage Segment `forma
 It is RECOMMENDED that additional `type` values have a prefix relevant to the Server (e.g. `exampleutility_*`) to prevent potential collisions with other Servers and extensions to this specification that define additional `type` values.
 
 Extensions MAY define additional Value Format `type` values.
-It is RECOMMENDED that the definitions for the additional `type` values follow the same format as those defined in this specification.
-It is RECOMMENDED that additional `type` values have a prefix relevant to the Server (e.g. `exampleutility_*`) to prevent potential collisions with other Servers and extensions to this specification that define additional `type` values.
+See the [Enumerated Values Extensions](#enum-extensions) for extension requirements.
 
 Clients MUST ignore Value Format and Value Objects for which they do not understand their Value Type.
+Clients MUST also ignore any unknown fields or unknown enumerated values in Value Format or Value Objects, such as those added by Servers or [Extensions](#extensions).
 
 ##### 10.8.5.1. Electric Usage <a id="usage-segment-electric-usage" href="#usage-segment-electric-usage" class="permalink">🔗</a>
 
@@ -5675,6 +5689,8 @@ Value Format Description objects are formatted as JSON objects and contain the f
   It is RECOMMENDED that Servers also include examples of what typical Value Format objects and Value Set objects could look like.
   Servers MAY include any other information in their documentation, in addition to the required formatted definition.
 
+Clients MUST ignore unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
+
 #### 10.8.7. Field Types <a id="usage-segment-field-types" href="#usage-segment-field-types" class="permalink">🔗</a>
 
 Usage Segment [Value Types](#usage-segment-value-types) define additional fields for [Value Formats](#usage-segment-value-formats) depending on the kind of data they represent.
@@ -5832,6 +5848,8 @@ The Usage object listing request responses are formatted as JSON objects and con
 * `previous` - _[URL](#url)_ or `null` - Where to request the previous segment of the list of Usage Segments.
   If no previous segment exists (i.e. the requester is at the front of the list), this value is `null`.
 
+Clients MUST ignore unknown unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
+
 Servers MUST support Clients adding any of the following URL parameters to the `GET` request, which will filter the list of Usage Segments to be the intersection of results for each of the URL parameters filters:
 
 * `cds_usagesegment_ids` - A space-separated list of `cds_usagesegment_id` values for which the Servers MUST filter the Usage Segments.
@@ -5882,6 +5900,8 @@ EAC objects are formatted as JSON objects and contain the following named values
 * `period_start` - _[datetime](#datetime)_ - (REQUIRED) When the EAC coverage time period started.
 * `period_end` - _[datetime](#datetime)_ - (REQUIRED) When the EAC coverage time period ended or will end.
 
+Clients MUST ignore unknown `beneficiary_type` values and unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
+
 #### 10.9.2. Beneficiary Types <a id="eac-beneficiary-types" href="#eac-beneficiary-types" class="permalink">🔗</a>
 
 EAC object `beneficiary_type` values MUST be one of the following:
@@ -5913,6 +5933,8 @@ EAC Data Format Descriptions objects are formatted as JSON objects and contain t
 * `description` - _[string](#string)_ - (REQUIRED) A human-readable description of the EAC data format.
 * `documentation` - _[URL](#url)_ - (REQUIRED) A link to developer documentation on the EAC data format.
 
+Clients MUST ignore unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
+
 #### 10.9.4. Listing Energy Attribute Certificates <a id="eac-list" href="#eac-list" class="permalink">🔗</a>
 
 Clients may request to list EAC objects that they have access to by making an HTTPS `GET` request to the [Server Metadata's](#server-metadata) `cds_eacs_api` URL.
@@ -5925,6 +5947,8 @@ The EAC object listing request responses are formatted as JSON objects and conta
   If no next segment exists (i.e. the requester is at the end of the list), this value is `null`.
 * `previous` - _[URL](#url)_ or `null` - Where to request the previous segment of the list of EACs.
   If no previous segment exists (i.e. the requester is at the front of the list), this value is `null`.
+
+Clients MUST ignore unknown unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
 Servers MUST support Clients adding any of the following URL parameters to the `GET` request, which will filter the list of EACs to be the intersection of results for each of the URL parameters filters:
 
@@ -5942,7 +5966,215 @@ In situations where relevant EACs have the same `period_start` and `cds_created`
 
 ## 11. Extensions <a id="extensions" href="#extensions" class="permalink">🔗</a>
 
-<span style="background-color:yellow">TODO</span>
+Other specifications, regulators, governing authorities, and Servers MAY define extensions for this specification to address additional use cases.
+
+The following sections include requirements and recommendations for how to extend various components of this specification.
+
+### 11.1. Scenario Extensions <a id="scenario-extensions" href="#scenario-extensions" class="permalink">🔗</a>
+
+Extensions MAY modify existing [Scenarios](#scenarios) defined in this specification or define new Scenarios.
+
+Extensions that modify existing Scenarios MUST meet the following requirements:
+
+* The Scenario modification MUST be backwards compatible, meaning that a Client that supports the existing Scenario will also be able to support the modified Scenario without issue.
+  For example, a Scenario could be modified to require that Servers add an additional data field (e.g. `"CPUC_midas_id"`) to the [Service Contract object](#service-contract-format), and since Clients are required to ignore additional data fields in objects, the modification would be backwards compatible with Clients.
+  If a modification is not backwards compatible, a new Scenario MUST be defined.
+
+Extensions that define a new Scenario MUST meet the following requirements:
+
+* If the new Scenario is based on an existing Scenario defined in this specification with modifications, the new Scenario MUST be defined by specifying a new Scenario name (to distinguish it from the Scenario defined in this specification), referencing the Scenario in this specification upon which the new Scenario is based, and listing the modifications to the referenced Scenario's requirements.
+  For example, if a Server wants to provide customers access to their own Bill Statements, but does not have digital versions of Bill Sections, the definition of the new Scenario could reference the [Billing Self-Access](#scenario-billing-self-access) Scenario in this specification followed by a list of modifications that remove the [Bill Sections Query](#scope-bill-sections-query) Scope requirements.
+* If the new Scenario is not based on an existing Scenario defined in this specification, the new Scenario MUST be defined with the same format structure as those defined in this specification.
+This is so that Client developers who are familiar with this specification can easily add support for other Scenarios in extensions.
+The format for Scenario definitions in this specification use the following structure:
+    * Include the name of the new Scenario.
+      It is RECOMMENDED that new Scenario names are prefixed with the entity or specification that is defining the new Scenario (e.g. "CPUC My New Scenario Name").
+    * Include a brief explanation and example of the use cases the Scenario is intending to support.
+      This allows Clients to understand why this Scenario exists.
+    * Include a list of requirements that Servers MUST or MAY implement to support the Scenario.
+      This list typically includes the required Scopes, any Authorization Details Field requirements, any additional data fields, and any Server operating requirements.
+      It is RECOMMENDED that additional data fields or enumerated values be prefixed with the entity or specification that is defining the new field or value (e.g. `CAISO_zone_id`).
+
+### 11.2. Scope Extensions <a id="scope-extensions" href="#scope-extensions" class="permalink">🔗</a>
+
+Extensions MAY modify existing [Scopes](#scopes) defined in this specification or define new Scopes.
+
+It is RECOMMENDED that extensions prefer [extending Scenarios](#scenario-extensions), rather than extending Scopes, if their desired use cases can be accommodated by specifying Scenario requirements for existing Scopes and Authorization Details Fields.
+This is so that Clients who support existing Scopes and Authorization Details Fields defined in this specification will already be compatible with new extensions and use cases.
+
+Extensions that modify existing Scopes MUST meet the following requirements:
+
+* The Scope modification MUST be backwards compatible, meaning that a Client that supports the existing Scope will also be able to support the modified Scope without issue.
+  For example, a Scope could be modified to require that Servers support an additional `response_type` (e.g. adding `"token"` to the Scope Description's `response_types_supported` array), and since the required `"code"` value is still in the `response_types_supported` array, the modification would be backwards compatible with Clients.
+  If a modification is not backwards compatible, a new Scope MUST be defined.
+
+Extensions that define a new Scope MUST meet the following requirements:
+
+* If the new Scope is based on an existing Scope defined in this specification with modifications, the new Scope MUST be defined by specifying a new Scope Description `type` value (to distinguish it from the Scope defined in this specification), referencing the Scope in this specification upon which the new Scope is based, and listing the modifications to the referenced Scope's requirements.
+  For example, if a Server wants to provide access to a special utility program enrollment API in addition to providing access to a Customer's Account Programs, the definition of the new Scope could reference the [Account Program Participation](#scope-account-program-participation) Scope in this specification followed by a list of modifications or additional requirements for the new Scope.
+* If the new Scope is not based on an existing Scope defined in this specification, the new Scope MUST be defined with the same format structure as those defined in this specification.
+This is so that Client developers who are familiar with this specification can easily add support for other Scopes in extensions.
+The format for Scope definitions in this specification use the following structure:
+    * Brief explanation and example of the use cases the Scope is intending to address.
+      This allows Clients to understand why this Scope exists.
+    * Definition of Scope Description [[CDS-WG1-02 Section 3.4](#ref-cds-wg1-02-scope-descriptions)] requirements.
+      This allows Clients to understand how to use this Scope in their requests to Servers.
+    * Definition of Server access and behavior requirements.
+      This allows Clients to understand what access and behavior Servers will provide when this Scope is part of a request or Grant.
+
+### 11.3. Authorization Details Field Extensions <a id="auth-details-field-extensions" href="#auth-details-field-extensions" class="permalink">🔗</a>
+
+Extensions MAY modify existing [Authorization Details Fields](#auth-details-fields) defined in this specification or define new Authorization Details Fields.
+
+It is RECOMMENDED that extensions prefer [extending Scenarios](#scenario-extensions), rather than extending Authorization Details Fields, if their desired use cases can be accommodated by specifying Scenario requirements for existing Scopes and Authorization Details Fields.
+This is so that Clients who support existing Scopes and Authorization Details Fields defined in this specification will already be compatible with new extensions and use cases.
+
+Extensions that modify existing Authorization Details Fields MUST meet the following requirements:
+
+* The Authorization Details Field modification MUST be backwards compatible, meaning that a Client that supports the existing Authorization Details Field will also be able to support the modified Authorization Details Field without issue.
+  For example, the Authorization Details Field [`include_contract_numbers`](#auth-details-include-contract-numbers) could be modified to require that an additional data field (e.g. `"CPUC_midas_id"`) be included on the [Service Contract object](#service-contract-format) when the field's value is `true`, and since Clients are required to ignore additional data fields in objects, the modification would be backwards compatible with Clients.
+  If a modification is not backwards compatible, a new Authorization Details Field MUST be defined.
+
+Extensions that define a new Authorization Details Field MUST meet the following requirements:
+
+* If the new Authorization Details Field is based on an existing Authorization Details Field defined in this specification with modifications, the new Authorization Details Field MUST be defined by specifying a new Authorization Details Field Object `id` value (to distinguish it from the Authorization Details Field Object defined in this specification), referencing the Authorization Details Field in this specification upon which the new Authorization Details Field is based, and listing the modifications to the referenced Authorization Details Field's requirements.
+  For example, if a specification needs to add more preselection error response behaviors, the definition of the new Authorization Details Field could reference the [Error If No Preselections](#auth-details-error-if-no-preselections) Authorization Details Field in this specification followed by a list of modifications changing the `format` value from `"boolean"` to `"choice"` and other necessary requirements.
+
+### 11.4. Customer Authorization Extensions <a id="customer-authorization-extensions" href="#customer-authorization-extensions" class="permalink">🔗</a>
+
+Extensions MAY modify [Customer Authorization](#authorizations) requirements defined in this specification.
+
+It is NOT RECOMMENDED that extensions modify [Customer Authorization](#authorizations) requirements in such a way that they break backwards compatibility with existing Customer Authorization requirements in this specification.
+If an extension or Server implementation of an extension breaks backwards compatibility with this specification's Customer Authorization requirements, the extension or Server MUST NOT claim to be compliant with this specification.
+
+### 11.5. API Endpoint Extensions <a id="api-extensions" href="#api-extensions" class="permalink">🔗</a>
+
+Extensions MAY modify the following [Customer Data API](#api) endpoints defined in this specification:
+
+* [Listing Accounts](#accounts-list)
+* [Listing Service Contracts](#service-contract-list)
+* [Listing Service Points](#service-point-list)
+* [Listing Meter Devices](#meter-device-list)
+* [Listing Bill Statements](#bill-statement-list)
+* [Listing Bill Sections](#bill-section-list)
+* [Listing Aggregations](#aggregation-list)
+* [Listing Usage Segments](#usage-segment-list)
+* [Listing Energy Attribute Certificates](#eac-list)
+
+Extensions that modify API endpoints MUST meet the following requirements:
+
+* The API endpoint modification MUST be backwards compatible, meaning that a Client that supports the existing API endpoint will also be able to support the modified API endpoint without issue.
+  For example, an extension could modify the [Accounts List endpoint](#accounts-list) to require supporting an additional URL parameter (e.g. `?entity_name=...`), and since Clients can still use all of the existing required URL parameters, the modification would be backwards compatible with Clients.
+  If a modification is not backwards compatible (e.g. changing the authentication requirements), a new API endpoint MUST be defined.
+
+Extensions MAY define new API endpoints as needed.
+
+### 11.6. Data Object Extensions <a id="object-extensions" href="#object-extensions" class="permalink">🔗</a>
+
+Extensions MAY modify the following [Customer Data](#api) objects defined in this specification:
+
+* [Purpose Object](#purpose-format)
+* [Account Object](#account-format)
+* [Entity Object](#entity-format)
+* [Account Contact Object](#account-contact-format)
+* [Account Program Object](#account-program-format)
+* [Account List Object](#accounts-list)
+* [Service Contract Object](#service-contract-format)
+* [Service Program Object](#service-program-format)
+* [Service Contract List Object](#service-contract-list)
+* [Service Point Object](#service-point-format)
+* [Premise Object](#premise-format)
+* [Service Point List Object](#service-point-lsit)
+* [Meter Device Object](#meter-device-format)
+* [Meter App Object](#meter-app-format)
+* [Meter Device List Object](#meter-device-list)
+* [Bill Statement Object](#bill-statement-format)
+* [New Charge Object](#new-charge-format)
+* [Bill Statement List Object](#bill-statement-list)
+* [Bill Section Object](#bill-section-format)
+* [Bill Section Usage Detail Object](#bill-section-usage-detail-format)
+* [Bill Section Cost Detail Object](#bill-section-cost-detail-format)
+* [Bill Section Line Item Object](#bill-section-line-item-format)
+* [Bill Section List Object](#bill-section-list)
+* [Aggregation Object](#aggregation-format)
+* [Aggregation Region Object](#aggregation-region-format)
+* [Consent Requirement Object](#consent-requirement-format)
+* [Aggregation List Object](#aggregation-list)
+* [Usage Segment Object](#usage-segment-format)
+* [Usage Segment Value Format Object](#usage-segment-value-formats)
+    * [Electric Usage Value Format Object](#usage-segment-electric-usage-value-format)
+    * [Electric Demand Value Format Object](#usage-segment-electric-demand-value-format)
+    * [Electric Supply Mix Value Format Object](#usage-segment-supply-mix-value-format)
+    * [Water Usage Value Format Object](#usage-segment-water-usage-value-format)
+    * [Natural Gas Usage Value Format Object](#usage-segment-gas-usage-value-format)
+    * [Fuel Oil Usage Value Format Object](#usage-segment-fueloil-usage-value-format)
+    * [Interval Cost Value Format Object](#usage-segment-interval-cost-value-format)
+    * [Meter Readings Value Format Object](#usage-segment-meter-readings-value-format)
+* [Usage Segment Value Object](#usage-segment-value-objects)
+    * [Electric Usage Value Object](#usage-segment-electric-usage-value-object)
+    * [Electric Demand Value Object](#usage-segment-electric-demand-value-object)
+    * [Electric Supply Mix Value Object](#usage-segment-supply-mix-value-object)
+    * [Water Usage Value Object](#usage-segment-water-usage-value-object)
+    * [Natural Gas Usage Value Object](#usage-segment-gas-usage-value-object)
+    * [Fuel Oil Usage Value Object](#usage-segment-fueloil-usage-value-object)
+    * [Interval Cost Value Object](#usage-segment-interval-cost-value-object)
+    * [Meter Readings Value Object](#usage-segment-meter-readings-value-object)
+* [Usage Segment Value Type Description Object](#usage-segment-value-type-description)
+* [Usage Segment List Object](#usage-segment-list)
+* [Energy Attribute Certificate Object](#eac-format)
+* [Energy Attribute Certificate Data Format Description Object](#eac-data-format-descriptions)
+* [Energy Attribute Certificate List Object](#eac-list)
+
+Extensions that modify Customer Data objects MUST meet the following requirements:
+
+* The object modification MUST be backwards compatible, meaning that a Client that supports the existing object will also be able to support the modified object without issue.
+  For example, an extension could modify the [Account Object](#account-format) to require supporting an additional field (e.g. `"registration_date": "..."`), and since Clients are required to ignore additional data fields in objects, the modification would be backwards compatible with Clients.
+  If a modification is not backwards compatible (e.g. changing the format of an existing object field), a new object MUST be defined.
+
+Extensions MAY define new data objects as needed.
+
+### 11.7. Enumerated Values Extensions <a id="enum-extensions" href="#enum-extensions" class="permalink">🔗</a>
+
+Extensions MAY modify the following enumerated value lists defined in this specification:
+
+* [Account Types](#account-types)
+* [Account Statuses](#account-statuses)
+* [Entity Types](#entity-types)
+* [Account Contact Types](#account-contact-types)
+* [Account Program Types](#account-program-types)
+* [Contract Types](#contract-types)
+* [Contract Statuses](#contract-statuses)
+* [Service Types](#service-types)
+* [Service Program Types](#service-program-types)
+* [Service Point Types](#service-point-types)
+* [Premise Types](#premise-types)
+* [Meter Types](#meter-types)
+* [Meter App Types](#meter-app-types)
+* [New Charge Types](#new-charge-types)
+* [Bill Section Types](#bill-section-types)
+* [Bill Section Usage Detail Types](#bill-section-usage-detail-types)
+* [Bill Section Cost Detail Types](#bill-section-cost-detail-types)
+* [Bill Section Line Item Types](#bill-section-line-item-types)
+* [Aggregation Types](#aggregation-types)
+* [Aggregation Region Types](#aggregation-region-types)
+* [Consent Requirement Types](#consent-requirement-types)
+* [Usage Segment Value Types](#usage-segment-value-types)
+* [Unit Types](#usage-segment-unit-types)
+* [Direction Types](#usage-segment-direction-types)
+* [Time-of-Use Types](#usage-segment-tou-types)
+* [Reading Quality Types](#usage-segment-reading-quality-types)
+* [Demand Types](#usage-segment-demand-types)
+* [Supply Attribution Types](#usage-segment-supply-attribution-types)
+* [Supply Types](#usage-segment-supply-types)
+* [Beneficiary Types](#eac-beneficiary-types)
+
+Extensions that modify the lists of enumerated values MUST meet the following requirements:
+
+* The enumerated value list modification MUST be backwards compatible, meaning that a Client that supports the existing list of enumerated values will also be able to support the modified list of enumerated values without issue.
+  For example, an extension could modify the [Entity Types](#entity-types) to require supporting an additional enumerated values (e.g. adding a `solar_generator` value), and since Clients are required to ignore unknown values, the modification would be backwards compatible with Clients.
+  If a modification is not backwards compatible (e.g. changing the definition of an existing value), a new enumerated value list MUST be defined.
+
+Extensions MAY define new enumerated value lists as needed.
 
 ## 12. Security Considerations <a id="security" href="#security" class="permalink">🔗</a>
 
