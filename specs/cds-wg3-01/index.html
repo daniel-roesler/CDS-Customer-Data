@@ -213,7 +213,6 @@ For more information, visit <a href="https://lfess.energy/">https://lfess.energy
           <li><a href="#scope-usage-query">6.2.8. Usage Query</a></li>
         </ul>
       </li>
-      <li><a href="#scope-extensions">6.3. Scope Extensions</a></li>
     </ul>
   </li>
   <li><a href="#auth-details-fields">7. Authorization Details Fields</a>
@@ -542,7 +541,17 @@ For more information, visit <a href="https://lfess.energy/">https://lfess.energy
       </li>
     </ul>
   </li>
-  <li><a href="#extensions">11. Extensions</a></li>
+  <li><a href="#extensions">11. Extensions</a>
+    <ul>
+      <li><a href="#scenario-extensions">11.1. Scenario Extensions</a></li>
+      <li><a href="#scope-extensions">11.2. Scope Extensions</a></li>
+      <li><a href="#auth-details-field-extensions">11.3. Authorization Details Field Extensions</a></li>
+      <li><a href="#customer-authorization-extensions">11.4. Customer Authorization Extensions</a></li>
+      <li><a href="#api-extensions">11.5. API Endpoint Extensions</a></li>
+      <li><a href="#object-extensions">11.6. Data Object Extensions</a></li>
+      <li><a href="#enum-extensions">11.7. Enumerated Values Extensions</a></li>
+    </ul>
+  </li>
   <li><a href="#security">12. Security Considerations</a>
     <ul>
       <li><a href="#rate-limiting">12.1. Rate Limiting</a></li>
@@ -653,14 +662,8 @@ Because Scenarios are defined sets of Scopes and configuration requirements, the
 Rather, Scenarios are intended to aide regulators, governing authorities, and <a href="#extensions">Extensions</a> in choosing which Scopes, data fields, and functionality they require Servers to implement.</p>
 
 <p>Regulators, governing authorities, and extensions MAY choose to require implementation of any combination of Scenarios defined in this specification or choose to define new Scenarios.
-When defining new Scenarios, it is RECOMMENDED that those Scenarios are defined either as a list of modifications to one or more Scenarios from this specification or, if a completely new Scenario, using the same format as the Scenarios defined in this specification.</p>
-
-<p>New Scenarios MAY include requirements to extend various object formats or numerated values to include additional fields.
-For example, a regulator could define a new Scenario that extends the “Meter Data” Scenario by requiring an additional <code class="language-plaintext highlighter-rouge">CAISO_pricing_node</code> field be included in the <a href="#service-contract-format">Service Contract</a> object.
-It is RECOMMENDED that when requiring new fields for new Scenarios, that defining the new fields follows the <a href="#extensions">Extensions</a> section, including adding a relevant prefix to the new field names (e.g. <code class="language-plaintext highlighter-rouge">CAISO_*</code>).</p>
-
-<p>New Scenarios MAY also define new <a href="#scopes">Scopes</a> that specify a specialized levels of access for Clients of the Scenario’s use cases.
-When defining new Scopes, it is RECOMMENDED that those Scopes are defined either as a list of modifications to one or more Scopes from this specification or, if a completely new Scope, using the same format as the Scopes defined in this specification.</p>
+For example, a regulator could define a new Scenario that extends the <a href="#scenario-meter-data">Meter Data</a> Scenario by requiring an additional <code class="language-plaintext highlighter-rouge">CAISO_zone_id</code> field be included in the <a href="#service-contract-format">Service Contract</a> object.
+See the <a href="#scenario-extensions">Scenario Extensions</a> section for details on how to modify and extend Scenarios.</p>
 
 <p>In addition to implementing requirements for their jurisdiction, Servers MAY implement any Scope or configuration that helps provide Customer Data access for relevant internal or external use cases.
 For example, a utility could enable Scopes that streamline how they transfer program participant meter data to their contracted program administrator vendor for internal program analysis and reporting.</p>
@@ -2411,29 +2414,6 @@ In these relevant use cases, Clients need access to a set of Usage Segment objec
   </li>
 </ul>
 
-<h3 id="63-scope-extensions-">6.3. Scope Extensions <a id="scope-extensions" href="#scope-extensions" class="permalink">🔗</a></h3>
-
-<p>While this specification defines <a href="#scopes">Scopes</a> that can meet many use cases, extensions to this specifications are encouraged to modify Scopes or define additional Scopes to meet other use cases.
-However, it is RECOMMENDED that if extensions or use cases can define their needs using existing Scopes defined in this specification, combined with authorization details requirements, that they define those authorization details requirements, rather than creating a new Scope with new requirements.
-The <a href="#scenarios">Scenarios</a> section of this specification are some examples of how to defined combined Scope and authorization details requirements.
-This is so that Clients who support the Scopes and authorization details defined in this specification will already be compatible with extensions and new use cases.</p>
-
-<p>Extensions that modify a Scope defined in this specification MUST define those modifications as a new Scope with a new Scope Type identifier that references the existing Scope in this specification followed by the description of modifications.
-This is so that Clients do not mix up the Scope defined in this specification with the modified Scope defined in an extension.</p>
-
-<p>It is RECOMMENDED that extensions that create new Scopes define them in the same same format structure as those defined in this specification.
-This is so that Client developers who are familiar with this specification can easily add support for other Scopes in extensions.
-The format for Scope definitions in this specification use the following structure:</p>
-
-<ul>
-  <li>Brief explanation and example of the use cases the Scope is intending to address.
-This allows Clients to understand why this Scope exists.</li>
-  <li>Definition of Scope Description [<a href="#ref-cds-wg1-02-scope-descriptions">CDS-WG1-02 Section 3.4</a>] requirements.
-This allows Clients to understand how to use this Scope in their requests to Servers.</li>
-  <li>Definition of Server access and behavior requirements.
-This allows Clients to understand what access and behavior Servers will provide when this Scope is part of a request or Grant.</li>
-</ul>
-
 <h2 id="7-authorization-details-fields-">7. Authorization Details Fields <a id="auth-details-fields" href="#auth-details-fields" class="permalink">🔗</a></h2>
 
 <p>This section defines Authorization Details Fields that are available to be included in <a href="#scopes">Scope</a> definitions.
@@ -2446,9 +2426,6 @@ This allows Clients to automate discovery of which Authorization Details Fields 
 Additionally, when Servers use an authorization details field’s default value as part of issuing a Grant, the Server MUST include that value for the authorization field’s value in the Token response’s <code class="language-plaintext highlighter-rouge">authorization_details</code> array, so that the Client may see which values are used in that Grant’s authorization details.
 By including the default values used in each Grant, Servers MAY change the default values in their Scope Descriptions as needed because those default values are only intended for new Client requests and not for prior issued Grants.
 Clients MUST use the authorization details values in a Grant to determine that Grant’s scope and authorization details and treat default values in the Server’s Scope Descriptions as the default values going forward and not representative of past default values.</p>
-
-<p>Extensions of this specification MAY define additional Authorization Details Fields that define additional behavior for <a href="#scopes">Scope</a> defined in this specification.
-When defining additional Authorization Details Fields, it is RECOMMENDED to define them in the same format as those defined in this section.</p>
 
 <h3 id="71-preselection-fields-">7.1. Preselection Fields <a id="auth-details-preselection" href="#auth-details-preselection" class="permalink">🔗</a></h3>
 
@@ -4515,6 +4492,8 @@ If the <code class="language-plaintext highlighter-rouge">related_uri</code> is 
 If the Purpose is not available for use in any Scopes, this value can be an empty list (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
 </ul>
 
+<p>Clients MUST ignore unknown fields in this object, such as those added by Servers or <a href="#extensions">Extensions</a>.</p>
+
 <h2 id="9-customer-authorizations-">9. Customer Authorizations <a id="authorizations" href="#authorizations" class="permalink">🔗</a></h2>
 
 <p>This section defines a set of requirements that Servers MUST follow when implementing the Customer authorization process required for <a href="#scopes-customer-consent">Customer Consent Scopes</a>.
@@ -5789,6 +5768,8 @@ When included, this array MUST have at least one entry.</li>
 If the Server does not have this information or the Customer is not participating in any Account-level programs, this value is and empty list (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
 </ul>
 
+<p>Clients MUST ignore unknown <code class="language-plaintext highlighter-rouge">account_types</code> values, unknown <code class="language-plaintext highlighter-rouge">account_status</code> values, and unknown fields in this object, such as those added by Servers or <a href="#extensions">Extensions</a>.</p>
+
 <h4 id="1012-account-types-">10.1.2. Account Types <a id="account-types" href="#account-types" class="permalink">🔗</a></h4>
 
 <p>Account Type values MUST be a <a href="#string">string</a> of one of the following:</p>
@@ -5840,6 +5821,8 @@ If a Server includes Coverage Entries for the same entity in it’s Server Metad
   <li><code class="language-plaintext highlighter-rouge">entity_abbreviation</code> - <em><a href="#string">string</a> or <code class="language-plaintext highlighter-rouge">null</code></em> - (REQUIRED) An abbreviation of the Entity’s name that is commonly used to identify that entity (e.g. “EG&amp;E”).
 If no abbreviation is available or the Server does not know an abbreviation for the Entity, this value is <code class="language-plaintext highlighter-rouge">null</code>.</li>
 </ul>
+
+<p>Clients MUST ignore unknown <code class="language-plaintext highlighter-rouge">types</code> values and unknown fields in this object, such as those added by Servers or <a href="#extensions">Extensions</a>.</p>
 
 <h4 id="1015-entity-types-">10.1.5. Entity Types <a id="entity-types" href="#entity-types" class="permalink">🔗</a></h4>
 
@@ -5939,7 +5922,7 @@ See each <a href="#account-program-types">Account Program Type</a> value for wha
 It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. <code class="language-plaintext highlighter-rouge">exampleutility_*</code>).
 For example, if the Server has an Account that is participating in a credit bank credit bank program (e.g. NEM tracked charges) and wants to included the tracked amount of energy, the Server could add a <code class="language-plaintext highlighter-rouge">exampleutility_nem_net_kwh</code> field that provides the net kilowatt hours accumulated for the program.</p>
 
-<p>Clients MUST ignore unknown <code class="language-plaintext highlighter-rouge">types</code> array values and unknown additional fields.</p>
+<p>Clients MUST ignore unknown <code class="language-plaintext highlighter-rouge">types</code> values and unknown fields in this object, such as those added by Servers or <a href="#extensions">Extensions</a>.</p>
 
 <h4 id="1019-account-program-types-">10.1.9. Account Program Types <a id="account-program-types" href="#account-program-types" class="permalink">🔗</a></h4>
 
@@ -5984,6 +5967,8 @@ If no next segment exists (i.e. the requester is at the end of the list), this v
   <li><code class="language-plaintext highlighter-rouge">previous</code> - <em><a href="#url">URL</a></em> or <code class="language-plaintext highlighter-rouge">null</code> - Where to request the previous segment of the list of Accounts.
 If no previous segment exists (i.e. the requester is at the front of the list), this value is <code class="language-plaintext highlighter-rouge">null</code>.</li>
 </ul>
+
+<p>Clients MUST ignore unknown unknown fields in this object, such as those added by Servers or <a href="#extensions">Extensions</a>.</p>
 
 <p>Servers MUST support Clients adding any of the following URL parameters to the <code class="language-plaintext highlighter-rouge">GET</code> request, which will filter the list of Accounts to be the intersection of results for each of the URL parameters filters:</p>
 
@@ -6045,6 +6030,8 @@ Multiple Service Types can apply to a single Service Contract (e.g. both <code c
   <li><code class="language-plaintext highlighter-rouge">service_programs</code> - <em>Array[<a href="#service-program-format">ServiceProgram</a>]</em> - (OPTIONAL) A list of Service Programs for the Account.
 If the Server does not have this information or the Customer is not participating in any Service Contract-level programs, this value is and empty list (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
 </ul>
+
+<p>Clients MUST ignore unknown <code class="language-plaintext highlighter-rouge">contract_types</code> values, unknown <code class="language-plaintext highlighter-rouge">contract_status</code> values, and unknown fields in this object, such as those added by Servers or <a href="#extensions">Extensions</a>.</p>
 
 <h4 id="1022-contract-types-">10.2.2. Contract Types <a id="contract-types" href="#contract-types" class="permalink">🔗</a></h4>
 
@@ -6135,7 +6122,7 @@ See each <a href="#service-program-types">Service Program Type</a> value for wha
 It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. <code class="language-plaintext highlighter-rouge">exampleutility_*</code>).
 For example, if the Server has an Service Contract that is participating in an electric vehicle charging management program (e.g. EV demand response) and wants to included the model of the Customer’s electric vehicle charging unit, the Server could add a <code class="language-plaintext highlighter-rouge">exampleutility_ev_charger_model</code> field that provides the unit model number as a string.</p>
 
-<p>Clients MUST ignore unknown <code class="language-plaintext highlighter-rouge">types</code> array values and unknown additional fields.</p>
+<p>Clients MUST ignore unknown <code class="language-plaintext highlighter-rouge">types</code> values and unknown fields in this object, such as those added by Servers or <a href="#extensions">Extensions</a>.</p>
 
 <h4 id="1026-service-program-types-">10.2.6. Service Program Types <a id="service-program-types" href="#service-program-types" class="permalink">🔗</a></h4>
 
@@ -6192,6 +6179,8 @@ If no next segment exists (i.e. the requester is at the end of the list), this v
   <li><code class="language-plaintext highlighter-rouge">previous</code> - <em><a href="#url">URL</a></em> or <code class="language-plaintext highlighter-rouge">null</code> - Where to request the previous segment of the list of Service Contracts.
 If no previous segment exists (i.e. the requester is at the front of the list), this value is <code class="language-plaintext highlighter-rouge">null</code>.</li>
 </ul>
+
+<p>Clients MUST ignore unknown unknown fields in this object, such as those added by Servers or <a href="#extensions">Extensions</a>.</p>
 
 <p>Servers MUST support Clients adding any of the following URL parameters to the <code class="language-plaintext highlighter-rouge">GET</code> request, which will filter the list of Service Contracts to be the intersection of results for each of the URL parameters filters:</p>
 
@@ -6253,6 +6242,8 @@ This list MUST only include identifiers that the Client is authorized to see as 
 If a Server does not have any Customer-facing premises for a Service Point or the Client is not authorized to see the Server’s internal premise details for this Service Point, or the Server does not have premises stored for this Service Point, this value is an empty list (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
 </ul>
 
+<p>Clients MUST ignore unknown <code class="language-plaintext highlighter-rouge">servicepoint_types</code> values and unknown fields in this object, such as those added by Servers or <a href="#extensions">Extensions</a>.</p>
+
 <h4 id="1032-service-point-types-">10.3.2. Service Point Types <a id="service-point-types" href="#service-point-types" class="permalink">🔗</a></h4>
 
 <p>Service Point Type values MUST be a <a href="#string">string</a> of one of the following:</p>
@@ -6294,7 +6285,7 @@ See each <a href="#premise-types">Premise Type</a> value for what additional fie
 It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. <code class="language-plaintext highlighter-rouge">exampleutility_*</code>).
 For example, if the Server has a Premise that identifies a group of metering point (e.g. the panel on the side of an apartment building) and wants to include panel’s model number in the Premise object, the Server could add a <code class="language-plaintext highlighter-rouge">exampleutility_panel_model</code> field that provides the panel’s model number as a string.</p>
 
-<p>Clients MUST ignore unknown <code class="language-plaintext highlighter-rouge">types</code> array values and unknown additional fields.</p>
+<p>Clients MUST ignore unknown <code class="language-plaintext highlighter-rouge">types</code> values and unknown fields in this object, such as those added by Servers or <a href="#extensions">Extensions</a>.</p>
 
 <h4 id="1034-premise-types-">10.3.4. Premise Types <a id="premise-types" href="#premise-types" class="permalink">🔗</a></h4>
 
@@ -6321,6 +6312,8 @@ If no next segment exists (i.e. the requester is at the end of the list), this v
   <li><code class="language-plaintext highlighter-rouge">previous</code> - <em><a href="#url">URL</a></em> or <code class="language-plaintext highlighter-rouge">null</code> - Where to request the previous segment of the list of Service Points.
 If no previous segment exists (i.e. the requester is at the front of the list), this value is <code class="language-plaintext highlighter-rouge">null</code>.</li>
 </ul>
+
+<p>Clients MUST ignore unknown unknown fields in this object, such as those added by Servers or <a href="#extensions">Extensions</a>.</p>
 
 <p>Servers MUST support Clients adding any of the following URL parameters to the <code class="language-plaintext highlighter-rouge">GET</code> request, which will filter the list of Service Points to be the intersection of results for each of the URL parameters filters:</p>
 
@@ -6367,6 +6360,8 @@ This list MUST only include identifiers that the Client is authorized to see as 
   <li><code class="language-plaintext highlighter-rouge">meter_apps</code> - <em>Array[<a href="#meter-app-format">MeterApp</a>]</em> - (OPTIONAL) A list of Meter App objects associated with the Meter Device.
 If the Server does not have this information or the Customer does not have any meter applications that are installed or available to install on the Meter Device, this value is and empty list (<code class="language-plaintext highlighter-rouge">[]</code>).</li>
 </ul>
+
+<p>Clients MUST ignore unknown <code class="language-plaintext highlighter-rouge">meter_types</code> values and unknown fields in this object, such as those added by Servers or <a href="#extensions">Extensions</a>.</p>
 
 <h4 id="1042-meter-types-">10.4.2. Meter Types <a id="meter-types" href="#meter-types" class="permalink">🔗</a></h4>
 
@@ -6423,7 +6418,7 @@ See each <a href="#meter-app-types">Meter App Type</a> value for what additional
 It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. <code class="language-plaintext highlighter-rouge">exampleutility_*</code>).
 For example, if the Server has a Meter Device that has a battery management app installed (e.g. for controlling a virtual power plan) and wants to include the model numbers of the batteries installed in the building, the Server could add a <code class="language-plaintext highlighter-rouge">exampleutility_battery_models</code> field that provides a list of battery model numbers.</p>
 
-<p>Clients MUST ignore unknown <code class="language-plaintext highlighter-rouge">types</code> array values and unknown additional fields.</p>
+<p>Clients MUST ignore unknown <code class="language-plaintext highlighter-rouge">types</code> values and unknown fields in this object, such as those added by Servers or <a href="#extensions">Extensions</a>.</p>
 
 <h4 id="1044-meter-app-types-">10.4.4. Meter App Types <a id="meter-app-types" href="#meter-app-types" class="permalink">🔗</a></h4>
 
@@ -6464,6 +6459,8 @@ If no next segment exists (i.e. the requester is at the end of the list), this v
   <li><code class="language-plaintext highlighter-rouge">previous</code> - <em><a href="#url">URL</a></em> or <code class="language-plaintext highlighter-rouge">null</code> - Where to request the previous segment of the list of Meter Devices.
 If no previous segment exists (i.e. the requester is at the front of the list), this value is <code class="language-plaintext highlighter-rouge">null</code>.</li>
 </ul>
+
+<p>Clients MUST ignore unknown unknown fields in this object, such as those added by Servers or <a href="#extensions">Extensions</a>.</p>
 
 <p>Servers MUST support Clients adding any of the following URL parameters to the <code class="language-plaintext highlighter-rouge">GET</code> request, which will filter the list of Meter Devices to be the intersection of results for each of the URL parameters filters:</p>
 
@@ -6527,6 +6524,8 @@ If the Server does not have this information or the Customer is not participatin
 For situations where the Customer’s bill doesn’t actually sum to the amount due (e.g. there’s a billing error), the Server MUST include a New Charge object that has a <code class="language-plaintext highlighter-rouge">amout_due_sum_difference</code> in its <code class="language-plaintext highlighter-rouge">types</code> array and the difference from the sum to the <code class="language-plaintext highlighter-rouge">amount_due</code> value as the object’s <code class="language-plaintext highlighter-rouge">amount</code> value.
 This requirement is a confirmation to Clients that the Server has included all New Charge objects that it knows about, and the Server recognizes that there is something unaccounted for in the <code class="language-plaintext highlighter-rouge">amount_due</code> value, but the Server does not know what has caused that unaccounted for amount.</p>
 
+<p>Clients MUST ignore unknown fields in this object, such as those added by Servers or <a href="#extensions">Extensions</a>.</p>
+
 <h4 id="1052-new-charge-object-format-">10.5.2. New Charge Object Format <a id="new-charge-format" href="#new-charge-format" class="permalink">🔗</a></h4>
 
 <p>New Charge objects represent a Bill Statement line item that contains a charge or credit that is applied to the Customer’s Account balance on that Bill Statement.
@@ -6544,6 +6543,8 @@ For most situations, this value will be <code class="language-plaintext highligh
   <li><code class="language-plaintext highlighter-rouge">related_billsections</code> - <em>Array[<a href="#string">string</a>]</em> - (OPTIONAL) A list of Service Bill <code class="language-plaintext highlighter-rouge">cds_billsection_id</code> values from which this New Charge is derived.
 If the Server does not know which Bill Section objects are related to this New Charge or the Scope of the access does not include Bill Section objects, this field MUST NOT be included.</li>
 </ul>
+
+<p>Clients MUST ignore unknown <code class="language-plaintext highlighter-rouge">types</code> values and unknown fields in this object, such as those added by Servers or <a href="#extensions">Extensions</a>.</p>
 
 <h4 id="1053-new-charge-types-">10.5.3. New Charge Types <a id="new-charge-types" href="#new-charge-types" class="permalink">🔗</a></h4>
 
@@ -6585,6 +6586,8 @@ If no next segment exists (i.e. the requester is at the end of the list), this v
   <li><code class="language-plaintext highlighter-rouge">previous</code> - <em><a href="#url">URL</a></em> or <code class="language-plaintext highlighter-rouge">null</code> - Where to request the previous segment of the list of Bill Statements.
 If no previous segment exists (i.e. the requester is at the front of the list), this value is <code class="language-plaintext highlighter-rouge">null</code>.</li>
 </ul>
+
+<p>Clients MUST ignore unknown unknown fields in this object, such as those added by Servers or <a href="#extensions">Extensions</a>.</p>
 
 <p>Servers MUST support Clients adding any of the following URL parameters to the <code class="language-plaintext highlighter-rouge">GET</code> request, which will filter the list of Bill Statements to be the intersection of results for each of the URL parameters filters:</p>
 
@@ -6643,6 +6646,8 @@ This list MUST only include identifiers that the Client is authorized to see as 
   <li><code class="language-plaintext highlighter-rouge">line_items</code> - <em>Array[<a href="#bill-section-line-item-format">BillSectionLineItem</a>]</em> - (OPTIONAL) A list of the Bill Section Line Item objects that denote the individual charges listed on the Customer-facing bill statement section represented by this Bill Section.</li>
 </ul>
 
+<p>Clients MUST ignore unknown <code class="language-plaintext highlighter-rouge">section_types</code> values and unknown fields in this object, such as those added by Servers or <a href="#extensions">Extensions</a>.</p>
+
 <h4 id="1062-bill-section-types-">10.6.2. Bill Section Types <a id="bill-section-types" href="#bill-section-types" class="permalink">🔗</a></h4>
 
 <p>Bill Section Type values MUST be a <a href="#string">string</a> of one of the following:</p>
@@ -6691,7 +6696,7 @@ See each <a href="#bill-section-usage-detail-types">Bill Section Usage Detail Ty
 It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. <code class="language-plaintext highlighter-rouge">exampleutility_*</code>).
 For example, if the Server has a Bill Section Usage Detail that identifies a group of metering points (e.g. the panel on the side of an apartment building) and wants to include panel’s model number in the Bill Section Usage Detail object, the Server could add a <code class="language-plaintext highlighter-rouge">exampleutility_panel_model</code> field that provides the panel’s model number as a string.</p>
 
-<p>Clients MUST ignore unknown <code class="language-plaintext highlighter-rouge">types</code> array values and unknown additional fields.</p>
+<p>Clients MUST ignore unknown <code class="language-plaintext highlighter-rouge">types</code> values, unknown <code class="language-plaintext highlighter-rouge">units</code> values, and unknown fields in this object, such as those added by Servers or <a href="#extensions">Extensions</a>.</p>
 
 <h4 id="1064-bill-section-usage-detail-types-">10.6.4. Bill Section Usage Detail Types <a id="bill-section-usage-detail-types" href="#bill-section-usage-detail-types" class="permalink">🔗</a></h4>
 
@@ -6750,7 +6755,7 @@ See each <a href="#bill-section-cost-detail-types">Bill Section Cost Detail Type
 It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. <code class="language-plaintext highlighter-rouge">exampleutility_*</code>).
 For example, if the Server has a Bill Section Cost Detail that identifies a utility-specific grouping type (e.g. this cost detail is the total nuclear decommisioning charge) and wants to include the tariff’s designation number in the Bill Section Cost Detail object, the Server could add a <code class="language-plaintext highlighter-rouge">exampleutility_tariff_designation</code> field that provides the tariff designation number number as a string.</p>
 
-<p>Clients MUST ignore unknown <code class="language-plaintext highlighter-rouge">types</code> array values and unknown additional fields.</p>
+<p>Clients MUST ignore unknown <code class="language-plaintext highlighter-rouge">types</code> values and unknown fields in this object, such as those added by Servers or <a href="#extensions">Extensions</a>.</p>
 
 <h5 id="10651-cost-detail-summation-clarifications-">10.6.5.1. Cost Detail Summation Clarifications <a id="bill-section-cost-detail-sums" href="#bill-section-cost-detail-sums" class="permalink">🔗</a></h5>
 
@@ -6824,7 +6829,7 @@ See each <a href="#bill-section-line-item-types">Bill Section Line Item Type</a>
 It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. <code class="language-plaintext highlighter-rouge">exampleutility_*</code>).
 For example, if the Server has a Bill Section Line Item that identifies a demand response participation credit and wants to include the participation number for the Customer in the Bill Section Line Item object, the Server could add a <code class="language-plaintext highlighter-rouge">exampleutility_dr_participant</code> field that provides the Customer’s participant number as a string.</p>
 
-<p>Clients MUST ignore unknown <code class="language-plaintext highlighter-rouge">types</code> array values and unknown additional fields.</p>
+<p>Clients MUST ignore unknown <code class="language-plaintext highlighter-rouge">types</code> values, unknown <code class="language-plaintext highlighter-rouge">units</code> values, and unknown fields in this object, such as those added by Servers or <a href="#extensions">Extensions</a>.</p>
 
 <h4 id="1068-bill-section-line-item-types-">10.6.8. Bill Section Line Item Types <a id="bill-section-line-item-types" href="#bill-section-line-item-types" class="permalink">🔗</a></h4>
 
@@ -6858,6 +6863,8 @@ If no next segment exists (i.e. the requester is at the end of the list), this v
   <li><code class="language-plaintext highlighter-rouge">previous</code> - <em><a href="#url">URL</a></em> or <code class="language-plaintext highlighter-rouge">null</code> - Where to request the previous segment of the list of Bill Sections.
 If no previous segment exists (i.e. the requester is at the front of the list), this value is <code class="language-plaintext highlighter-rouge">null</code>.</li>
 </ul>
+
+<p>Clients MUST ignore unknown unknown fields in this object, such as those added by Servers or <a href="#extensions">Extensions</a>.</p>
 
 <p>Servers MUST support Clients adding any of the following URL parameters to the <code class="language-plaintext highlighter-rouge">GET</code> request, which will filter the list of Bill Sections to be the intersection of results for each of the URL parameters filters:</p>
 
@@ -6931,7 +6938,7 @@ See each <a href="#aggregation-types">Aggregation Type</a> value for what additi
 It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. <code class="language-plaintext highlighter-rouge">exampleutility_*</code>).
 For example, if the Server has a Aggregation that aggregates usage by neighborhood and wants to include the list of neighborhoods included in the Aggregation object, the Server could add a <code class="language-plaintext highlighter-rouge">exampleutility_neighborhoods</code> field that provides an array of neighborhood name strings for which the Aggregation applies.</p>
 
-<p>Clients MUST ignore unknown <code class="language-plaintext highlighter-rouge">aggregation_types</code> array values and unknown additional fields.</p>
+<p>Clients MUST ignore unknown <code class="language-plaintext highlighter-rouge">aggregation_types</code> values and unknown fields in this object, such as those added by Servers or <a href="#extensions">Extensions</a>.</p>
 
 <h4 id="1072-aggregation-types-">10.7.2. Aggregation Types <a id="aggregation-types" href="#aggregation-types" class="permalink">🔗</a></h4>
 
@@ -7051,7 +7058,7 @@ See each <a href="#aggregation-region-types">Aggregation Region Type</a> value f
 It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. <code class="language-plaintext highlighter-rouge">exampleutility_*</code>).
 For example, if the Server has an Aggregation Region that identifies a utility-specific grouping type (e.g. meters that are for residences along coastlines) and wants to include the length of shores for which the aggregation covers in the Aggregation Region object, the Server could add a <code class="language-plaintext highlighter-rouge">exampleutility_shoreline_length</code> field that provides the total shoreline distance covered for the Aggregation Region as a decimal.</p>
 
-<p>Clients MUST ignore unknown <code class="language-plaintext highlighter-rouge">types</code> array values and unknown additional fields.</p>
+<p>Clients MUST ignore unknown <code class="language-plaintext highlighter-rouge">types</code> values and unknown fields in this object, such as those added by Servers or <a href="#extensions">Extensions</a>.</p>
 
 <h4 id="1074-aggregation-region-types-">10.7.4. Aggregation Region Types <a id="aggregation-region-types" href="#aggregation-region-types" class="permalink">🔗</a></h4>
 
@@ -7123,7 +7130,7 @@ See each <a href="#consent-requirement-types">Consent Requirement Type</a> value
 It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. <code class="language-plaintext highlighter-rouge">exampleutility_*</code>).
 For example, if the Server has a Consent Requirement that identifies the municipal code from which the requirement is derived and wants to include the municipal code in the Consent Requirement object, the Server could add a <code class="language-plaintext highlighter-rouge">exampleutility_examplecity_code</code> field that cites the relevant municipal code as a string.</p>
 
-<p>Clients MUST ignore unknown <code class="language-plaintext highlighter-rouge">types</code> array values and unknown additional fields.</p>
+<p>Clients MUST ignore unknown <code class="language-plaintext highlighter-rouge">types</code> values and unknown fields in this object, such as those added by Servers or <a href="#extensions">Extensions</a>.</p>
 
 <h4 id="1076-consent-requirement-types-">10.7.6. Consent Requirement Types <a id="consent-requirement-types" href="#consent-requirement-types" class="permalink">🔗</a></h4>
 
@@ -7180,6 +7187,8 @@ If no next segment exists (i.e. the requester is at the end of the list), this v
 If no previous segment exists (i.e. the requester is at the front of the list), this value is <code class="language-plaintext highlighter-rouge">null</code>.</li>
 </ul>
 
+<p>Clients MUST ignore unknown unknown fields in this object, such as those added by Servers or <a href="#extensions">Extensions</a>.</p>
+
 <p>Servers MUST support Clients adding any of the following URL parameters to the <code class="language-plaintext highlighter-rouge">GET</code> request, which will filter the list of Aggregations to be the intersection of results for each of the URL parameters filters:</p>
 
 <ul>
@@ -7234,6 +7243,8 @@ For values representing point-in-time readings (e.g. <a href="#usage-segment-met
 
 <p>Servers MUST only include unique identifiers in <code class="language-plaintext highlighter-rouge">related_aggregations</code>, <code class="language-plaintext highlighter-rouge">related_accounts</code>, <code class="language-plaintext highlighter-rouge">related_servicecontracts</code>, <code class="language-plaintext highlighter-rouge">related_servicepoints</code>, <code class="language-plaintext highlighter-rouge">related_meterdevices</code>, and <code class="language-plaintext highlighter-rouge">related_billsections</code> lists MUST only include identifiers that the Client is authorized to see as scoped by their requesting <code class="language-plaintext highlighter-rouge">access_token</code>.</p>
 
+<p>Clients MUST ignore unknown fields in this object, such as those added by Servers or <a href="#extensions">Extensions</a>.</p>
+
 <h4 id="1082-value-format-objects-">10.8.2. Value Format Objects <a id="usage-segment-value-formats" href="#usage-segment-value-formats" class="permalink">🔗</a></h4>
 
 <p>The <a href="#usage-segment-format">Usage Segment</a> <code class="language-plaintext highlighter-rouge">formats</code> field provides an ordered list of Value Format objects that provide details about the objects that are included in each Usage Segment <code class="language-plaintext highlighter-rouge">values</code> entry’s <a href="#usage-segment-value-set-format">Value Set</a>.
@@ -7254,6 +7265,8 @@ For example, a daily net metered elected 15 minute interval Usage Segment would 
 
 <p>Depending on the <code class="language-plaintext highlighter-rouge">type</code>, the Value Format object can contain other fields, which are defined by the type’s documentation.</p>
 
+<p>Clients MUST ignore unknown <code class="language-plaintext highlighter-rouge">type</code> values and unknown fields in this object, such as those added by Servers or <a href="#extensions">Extensions</a>.</p>
+
 <h4 id="1083-value-sets-">10.8.3. Value Sets <a id="usage-segment-value-set-format" href="#usage-segment-value-set-format" class="permalink">🔗</a></h4>
 
 <p>The <a href="#usage-segment-format">Usage Segment</a> <code class="language-plaintext highlighter-rouge">values</code> field provides an ordered list of Value Set entries.
@@ -7270,6 +7283,8 @@ For example, if a Usage Segment has a <code class="language-plaintext highlighte
 The index of the Value Object in the Value Set corresponds to the same index of <a href="#usage-segment-value-formats">Value Format</a> (which defines the Value Object’s type and format) in the <a href="#usage-segment-format">Usage Segment’s</a> <code class="language-plaintext highlighter-rouge">formats</code> array.</p>
 
 <p>The fields within a Value Object are defined by the corresponding Value Format’s <a href="#usage-segment-value-types">Value Type</a> definition (e.g. <a href="#usage-segment-electric-usage">Electric Usage</a>).</p>
+
+<p>Clients MUST ignore unknown fields in Value Objects, such as those added by Servers or <a href="#extensions">Extensions</a>.</p>
 
 <h4 id="1085-value-types-">10.8.5. Value Types <a id="usage-segment-value-types" href="#usage-segment-value-types" class="permalink">🔗</a></h4>
 
@@ -7290,10 +7305,10 @@ The index of the Value Object in the Value Set corresponds to the same index of 
 It is RECOMMENDED that additional <code class="language-plaintext highlighter-rouge">type</code> values have a prefix relevant to the Server (e.g. <code class="language-plaintext highlighter-rouge">exampleutility_*</code>) to prevent potential collisions with other Servers and extensions to this specification that define additional <code class="language-plaintext highlighter-rouge">type</code> values.</p>
 
 <p>Extensions MAY define additional Value Format <code class="language-plaintext highlighter-rouge">type</code> values.
-It is RECOMMENDED that the definitions for the additional <code class="language-plaintext highlighter-rouge">type</code> values follow the same format as those defined in this specification.
-It is RECOMMENDED that additional <code class="language-plaintext highlighter-rouge">type</code> values have a prefix relevant to the Server (e.g. <code class="language-plaintext highlighter-rouge">exampleutility_*</code>) to prevent potential collisions with other Servers and extensions to this specification that define additional <code class="language-plaintext highlighter-rouge">type</code> values.</p>
+See the <a href="#enum-extensions">Enumerated Values Extensions</a> for extension requirements.</p>
 
-<p>Clients MUST ignore Value Format and Value Objects for which they do not understand their Value Type.</p>
+<p>Clients MUST ignore Value Format and Value Objects for which they do not understand their Value Type.
+Clients MUST also ignore any unknown fields or unknown enumerated values in Value Format or Value Objects, such as those added by Servers or <a href="#extensions">Extensions</a>.</p>
 
 <h5 id="10851-electric-usage-">10.8.5.1. Electric Usage <a id="usage-segment-electric-usage" href="#usage-segment-electric-usage" class="permalink">🔗</a></h5>
 
@@ -7610,6 +7625,8 @@ It is RECOMMENDED that Servers also include examples of what typical Value Forma
 Servers MAY include any other information in their documentation, in addition to the required formatted definition.</li>
 </ul>
 
+<p>Clients MUST ignore unknown fields in this object, such as those added by Servers or <a href="#extensions">Extensions</a>.</p>
+
 <h4 id="1087-field-types-">10.8.7. Field Types <a id="usage-segment-field-types" href="#usage-segment-field-types" class="permalink">🔗</a></h4>
 
 <p>Usage Segment <a href="#usage-segment-value-types">Value Types</a> define additional fields for <a href="#usage-segment-value-formats">Value Formats</a> depending on the kind of data they represent.
@@ -7787,6 +7804,8 @@ If no next segment exists (i.e. the requester is at the end of the list), this v
 If no previous segment exists (i.e. the requester is at the front of the list), this value is <code class="language-plaintext highlighter-rouge">null</code>.</li>
 </ul>
 
+<p>Clients MUST ignore unknown unknown fields in this object, such as those added by Servers or <a href="#extensions">Extensions</a>.</p>
+
 <p>Servers MUST support Clients adding any of the following URL parameters to the <code class="language-plaintext highlighter-rouge">GET</code> request, which will filter the list of Usage Segments to be the intersection of results for each of the URL parameters filters:</p>
 
 <ul>
@@ -7841,6 +7860,8 @@ In situations where the URL is the base URL to another set of APIs that contain 
   <li><code class="language-plaintext highlighter-rouge">period_end</code> - <em><a href="#datetime">datetime</a></em> - (REQUIRED) When the EAC coverage time period ended or will end.</li>
 </ul>
 
+<p>Clients MUST ignore unknown <code class="language-plaintext highlighter-rouge">beneficiary_type</code> values and unknown fields in this object, such as those added by Servers or <a href="#extensions">Extensions</a>.</p>
+
 <h4 id="1092-beneficiary-types-">10.9.2. Beneficiary Types <a id="eac-beneficiary-types" href="#eac-beneficiary-types" class="permalink">🔗</a></h4>
 
 <p>EAC object <code class="language-plaintext highlighter-rouge">beneficiary_type</code> values MUST be one of the following:</p>
@@ -7876,6 +7897,8 @@ When the <code class="language-plaintext highlighter-rouge">beneficiary_type</co
   <li><code class="language-plaintext highlighter-rouge">documentation</code> - <em><a href="#url">URL</a></em> - (REQUIRED) A link to developer documentation on the EAC data format.</li>
 </ul>
 
+<p>Clients MUST ignore unknown fields in this object, such as those added by Servers or <a href="#extensions">Extensions</a>.</p>
+
 <h4 id="1094-listing-energy-attribute-certificates-">10.9.4. Listing Energy Attribute Certificates <a id="eac-list" href="#eac-list" class="permalink">🔗</a></h4>
 
 <p>Clients may request to list EAC objects that they have access to by making an HTTPS <code class="language-plaintext highlighter-rouge">GET</code> request to the <a href="#server-metadata">Server Metadata’s</a> <code class="language-plaintext highlighter-rouge">cds_eacs_api</code> URL.
@@ -7890,6 +7913,8 @@ If no next segment exists (i.e. the requester is at the end of the list), this v
   <li><code class="language-plaintext highlighter-rouge">previous</code> - <em><a href="#url">URL</a></em> or <code class="language-plaintext highlighter-rouge">null</code> - Where to request the previous segment of the list of EACs.
 If no previous segment exists (i.e. the requester is at the front of the list), this value is <code class="language-plaintext highlighter-rouge">null</code>.</li>
 </ul>
+
+<p>Clients MUST ignore unknown unknown fields in this object, such as those added by Servers or <a href="#extensions">Extensions</a>.</p>
 
 <p>Servers MUST support Clients adding any of the following URL parameters to the <code class="language-plaintext highlighter-rouge">GET</code> request, which will filter the list of EACs to be the intersection of results for each of the URL parameters filters:</p>
 
@@ -7909,7 +7934,251 @@ In situations where relevant EACs have the same <code class="language-plaintext 
 
 <h2 id="11-extensions-">11. Extensions <a id="extensions" href="#extensions" class="permalink">🔗</a></h2>
 
-<p><span style="background-color:yellow">TODO</span></p>
+<p>Other specifications, regulators, governing authorities, and Servers MAY define extensions for this specification to address additional use cases.</p>
+
+<p>The following sections include requirements and recommendations for how to extend various components of this specification.</p>
+
+<h3 id="111-scenario-extensions-">11.1. Scenario Extensions <a id="scenario-extensions" href="#scenario-extensions" class="permalink">🔗</a></h3>
+
+<p>Extensions MAY modify existing <a href="#scenarios">Scenarios</a> defined in this specification or define new Scenarios.</p>
+
+<p>Extensions that modify existing Scenarios MUST meet the following requirements:</p>
+
+<ul>
+  <li>The Scenario modification MUST be backwards compatible, meaning that a Client that supports the existing Scenario will also be able to support the modified Scenario without issue.
+For example, a Scenario could be modified to require that Servers add an additional data field (e.g. <code class="language-plaintext highlighter-rouge">"CPUC_midas_id"</code>) to the <a href="#service-contract-format">Service Contract object</a>, and since Clients are required to ignore additional data fields in objects, the modification would be backwards compatible with Clients.
+If a modification is not backwards compatible, a new Scenario MUST be defined.</li>
+</ul>
+
+<p>Extensions that define a new Scenario MUST meet the following requirements:</p>
+
+<ul>
+  <li>If the new Scenario is based on an existing Scenario defined in this specification with modifications, the new Scenario MUST be defined by specifying a new Scenario name (to distinguish it from the Scenario defined in this specification), referencing the Scenario in this specification upon which the new Scenario is based, and listing the modifications to the referenced Scenario’s requirements.
+For example, if a Server wants to provide customers access to their own Bill Statements, but does not have digital versions of Bill Sections, the definition of the new Scenario could reference the <a href="#scenario-billing-self-access">Billing Self-Access</a> Scenario in this specification followed by a list of modifications that remove the <a href="#scope-bill-sections-query">Bill Sections Query</a> Scope requirements.</li>
+  <li>If the new Scenario is not based on an existing Scenario defined in this specification, the new Scenario MUST be defined with the same format structure as those defined in this specification.
+This is so that Client developers who are familiar with this specification can easily add support for other Scenarios in extensions.
+The format for Scenario definitions in this specification use the following structure:
+    <ul>
+      <li>Include the name of the new Scenario.
+It is RECOMMENDED that new Scenario names are prefixed with the entity or specification that is defining the new Scenario (e.g. “CPUC My New Scenario Name”).</li>
+      <li>Include a brief explanation and example of the use cases the Scenario is intending to support.
+This allows Clients to understand why this Scenario exists.</li>
+      <li>Include a list of requirements that Servers MUST or MAY implement to support the Scenario.
+This list typically includes the required Scopes, any Authorization Details Field requirements, any additional data fields, and any Server operating requirements.
+It is RECOMMENDED that additional data fields or enumerated values be prefixed with the entity or specification that is defining the new field or value (e.g. <code class="language-plaintext highlighter-rouge">CAISO_zone_id</code>).</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="112-scope-extensions-">11.2. Scope Extensions <a id="scope-extensions" href="#scope-extensions" class="permalink">🔗</a></h3>
+
+<p>Extensions MAY modify existing <a href="#scopes">Scopes</a> defined in this specification or define new Scopes.</p>
+
+<p>It is RECOMMENDED that extensions prefer <a href="#scenario-extensions">extending Scenarios</a>, rather than extending Scopes, if their desired use cases can be accommodated by specifying Scenario requirements for existing Scopes and Authorization Details Fields.
+This is so that Clients who support existing Scopes and Authorization Details Fields defined in this specification will already be compatible with new extensions and use cases.</p>
+
+<p>Extensions that modify existing Scopes MUST meet the following requirements:</p>
+
+<ul>
+  <li>The Scope modification MUST be backwards compatible, meaning that a Client that supports the existing Scope will also be able to support the modified Scope without issue.
+For example, a Scope could be modified to require that Servers support an additional <code class="language-plaintext highlighter-rouge">response_type</code> (e.g. adding <code class="language-plaintext highlighter-rouge">"token"</code> to the Scope Description’s <code class="language-plaintext highlighter-rouge">response_types_supported</code> array), and since the required <code class="language-plaintext highlighter-rouge">"code"</code> value is still in the <code class="language-plaintext highlighter-rouge">response_types_supported</code> array, the modification would be backwards compatible with Clients.
+If a modification is not backwards compatible, a new Scope MUST be defined.</li>
+</ul>
+
+<p>Extensions that define a new Scope MUST meet the following requirements:</p>
+
+<ul>
+  <li>If the new Scope is based on an existing Scope defined in this specification with modifications, the new Scope MUST be defined by specifying a new Scope Description <code class="language-plaintext highlighter-rouge">type</code> value (to distinguish it from the Scope defined in this specification), referencing the Scope in this specification upon which the new Scope is based, and listing the modifications to the referenced Scope’s requirements.
+For example, if a Server wants to provide access to a special utility program enrollment API in addition to providing access to a Customer’s Account Programs, the definition of the new Scope could reference the <a href="#scope-account-program-participation">Account Program Participation</a> Scope in this specification followed by a list of modifications or additional requirements for the new Scope.</li>
+  <li>If the new Scope is not based on an existing Scope defined in this specification, the new Scope MUST be defined with the same format structure as those defined in this specification.
+This is so that Client developers who are familiar with this specification can easily add support for other Scopes in extensions.
+The format for Scope definitions in this specification use the following structure:
+    <ul>
+      <li>Brief explanation and example of the use cases the Scope is intending to address.
+This allows Clients to understand why this Scope exists.</li>
+      <li>Definition of Scope Description [<a href="#ref-cds-wg1-02-scope-descriptions">CDS-WG1-02 Section 3.4</a>] requirements.
+This allows Clients to understand how to use this Scope in their requests to Servers.</li>
+      <li>Definition of Server access and behavior requirements.
+This allows Clients to understand what access and behavior Servers will provide when this Scope is part of a request or Grant.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="113-authorization-details-field-extensions-">11.3. Authorization Details Field Extensions <a id="auth-details-field-extensions" href="#auth-details-field-extensions" class="permalink">🔗</a></h3>
+
+<p>Extensions MAY modify existing <a href="#auth-details-fields">Authorization Details Fields</a> defined in this specification or define new Authorization Details Fields.</p>
+
+<p>It is RECOMMENDED that extensions prefer <a href="#scenario-extensions">extending Scenarios</a>, rather than extending Authorization Details Fields, if their desired use cases can be accommodated by specifying Scenario requirements for existing Scopes and Authorization Details Fields.
+This is so that Clients who support existing Scopes and Authorization Details Fields defined in this specification will already be compatible with new extensions and use cases.</p>
+
+<p>Extensions that modify existing Authorization Details Fields MUST meet the following requirements:</p>
+
+<ul>
+  <li>The Authorization Details Field modification MUST be backwards compatible, meaning that a Client that supports the existing Authorization Details Field will also be able to support the modified Authorization Details Field without issue.
+For example, the Authorization Details Field <a href="#auth-details-include-contract-numbers"><code class="language-plaintext highlighter-rouge">include_contract_numbers</code></a> could be modified to require that an additional data field (e.g. <code class="language-plaintext highlighter-rouge">"CPUC_midas_id"</code>) be included on the <a href="#service-contract-format">Service Contract object</a> when the field’s value is <code class="language-plaintext highlighter-rouge">true</code>, and since Clients are required to ignore additional data fields in objects, the modification would be backwards compatible with Clients.
+If a modification is not backwards compatible, a new Authorization Details Field MUST be defined.</li>
+</ul>
+
+<p>Extensions that define a new Authorization Details Field MUST meet the following requirements:</p>
+
+<ul>
+  <li>If the new Authorization Details Field is based on an existing Authorization Details Field defined in this specification with modifications, the new Authorization Details Field MUST be defined by specifying a new Authorization Details Field Object <code class="language-plaintext highlighter-rouge">id</code> value (to distinguish it from the Authorization Details Field Object defined in this specification), referencing the Authorization Details Field in this specification upon which the new Authorization Details Field is based, and listing the modifications to the referenced Authorization Details Field’s requirements.
+For example, if a specification needs to add more preselection error response behaviors, the definition of the new Authorization Details Field could reference the <a href="#auth-details-error-if-no-preselections">Error If No Preselections</a> Authorization Details Field in this specification followed by a list of modifications changing the <code class="language-plaintext highlighter-rouge">format</code> value from <code class="language-plaintext highlighter-rouge">"boolean"</code> to <code class="language-plaintext highlighter-rouge">"choice"</code> and other necessary requirements.</li>
+</ul>
+
+<h3 id="114-customer-authorization-extensions-">11.4. Customer Authorization Extensions <a id="customer-authorization-extensions" href="#customer-authorization-extensions" class="permalink">🔗</a></h3>
+
+<p>Extensions MAY modify <a href="#authorizations">Customer Authorization</a> requirements defined in this specification.</p>
+
+<p>It is NOT RECOMMENDED that extensions modify <a href="#authorizations">Customer Authorization</a> requirements in such a way that they break backwards compatibility with existing Customer Authorization requirements in this specification.
+If an extension or Server implementation of an extension breaks backwards compatibility with this specification’s Customer Authorization requirements, the extension or Server MUST NOT claim to be compliant with this specification.</p>
+
+<h3 id="115-api-endpoint-extensions-">11.5. API Endpoint Extensions <a id="api-extensions" href="#api-extensions" class="permalink">🔗</a></h3>
+
+<p>Extensions MAY modify the following <a href="#api">Customer Data API</a> endpoints defined in this specification:</p>
+
+<ul>
+  <li><a href="#accounts-list">Listing Accounts</a></li>
+  <li><a href="#service-contract-list">Listing Service Contracts</a></li>
+  <li><a href="#service-point-list">Listing Service Points</a></li>
+  <li><a href="#meter-device-list">Listing Meter Devices</a></li>
+  <li><a href="#bill-statement-list">Listing Bill Statements</a></li>
+  <li><a href="#bill-section-list">Listing Bill Sections</a></li>
+  <li><a href="#aggregation-list">Listing Aggregations</a></li>
+  <li><a href="#usage-segment-list">Listing Usage Segments</a></li>
+  <li><a href="#eac-list">Listing Energy Attribute Certificates</a></li>
+</ul>
+
+<p>Extensions that modify API endpoints MUST meet the following requirements:</p>
+
+<ul>
+  <li>The API endpoint modification MUST be backwards compatible, meaning that a Client that supports the existing API endpoint will also be able to support the modified API endpoint without issue.
+For example, an extension could modify the <a href="#accounts-list">Accounts List endpoint</a> to require supporting an additional URL parameter (e.g. <code class="language-plaintext highlighter-rouge">?entity_name=...</code>), and since Clients can still use all of the existing required URL parameters, the modification would be backwards compatible with Clients.
+If a modification is not backwards compatible (e.g. changing the authentication requirements), a new API endpoint MUST be defined.</li>
+</ul>
+
+<p>Extensions MAY define new API endpoints as needed.</p>
+
+<h3 id="116-data-object-extensions-">11.6. Data Object Extensions <a id="object-extensions" href="#object-extensions" class="permalink">🔗</a></h3>
+
+<p>Extensions MAY modify the following <a href="#api">Customer Data</a> objects defined in this specification:</p>
+
+<ul>
+  <li><a href="#purpose-format">Purpose Object</a></li>
+  <li><a href="#account-format">Account Object</a></li>
+  <li><a href="#entity-format">Entity Object</a></li>
+  <li><a href="#account-contact-format">Account Contact Object</a></li>
+  <li><a href="#account-program-format">Account Program Object</a></li>
+  <li><a href="#accounts-list">Account List Object</a></li>
+  <li><a href="#service-contract-format">Service Contract Object</a></li>
+  <li><a href="#service-program-format">Service Program Object</a></li>
+  <li><a href="#service-contract-list">Service Contract List Object</a></li>
+  <li><a href="#service-point-format">Service Point Object</a></li>
+  <li><a href="#premise-format">Premise Object</a></li>
+  <li><a href="#service-point-lsit">Service Point List Object</a></li>
+  <li><a href="#meter-device-format">Meter Device Object</a></li>
+  <li><a href="#meter-app-format">Meter App Object</a></li>
+  <li><a href="#meter-device-list">Meter Device List Object</a></li>
+  <li><a href="#bill-statement-format">Bill Statement Object</a></li>
+  <li><a href="#new-charge-format">New Charge Object</a></li>
+  <li><a href="#bill-statement-list">Bill Statement List Object</a></li>
+  <li><a href="#bill-section-format">Bill Section Object</a></li>
+  <li><a href="#bill-section-usage-detail-format">Bill Section Usage Detail Object</a></li>
+  <li><a href="#bill-section-cost-detail-format">Bill Section Cost Detail Object</a></li>
+  <li><a href="#bill-section-line-item-format">Bill Section Line Item Object</a></li>
+  <li><a href="#bill-section-list">Bill Section List Object</a></li>
+  <li><a href="#aggregation-format">Aggregation Object</a></li>
+  <li><a href="#aggregation-region-format">Aggregation Region Object</a></li>
+  <li><a href="#consent-requirement-format">Consent Requirement Object</a></li>
+  <li><a href="#aggregation-list">Aggregation List Object</a></li>
+  <li><a href="#usage-segment-format">Usage Segment Object</a></li>
+  <li><a href="#usage-segment-value-formats">Usage Segment Value Format Object</a>
+    <ul>
+      <li><a href="#usage-segment-electric-usage-value-format">Electric Usage Value Format Object</a></li>
+      <li><a href="#usage-segment-electric-demand-value-format">Electric Demand Value Format Object</a></li>
+      <li><a href="#usage-segment-supply-mix-value-format">Electric Supply Mix Value Format Object</a></li>
+      <li><a href="#usage-segment-water-usage-value-format">Water Usage Value Format Object</a></li>
+      <li><a href="#usage-segment-gas-usage-value-format">Natural Gas Usage Value Format Object</a></li>
+      <li><a href="#usage-segment-fueloil-usage-value-format">Fuel Oil Usage Value Format Object</a></li>
+      <li><a href="#usage-segment-interval-cost-value-format">Interval Cost Value Format Object</a></li>
+      <li><a href="#usage-segment-meter-readings-value-format">Meter Readings Value Format Object</a></li>
+    </ul>
+  </li>
+  <li><a href="#usage-segment-value-objects">Usage Segment Value Object</a>
+    <ul>
+      <li><a href="#usage-segment-electric-usage-value-object">Electric Usage Value Object</a></li>
+      <li><a href="#usage-segment-electric-demand-value-object">Electric Demand Value Object</a></li>
+      <li><a href="#usage-segment-supply-mix-value-object">Electric Supply Mix Value Object</a></li>
+      <li><a href="#usage-segment-water-usage-value-object">Water Usage Value Object</a></li>
+      <li><a href="#usage-segment-gas-usage-value-object">Natural Gas Usage Value Object</a></li>
+      <li><a href="#usage-segment-fueloil-usage-value-object">Fuel Oil Usage Value Object</a></li>
+      <li><a href="#usage-segment-interval-cost-value-object">Interval Cost Value Object</a></li>
+      <li><a href="#usage-segment-meter-readings-value-object">Meter Readings Value Object</a></li>
+    </ul>
+  </li>
+  <li><a href="#usage-segment-value-type-description">Usage Segment Value Type Description Object</a></li>
+  <li><a href="#usage-segment-list">Usage Segment List Object</a></li>
+  <li><a href="#eac-format">Energy Attribute Certificate Object</a></li>
+  <li><a href="#eac-data-format-descriptions">Energy Attribute Certificate Data Format Description Object</a></li>
+  <li><a href="#eac-list">Energy Attribute Certificate List Object</a></li>
+</ul>
+
+<p>Extensions that modify Customer Data objects MUST meet the following requirements:</p>
+
+<ul>
+  <li>The object modification MUST be backwards compatible, meaning that a Client that supports the existing object will also be able to support the modified object without issue.
+For example, an extension could modify the <a href="#account-format">Account Object</a> to require supporting an additional field (e.g. <code class="language-plaintext highlighter-rouge">"registration_date": "..."</code>), and since Clients are required to ignore additional data fields in objects, the modification would be backwards compatible with Clients.
+If a modification is not backwards compatible (e.g. changing the format of an existing object field), a new object MUST be defined.</li>
+</ul>
+
+<p>Extensions MAY define new data objects as needed.</p>
+
+<h3 id="117-enumerated-values-extensions-">11.7. Enumerated Values Extensions <a id="enum-extensions" href="#enum-extensions" class="permalink">🔗</a></h3>
+
+<p>Extensions MAY modify the following enumerated value lists defined in this specification:</p>
+
+<ul>
+  <li><a href="#account-types">Account Types</a></li>
+  <li><a href="#account-statuses">Account Statuses</a></li>
+  <li><a href="#entity-types">Entity Types</a></li>
+  <li><a href="#account-contact-types">Account Contact Types</a></li>
+  <li><a href="#account-program-types">Account Program Types</a></li>
+  <li><a href="#contract-types">Contract Types</a></li>
+  <li><a href="#contract-statuses">Contract Statuses</a></li>
+  <li><a href="#service-types">Service Types</a></li>
+  <li><a href="#service-program-types">Service Program Types</a></li>
+  <li><a href="#service-point-types">Service Point Types</a></li>
+  <li><a href="#premise-types">Premise Types</a></li>
+  <li><a href="#meter-types">Meter Types</a></li>
+  <li><a href="#meter-app-types">Meter App Types</a></li>
+  <li><a href="#new-charge-types">New Charge Types</a></li>
+  <li><a href="#bill-section-types">Bill Section Types</a></li>
+  <li><a href="#bill-section-usage-detail-types">Bill Section Usage Detail Types</a></li>
+  <li><a href="#bill-section-cost-detail-types">Bill Section Cost Detail Types</a></li>
+  <li><a href="#bill-section-line-item-types">Bill Section Line Item Types</a></li>
+  <li><a href="#aggregation-types">Aggregation Types</a></li>
+  <li><a href="#aggregation-region-types">Aggregation Region Types</a></li>
+  <li><a href="#consent-requirement-types">Consent Requirement Types</a></li>
+  <li><a href="#usage-segment-value-types">Usage Segment Value Types</a></li>
+  <li><a href="#usage-segment-unit-types">Unit Types</a></li>
+  <li><a href="#usage-segment-direction-types">Direction Types</a></li>
+  <li><a href="#usage-segment-tou-types">Time-of-Use Types</a></li>
+  <li><a href="#usage-segment-reading-quality-types">Reading Quality Types</a></li>
+  <li><a href="#usage-segment-demand-types">Demand Types</a></li>
+  <li><a href="#usage-segment-supply-attribution-types">Supply Attribution Types</a></li>
+  <li><a href="#usage-segment-supply-types">Supply Types</a></li>
+  <li><a href="#eac-beneficiary-types">Beneficiary Types</a></li>
+</ul>
+
+<p>Extensions that modify the lists of enumerated values MUST meet the following requirements:</p>
+
+<ul>
+  <li>The enumerated value list modification MUST be backwards compatible, meaning that a Client that supports the existing list of enumerated values will also be able to support the modified list of enumerated values without issue.
+For example, an extension could modify the <a href="#entity-types">Entity Types</a> to require supporting an additional enumerated values (e.g. adding a <code class="language-plaintext highlighter-rouge">solar_generator</code> value), and since Clients are required to ignore unknown values, the modification would be backwards compatible with Clients.
+If a modification is not backwards compatible (e.g. changing the definition of an existing value), a new enumerated value list MUST be defined.</li>
+</ul>
+
+<p>Extensions MAY define new enumerated value lists as needed.</p>
 
 <h2 id="12-security-considerations-">12. Security Considerations <a id="security" href="#security" class="permalink">🔗</a></h2>
 
