@@ -136,19 +136,21 @@
 <h1 id="customer-data---overview">Customer Data - Overview</h1>
 
 <p>This is a summary overview of the <a href="/CDS-Customer-Data/specs/cds-wg3-01"><code class="language-plaintext highlighter-rouge">cds-wg3-01</code></a> (“Customer Data”) specification, which describes how utilities and other central grid entities (“Servers”) can provide secure, authorized access to customer account, usage, and bill data to external entities (“Clients”).
-External entities could be anyone, including customers themselves, their vendors or energy managers, approved academic institutions, government regulators, and more.
+External entities could be anyone, including customers themselves, their vendors or energy managers, approved academic institutions, government regulators, and more.</p>
+
+<p>To help streamline adoption, this specification has pre-written <a href="/CDS-Customer-Data/specs/cds-wg3-01#scenarios">Scenarios</a>, which are ready-made sets of requirements that can be implemented by utilities or mandated by regulators to meet common use cases.
 The goal of this specification is to define a standardized way for utilities and other central grid entities to offer secure, authorized, streamlined, and automated data access that meets many of their customer data exchange requirements.</p>
 
-<p>This specification extends the CDS Registration Working Group (CDS-WG1) <a href="https://cds-registration.lfenergy.org/specs/">specifications</a> by defining new “scopes” (i.e. permission levels) that Servers can offer for granular customer data access.
+<p>This specification extends the CDS Registration Working Group (CDS-WG1) <a href="https://cds-registration.lfenergy.org/specs/">specifications</a> by defining new <a href="/CDS-Customer-Data/specs/cds-wg3-01#scopes">Scopes</a> (i.e. permission levels) that Servers can offer for granular customer data access.
 Servers can customize what level of access they offer, what customer datasets are available, and which external entities are approved to access the data.
 Servers can also configure “self-service” authorizations (i.e. OAuth) for customers, which allows customers to manage their own data access for approved external entities (“Clients”).
 This allows utilities and other central entities to deploy Servers that are “right-sized” for their use cases, big or small.</p>
 
-<p>This specification also defines Application Programming Interfaces (APIs) that organize customer data into documented API endpoints and machine-readable data formats.
+<p>This specification also defines <a href="/CDS-Customer-Data/specs/cds-wg3-01#api">Customer Data APIs</a> (Application Programming Interfaces) that organize customer data into documented API endpoints and machine-readable data formats.
 These APIs can be deployed in tandem other data access protocols for seamless, parallel operation and smooth transitions from prior protocols to the CDS APIs.
 By standardizing an open, freely available set of customer data APIs and data schemas, Servers and Clients can automate their connections and improve interoperability at a global scale.</p>
 
-<p>Overall, this specification’s combination of defined scopes of access and documented APIs and data formats gives utilities and other central entities a free, secure, scalable, and standardized protocol to meet their customer data access needs.</p>
+<p>Overall, this specification’s combination of defined scopes of access and documented APIs and data formats gives policymakers, utilities, and other central entities a powerful, secure, scalable, and standardized protocol to meet their customer data access needs.</p>
 
 <h2 id="background-">Background <a id="background" href="#background" class="permalink">🔗</a></h2>
 
@@ -181,9 +183,9 @@ For example, a utility or other central entity could deploy a small, low cost Se
 
 <p>As part of the extension, this specification defines new <a href="/CDS-Customer-Data/specs/cds-wg3-01#scopes">OAuth scope values</a> that standardize various levels of access for common customer data access use cases.
 These scopes cover use cases where customer consent is required (using the widely adopted OAuth <code class="language-plaintext highlighter-rouge">authorization_code</code> grant flow) and use cases where only Server authorization is required (using the OAuth <code class="language-plaintext highlighter-rouge">client_credentials</code> grant flow).
-When customer consent is required, the specification defines an <a href="/CDS-Customer-Data/specs/cds-wg3-01#authorizations">OAuth authorization process</a> that streamlines the customer’s experience while also keeping the authorization secure.</p>
+When customer consent is required, the specification defines an <a href="/CDS-Customer-Data/specs/cds-wg3-01#authorizations">OAuth authorization process</a> that streamlines the customer’s experience while still keeping the authorization secure.</p>
 
-<p>Another part of the extension is a set of APIs and data formats for customer data (listed below).</p>
+<p>Another part of the extension is a set of <a href="/CDS-Customer-Data/specs/cds-wg3-01#api">APIs</a> and data formats for customer data (listed below).</p>
 
 <ul>
   <li>Customer account and meter details:
@@ -222,13 +224,7 @@ They can limit access by customer and Client to only the specific subset of data
 What data fields are included in the responses from these APIs is determined by what scopes the Client’s <code class="language-plaintext highlighter-rouge">access_token</code> has been granted.</p>
 
 <p>Overall, this specification provides a highly flexible set of authorization scopes, APIs, and data formats to support many customer data access use cases.
-This allows utilities and other central entities to quickly deploy Servers that are tailor to their individual use cases, and allows Clients to automate integration with new Servers for scalable interoperability and adoption.</p>
-
-<h2 id="examples-">Examples <a id="examples" href="#examples" class="permalink">🔗</a></h2>
-
-<p>Here are some examples of how to programmatically interact with a Server’s APIs using <code class="language-plaintext highlighter-rouge">curl</code> and <code class="language-plaintext highlighter-rouge">jq</code> from the command line.</p>
-
-<p><span style="background-color:yellow">TODO</span></p>
+This allows utilities and other central entities to quickly deploy Servers that are tailored to their individual use cases, and allows Clients to automate integration with new Servers for scalable interoperability and adoption.</p>
 
 <hr />
 
