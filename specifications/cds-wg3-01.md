@@ -35,6 +35,7 @@ For more information, visit [https://lfess.energy/](https://lfess.energy/).
     * [4.12. Aggregated Data](#scenario-aggregated-data)  
 * [5. Server Metadata](#server-metadata)  
     * [5.1. Registration Field Formats Extension](#registration-field-formats-extension)  
+    * [5.2. Choice Object Extension](#choice-object-extension)  
 * [6. Scopes Supported](#scopes)  
     * [6.1. Customer Consent Scopes](#scopes-customer-consent)  
         * [6.1.1. Rate Plan](#scope-rate-plan)  
@@ -266,6 +267,31 @@ For more information, visit [https://lfess.energy/](https://lfess.energy/).
     * [12.2. Obligation to Server Jurisdiction Requirements](#security-jurisdiction-requirements)  
     * [12.3. Data Anonymization](#security-data-anonymization)  
 * [13. Examples](#examples)  
+    * [13.1. Client Management Examples](#example-clients-management)  
+        * [13.1.1. Retrieving Available Scopes from Metadata](#example-get-scopes-metadata)  
+        * [13.1.2. Registering a Client](#example-register-client)  
+        * [13.1.3. Obtaining a Client Admin Access Token](#example-client-admin-token)  
+        * [13.1.4. Retrieving Client Objects with Customer Data Scopes](#example-get-client)  
+        * [13.1.5. Retrieving Client-specific Server Metadata](#example-get-client-server-metadata)  
+        * [13.1.6. Retrieving Client Secrets](#example-get-client-secret)  
+    * [13.2. Direct Access Examples](#example-direct-access)  
+        * [13.2.1. Obtaining an Access Token with Direct Access Scopes](#example-direct-access-token)  
+        * [13.2.2. Retrieving an Account List](#example-get-accounts)  
+        * [13.2.3. Retrieving an Account's Bill Statements](#example-get-bill-statements)  
+    * [13.3. Direct Access Examples](#example-customer-authorization)  
+        * [13.3.1. Adding a Custom Redirect URL](#example-add-redirect-uri)  
+        * [13.3.2. Building an Authorization Request URL](#example-auth-request-url)  
+        * [13.3.3. Using an Authorization Code to Obtain an Access Token](#example-auth-code-to-token)  
+        * [13.3.4. Retrieving a Service Contract List](#example-get-service-contracts)  
+        * [13.3.5. Retrieving Electric Interval Data](#example-get-usage-segments)  
+        * [13.3.6. Retrieving Customer Authorized Grants](#example-get-grants)  
+        * [13.3.7. Obtaining a Grant Admin Access Token for a Customer Authorized Grant](#example-grant-admin-token)  
+    * [13.4. Server Request Examples](#example-server-request)  
+        * [13.4.1. Sending a Message with a Scope Request](#example-send-scope-message)  
+        * [13.4.2. Retrieving a Message Reply to a Scope Request](#example-receive-scope-message)  
+        * [13.4.3. Retrieving the Server-Created Grant](#example-get-server-created-grant)  
+        * [13.4.4. Obtaining a Grant Admin Access Token for a Server-Created Grant](#example-server-created-grant-admin-token)  
+        * [13.4.4. Retrieving Customer Data for a Server-Created Grant](#example-get-server-created-data)  
 * [14. References](#references)  
 * [15. Acknowledgments](#acknowledgments)  
 * [16. Authors' Addresses](#authors-addresses)  
@@ -305,6 +331,8 @@ For the Authorization Process, the User is assumed to be the [Customer](#custome
 So for the purposes of this specification, anytime the "User" is mentioned it can be assumed that the Customer is the User, whether or not they have completed [Customer Authentication](#customer-authentication).
 
 <a id="array" href="#array" class="permalink">🔗</a> "Array" - A list of objects or values as defined by `Arrays` in [[RFC 8259 Section 5](#ref-rfc8259-arrays)].
+
+<a id="base64" href="#base64" class="permalink">🔗</a> "Base64" - A method of encoding binary data into a string defined in [[RFC 4648](#ref-rfc4648)].
 
 <a id="country-code" href="#country-code" class="permalink">🔗</a> "country code" - A two-character string representing a country as defined in [ISO 3166](#ref-iso3166) (e.g. "US").
 
@@ -352,6 +380,7 @@ Specifically, the following sections are extended from [[CDS-WG1-02](#ref-cds-wg
 
 * The Authorization Server Metadata object [[CDS-WG1-02 Section 3.2](#ref-cds-wg1-02-metadata)] is extended to include [additional fields](#server-metadata).
 * The Registration Field Formats [[CDS-WG1-02 Section 3.7](#ref-cds-wg1-02-registration-field-formats)] is extended to include [additional fields](#registration-field-formats-extension).
+* The Choice Objects [[CDS-WG1-02 Section 3.10](#ref-cds-wg1-02-choice-objects)] is extended to include [additional fields](#choice-object-extension).
 * The Scopes Supported section [[CDS-WG1-02 Section 3.3](#ref-cds-wg1-02-scopes)] is extended to include [additional Scopes](#scopes).
 * The Client object [[CDS-WG1-02 Section 5.1](#ref-cds-wg1-02-client-object)] is extended to include [additional fields](#client-extension).
 * The Client modification API [[CDS-WG1-02 Section 5.5](#ref-cds-wg1-02-modifying-clients)] is extended to include [additional requirements](#clients-modify-extension).
@@ -819,7 +848,7 @@ This specification extends CDS's Authorization Server Metadata object [[CDS-WG1-
 * `cds_usagesegments_api` - _[URL](#url)_ - (OPTIONAL) The base url for the [Usage Segments listing API](#usage-segments-list).
   This is REQUIRED if any Scopes included in the `scopes_supported` array has the [`include_usage_segments`](#auth-details-include-usage-segments) authorization details field or it is required as part of the Scope.
 * `cds_usagesegments_additional_value_types` - _Map[[ValueTypeDescription](#usage-segment-value-type-description)]_ - (OPTIONAL) A reference object of possible Usage Segment [Value Types](#usage-segment-value-types) that the Server could include in a Usage Segment's `formats` array, in addition to the Value Types that are defined in this specification.
-  This object is composed of keys that represent the `type` value of the additional Value Type, and values that are [Value Type Description](#usage-segment-value-type-description) objects of the additional Value Type.
+  This object is composed of keys that represent the `id` value of the additional Value Type, and values that are [Value Type Description](#usage-segment-value-type-description) objects of the additional Value Type.
   This is REQUIRED if the `cds_usagesegments_api` field is populated in the Server Metadata object.
   If the Server does will not provide any additional Value Types in their Usage Segment objects, this is an empty object (`{}`).
 * `cds_eacs_api` - _[URL](#url)_ - (OPTIONAL) The base url for the [Energy Attribute Certificates listing API](#eacs-list).
@@ -837,6 +866,13 @@ Specifically, the additional Registration Field Formats are defined:
 
 * `purposes` - _Array[[Purpose](#purpose-format)]_ - A list of one or more Purpose objects where each object's `id` value MUST be an empty string (`""`) and `scopes_supported` value MUST be an empty list (`[]`).
 * `purposes_or_null` - _Array[[Purpose](#purpose-format)] or `null`_ - Same as `purpose`, only with `null` being an additional possible value which indicates that no Purpose objects are submitted.
+
+### 5.2. Choice Object Extension <a id="choice-object-extension" href="#choice-object-extension" class="permalink">🔗</a>
+
+This specification extends the CDS's Choice Object Format fields [[CDS-WG1-02 Section 3.10](#ref-cds-wg1-02-choice-object)] to define the following additional fields that can be included in Choice objects:
+
+* `usagesegment_format` - _[ValueFormat](#usage-segment-value-formats)_ - (OPTIONAL) The Value Format object that can be included in [Usage Segment](#usage-segment-format) `formats` arrays if that Choice is selected.
+  This field MUST be included in Choice objects in the `choices` array of Authorization Details Field objects where the `id` value is [`"include_usage_segment_value_types"`](#auth-details-include-usage-segment-value-types) and MUST NOT be included in other Choice objects.
 
 ## 6. Scopes Supported <a id="scopes" href="#scopes" class="permalink">🔗</a>
 
@@ -2190,6 +2226,7 @@ Additionally, Servers MUST implement the following behavior to support this auth
 * If this field's value is `true`, Servers MUST include the following field values in the following objects if they are accessible using this field's scope and other authorization details fields:
     * [Account](#account-format) object's `customer_number`
     * [Account](#account-format) object's `account_number`
+    * [Account](#account-format) object's `account_entity`
     * [Service Contract](#service-contract-format) object's `account_number`
     * [Bill Statement](#bill-statement-format) object's `account_number`
     * [Bill Section](#bill-section-format) object's `account_number`
@@ -2275,6 +2312,7 @@ Additionally, Servers MUST implement the following behavior to support this auth
 
 * If this field's value is `true`, Servers MUST include the following field values in any Service Contract objects accessible using this field's scope:
     * `contract_number`
+    * `contract_entity`
 
 ##### 7.2.2.2. Include Rate Plans <a id="auth-details-include-rate-plans" href="#auth-details-include-rate-plans" class="permalink">🔗</a>
 
@@ -2667,10 +2705,8 @@ To support this authorization details field, the Authorization Details Field Obj
 
 * The `id` value MUST be `"include_usage_segment_value_types"`.
 * The `format` value MUST be `"choice_list_or_null"`.
-* The `choices` array contains Choice objects who's `id` values are one of the defined [Value Types](#usage-segment-value-types) in this specification or included in the [Server Metadata's](#server-metadata) `cds_usagesegments_additional_value_types` reference object.
-  Servers MAY include additional Choice objects that do not represent one of the defined Value Types defined in this specification in order to accommodate extensions and Server-specific use cases (e.g. cloud coverage readings).
-  Servers MUST NOT have custom Choice `id` values that represent an already defined Value Type in this specification, so that Clients can be interoperable with Servers for the set of Value Types defined in this specification.
-  Clients MUST ignore any Choice `id` values that they do not understand, so that Servers are able to include extension and Server-specific `id` values without breaking Client integrations.
+* The `choices` array contains Choice objects that MUST include the [`usagesegment_format`](#choice-object-extension) field, which MUST be set to a [Value Format](#usage-segment-value-formats) object that can be included in Usage Segments.
+  Clients MUST ignore any Choice objects they do not understand, so that Servers are able to include extension and Server-specific [Value Types](#usage-segment-value-types) without breaking Client integrations.
 * If this object is included in a Scope Description where the `response_types_supported` field is not empty array (e.g. Customer authorization is supported):
     * The `is_required` value MUST be `false`.
 
@@ -2678,7 +2714,7 @@ Additionally, Servers MUST implement the following behavior to support this auth
 
 * If the value is `null`, Usage Segments included as part of this field's scope MUST have empty arrays (`[]`) for their `values` and `format` values.
   This can be useful if the Server is only providing durations (e.g. month cutoff dates) for a Usage Segment, but no values, for example as part of an Aggregation.
-* If the value is an array, Usage Segments included as part of this field's scope MUST have `format` values that are [Value Formats](#usage-segment-value-formats) that have the same or a subset of [Value Types](#usage-segment-value-types) in this field's array.
+* If the value is an array, Usage Segments included as part of this field's scope MUST have `format` values that are [Value Formats](#usage-segment-value-formats) that have the same or a subset of the Choice's `usagesegment_format` objects in this field's array.
   Servers MAY order Usage Segment `format` arrays in any order, so it does not have to be in the same order as this field's array values.
   Clients MUST be able to parse Value Format objects in any order and in any subset of this field's array values in the Usage Segment's `format` array.
 
@@ -2726,6 +2762,7 @@ For all duration authorization details fields defined in this section, a Server 
   This ensures Clients are provided an absolute time for field's value.
 * Clients MAY set formats that are any valid relative date or datetime format when including the field in any authorization details array as part of a request to the Server.
   When receiving a relative formatted string (e.g. `"P30DT2H"`) from a Client's request for the field, as part of any Token Response and for any Grant created, the Server MUST convert that relative string into an absolute string (i.e. `absolute date` or `absolute datetime`) that is the Server's Grant creation time plus the duration of the relative string for the authorization details field.
+  For [`statement_date_end`](#auth-details-statement-start), [`start_date`](#auth-details-bill-section-start), and [`segment_start`](#auth-details-usage-segment-start), relative dates and datetimes are subtracted from the Server's Grant creation time instead of added, meaning historical data will be included.
   This ensures that Clients can specify a relative duration during authorization and token requests, then when a Grant is issued, the Client can know the absolute date or datetime for the field that the Server has set.
 
 #### 7.3.1. Sync Until <a id="auth-details-sync-until" href="#auth-details-sync-until" class="permalink">🔗</a>
@@ -2747,7 +2784,7 @@ Additionally, Servers MUST implement the following behavior to support this auth
 * If the Server provides Customer Data objects when requested by the Client that are populated synchronously from the Server's source of truth (e.g. by internally proxying requests to the utility's internal customer database), the Server MUST NOT populate data that is valid after the `sync_until` datetime.
   This means that a Server MUST freeze the Customer Data as of the `sync_until` time for Client requests made after the end of the `sync_until` datetime so that Clients do not have access to changes to the data after that.
 * If the Server populates data objects for the Grant asynchronously after a Grant is created, the Server MUST ensure that the data populated is not from a time after the `sync_until` value.
-  This means that if a Client submits this field as part of a request and the value has no duration (e.g. `"P0S"`), the Server's expiration for syncing will be the time of creation of any Grant, and the Server MUST populate the data objects with data synced before or exactly the same as the Grant's creation time.
+  This means that if a Client submits this field as part of a request and the value has no duration (e.g. `"PT0S"`), the Server's expiration for syncing will be the time of creation of any Grant, and the Server MUST populate the data objects with data synced before or exactly the same as the Grant's creation time.
 * In the situation that a Server that asynchronously updates data objects finds that their asynchronous task for a Grant is running after the `sync_until` datetime has expired, the Server MUST continue the task and update any data objects with data that was previously synchronized before the `sync_until` datetime.
   This means that new Grants that have no duration will still have their data objects populated with data, even if the asynchronous task to update data happens after the `sync_until` datetime.
   This also means that it is possible for a `cds_modified` datetime to be after the `sync_until` datetime, if the object's data is updated after the `sync_until` datetime with data that was valid before the `sync_until` datetime.
@@ -2770,6 +2807,8 @@ To support this authorization details field, the Authorization Details Field Obj
 Additionally, Servers MUST implement the following behavior to support this authorization details field:
 
 * Bill Statement objects available under the scope for this authorization details field MUST have a `statement_date` value that is equal to or after this field's value.
+  If the value of this field is a relative date (e.g. "P3Y"), the start date is set by taking the current date and subtracting the relative value (i.e. including historical bills issued on or after the start date).
+  If the value of this field is `"infinite"`, the start date is unbounded (i.e. all available historical data is included).
 
 #### 7.3.3. Bill Statement Date End <a id="auth-details-statement-end" href="#auth-details-statement-end" class="permalink">🔗</a>
 
@@ -2787,6 +2826,8 @@ To support this authorization details field, the Authorization Details Field Obj
 Additionally, Servers MUST implement the following behavior to support this authorization details field:
 
 * Bill Statement objects available under the scope for this authorization details field MUST have a `statement_date` value that is equal to or before this field's value.
+  If the value of this field is a relative date (e.g. "P3Y"), the end date is set by taking the current date and adding the relative value (i.e. including future bills until the end date).
+  If the value of this field is `"infinite"`, the end date is unbounded (i.e. all future bills are included).
 
 #### 7.3.4. Bill Section Start Date <a id="auth-details-bill-section-start" href="#auth-details-bill-section-start" class="permalink">🔗</a>
 
@@ -2804,6 +2845,8 @@ To support this authorization details field, the Authorization Details Field Obj
 Additionally, Servers MUST implement the following behavior to support this authorization details field:
 
 * Bill Section objects available under the scope for this authorization details field MUST have a `start_date` value that is equal to or after this field's value.
+  If the value of this field is a relative date (e.g. "P3Y"), the start date is set by taking the current date and subtracting the relative value (i.e. including historical bill sections starting on or after the start date).
+  If the value of this field is `"infinite"`, the start date is unbounded (i.e. all available historical data is included).
 
 #### 7.3.5. Bill Section End Date <a id="auth-details-bill-section-end" href="#auth-details-bill-section-end" class="permalink">🔗</a>
 For some use cases, Clients need to have access to a Customer's [Bill Sections](#bill-section-format) for a specific period of time.
@@ -2820,6 +2863,8 @@ To support this authorization details field, the Authorization Details Field Obj
 Additionally, Servers MUST implement the following behavior to support this authorization details field:
 
 * Bill Section objects available under the scope for this authorization details field MUST have a `end_date` value that is equal to or before this field's value.
+  If the value of this field is a relative date (e.g. "P3Y"), the end date is set by taking the current date and adding the relative value (i.e. including future bill sections until the end date).
+  If the value of this field is `"infinite"`, the end date is unbounded (i.e. all future bill sections are included).
 
 #### 7.3.6. Usage Segment Start <a id="auth-details-usage-segment-start" href="#auth-details-usage-segment-start" class="permalink">🔗</a>
 
@@ -2837,6 +2882,8 @@ To support this authorization details field, the Authorization Details Field Obj
 Additionally, Servers MUST implement the following behavior to support this authorization details field:
 
 * Usage Segment objects available under the scope for this authorization details field MUST have a `segment_start` value that is equal to or after this field's value.
+  If the value of this field is a relative datetime (e.g. "P1Y"), the start datetime is set by taking the current datetime and subtracting the relative value (i.e. including historical usage starting on or after the start datetime).
+  If the value of this field is `"infinite"`, the start datetime is unbounded (i.e. all available historical usage is included).
 * If a Usage Segment contains [Value Sets](#usage-segment-value-set-format) `values` that represent intervals that start on or after this field's value, the Server MUST create a new Usage Segment with `values` that contain only Value Sets representing intervals that start on or after this field's value.
   For example, if the Server normally provides 30 day long Usage Segments with daily intervals (i.e. 30 Value Sets per Usage Segment), and the Client sets this field's value to start 10 days into a normal Usage Segment period, the Server MUST not provided access to the normal Usage Segment and instead create a Usage Segment that has the remaining 20 days worth of Value Sets as the Usage Segment's `values` and provide access to that trimmed Usage Segment.
   This means that Clients will still be granted access to authorized interval data even if the normally provided Usage Segment is partially cut off by this field's value.
@@ -2857,6 +2904,8 @@ To support this authorization details field, the Authorization Details Field Obj
 Additionally, Servers MUST implement the following behavior to support this authorization details field:
 
 * Usage Segment objects available under the scope for this authorization details field MUST have a `segment_end` value that is equal to or before this field's value.
+  If the value of this field is a relative datetime (e.g. "P1YT23H"), the end datetime is set by taking the current datetime and adding the relative value (i.e. including future usage until the end datetime).
+  If the value of this field is `"infinite"`, the end datetime is unbounded (i.e. all future usage is included).
 * If a Usage Segment contains [Value Sets](#usage-segment-value-set-format) `values` that represent intervals that end on or before this field's value, the Server MUST create a new Usage Segment with `values` that contain only Value Sets representing intervals that start on or after this field's value.
   For example, if the Server normally provides 30 day long Usage Segments with daily intervals (i.e. 30 Value Sets per Usage Segment), and the Client sets this field's value to end 10 days from the end of a normal Usage Segment period, the Server MUST not provided access to the normal Usage Segment and instead create a Usage Segment that has the first 20 days worth of Value Sets as the Usage Segment's `values` and provide access to that trimmed Usage Segment.
   This means that Clients will still be granted access to authorized interval data even if the normally provided Usage Segment is partially cut off by this field's value.
@@ -3654,22 +3703,22 @@ The following are requirements and recommendations for the Server when implement
   For example, if the Client is requesting access to the past year of residential Customer's Usage Segments, the Customer is unlikely to understand what `segment_start` and `P1Y` is (because those are technical terms in this specification and not generally known by residential Customers), so the Server MUST change the term used to something more familiar to the Customer, such as "your meter usage for the past year."
 * If [Account](#account-format), [Service Contract](#service-contract-format), [Service Point](#service-point-format), [Meter Device](#meter-device-format), or [Aggregation](#aggregation-format) objects will be included in the Scope's data, the Server MUST communicate for how long the Server will update the data (i.e. when the [`sync_until`](#auth-details-sync-until) authorization details field is set to end).
   If the `sync_until` value is `"infinite"`, the Server MUST communicate that the access will continue to be updated until the Customer chooses to stop the authorization from their settings.
-  If the `sync_until` value ends immediately (e.g. `P0S`), the Server MUST communicate that the access will only be for the current set of the Customer's data with no updates going forward.
+  If the `sync_until` value ends immediately (e.g. `PT0S`), the Server MUST communicate that the access will only be for the current set of the Customer's data with no updates going forward.
 * If [Bill Statement](#bill-statement-format) objects will be included in the Scope's data, the Server MUST communicate the date range of bill statements that will be made accessible (i.e. the range of the [`statement_date_start`](#auth-details-statement-start) and [`statement_date_end`](#auth-details-statement-end) authorization details fields' values).
-  If the `statement_date_start` value is for the current date or in the future (e.g. `P0S`), the Server MUST communicate that the access will only be for bills issued going forward but not any historical bills.
+  If the `statement_date_start` value is for the current date or in the future (e.g. `PT0S`), the Server MUST communicate that the access will only be for bills issued going forward but not any historical bills.
   If the `statement_date_end` value is `"infinite"`, the Server MUST communicate that the access will continue until the Customer chooses to stop the authorization from their settings.
-  If the `statement_date_end` value ends immediately (e.g. `P0S`), the Server MUST communicate that the access will only be for historical bills but not any bills going forward.
+  If the `statement_date_end` value ends immediately (e.g. `PT0S`), the Server MUST communicate that the access will only be for historical bills but not any bills going forward.
 * If [Bill Section](#bill-section-format) objects will be included in the Scope's data, the Server MUST communicate the date range of bill details that will be made accessible (i.e. the range of the [`start_date`](#auth-details-bill-section-start) and [`end_date`](#auth-details-bill-section-start) authorization details fields' values).
-  If the `start_date` value is for the current date or in the future (e.g. `P0S`), the Server MUST communicate that the access will only be for bill data going forward but not any historical data.
+  If the `start_date` value is for the current date or in the future (e.g. `PT0S`), the Server MUST communicate that the access will only be for bill data going forward but not any historical data.
   If the `end_date` value is `"infinite"`, the Server MUST communicate that the access will continue until the Customer chooses to stop the authorization from their settings.
-  If the `end_date` value ends immediately (e.g. `P0S`), the Server MUST communicate that the access will only be for historical bill data but not any data going forward.
+  If the `end_date` value ends immediately (e.g. `PT0S`), the Server MUST communicate that the access will only be for historical bill data but not any data going forward.
 * If [Usage Segment](#usage-segment-format) objects will be included in the Scope's data, the Server MUST communicate the time range of usage data that will be made accessible (i.e. the range of the `segment_start` and `segment_end` authorization details fields' values).
-  If the `segment_start` value is for the current date or in the future (e.g. `P0S`), the Server MUST communicate that the access will only be for usage data going forward but not any historical data.
+  If the `segment_start` value is for the current date or in the future (e.g. `PT0S`), the Server MUST communicate that the access will only be for usage data going forward but not any historical data.
   If the `segment_end` value is `"infinite"`, the Server MUST communicate that the access will continue until the Customer chooses to stop the authorization from their settings.
-  If the `segment_end` value ends immediately (e.g. `P0S`), the Server MUST communicate that the access will only be for historical usage data but not any data going forward.
+  If the `segment_end` value ends immediately (e.g. `PT0S`), the Server MUST communicate that the access will only be for historical usage data but not any data going forward.
 * For the Scope [`cds_aggregation_consent`](#scope-aggregation-inclusion), the Server MUST communicate for how long the authorization will be valid (i.e. when the [`expires`](#auth-details-expires) authorization details field is set to end).
   If the `expires` value is `"infinite"`, the Server MUST communicate that the authorization will continue to be valid until the Customer chooses to stop it in their settings.
-  If the `expires` value ends immediately (e.g. `P0S`), the Server MUST communicate that the authorization is only be for the current request, and the Customer will need to authorize again if the Client needs updates in the future.
+  If the `expires` value ends immediately (e.g. `PT0S`), the Server MUST communicate that the authorization is only be for the current request, and the Customer will need to authorize again if the Client needs updates in the future.
 * If there are multiple Scopes merged into the Request Section and those Scopes have the same duration (e.g. the same `sync_until`), the Server MUST combine the communications for the duration of each Scope into a single statement.
   For example, if the Client is requesting 3 years of access to both the `cds_meters` and `cds_accounts` Scopes (i.e. `sync_until` is set to `P3Y` for both Scopes), the Server could render a statement such as "Access to your meter and account details for 3 years", but could not render this duration as two separate statements (e.g. "Access to your meter details for 3 years" and "Access to your account details for 3 years").
 * If the Scope(s) included in the Request Section have multiple durations, it is RECOMMENDED that the Server render the the Duration Component be rendered as a list of statements, rather than a multiple line paragraph, that communicates the summary of types of data being requested.
@@ -5384,6 +5433,7 @@ For example, a daily net metered elected 15 minute interval Usage Segment would 
 
 Value Format objects are formatted as JSON objects and contain the following named values:
 
+* `id` - _[string](#string)_ - (REQUIRED) The Server's unique identifier for this Value Format object.
 * `type` - _[ValueType](#usage-segment-value-types)_ - (REQUIRED) The type of object the corresponding Value Set represents.
 
 Depending on the `type`, the Value Format object can contain other fields, which are defined by the type's documentation.
@@ -5422,7 +5472,7 @@ The [Value Format](#usage-segment-value-formats) `type` value MAY be a [string](
 * `cost` - Defined by [Interval Cost](#usage-segment-interval-cost)
 * `meter_readings` - Defined by [Meter Readings](#usage-segment-meter-readings)
 
-Servers MAY include other Value Format `type` values in the Usage Segment `formats` array, so long as the Value Format `type` is included in the [Server Metadata's](#server-metadata) `cds_usagesegments_additional_value_types` reference object.
+Servers MAY include other Value Format `type` values in the Usage Segment `formats` array, so long as the Value Type's [Value Type Description](#usage-segment-value-type-description) object is included in the [Server Metadata's](#server-metadata) `cds_usagesegments_additional_value_types` reference object.
 It is RECOMMENDED that additional `type` values have a prefix relevant to the Server (e.g. `exampleutility_*`) to prevent potential collisions with other Servers and extensions to this specification that define additional `type` values.
 
 Extensions MAY define additional Value Format `type` values.
@@ -5439,6 +5489,7 @@ To include electric usage data, both for granular (e.g. 15 minute intervals) and
 
 Electric Usage Value Format objects are [Value Format](#usage-segment-value-formats) objects for electric usage and have the following fields:
 
+* `id` - _[string](#string)_ - (REQUIRED) The Server's unique identifier for this Value Format object.
 * `type` - _[string](#string)_ - (REQUIRED) This value MUST be `electric_usage`.
 * `units` - _[UnitType](#usage-segment-unit-types)_ - (REQUIRED) This is the units for the usage data.
   The value of this field MUST be one of the following:
@@ -5480,6 +5531,7 @@ To include electric demand data, both for granular (e.g. 1 hour peak demand) and
 
 Electric Demand Value Format objects are [Value Format](#usage-segment-value-formats) objects for electric demand and have the following fields:
 
+* `id` - _[string](#string)_ - (REQUIRED) The Server's unique identifier for this Value Format object.
 * `type` - _[string](#string)_ - (REQUIRED) This value MUST be `electric_demand`.
 * `units` - _[UnitType](#usage-segment-unit-types)_ - (REQUIRED) This is the units for the demand data.
   The value of this field MUST be one of the following:
@@ -5523,6 +5575,7 @@ Electric Supply Mix is the composition of generation sources and emissions for t
 
 Electric Supply Mix Value Format objects are [Value Format](#usage-segment-value-formats) objects for supply mix and have the following fields:
 
+* `id` - _[string](#string)_ - (REQUIRED) The Server's unique identifier for this Value Format object.
 * `type` - _[string](#string)_ - (REQUIRED) This value MUST be `electric_supply_mix`.
 * `indexes` - _Array[[integer](#integer)]_ - (REQUIRED) A list of which indexes of the Value Sets the supply mix values represents.
   For example, if the Server included three Value Format objects in the Usage Segment's `format` array with the Value Types `electric_usage`, `water_usage`, and `electric_supply_mix`, where the supply mix represents the electric usage generation mix, the `indexes` array would be `[0]` (representing that the supply mix values are for the `0` index of the Value Sets in the Usage Segment's `values` array, which is where the electric usage Value Objects are included).
@@ -5546,6 +5599,7 @@ To include water usage data, both for granular (e.g. daily intervals) and longer
 
 Water Usage Value Format objects are [Value Format](#usage-segment-value-formats) objects for water usage and have the following fields:
 
+* `id` - _[string](#string)_ - (REQUIRED) The Server's unique identifier for this Value Format object.
 * `type` - _[string](#string)_ - (REQUIRED) This value MUST be `water_usage`.
 * `units` - _[UnitType](#usage-segment-unit-types)_ - (REQUIRED) This is the units for the usage data.
   The value of this field MUST be one of the following:
@@ -5581,6 +5635,7 @@ To include natural gas usage data, both for granular (e.g. daily intervals) and 
 
 Natural Gas Usage Value Format objects are [Value Format](#usage-segment-value-formats) objects for natural gas usage and have the following fields:
 
+* `id` - _[string](#string)_ - (REQUIRED) The Server's unique identifier for this Value Format object.
 * `type` - _[string](#string)_ - (REQUIRED) This value MUST be `natural_gas_usage`.
 * `units` - _[UnitType](#usage-segment-unit-types)_ - (REQUIRED) This is the units for the usage data.
   The value of this field MUST be one of the following:
@@ -5613,6 +5668,7 @@ Fuel oil can sometimes also be called heating oil or furnace oil. To include fue
 
 Fuel Oil Usage Value Format objects are [Value Format](#usage-segment-value-formats) objects for water usage and have the following fields:
 
+* `id` - _[string](#string)_ - (REQUIRED) The Server's unique identifier for this Value Format object.
 * `type` - _[string](#string)_ - (REQUIRED) This value MUST be `fuel_oil_usage`.
 * `units` - _[UnitType](#usage-segment-unit-types)_ - (REQUIRED) This is the units for the usage data.
   The value of this field MUST be one of the following:
@@ -5641,6 +5697,7 @@ Interval cost is the measure of monetary cost for the other measurements in the 
 
 ###### 10.8.5.7.1. Interval Cost Value Format Objects <a id="usage-segment-interval-cost-value-format" href="#usage-segment-interval-cost-value-format" class="permalink">🔗</a>
 
+* `id` - _[string](#string)_ - (REQUIRED) The Server's unique identifier for this Value Format object.
 * `type` - _[string](#string)_ - (REQUIRED) This value MUST be `cost`.
 * `currency` - _[string](#string)_ - (REQUIRED) The currency for the cost values as an [[ISO 4217](#ref-iso4217)] currency code.
 * `indexes` - _Array[[integer](#integer)]_ - (REQUIRED) A list of which indexes of the Value Sets the cost value represents.
@@ -5661,6 +5718,7 @@ When including meter
 
 ###### 10.8.5.8.1. Meter Readings Value Format Objects <a id="usage-segment-meter-readings-value-format" href="#usage-segment-meter-readings-value-format" class="permalink">🔗</a>
 
+* `id` - _[string](#string)_ - (REQUIRED) The Server's unique identifier for this Value Format object.
 * `type` - _[string](#string)_ - (REQUIRED) This value MUST be `meter_readings`.
 * `related_meterdevice` - _[string](#string)_ - (REQUIRED) The `cds_meterdevice_id` value that identifies a Meter Device from which the corresponding Value Objects were measured.
   If the Server does not know which Meter Devices were used to measure the usage data, this field MUST NOT be included.
@@ -6229,7 +6287,1935 @@ For example, if a local municipal district requires Customer consent for a contr
 
 ## 13. Examples <a id="examples" href="#examples" class="permalink">🔗</a>
 
-<span style="background-color:yellow">TODO</span>
+The following subsections are non-normative examples of requests and responses of various APIs defined in this specification.
+
+### 13.1. Client Management Examples <a id="example-clients-management" href="#example-clients-management" class="permalink">🔗</a>
+
+The examples in this section show how a Client can discover details about what [Scopes](#scopes) the Server supports, how to register with a Server, and how to manage their registration via the CDS Client Registration APIs [[CDS-WG1-02](#ref-cds-wg1-02)].
+
+#### 13.1.1. Retrieving Available Scopes from Metadata <a id="example-get-scopes-metadata" href="#example-get-scopes-metadata" class="permalink">🔗</a>
+
+In this example, a Client requests the [Authorization Server Metadata](#server-metadata) to see what Customer Data [Scopes](#scopes) the Server supports, what registration requirements there are for each Scope, and what limitations each Scope has.
+
+The Server supports Customers accessing their own list of accounts and utility bills (the [Accounts Query](#scope-accounts-query) and [Bill Statements Query](#scope-bill-statements-query) Scopes), as well as supporting third party Clients to request authorization from Customers to access the Customer's service list and 13 months of interval data (the [Service List](#scope-service-list) and [Meter Usage](#scope-meter-usage) Scopes).
+
+```
+==Request==
+GET /.well-known/oauth-authorization-server HTTP/1.1
+Host: example.com
+
+==Response==
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+    "issuer": "https://example.com",
+    "service_documentation": "https://example.com/docs/oauth",
+    "op_policy_uri": "https://example.com/legal/oauth-policy",
+    "op_tos_uri": "https://example.com/legal/oauth-terms",
+    "registration_endpoint": "https://example.com/oauth/register",
+    "authorization_endpoint": "https://example.com/oauth/authorize",
+    "token_endpoint": "https://example.com/oauth/token",
+    "revocation_endpoint": "https://example.com/oauth/token/revoke",
+    "introspection_endpoint": "https://example.com/oauth/token/info",
+    "pushed_authorization_request_endpoint": "https://example.com/oauth/par",
+    "code_challenge_methods_supported": ["S256"],
+    "response_types_supported": ["code"],
+    "grant_types_supported": ["client_credentials", "authorization_code", "refresh_token"],
+    "token_endpoint_auth_methods_supported": ["client_secret_basic"],
+    "scopes_supported": [
+        "cds_client_admin",
+        "cds_grant_admin_1",
+        "cds_query_accounts_1",
+        "cds_query_bill_statements_1"
+        "cds_service_contracts_1",
+        "cds_usage_1",
+    ],
+    "authorization_details_types_supported": [
+        "cds_grant_admin_1ad",
+        "cds_query_accounts_1ad",
+        "cds_query_bill_statements_1ad",
+        "cds_service_contracts_1ad",
+        "cds_usage_1ad",
+    ],
+    "cds_oauth_version": "v1",
+    "cds_human_registration": "https://example.com/clients/register",
+    "cds_test_accounts": "https://example.com/docs/testing",
+    "cds_clients_api": "https://example.com/cds-api/v1/clients",
+    "cds_messages_api": "https://example.com/cds-api/v1/messages",
+    "cds_credentials_api": "https://example.com/cds-api/v1/credentials",
+    "cds_grants_api": "https://example.com/cds-api/v1/grants",
+    "cds_customerdata_version": "v1",
+    "cds_accounts_api": "https://example.com/cds-customerdata-api/v1/accounts",
+    "cds_servicecontracts_api": "https://example.com/cds-customerdata-api/v1/service-contracts",
+    "cds_servicepoints_api": "https://example.com/cds-customerdata-api/v1/service-points",
+    "cds_meterdevices_api": "https://example.com/cds-customerdata-api/v1/meter-devices",
+    "cds_billstatement_api": "https://example.com/cds-customerdata-api/v1/bill-statements",
+    "cds_usagesegments_api": "https://example.com/cds-customerdata-api/v1/usage-segments",
+    "cds_scope_descriptions": {
+        "cds_client_admin": {
+            "id": "cds_client_admin",
+            "type": "cds_client_admin",
+            "name": "Client Admin",
+            "description": "This scope grants administrative access to the Client management APIs.",
+            "documentation": "https://example.com/docs/oauth/scopes#cds_client_admin",
+            "registration_requirements": [],
+            "registration_optional": [],
+            "response_types_supported": [],
+            "grant_types_supported": ["client_credentials"],
+            "token_endpoint_auth_methods_supported": ["client_secret_basic"],
+            "code_challenge_methods_supported": [],
+            "coverages_supported": [],
+            "grant_admin_scope": null,
+            "authorization_details_types_supported": [],
+            "authorization_details_fields_supported": []
+        },
+        "cds_grant_admin_1": {
+            "id": "cds_grant_admin_1",
+            "type": "cds_grant_admin",
+            "name": "Grant Admin",
+            "description": "This scope grants administrative access to previously created Grants.",
+            "documentation": "https://example.com/docs/oauth/scopes#cds_grant_admin",
+            "registration_requirements": [],
+            "registration_optional": [],
+            "response_types_supported": [],
+            "grant_types_supported": ["client_credentials"],
+            "token_endpoint_auth_methods_supported": ["client_secret_basic"],
+            "code_challenge_methods_supported": [],
+            "coverages_supported": [],
+            "grant_admin_scope": null,
+            "authorization_details_types_supported": ["cds_grant_admin_1ad"],
+            "authorization_details_fields_supported": [
+                {
+                    "id": "client_id",
+                    "name": "Client Object identifier",
+                    "description": "The Client Object identifier for which the Grant is issued.",
+                    "documentation": "https://example.com/docs/oauth/scopes#cds_grant_admin-client_id",
+                    "for_types": ["cds_grant_admin_1ad"]
+                    "format": "string",
+                    "is_required": true,
+                    "maximum": 1000,
+                    "minimum": 1,
+                },
+                {
+                    "id": "grant_id",
+                    "name": "Grant identifier",
+                    "description": "The Grant identifier for which the returned access_token will be given access.",
+                    "documentation": "https://example.com/docs/oauth/scopes#cds_grant_admin-grant_id",
+                    "for_types": ["cds_grant_admin_1ad"]
+                    "format": "string",
+                    "is_required": true,
+                    "maximum": 1000,
+                    "minimum": 1,
+                }
+            ]
+        },
+        "cds_query_accounts_1": {
+            "id": "cds_query_accounts_1",
+            "type": "cds_query_accounts",
+            "name": "List Customer Accounts",
+            "description": "This scope allows a Client to query the list of Customer Accounts they are permitted to see.",
+            "documentation": "https://example.com/docs/customerdata/scopes#cds_query_accounts",
+            "registration_requirements": ["direct_access_invite_code"],
+            "registration_optional": [],
+            "response_types_supported": [],
+            "grant_types_supported": ["client_credentials"],
+            "token_endpoint_auth_methods_supported": ["client_secret_basic"],
+            "code_challenge_methods_supported": [],
+            "coverages_supported": [],
+            "grant_admin_scope": "cds_grant_admin_1",
+            "authorization_details_types_supported": ["cds_query_accounts_1ad"],
+            "authorization_details_fields_supported": [
+                {
+                    "id": "account_numbers",
+                    "name": "Filter by account numbers",
+                    "description": "Limit Accounts to specific account numbers.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#account_numbers",
+                    "for_types": ["cds_query_accounts_1ad"]
+                    "format": "string_list_or_null",
+                    "is_required": false,
+                    "default": null,
+                    "maximum": 1000,
+                    "minimum": 1
+                },
+                {
+                    "id": "include_account_numbers",
+                    "name": "Include account numbers",
+                    "description": "Whether to include the account_number value in Account objects.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#include_account_numbers",
+                    "for_types": ["cds_query_accounts_1ad"]
+                    "format": "boolean",
+                    "is_required": false,
+                    "default": true
+                },
+                {
+                    "id": "include_account_details",
+                    "name": "Include account details",
+                    "description": "Whether to include more details in Account objects.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#include_account_details",
+                    "for_types": ["cds_query_accounts_1ad"]
+                    "format": "boolean",
+                    "is_required": false,
+                    "default": true
+                },
+                {
+                    "id": "sync_until",
+                    "name": "Sync duration",
+                    "description": "How long to continue to update the Account list.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#sync_until",
+                    "for_types": ["cds_query_accounts_1ad"]
+                    "format": "relative_or_absolute_datetime",
+                    "is_required": false,
+                    "default": "infinite",
+                    "maximum": "infinite",
+                    "minimum": "PT0S"
+                }
+            ]
+        },
+        "cds_query_bill_statements_1": {
+            "id": "cds_query_bill_statements_1",
+            "type": "cds_query_bill_statements",
+            "name": "Access Customer utility bills",
+            "description": "This scope allows a Client to query Customer Bill Statements they are permitted to see.",
+            "documentation": "https://example.com/docs/customerdata/scopes#cds_query_bill_statements",
+            "registration_requirements": ["direct_access_invite_code"],
+            "registration_optional": [],
+            "response_types_supported": [],
+            "grant_types_supported": ["client_credentials"],
+            "token_endpoint_auth_methods_supported": ["client_secret_basic"],
+            "code_challenge_methods_supported": [],
+            "coverages_supported": [],
+            "grant_admin_scope": "cds_grant_admin_1",
+            "authorization_details_types_supported": ["cds_query_bill_statements_1ad"],
+            "authorization_details_fields_supported": [
+                {
+                    "id": "account_numbers",
+                    "name": "Filter by account numbers",
+                    "description": "Limit bills to specific Accounts.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#account_numbers",
+                    "for_types": ["cds_query_bill_statements_1ad"]
+                    "format": "string_list_or_null",
+                    "is_required": false,
+                    "default": null,
+                    "maximum": 1000,
+                    "minimum": 1
+                },
+                {
+                    "id": "include_account_numbers",
+                    "name": "Include account numbers",
+                    "description": "Whether to include the account_number value in Bill Statement objects.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#include_account_numbers",
+                    "for_types": ["cds_query_bill_statements_1ad"]
+                    "format": "boolean",
+                    "is_required": false,
+                    "default": true
+                },
+                {
+                    "id": "include_bill_statement_files",
+                    "name": "Include PDFs",
+                    "description": "Whether to include the bill PDF file in Bill Statement objects.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#include_bill_statement_files",
+                    "for_types": ["cds_query_bill_statements_1ad"]
+                    "format": "boolean",
+                    "is_required": false,
+                    "default": true
+                },
+                {
+                    "id": "sync_until",
+                    "name": "Sync duration",
+                    "description": "How long to continue to update the list of Bill Statements as they are issued.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#sync_until",
+                    "for_types": ["cds_query_bill_statements_1ad"]
+                    "format": "relative_or_absolute_datetime",
+                    "is_required": false,
+                    "default": "infinite",
+                    "maximum": "infinite",
+                    "minimum": "PT0S"
+                },
+                {
+                    "id": "statement_date_start",
+                    "name": "Filter by statement date (start)",
+                    "description": "Include Bill Statements that are issued on or after this date.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#statement_date_start",
+                    "for_types": ["cds_query_bill_statements_1ad"]
+                    "format": "relative_or_absolute_datet",
+                    "is_required": false,
+                    "default": "infinite",
+                    "maximum": "infinite",
+                    "minimum": "P0D"
+                },
+                {
+                    "id": "statement_date_end",
+                    "name": "Filter by statement date (start)",
+                    "description": "Include Bill Statements that are issued before or on this date.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#statement_date_end",
+                    "for_types": ["cds_query_bill_statements_1ad"]
+                    "format": "relative_or_absolute_date",
+                    "is_required": false,
+                    "default": "infinite",
+                    "maximum": "infinite",
+                    "minimum": "P0D"
+                },
+            ]
+        },
+        "cds_service_contracts_1": {
+            "id": "cds_service_contracts_1",
+            "type": "cds_service_contracts",
+            "name": "Service Contract access",
+            "description": "This scope allows a Client to see the list of Service Contracts for the authorizing Customer.",
+            "documentation": "https://example.com/docs/customerdata/scopes#cds_service_contracts",
+            "registration_requirements": [],
+            "registration_optional": [],
+            "response_types_supported": ["code"],
+            "grant_types_supported": ["authorization_code", "refresh_token"],
+            "token_endpoint_auth_methods_supported": ["client_secret_basic"],
+            "code_challenge_methods_supported": ["S256"],
+            "coverages_supported": ["coverage123"],
+            "grant_admin_scope": "cds_grant_admin_1",
+            "authorization_details_types_supported": ["cds_service_contracts_1ad"],
+            "authorization_details_fields_supported": [
+                {
+                    "id": "contract_numbers",
+                    "name": "Preslect contract numbers",
+                    "description": "On the Authorization Form, preselect specific service contract numbers.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#contract_numbers",
+                    "for_types": ["cds_service_contracts_1ad"]
+                    "format": "string_list_or_null",
+                    "is_required": false,
+                    "default": null,
+                    "maximum": 1000,
+                    "minimum": 1
+                },
+                {
+                    "id": "service_types",
+                    "name": "Preslect service types",
+                    "description": "On the Authorization Form, preselect specific service types.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#service_types",
+                    "for_types": ["cds_service_contracts_1ad"]
+                    "format": "choice_list_or_null",
+                    "is_required": false,
+                    "default": null,
+                    "choices": [
+                        {
+                            "id": "electric",
+                            "name": "Electric Service",
+                            "description": "An electric service provided by the utility.",
+                            "documentation": "https://example.com/docs/customerdata/service_types#electric"
+                        },
+                        {
+                            "id": "natural_gas",
+                            "name": "Natural Gas Service",
+                            "description": "A natural gas service provided by the utility.",
+                            "documentation": "https://example.com/docs/customerdata/service_types#natural_gas"
+                        }
+                    ]
+                },
+                {
+                    "id": "addresses",
+                    "name": "Preslect addresses",
+                    "description": "On the Authorization Form, preselect specific services by their service address.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#addresses",
+                    "for_types": ["cds_service_contracts_1ad"]
+                    "format": "string_list_or_null",
+                    "is_required": false,
+                    "default": null,
+                    "maximum": 1000,
+                    "minimum": 1
+                },
+                {
+                    "id": "include_accounts",
+                    "name": "Include accounts",
+                    "description": "Whether to include the Account object related to the visible Service Contract objects.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#include_accounts",
+                    "for_types": ["cds_service_contracts_1ad"]
+                    "format": "boolean",
+                    "is_required": false,
+                    "default": true
+                },
+                {
+                    "id": "include_account_numbers",
+                    "name": "Include account numbers",
+                    "description": "Whether to include the account_number values in visible Account and Service Contract objects.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#include_accounts",
+                    "for_types": ["cds_service_contracts_1ad"]
+                    "format": "boolean",
+                    "is_required": false,
+                    "default": true
+                },
+                {
+                    "id": "include_contract_numbers",
+                    "name": "Include service contract numbers",
+                    "description": "Whether to include the contract_number value in Service Contract objects.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#include_contract_numbers",
+                    "for_types": ["cds_service_contracts_1ad"]
+                    "format": "boolean",
+                    "is_required": false,
+                    "default": true
+                },
+                {
+                    "id": "include_rate_plans",
+                    "name": "Include rate plans",
+                    "description": "Whether to include the rate plan values in Service Contract objects.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#include_rate_plans",
+                    "for_types": ["cds_service_contracts_1ad"]
+                    "format": "boolean",
+                    "is_required": false,
+                    "default": true
+                },
+                {
+                    "id": "include_service_contract_details",
+                    "name": "Include service contract details",
+                    "description": "Whether to include contract details, such as service address, in Service Contract objects.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#include_service_contract_details",
+                    "for_types": ["cds_service_contracts_1ad"]
+                    "format": "boolean",
+                    "is_required": false,
+                    "default": true
+                },
+                {
+                    "id": "sync_until",
+                    "name": "Sync duration",
+                    "description": "How long to continue to update the Service Contract list.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#sync_until",
+                    "for_types": ["cds_service_contracts_1ad"]
+                    "format": "relative_or_absolute_datetime",
+                    "is_required": false,
+                    "default": "infinite",
+                    "maximum": "infinite",
+                    "minimum": "PT0S"
+                },
+                {
+                    "id": "authorization_form_selection_type",
+                    "name": "Authorization Form selection type",
+                    "description": "What type of selection interface is rendered on the Authorization Form.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#authorization_form_selection_type",
+                    "for_types": ["cds_service_contracts_1ad"]
+                    "format": "choice",
+                    "is_required": false,
+                    "default": "service_contract_selection",
+                    "choices": [
+                        {
+                            "id": "service_contract_selection",
+                            "name": "Service List",
+                            "description": "The Customer sees their list of services on the Authorization Form from which they can select which to share.",
+                            "documentation": "https://example.com/docs/customerdata/auth-forms#selection-types"
+                        }
+                    ]
+                },
+                {
+                    "id": "merge_selection_with",
+                    "name": "Combine Authorization Form selection",
+                    "description": "Which scopes in an authorization request should share the same list of selected service contracts.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#merge_selection_with",
+                    "for_types": ["cds_service_contracts_1ad"]
+                    "format": "string_or_null",
+                    "is_required": false,
+                    "default": null,
+                    "maximum": 1000,
+                    "minimum": 1
+                },
+                {
+                    "id": "error_if_no_preselections",
+                    "name": "Error if no preselections",
+                    "description": "Whether to redirect with an error back to the Client if there are not preselection matches.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#error_if_no_preselections",
+                    "for_types": ["cds_service_contracts_1ad"]
+                    "format": "boolean",
+                    "is_required": false,
+                    "default": false
+                },
+                {
+                    "id": "purpose",
+                    "name": "Purpose for requesting authorization",
+                    "description": "Which explanation to display to the Customer for why an authorization is being requested.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#purpose",
+                    "for_types": ["cds_service_contracts_1ad"]
+                    "format": "choice",
+                    "is_required": false,
+                    "default": "default-01",
+                    "choices": [
+                        {
+                            "id": "default-01",
+                            "name": "Default Purpose",
+                            "description": "This is a generic catchall saying that the Client can use the shared data for any purpose.",
+                            "documentation": "https://example.com/docs/customerdata/auth-forms#purpose"
+                        }
+                    ]
+                },
+                {
+                    "id": "allow_scope_modifications",
+                    "name": "Allow scope modifications",
+                    "description": "Whether to allow the Customer to modify the requested scope on the Authorization Form.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#allow_scope_modifications",
+                    "for_types": ["cds_service_contracts_1ad"]
+                    "format": "boolean",
+                    "is_required": false,
+                    "default": true
+                },
+            ]
+        },
+        "cds_usage_1": {
+            "id": "cds_usage_1",
+            "type": "cds_usage",
+            "name": "Usage data access",
+            "description": "This scope allows a Client to see the list of Usage Segments (e.g. electric interval data) for the authorizing Customer.",
+            "documentation": "https://example.com/docs/customerdata/scopes#cds_usage",
+            "registration_requirements": [],
+            "registration_optional": [],
+            "response_types_supported": ["code"],
+            "grant_types_supported": ["authorization_code", "refresh_token"],
+            "token_endpoint_auth_methods_supported": ["client_secret_basic"],
+            "code_challenge_methods_supported": ["S256"],
+            "coverages_supported": ["coverage123"],
+            "grant_admin_scope": "cds_grant_admin_1",
+            "authorization_details_types_supported": ["cds_usage_1ad"],
+            "authorization_details_fields_supported": [
+                {
+                    "id": "contract_numbers",
+                    "name": "Preslect contract numbers",
+                    "description": "On the Authorization Form, preselect specific service contract numbers.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#contract_numbers",
+                    "for_types": ["cds_usage_1ad"]
+                    "format": "string_list_or_null",
+                    "is_required": false,
+                    "default": null,
+                    "maximum": 1000,
+                    "minimum": 1
+                },
+                {
+                    "id": "meter_numbers",
+                    "name": "Preslect meter numbers",
+                    "description": "On the Authorization Form, preselect service contracts with specific meter numbers.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#meter_numbers",
+                    "for_types": ["cds_usage_1ad"]
+                    "format": "string_list_or_null",
+                    "is_required": false,
+                    "default": null,
+                    "maximum": 1000,
+                    "minimum": 1
+                },
+                {
+                    "id": "addresses",
+                    "name": "Preslect addresses",
+                    "description": "On the Authorization Form, preselect specific services by their service address.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#addresses",
+                    "for_types": ["cds_usage_1ad"]
+                    "format": "string_list_or_null",
+                    "is_required": false,
+                    "default": null,
+                    "maximum": 1000,
+                    "minimum": 1
+                },
+                {
+                    "id": "include_service_contracts",
+                    "name": "Include Service Contracts",
+                    "description": "Whether to include the Service Contract object related to the visible Usage Segment objects.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#include_service_contracts",
+                    "for_types": ["cds_usage_1ad"]
+                    "format": "boolean",
+                    "is_required": false,
+                    "default": true
+                },
+                {
+                    "id": "include_meter_devices",
+                    "name": "Include meters",
+                    "description": "Whether to include the Meter Device object related to the visible Usage Segment objects.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#include_meter_devices",
+                    "for_types": ["cds_usage_1ad"]
+                    "format": "boolean",
+                    "is_required": false,
+                    "default": true
+                },
+                {
+                    "id": "include_meter_numbers",
+                    "name": "Include meter numbers",
+                    "description": "Whether to include meter_number values in Meter Device objects related to the visible Usage Segment objects.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#include_meter_numbers",
+                    "for_types": ["cds_usage_1ad"]
+                    "format": "boolean",
+                    "is_required": false,
+                    "default": true
+                },
+                {
+                    "id": "include_usage_segment_value_types",
+                    "name": "Usage value types",
+                    "description": "What types of usage values can be included in Usage Segments.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#include_usage_segment_value_types",
+                    "for_types": ["cds_usage_1ad"]
+                    "format": "choice_list_or_null",
+                    "is_required": false,
+                    "default": [
+                        "electric_intervals_01",
+                        "electric_monthly_01",
+                        "gas_monthly_01",
+                    ],
+                    "choices": [
+                        {
+                            "id": "electric_intervals_01",
+                            "name": "Electric intervals (kWh)",
+                            "description": "The smart meter electric usage in 15 or 60 minute intervals for electric services with smart meters.",
+                            "documentation": "https://example.com/docs/customerdata/usage-segments#formats",
+                            "usagesegment_format": {
+                                "id": "electric_intervals_01",
+                                "type": "electric_usage",
+                                "units": "kWh",
+                                "direction": "net",
+                                "quality": "raw"
+                            }
+                        },
+                        {
+                            "id": "electric_monthly_01",
+                            "name": "Electric monthly usage (kWh)",
+                            "description": "The monthly bill cycle electric usage for electric services.",
+                            "documentation": "https://example.com/docs/customerdata/usage-segments#formats",
+                            "usagesegment_format": {
+                                "id": "electric_monthly_01",
+                                "type": "electric_usage",
+                                "units": "kWh",
+                                "direction": "net",
+                                "quality": "revenue"
+                            }
+                        },
+                        {
+                            "id": "gas_monthly_01",
+                            "name": "Natural gas montly usage (therms)",
+                            "description": "A natural gas service provided by the utility.",
+                            "documentation": "https://example.com/docs/customerdata/usage-segments#formats",
+                        }
+                    ]
+                },
+                {
+                    "id": "segment_start",
+                    "name": "Filter usage date range (start)",
+                    "description": "Include Usage Segments that have usage on or after this datetime.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#segment_start",
+                    "for_types": ["cds_usage_1ad"]
+                    "format": "relative_or_absolute_datetime",
+                    "is_required": false,
+                    "default": "P13M",
+                    "maximum": "P13M",
+                    "minimum": "PT0S"
+                },
+                {
+                    "id": "segment_end",
+                    "name": "Filter usage date range (end)",
+                    "description": "Include Usage Segments that have usage that ends on or before this datetime.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#segment_end",
+                    "for_types": ["cds_usage_1ad"]
+                    "format": "relative_or_absolute_datetime",
+                    "is_required": false,
+                    "default": "infinite",
+                    "maximum": "infinite",
+                    "minimum": "PT0S"
+                },
+                {
+                    "id": "authorization_form_selection_type",
+                    "name": "Authorization Form selection type",
+                    "description": "What type of selection interface is rendered on the Authorization Form.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#authorization_form_selection_type",
+                    "for_types": ["cds_usage_1ad"]
+                    "format": "choice",
+                    "is_required": false,
+                    "default": "service_contract_selection",
+                    "choices": [
+                        {
+                            "id": "service_contract_selection",
+                            "name": "Service List",
+                            "description": "The Customer sees their list of services on the Authorization Form from which they can select which to share.",
+                            "documentation": "https://example.com/docs/customerdata/auth-forms#selection-types"
+                        }
+                    ]
+                },
+                {
+                    "id": "merge_selection_with",
+                    "name": "Combine Authorization Form selection",
+                    "description": "Which scopes in an authorization request should share the same list of selected service contracts.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#merge_selection_with",
+                    "for_types": ["cds_usage_1ad"]
+                    "format": "string_or_null",
+                    "is_required": false,
+                    "default": null,
+                    "maximum": 1000,
+                    "minimum": 1
+                },
+                {
+                    "id": "error_if_no_preselections",
+                    "name": "Error if no preselections",
+                    "description": "Whether to redirect with an error back to the Client if there are not preselection matches.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#error_if_no_preselections",
+                    "for_types": ["cds_usage_1ad"]
+                    "format": "boolean",
+                    "is_required": false,
+                    "default": false
+                },
+                {
+                    "id": "purpose",
+                    "name": "Purpose for requesting authorization",
+                    "description": "Which explanation to display to the Customer for why an authorization is being requested.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#purpose",
+                    "for_types": ["cds_usage_1ad"]
+                    "format": "choice",
+                    "is_required": false,
+                    "default": "default-01",
+                    "choices": [
+                        {
+                            "id": "default-01",
+                            "name": "Default Purpose",
+                            "description": "This is a generic catchall saying that the Client can use the shared data for any purpose.",
+                            "documentation": "https://example.com/docs/customerdata/auth-forms#purpose"
+                        }
+                    ]
+                },
+                {
+                    "id": "allow_scope_modifications",
+                    "name": "Allow scope modifications",
+                    "description": "Whether to allow the Customer to modify the requested scope on the Authorization Form.",
+                    "documentation": "https://example.com/docs/customerdata/auth-details-fields#allow_scope_modifications",
+                    "for_types": ["cds_usage_1ad"]
+                    "format": "boolean",
+                    "is_required": false,
+                    "default": true
+                }
+            ]
+        }
+
+    },
+    "cds_registration_fields": {
+        "direct_access_invite_code": {
+            "id": "direct_access_invite_code",
+            "type": "registration_field",
+            "field_name": "invite_code",
+            "description": "The invite code you were given to use for registration with this API.",
+            "documentation": "https://example.com/docs/customerdata/registration#invite-code",
+            "format": "string",
+            "max_length": 1024
+        }
+    }
+}
+```
+
+#### 13.1.2. Registering a Client <a id="example-register-client" href="#example-register-client" class="permalink">🔗</a>
+
+In this example, the Client registers for multiple Customer Data [Scopes](#scopes) and is assigned a Client Admin object by the Server, which they can use to access and manage all of their other Client objects (including the Customer Data scoped Client objects).
+
+```
+==Request==
+POST /oauth/register HTTP/1.1
+Host: example.com
+
+{
+    "scope": "cds_client_admin cds_grant_admin_1 cds_query_accounts_1 cds_query_bill_statements_1 cds_service_contracts_1 cds_usage_1",
+    "client_name": "My App Name",
+    "invite_code": "AAAAAAAA"
+}
+
+
+==Response==
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+    "client_id": "cid0857727d4312bcac",
+    "client_id_issued_at": 2893256800,
+    "scope": "cds_client_admin",
+    "redirect_uris": [],
+    "response_types": [],
+    "grant_types": ["client_credentials"],
+    "token_endpoint_auth_method": "client_secret_basic",
+    "client_secret": "i36f4pxDNDdB08x-4fHnJk1wkadFZf2Zjx3oTXSVXn9hrDVLUbZeqDctryQw8jQDrADXmw598p5QpiSHAA",
+    "client_name": "My App Name",
+    "authorization_details_types": [],
+    "cds_created": "2022-01-01T00:00:00Z",
+    "cds_modified": "2022-01-01T00:00:00Z",
+    "cds_client_uri": "https://example.com/cds-api/v1/clients/cid0857727d4312bcac",
+    "cds_status": "production",
+    "cds_status_options": ["production"],
+    "cds_server_metadata": "https://example.com/.well-known/cds-server-metadata.json"
+}
+```
+
+#### 13.1.3. Obtaining a Client Admin Access Token <a id="example-client-admin-token" href="#example-client-admin-token" class="permalink">🔗</a>
+
+In this example, the Client uses their Client Admin `client_id` and `client_secret` to get an admin-scoped access token, so that they can access the Client Registration APIs to see and manage their other Client objects.
+
+**NOTE:** The Authorization header Basic value is a [Base64](#base64) encoded value of the Client's `client_id` and `client_secret`, joined by a colon (i.e. `base64("{client_id}:{client_secret}")`).
+
+```
+==Request==
+POST /oauth/token HTTP/1.1
+Host: example.com
+Authorization: Basic Y2lkMDg1NzcyN2Q0MzEyYmNhYzppMzZmNHB4RE5EZEIwOHgtNGZIbkprMXdrYWRGWmYyWmp4M29UWFNWWG45aHJEVkxVYlplcURjdHJ5UXc4alFEckFEWG13NTk4cDVRcGlTSEFB
+
+grant_type=client_credentials&scope=cds_client_admin
+
+==Response==
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+    "access_token": "nar3UDNdYkXV-xv-92C5tDYEpd7DLOcvCe32NEo6GqHdAHkEF-WjRTLbmj6Si3l88IHLX4AucaJIhBY2xpddFA",
+    "token_type": "bearer",
+    "expires_in": 3600,
+    "scope": "cds_client_admin",
+    "cds_grant_ids": ["bac38d18a6b324cd"]
+}
+```
+
+#### 13.1.4. Retrieving Client Objects with Customer Data Scopes <a id="example-get-client" href="#example-get-client" class="permalink">🔗</a>
+
+In this example, the Client uses their admin-scoped access token to retrieve their list of Client objects, which includes their Customer Data scoped Client objects.
+
+Since the Client used an invite code for the Direct Access scopes, the Server has placed that Client object directly into `production` status.
+For the Customer Authorization scopes, the Client is initially limited to a sandbox Client (`"cds_status": "sandbox"`) while the Server reviews their registration for those scopes.
+The Client can develop and test their integration using the sandbox Client object, then switch to the production Client that is created when the Server has completed and approved the Client's registration.
+
+```
+==Request==
+GET /cds-api/v1/clients HTTP/1.1
+Host: example.com
+Authorizatin: Bearer nar3UDNdYkXV-xv-92C5tDYEpd7DLOcvCe32NEo6GqHdAHkEF-WjRTLbmj6Si3l88IHLX4AucaJIhBY2xpddFA
+
+==Response==
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+    "clients": [
+        {
+            "client_id": "cid0857727d4312bcac",
+            "client_id_issued_at": 2893256800,
+            "scope": "cds_client_admin",
+            "redirect_uris": [],
+            "response_types": [],
+            "grant_types": ["client_credentials"],
+            "token_endpoint_auth_method": "client_secret_basic",
+            "client_name": "My App Name",
+            "authorization_details_types": [],
+            "cds_created": "2022-01-01T00:00:00Z",
+            "cds_modified": "2022-01-01T00:00:00Z",
+            "cds_client_uri": "https://example.com/cds-api/v1/clients/cid0857727d4312bcac",
+            "cds_status": "production",
+            "cds_status_options": ["production"],
+            "cds_server_metadata": "https://example.com/.well-known/cds-server-metadata.json"
+        },
+        {
+            "client_id": "gid791e642d92a97340",
+            "client_id_issued_at": 2893256800,
+            "scope": "cds_grant_admin_1",
+            "redirect_uris": [],
+            "response_types": [],
+            "grant_types": ["client_credentials"],
+            "token_endpoint_auth_method": "client_secret_basic",
+            "authorization_details_types": ["cds_grant_admin_1ad"],
+            "cds_created": "2022-01-01T00:00:00Z",
+            "cds_modified": "2022-01-01T00:00:00Z",
+            "cds_client_uri": "https://example.com/cds-api/v1/clients/gid791e642d92a97340",
+            "cds_status": "production",
+            "cds_status_options": ["production"],
+            "cds_server_metadata": "https://example.com/cds-api/v1/clients/gid791e642d92a97340/cds-server-metadata",
+        },
+        {
+            "client_id": "cd53db9fd4533d593b",
+            "client_id_issued_at": 2893256800,
+            "scope": "cds_query_accounts_1 cds_query_bill_statements_1",
+            "redirect_uris": [],
+            "response_types": [],
+            "grant_types": ["client_credentials"],
+            "token_endpoint_auth_method": "client_secret_basic",
+            "authorization_details_types": ["cds_query_accounts_1ad", "cds_query_bill_statements_1ad"],
+            "cds_created": "2022-01-01T00:00:00Z",
+            "cds_modified": "2022-01-01T00:00:00Z",
+            "cds_client_uri": "https://example.com/cds-api/v1/clients/cd53db9fd4533d593b",
+            "cds_status": "production",
+            "cds_status_options": ["production", "disabled"],
+            "cds_server_metadata": "https://example.com/cds-api/v1/clients/cd53db9fd4533d593b/cds-server-metadata"
+        },
+        {
+            "client_id": "cd19fadc538d3bf3b0",
+            "client_id_issued_at": 2893256800,
+            "scope": "cds_service_contracts_1 cds_usage_1",
+            "redirect_uris": ["https://example.com/oauth/default-redirect/cd19fadc538d3bf3b0"],
+            "response_types": ["code"],
+            "grant_types": ["authorization_code", "refresh_token"],
+            "token_endpoint_auth_method": "client_secret_basic",
+            "client_name": "My App Name",
+            "authorization_details_types": ["cds_service_contracts_1ad", "cds_usage_1ad"],
+            "cds_created": "2022-01-01T00:00:00Z",
+            "cds_modified": "2022-01-01T00:00:00Z",
+            "cds_client_uri": "https://example.com/cds-api/v1/clients/cd19fadc538d3bf3b0",
+            "cds_status": "sandbox",
+            "cds_status_options": ["sandbox", "disabled"],
+            "cds_server_metadata": "https://example.com/cds-api/v1/clients/cd19fadc538d3bf3b0/cds-server-metadata",
+            "cds_default_scope": "cds_service_contracts_1",
+            "cds_default_redirect_uri": "https://example.com/oauth/default-redirect/cd19fadc538d3bf3b0",
+            "cds_default_authorization_details": [],
+            "cds_purposes": {
+                "default-01": {
+                    "id": "default-01",
+                    "name": "Default Purpose",
+                    "content": "This Client may use the data you authorize them to access for any purpose.",
+                    "related_uri": null,
+                    "scopes_supported": ["cds_service_contracts_1", "cds_usage_1"]
+                }
+            }
+        }
+    ],
+    "next": null,
+    "previous": null
+}
+```
+
+#### 13.1.5. Retrieving Client-specific Server Metadata <a id="example-get-client-server-metadata" href="#example-get-client-server-metadata" class="permalink">🔗</a>
+
+In this example, the Client retrieves Client object specific Server Metadata for each of their registered Client objects, since the Server may have Client-specific endpoints that don't match the public-facing Server Metadata.
+
+**NOTE:** To enhance readability, only relevant fields are included in the JSON responses, with other non-relevant fields removed and replaced with ellipses ("`...`").
+
+For the Grant Admin Client object's Server Metadata:
+
+```
+==Request==
+GET /cds-api/v1/clients/gid791e642d92a97340/cds-server-metadata HTTP/1.1
+Host: example.com
+Authorizatin: Bearer nar3UDNdYkXV-xv-92C5tDYEpd7DLOcvCe32NEo6GqHdAHkEF-WjRTLbmj6Si3l88IHLX4AucaJIhBY2xpddFA
+
+==Response==
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+    ...
+    "oauth_metadata": "https://example.com/cds-api/v1/clients/gid791e642d92a97340/oauth-authorization-server",
+    ...
+}
+
+==Request==
+GET /cds-api/v1/clients/gid791e642d92a97340/oauth-authorization-server HTTP/1.1
+Host: example.com
+Authorizatin: Bearer nar3UDNdYkXV-xv-92C5tDYEpd7DLOcvCe32NEo6GqHdAHkEF-WjRTLbmj6Si3l88IHLX4AucaJIhBY2xpddFA
+
+==Response==
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+    ...
+    "token_endpoint": "https://example.com/cds-grants/oauth/token",
+    ...
+}
+```
+
+For the Customer Data (Direct Access) Client object's Server Metadata:
+
+```
+==Request==
+GET /cds-api/v1/clients/cd53db9fd4533d593b/cds-server-metadata HTTP/1.1
+Host: example.com
+Authorizatin: Bearer nar3UDNdYkXV-xv-92C5tDYEpd7DLOcvCe32NEo6GqHdAHkEF-WjRTLbmj6Si3l88IHLX4AucaJIhBY2xpddFA
+
+==Response==
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+    ...
+    "oauth_metadata": "https://example.com/cds-api/v1/clients/cd53db9fd4533d593b/oauth-authorization-server",
+    ...
+}
+
+==Request==
+GET /cds-api/v1/clients/cd53db9fd4533d593b/oauth-authorization-server HTTP/1.1
+Host: example.com
+Authorizatin: Bearer nar3UDNdYkXV-xv-92C5tDYEpd7DLOcvCe32NEo6GqHdAHkEF-WjRTLbmj6Si3l88IHLX4AucaJIhBY2xpddFA
+
+==Response==
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+    ...
+    "token_endpoint": "https://example.com/cds-customerdata/oauth/token",
+    ...
+    "cds_accounts_api": "https://example.com/cds-customerdata-api/v1/accounts",
+    "cds_billstatement_api": "https://example.com/cds-customerdata-api/v1/bill-statements",
+    ...
+}
+```
+
+For the Customer Data (Customer Authorization) Client object's Server Metadata:
+
+```
+==Request==
+GET /cds-api/v1/clients/cd19fadc538d3bf3b0/cds-server-metadata HTTP/1.1
+Host: example.com
+Authorizatin: Bearer nar3UDNdYkXV-xv-92C5tDYEpd7DLOcvCe32NEo6GqHdAHkEF-WjRTLbmj6Si3l88IHLX4AucaJIhBY2xpddFA
+
+==Response==
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+    ...
+    "oauth_metadata": "https://example.com/cds-api/v1/clients/cd19fadc538d3bf3b0/oauth-authorization-server",
+    ...
+}
+
+==Request==
+GET /cds-api/v1/clients/cd19fadc538d3bf3b0/oauth-authorization-server HTTP/1.1
+Host: example.com
+Authorizatin: Bearer nar3UDNdYkXV-xv-92C5tDYEpd7DLOcvCe32NEo6GqHdAHkEF-WjRTLbmj6Si3l88IHLX4AucaJIhBY2xpddFA
+
+==Response==
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+    ...
+    "authorization_endpoint": "https://sandbox.example.com/cds-customerdata/oauth/authorize",
+    "token_endpoint": "https://sandbox.example.com/cds-customerdata/oauth/token",
+    ...
+    "cds_accounts_api": "https://sandbox.example.com/cds-customerdata-api/v1/accounts",
+    "cds_servicecontracts_api": "https://sandbox.example.com/cds-customerdata-api/v1/service-contracts",
+    "cds_servicepoints_api": "https://sandbox.example.com/cds-customerdata-api/v1/service-points",
+    "cds_meterdevices_api": "https://sandbox.example.com/cds-customerdata-api/v1/meter-devices",
+    "cds_usagesegments_api": "https://sandbox.example.com/cds-customerdata-api/v1/usage-segments",
+    ...
+}
+```
+
+#### 13.1.6. Retrieving Client Secrets <a id="example-get-client-secret" href="#example-get-client-secret" class="permalink">🔗</a>
+
+In this example, the Client retrieves Credential objects, which have `client_secret` values for the Client objects they will be using.
+
+```
+==Request==
+GET /cds-api/v1/credentials?client_ids=gid791e642d92a97340%20cd53db9fd4533d593b%20cd19fadc538d3bf3b0 HTTP/1.1
+Host: example.com
+Authorizatin: Bearer nar3UDNdYkXV-xv-92C5tDYEpd7DLOcvCe32NEo6GqHdAHkEF-WjRTLbmj6Si3l88IHLX4AucaJIhBY2xpddFA
+
+==Response==
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+    "credentials": [
+        {
+            "credential_id": "b3f3080369c4ab3b",
+            "uri": "https://example.com/cds-api/v1/credentials/b3f3080369c4ab3b",
+            "client_id": "gid791e642d92a97340",
+            "created": "2022-01-01T00:00:00Z",
+            "modified": "2022-01-01T00:00:00Z",
+            "type": "client_secret",
+            "client_secret": "0YlKYpUikwzAYc8begZHNb1Pb7JM4fdS10hEbbdB9lIeBiKiN84YqZfVG6tZnzTi-d4HpCiAMwx8dDLHwSOqkQ",
+            "client_secret_expires_at": 0
+        },
+        {
+            "credential_id": "ebf9b235a3e4320d",
+            "uri": "https://example.com/cds-api/v1/credentials/ebf9b235a3e4320d",
+            "client_id": "cd53db9fd4533d593b",
+            "created": "2022-01-01T00:00:00Z",
+            "modified": "2022-01-01T00:00:00Z",
+            "type": "client_secret",
+            "client_secret": "3KLscQ15OrludEf8dDaEWmWS4_kBtTqkJ7SuMFDNlUezoswvvDmsI7ToCFdA--8ed_pvDMedmIb8SN56zBrovg",
+            "client_secret_expires_at": 0
+        },
+        {
+            "credential_id": "2efdf7a00f7b9f6e",
+            "uri": "https://example.com/cds-api/v1/credentials/2efdf7a00f7b9f6e",
+            "client_id": "cd19fadc538d3bf3b0",
+            "created": "2022-01-01T00:00:00Z",
+            "modified": "2022-01-01T00:00:00Z",
+            "type": "client_secret",
+            "client_secret": "jM3Ju6dHKCAytkB_dcKoiLAae7DlIcj5fUsxyR-2p8VNL4CCT8cA8LIfSsC2Jqkao0EWSb5wHg3R_HiqKHs0Zg",
+            "client_secret_expires_at": 0
+        }
+    ],
+    "next": null,
+    "previous": null
+}
+```
+
+### 13.2. Direct Access Examples <a id="example-direct-access" href="#example-direct-access" class="permalink">🔗</a>
+
+The examples in this section show how a Client can query the [Customer Data APIs](#api) to retrieve Customer Date to which they have been directly granted access by the Server for their Client object with [Direct Access Scopes](#scopes-direct-access).
+
+These examples could apply to both Customers who are permitted to access their own data, or vendors who have been pre-authorized by the Server to access a certain dataset of Customer Data.
+
+#### 13.2.1. Obtaining an Access Token with Direct Access Scopes <a id="example-direct-access-token" href="#example-direct-access-token" class="permalink">🔗</a>
+
+In this example, the Client uses their Customer Data (Direct Access) Client object's `client_id` and `client_secret` to get an access token, so that they can access the Customer Data APIs to retrieve the data which they have been permitted to access by the Server.
+
+**NOTE:** The Authorization header Basic value is a [Base64](#base64) encoded value of the Client's `client_id` and `client_secret`, joined by a colon (i.e. `base64("{client_id}:{client_secret}")`).
+
+```
+==Request==
+POST /cds-customerdata/oauth/token HTTP/1.1
+Host: example.com
+Authorization: Basic Y2Q1M2RiOWZkNDUzM2Q1OTNiOjNLTHNjUTE1T3JsdWRFZjhkRGFFV21XUzRfa0J0VHFrSjdTdU1GRE5sVWV6b3N3dnZEbXNJN1RvQ0ZkQS0tOGVkX3B2RE1lZG1JYjhTTjU2ekJyb3Zn
+
+grant_type=client_credentials&scope=cds_query_accounts_1%20cds_query_bill_statements_1
+
+==Response==
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+    "access_token": "dA2o02eSo-Sfybure6vp4fprFOkpPQXzA3Pz1Qq6u9GRZbG2e93UjXyAp3k3rioY43Q31l8Ugcb2yFN1n8q59g",
+    "token_type": "bearer",
+    "expires_in": 3600,
+    "scope": "cds_query_accounts_1 cds_query_bill_statements_1",
+    "authorization_details": [
+        {
+            "type": "cds_query_accounts_1ad",
+            "account_numbers": null,
+            "include_account_numbers": true,
+            "include_account_details": true,
+            "sync_until": "infinite"
+        },
+        {
+            "type": "cds_query_bill_statements_1ad",
+            "account_numbers": null,
+            "include_account_numbers": true,
+            "include_bill_statement_files": true,
+            "sync_until": "infinite",
+            "statement_date_start": "infinite",
+            "statement_date_end": "infinite"
+        }
+    ],
+    "cds_grant_ids": ["48c9f3b9f704c768"]
+}
+```
+
+#### 13.2.2. Retrieving an Account List <a id="example-get-accounts" href="#example-get-accounts" class="permalink">🔗</a>
+
+In this example, the Client uses their access token to retrieve the list of Account objects which they have been permitted to access by the Server.
+
+```
+==Request==
+GET /cds-customerdata-api/v1/accounts HTTP/1.1
+Host: example.com
+Authorizatin: Bearer dA2o02eSo-Sfybure6vp4fprFOkpPQXzA3Pz1Qq6u9GRZbG2e93UjXyAp3k3rioY43Q31l8Ugcb2yFN1n8q59g
+
+==Response==
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+    "accounts": [
+        {
+            "cds_account_id": "68930b861cdfc90c",
+            "cds_created": "2022-01-01T00:00:00Z",
+            "cds_modified": "2022-01-01T00:00:00Z",
+            "cds_synced": "2022-01-01T00:00:00Z",
+            "cds_account_parent": null,
+            "customer_number": null,
+            "account_number": "AAA-12345-A",
+            "account_entity": {
+                "id": "a62d6ad8f0f34635",
+                "types": ["distributor", "supplier", "iou"],
+                "entity_number": "EXAMPLEUTILITY-01",
+                "entity_name": "Example Gas & Electric",
+                "entity_abbreviation": "EG&E"
+            },
+            "account_name": "Example, Inc.",
+            "account_address": "Example, Inc. ATTN: Accounting Dept\n123 Main St\nAnytown, NY 00000",
+            "account_types": ["customer", "commercial", "billed_monthly"],
+            "account_status": "active",
+            "account_contacts": [
+                {
+                    "id": "ae43ef62b4492d08",
+                    "types": ["phone_number", "preferred"],
+                    "value": "+15554443333"
+                },
+                {
+                    "id": "f844eede4fd5b80c",
+                    "types": ["email"],
+                    "value": "accounting@example.com"
+                }
+            ]
+        }
+    ],
+    "next": null,
+    "previous": null
+}
+```
+
+#### 13.2.3. Retrieving an Account's Bill Statements <a id="example-get-bill-statements" href="#example-get-bill-statements" class="permalink">🔗</a>
+
+In this example, the Client uses their access token to retrieve the list of Bill Statement objects which they have been permitted to access by the Server.
+
+```
+==Request==
+GET /cds-customerdata-api/v1/bill-statements HTTP/1.1
+Host: example.com
+Authorizatin: Bearer dA2o02eSo-Sfybure6vp4fprFOkpPQXzA3Pz1Qq6u9GRZbG2e93UjXyAp3k3rioY43Q31l8Ugcb2yFN1n8q59g
+
+==Response==
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+    "bill_statements": [
+        {
+            "cds_billstatement_id": "e397fb530a9a67da",
+            "cds_created": "2022-01-01T00:00:00Z",
+            "cds_modified": "2022-01-01T00:00:00Z",
+            "cds_synced": "2022-01-01T00:00:00Z",
+            "cds_account_id": "68930b861cdfc90cZ",
+            "account_number": "AAA-12345-A",
+            "statement_date": "2021-12-01",
+            "currency": "USD",
+            "file_uri": "https://example.com/cds-customerdata-api/v1/bill-statements/e397fb530a9a67da",
+            "file_mimetype": "application/pdf",
+            "amount_due": 2000.00,
+            "amount_due_date": "2021-12-20",
+            "shutoff_prevention_minimum_due": null,
+            "shutoff_prevention_date": null
+        },
+        {
+            "cds_billstatement_id": "c90376f9f220bf07",
+            "cds_created": "2022-01-01T00:00:00Z",
+            "cds_modified": "2022-01-01T00:00:00Z",
+            "cds_synced": "2022-01-01T00:00:00Z",
+            "cds_account_id": "68930b861cdfc90cZ",
+            "account_number": "AAA-12345-A",
+            "statement_date": "2021-11-01",
+            "currency": "USD",
+            "file_uri": "https://example.com/cds-customerdata-api/v1/bill-statements/c90376f9f220bf07",
+            "file_mimetype": "application/pdf",
+            "amount_due": 1500.00,
+            "amount_due_date": "2021-11-20",
+            "shutoff_prevention_minimum_due": null,
+            "shutoff_prevention_date": null
+        }
+    ],
+    "next": null,
+    "previous": null
+}
+```
+
+### 13.3. Customer Authorization Examples <a id="example-customer-authorization" href="#example-customer-authorization" class="permalink">🔗</a>
+
+The examples in this section show how a Client can obtain a [Customer Authorization](#authorizations) and then access the Customer authorized data on the [Customer Data APIs](#api).
+The examples show the Client using a sandbox Client object (i.e. can only obtain Customer authorizations from test accounts), but the same examples would apply to production Client objects.
+
+#### 13.3.1. Adding a Custom Redirect URL <a id="example-add-redirect-uri" href="#example-add-redirect-uri" class="permalink">🔗</a>
+
+In this example, the Client adds another `redirect_uri` to their Client object, so that they can use it when sending authorization requests to Customers.
+
+```
+==Request==
+PUT /cds-api/v1/clients/cd19fadc538d3bf3b0
+Host: example.com
+Authorization: Bearer nar3UDNdYkXV-xv-92C5tDYEpd7DLOcvCe32NEo6GqHdAHkEF-WjRTLbmj6Si3l88IHLX4AucaJIhBY2xpddFA
+
+{
+    "client_name": "My App Name",
+    "scope": "cds_service_contracts_1 cds_usage_1",
+    "redirect_uris": [
+        "https://example.com/oauth/default-redirect/cd19fadc538d3bf3b0",
+        "https://energy-app.example.com/redirect"
+    ],
+    "authorization_details_types": ["cds_service_contracts_1ad", "cds_usage_1ad"],
+    "cds_status": "sandbox",
+    "cds_default_scope": "cds_service_contracts_1",
+    "cds_default_redirect_uri": "https://example.com/oauth/default-redirect/cd19fadc538d3bf3b0",
+    "cds_default_authorization_details": [],
+    "cds_purposes": {
+        "default-01": {
+            "id": "default-01",
+            "name": "Default Purpose",
+            "content": "This Client may use the data you authorize them to access for any purpose.",
+            "related_uri": null,
+            "scopes_supported": ["cds_service_contracts_1", "cds_usage_1"]
+        }
+    }
+}
+
+==Response==
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+    "client_id": "cd19fadc538d3bf3b0",
+    "client_id_issued_at": 2893256800,
+    "scope": "cds_service_contracts_1 cds_usage_1",
+    "redirect_uris": [
+        "https://example.com/oauth/default-redirect/cd19fadc538d3bf3b0",
+        "https://energy-app.example.com/redirect"
+    ],
+    "response_types": ["code"],
+    "grant_types": ["authorization_code", "refresh_token"],
+    "token_endpoint_auth_method": "client_secret_basic",
+    "client_name": "My App Name",
+    "authorization_details_types": ["cds_service_contracts_1ad", "cds_usage_1ad"],
+    "cds_created": "2022-01-01T00:00:00Z",
+    "cds_modified": "2023-05-12T09:03:55Z",
+    "cds_client_uri": "https://example.com/cds-api/v1/clients/cd19fadc538d3bf3b0",
+    "cds_status": "sandbox",
+    "cds_status_options": ["sandbox", "disabled"],
+    "cds_server_metadata": "https://example.com/cds-api/v1/clients/cd19fadc538d3bf3b0/cds-server-metadata",
+    "cds_default_scope": "cds_service_contracts_1",
+    "cds_default_redirect_uri": "https://example.com/oauth/default-redirect/cd19fadc538d3bf3b0",
+    "cds_default_authorization_details": [],
+    "cds_purposes": {
+        "default-01": {
+            "id": "default-01",
+            "name": "Default Purpose",
+            "content": "This Client may use the data you authorize them to access for any purpose.",
+            "related_uri": null,
+            "scopes_supported": ["cds_service_contracts_1", "cds_usage_1"]
+        }
+    }
+}
+```
+
+#### 13.3.2. Building an Authorization Request URL <a id="example-auth-request-url" href="#example-auth-request-url" class="permalink">🔗</a>
+
+In this example, the Client constructs an [Authorization Request](#auth-requests) URL that they can then send to a Customer or otherwise present to the Customer (e.g. as a button on a mobile application).
+
+**NOTE:** The whitespace and line breaks in the example below are for readability purposes only, so the real authorization request URL would not contain the whitespace and line breaks (i.e. the URL is a single uninterrupted line).
+
+```
+https://sandbox.example.com/cds-customerdata/oauth/authorize
+?response_type=code
+&client_id=cd19fadc538d3bf3b0
+&redirect_uri=https%3A%2F%2Fenergy-app.example.com%2Fredirect
+&code_challenge=4blHJacegnhtKob3w55DM9Nhc5crjs3sDKXAOId-Nk8
+&code_challenge_method=S256
+&state=mystate1234
+&scope=cds_service_contracts_1%20cds_usage_1
+&authorization_details=
+    %5B%7B%22type%22%3A%22cds_service_contracts_1ad%22%2C%22contract_numbers%22%3A%5B%22_all%22%5D%2C
+    %22merge_selection_with%22%3A%22cds_usage_1%22%7D%2C%7B%22type%22%3A%22cds_usage_1ad%22
+    %2C%22contract_numbers%22%3A%5B%22_all%22%5D%2C%22merge_selection_with%22%3A%22cds_service_contracts_1%22%7D%5D
+```
+
+The `authorization_details` parameter is a percent-encoded string that merges the Authorization Form [Selection Component](#selection-component) for both requested Scopes, so the Customer only has to select which Service Contracts they want to apply to the Authorization once.
+The following is the non-percent encoded and pretty printed version of the `authorization_details` value:
+
+```
+[
+    {
+        "type": "cds_service_contracts_1ad",
+        "contract_numbers": ["_all"],
+        "merge_selection_with": "cds_usage_1"
+    },
+    {
+        "type": "cds_usage_1ad",
+        "contract_numbers": ["_all"],
+        "merge_selection_with": "cds_service_contracts_1"
+    }
+]
+```
+
+#### 13.3.3. Using an Authorization Code to Obtain an Access Token <a id="example-auth-code-to-token" href="#example-auth-code-to-token" class="permalink">🔗</a>
+
+In this example, the Client provides the [previous example's](#example-auth-request-url) authorization request URL their desired Customer.
+
+The Customer loads the authorization request URL and follows the [Authorization Process](#auth-process) to give their written consent for the Client to access their Customer Data for the requested scope of access.
+
+The [Authorization Form](#auth-form) will have all of the Customer's Service Contracts selected by default (because of the `"contract_numbers": ["_all"]` [Preselection Field](#auth-details-preselection)), but the Customer can deselect ones that they don't want to share.
+
+Afterwards, the Customer is provided an [Authorization Receipt](#auth-receipt).
+
+When the Authorization Process is successfully completed, the Customer is redirected back to the Client's `redirect_uri` URL with an authorization code (line breaks are added for readability):
+
+```
+https://energy-app.example.com/redirect
+?code=mdHu7vpff6ZtUbubo5k4jCAIB4G
+&state=mystate1234
+```
+
+Then Client can then obtain an access token using the authorization code (line breaks are added for readability):
+
+```
+POST /cds-customerdata/oauth/token HTTP/1.1
+Host: sandbox.example.com
+Authorization: Basic Y2QxOWZhZGM1MzhkM2JmM2IwOmpNM0p1NmRIS0NBeXRrQl9kY0tvaUxBYWU3RGxJY2o1ZlVzeHlSLTJwOFZOTDRDQ1Q4Y0E4TElmU3NDMkpxa2FvMEVXU2I1d0hnM1JfSGlxS0hzMFpn
+
+grant_type=authorization_code
+&code=mdHu7vpff6ZtUbubo5k4jCAIB4G
+&redirect_uri=https%3A%2F%2Fenergy-app.example.com%2Fredirect
+&code_verifier=3ab4c71f218f4d9a
+
+==Response==
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+    "access_token": "cI6rHSycvFL_8pY1ofOI25StfnKH7Hsj2gQPFA5a-foBROTgk0LGwRC1sDv9u3so175SKYZkUW4lxlYlTHMiqw",
+    "refresh_token": "P6_g21TjiLOBeFOAgCVUQCrjaebJl_1I47WUoLL9Bg9kthrl5hJZLYNF-DLXVVGoqJaVV1Nz70dFHpNzQQktJg",
+    "token_type": "bearer",
+    "expires_in": 3600,
+    "scope": "cds_service_contracts_1 cds_usage_1",
+    "authorization_details": [
+        {
+            "type": "cds_service_contracts_1ad",
+            "include_accounts": true,
+            "include_account_numbers": true,
+            "include_contract_numbers": true,
+            "include_rate_plans": true,
+            "include_service_contract_details": true,
+            "sync_until": "infinite",
+            "purpose": "default-01"
+        },
+        {
+            "type": "cds_usage_1ad",
+            "include_service_contracts": true,
+            "include_meter_devices": true,
+            "include_meter_numbers": true,
+            "include_usage_segment_value_types": ["electric_intervals_01"],
+            "segment_start": "2020-12-01T00:00:00Z",
+            "segment_end": "infinite",
+            "purpose": "default-01"
+        }
+    ],
+    "cds_grant_ids": ["dcf6a23cb940d6a0"]
+}
+```
+
+Note that the `include_usage_segment_value_types` array only includes `"electric_intervals_01"`, which indicates that the Customer selected only Service Contracts were electric services that had interval smart meters.
+
+#### 13.3.4. Retrieving a Service Contract List <a id="example-get-service-contracts" href="#example-get-service-contracts" class="permalink">🔗</a>
+
+In this example, the Client uses their access token to retrieve the [list of Service Contract objects](#service-contracts-list) which they have been authorized to access by the Customer.
+
+```
+==Request==
+GET /cds-customerdata-api/v1/service-contracts HTTP/1.1
+Host: sandbox.example.com
+Authorizatin: Bearer cI6rHSycvFL_8pY1ofOI25StfnKH7Hsj2gQPFA5a-foBROTgk0LGwRC1sDv9u3so175SKYZkUW4lxlYlTHMiqw
+
+==Response==
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+    "service_contracts": [
+        {
+            "cds_servicecontract_id": "fc992d2f1edd40ac",
+            "cds_created": "2022-01-01T00:00:00Z",
+            "cds_modified": "2022-01-01T00:00:00Z",
+            "cds_synced": "2022-01-01T00:00:00Z",
+            "cds_account_id": "df5e2d380e18e959",
+            "account_number": "BBB-54321-B",
+            "contract_number": "CCC-99DDD-8",
+            "contract_address": "555 Other St",
+            "contract_types": ["utility_service", "billed_monthly"],
+            "contract_entity": {
+                "id": "a62d6ad8f0f34635",
+                "types": ["distributor", "supplier", "iou"],
+                "entity_number": "EXAMPLEUTILITY-01",
+                "entity_name": "Example Gas & Electric",
+                "entity_abbreviation": "EG&E"
+            },
+            "contract_status": "active",
+            "contract_start": "2018-01-01",
+            "contract_end": null,
+            "service_types": ["electric", "residential", "metered", "distribution", "supply"],
+            "rateplan_code": "TARIFF-RES-01",
+            "rateplan_name": "Base Residential Rate"
+        }
+    ],
+    "next": null,
+    "previous": null
+}
+```
+
+#### 13.3.5. Retrieving Electric Interval Data <a id="example-get-usage-segments" href="#example-get-usage-segments" class="permalink">🔗</a>
+
+In this example, the Client uses their access token to retrieve the [list of Usage Segments](#usage-segments-list) objects which they have been authorized to access by the Customer.
+
+**NOTE:** To enhance readability, the Usage Summary `values` field has been truncated and only includes the first few [Value Sets](#usage-segment-value-set-format).
+In reality there would be ~2880 Value Sets per month (since this example shows monthly Usage Segments of 15 minute intervals).
+
+```
+==Request==
+GET /cds-customerdata-api/v1/usage-segments HTTP/1.1
+Host: sandbox.example.com
+Authorizatin: Bearer cI6rHSycvFL_8pY1ofOI25StfnKH7Hsj2gQPFA5a-foBROTgk0LGwRC1sDv9u3so175SKYZkUW4lxlYlTHMiqw
+
+==Response==
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+    "usage_segments": [
+        {
+            "cds_usagesegment_id": "a8c63c4c80709810",
+            "cds_created": "2022-01-01T00:00:00Z",
+            "cds_modified": "2022-01-01T00:00:00Z",
+            "cds_synced": "2022-01-01T00:00:00Z",
+            "related_aggregations": [],
+            "related_accounts": ["df5e2d380e18e959"],
+            "related_servicecontracts": ["fc992d2f1edd40ac"],
+            "related_servicepoints": ["c8631cab148785a4"],
+            "related_meterdevices": ["a14a3184131a4653"],
+            "related_meterdevices": [],
+            "segment_start": "2021-12-01T00:00:00Z",
+            "segment_end": "2022-01-01T00:00:00Z",
+            "interval": 900,
+            "formats": [
+                {
+                    "id": "electric_intervals_01",
+                    "type": "electric_usage",
+                    "units": "kWh",
+                    "direction": "net",
+                    "quality": "raw"
+                },
+            ],
+            "values": [
+                [{"eu": 10.0}],
+                [{"eu": 9.4}],
+                [{"eu": 11.1}],
+                ...
+            ]
+        },
+        {
+            "cds_usagesegment_id": "a8c63c4c80709810",
+            "cds_created": "2022-01-01T00:00:00Z",
+            "cds_modified": "2022-01-01T00:00:00Z",
+            "cds_synced": "2022-01-01T00:00:00Z",
+            "related_aggregations": [],
+            "related_accounts": ["df5e2d380e18e959"],
+            "related_servicecontracts": ["fc992d2f1edd40ac"],
+            "related_servicepoints": ["c8631cab148785a4"],
+            "related_meterdevices": ["a14a3184131a4653"],
+            "related_meterdevices": [],
+            "segment_start": "2021-11-01T00:00:00Z",
+            "segment_end": "2021-12-01T00:00:00Z",
+            "interval": 900,
+            "formats": [
+                {
+                    "id": "electric_intervals_01",
+                    "type": "electric_usage",
+                    "units": "kWh",
+                    "direction": "net",
+                    "quality": "raw"
+                },
+            ],
+            "values": [
+                [{"eu": 4.3}],
+                [{"eu": 7.9}],
+                [{"eu": 13.2}],
+                ...
+            ]
+        },
+    ],
+    "next": null,
+    "previous": null
+}
+```
+
+#### 13.3.6. Retrieving Customer Authorized Grants <a id="example-get-grants" href="#example-get-grants" class="permalink">🔗</a>
+
+In this example, the Client uses their admin-scoped access token to retrieve the Grant object that is associated with a Customer Authorization.
+
+```
+==Request==
+GET /cds-api/v1/grants?grant_ids=dcf6a23cb940d6a0 HTTP/1.1
+Host: example.com
+Authorizatin: Bearer nar3UDNdYkXV-xv-92C5tDYEpd7DLOcvCe32NEo6GqHdAHkEF-WjRTLbmj6Si3l88IHLX4AucaJIhBY2xpddFA
+
+==Response==
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+    "grants": [
+        {
+            "grant_id": "dcf6a23cb940d6a0",
+            "uri": "https://example.com/cds-api/v1/grants/dcf6a23cb940d6a0",
+            "replacing": [],
+            "replaced_by": [],
+            "parent": [],
+            "children": [],
+            "created": "2022-01-01T00:00:00Z",
+            "modified": "2022-01-01T00:00:00Z",
+            "not_before": null,
+            "not_after": null,
+            "eta": null,
+            "expires": null,
+            "status": "active",
+            "client_id": "cd19fadc538d3bf3b0",
+            "scope": "cds_service_contracts_1 cds_usage_1",
+            "authorization_details": [
+                {
+                    "type": "cds_service_contracts_1ad",
+                    "include_accounts": true,
+                    "include_account_numbers": true,
+                    "include_contract_numbers": true,
+                    "include_rate_plans": true,
+                    "include_service_contract_details": true,
+                    "sync_until": "infinite",
+                    "purpose": "default-01"
+                },
+                {
+                    "type": "cds_usage_1ad",
+                    "include_service_contracts": true,
+                    "include_meter_devices": true,
+                    "include_meter_numbers": true,
+                    "include_usage_segment_value_types": ["electric_intervals_01"],
+                    "segment_start": "2020-12-01T00:00:00Z",
+                    "segment_end": "infinite",
+                    "purpose": "default-01"
+                }
+            ],
+            "receipt_confirmations": ["948859833"],
+            "enabled_scope": "cds_service_contracts_1 cds_usage_1",
+            "enabled_authorization_details": [
+                {
+                    "type": "cds_service_contracts_1ad",
+                    "include_accounts": true,
+                    "include_account_numbers": true,
+                    "include_contract_numbers": true,
+                    "include_rate_plans": true,
+                    "include_service_contract_details": true,
+                    "sync_until": "infinite",
+                    "purpose": "default-01"
+                },
+                {
+                    "type": "cds_usage_1ad",
+                    "include_service_contracts": true,
+                    "include_meter_devices": true,
+                    "include_meter_numbers": true,
+                    "include_usage_segment_value_types": ["electric_intervals_01"],
+                    "segment_start": "2020-12-01T00:00:00Z",
+                    "segment_end": "infinite",
+                    "purpose": "default-01"
+                }
+            ]
+        }
+    ],
+    "next": null,
+    "previous": null
+}
+```
+
+#### 13.3.7. Obtaining a Grant Admin Access Token for a Customer Authorized Grant <a id="example-grant-admin-token" href="#example-grant-admin-token" class="permalink">🔗</a>
+
+In this example, the Client uses their Grant Admin Client object to obtain an access token that can be used to retrieve the Customer Data for a specific Grant [[CDS-WG1-02 Section 3.3.2](#ref-cds-wg1-02-grant-admin)].
+This can be useful if all of a Client's access tokens for a Customer Data grant have expired and they also have lost all of their refresh tokens.
+
+```
+==Request==
+POST /cds-grants/oauth/token HTTP/1.1
+Host: example.com
+Authorization: Basic Z2lkNzkxZTY0MmQ5MmE5NzM0MDowWWxLWXBVaWt3ekFZYzhiZWdaSE5iMVBiN0pNNGZkUzEwaEViYmRCOWxJZUJpS2lOODRZcVpmVkc2dFpuelRpLWQ0SHBDaUFNd3g4ZERMSHdTT3FrUQ==
+
+grant_type=client_credentials&scope=cds_grant_admin_1&authorization_details=%5B%7B%22type%22%3A%22cds_grant_admin_1%22%2C%22client_id%22%3A%22cd19fadc538d3bf3b0%22%2C%22grant_id%22%3A%22dcf6a23cb940d6a0%22%7D%5D
+
+==Response==
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+    "access_token": "Zu3TX8r4ove8tfcVmTSm4DldKN_RIf9W5friy376jPWo78kJR0nlONQA4A1vy9yRnl3GtLx9dm3VDTPXsVkivg",
+    "token_type": "bearer",
+    "expires_in": 3600,
+    "scope": "cds_grant_admin_1",
+    "authorization_details": [
+        {
+            "type": "cds_grant_admin_1",
+            "client_id": "cd19fadc538d3bf3b0",
+            "grant_id": "dcf6a23cb940d6a0"
+        }
+    ],
+    "cds_grant_ids": ["3c1a0ff59d947"]
+}
+```
+
+The above `access_token` can be used the same as the access token obtained via the [authorization code grant example](#example-auth-code-to-token).
+
+### 13.4. Server Request Examples <a id="example-server-request" href="#example-server-request" class="permalink">🔗</a>
+
+The examples in this section show how a Client directly request from a Server that a Grant be created using the Messages API [[CDS-WG1-02 Section 6](#ref-cds-wg1-02-messages-api)].
+
+This process typically happens when a Server is providing Customer Data access to a contracted vendor that already has a preexisting relationship with the Server (or the utility the Server is servicing).
+
+#### 13.4.1. Sending a Message with a Grant Request <a id="example-send-scope-message" href="#example-send-scope-message" class="permalink">🔗</a>
+
+In this example, the Client sends a Message to the Server requesting a Grant be created to access a specific Scope, in this case asking for the contact info for a specific Account.
+
+```
+==Request==
+POST /cds-api/v1/messages HTTP/1.1
+Host: example.com
+Authorizatin: Bearer nar3UDNdYkXV-xv-92C5tDYEpd7DLOcvCe32NEo6GqHdAHkEF-WjRTLbmj6Si3l88IHLX4AucaJIhBY2xpddFA
+
+{
+    "type": "grant_request",
+    "name": "Requesting phone number for Account #1234567",
+    "description": "As part of our handling of support ticket #99993333, we need to contact the Customer for Acct #1234567",
+    "related_uri": "https://example.com/cds-api/v1/clients/cd53db9fd4533d593b",
+    "grants_requested": [
+        {
+            "scope": "cds_query_accounts_1",
+            "authorization_details": [
+                {
+                    "type": "cds_query_accounts_1ad",
+                    "account_numbers": ["1234567"],
+                    "include_account_numbers": true,
+                    "include_account_details": true,
+                    "sync_until": "P0D"
+                }
+            ]
+        }
+    ]
+}
+
+==Response==
+HTTP/1.1 201 Created
+Content-Type: application/json;charset=UTF-8
+
+{
+    "message_id": "ec603313741e824c",
+    "uri": "https://example.com/cds-api/v1/messages/ec603313741e824c",
+    "previous_uri": null,
+    "type": "grant_request",
+    "read": true,
+    "creator": "cid0857727d4312bcac",
+    "created": "2022-01-01T00:00:00Z",
+    "modified": "2022-01-01T00:00:00Z",
+    "status": "pending",
+    "name": "Requesting phone number for Account #1234567-9",
+    "description": "As part of our handling of support ticket #99993333, we need to contact the Customer for Acct #1234567-9",
+    "related_uri": "https://example.com/cds-api/v1/clients/cd53db9fd4533d593b",
+    "grants_requested": [
+        {
+            "scope": "cds_query_accounts_1",
+            "authorization_details": [
+                {
+                    "type": "cds_query_accounts_1ad",
+                    "account_numbers": ["1234567-9"],
+                    "include_account_numbers": true,
+                    "include_account_details": true,
+                    "sync_until": "P0D"
+                }
+            ]
+        }
+    ]
+}
+```
+
+#### 13.4.2. Retrieving a Message Reply to a Grant Request <a id="example-receive-scope-message" href="#example-receive-scope-message" class="permalink">🔗</a>
+
+In this example, the Server has created a Grant based on the Client's request, which the Client can discover from their unread Messages.
+
+```
+==Request==
+GET /cds-api/v1/messages HTTP/1.1
+Host: example.com
+Authorizatin: Bearer nar3UDNdYkXV-xv-92C5tDYEpd7DLOcvCe32NEo6GqHdAHkEF-WjRTLbmj6Si3l88IHLX4AucaJIhBY2xpddFA
+
+==Response==
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+    "outstanding": [],
+    "outstanding_next": null,
+    "outstanding_previous": null,
+    "read": [
+        {
+            "message_id": "ec603313741e824c",
+            "uri": "https://example.com/cds-api/v1/messages/ec603313741e824c",
+            "previous_uri": null,
+            "type": "grant_request",
+            "read": true,
+            "creator": "cid0857727d4312bcac",
+            "created": "2022-01-01T00:00:00Z",
+            "modified": "2022-01-01T00:00:00Z",
+            "status": "pending",
+            "name": "Requesting phone number for Account #1234567-9",
+            "description": "As part of our handling of support ticket #99993333, we need to contact the Customer for Acct #1234567-9",
+            "related_uri": "https://example.com/cds-api/v1/clients/cd53db9fd4533d593b",
+            "related_type": "client",
+            "grants_requested": [
+                {
+                    "scope": "cds_query_accounts_1",
+                    "authorization_details": [
+                        {
+                            "type": "cds_query_accounts_1ad",
+                            "account_numbers": ["1234567-9"],
+                            "include_account_numbers": true,
+                            "include_account_details": true,
+                            "sync_until": "P0D"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "read_next": null,
+    "read_previous": null,
+    "unread": [
+        {
+            "message_id": "a9e18f7337f1b208",
+            "uri": "https://example.com/cds-api/v1/messages/a9e18f7337f1b208",
+            "previous_uri": "https://example.com/cds-api/v1/messages/ec603313741e824c",
+            "type": "request_update",
+            "read": false,
+            "creator": null,
+            "created": "2022-01-02T00:00:00Z",
+            "modified": "2022-01-02T00:00:00Z",
+            "status": "complete",
+            "name": "Approved grant for access to phone number",
+            "description": "We have created a Grant that lets you access the contact info for Acct #1234567-9",
+            "related_uri": "https://example.com/cds-api/v1/grants/699b2d01560eb9f1",
+            "related_type": "grant"
+        }
+    ],
+    "unread_next": null,
+    "unread_previous": null,
+}
+```
+
+#### 13.4.3. Retrieving the Server-Created Grant <a id="example-get-server-created-grant" href="#example-get-server-created-grant" class="permalink">🔗</a>
+
+In this example, the Client retrieves the Grant object that was created by the Server for their previous [grant request example](#example-send-scope-message).
+
+
+```
+==Request==
+GET /cds-api/v1/grants/699b2d01560eb9f1 HTTP/1.1
+Host: example.com
+Authorizatin: Bearer nar3UDNdYkXV-xv-92C5tDYEpd7DLOcvCe32NEo6GqHdAHkEF-WjRTLbmj6Si3l88IHLX4AucaJIhBY2xpddFA
+
+==Response==
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+    "grants": [
+        {
+            "grant_id": "699b2d01560eb9f1",
+            "uri": "https://example.com/cds-api/v1/grants/699b2d01560eb9f1",
+            "replacing": [],
+            "replaced_by": [],
+            "parent": [],
+            "children": [],
+            "created": "2022-01-02T00:00:00Z",
+            "modified": "2022-01-02T00:00:00Z",
+            "not_before": null,
+            "not_after": null,
+            "eta": null,
+            "expires": null,
+            "status": "active",
+            "client_id": "cd53db9fd4533d593b",
+            "scope": "cds_query_accounts_1",
+            "authorization_details": [
+                {
+                    "type": "cds_query_accounts_1ad",
+                    "account_numbers": ["1234567-9"],
+                    "include_account_numbers": true,
+                    "include_account_details": true,
+                    "sync_until": "P0D"
+                }
+            ],
+            "receipt_confirmations": [],
+            "enabled_scope": "cds_query_accounts_1",
+            "enabled_authorization_details": [
+                {
+                    "type": "cds_query_accounts_1ad",
+                    "account_numbers": ["1234567-9"],
+                    "include_account_numbers": true,
+                    "include_account_details": true,
+                    "sync_until": "P0D"
+                }
+            ]
+        }
+    ],
+    "next": null,
+    "previous": null
+}
+```
+
+#### 13.4.4. Obtaining a Grant Admin Access Token for a Server-Created Grant <a id="example-server-created-grant-admin-token" href="#example-server-created-grant-admin-token" class="permalink">🔗</a>
+
+In this example, the Client uses their Grant Admin Client object to obtain an access token that can be used to retrieve the Customer Data for a specific Grant [[CDS-WG1-02 Section 3.3.2](#ref-cds-wg1-02-grant-admin)].
+This is how to gain access to data for Grants that were directly created by the Server, which means the Client was never issued an access token via the normal Client Credentials or Authorization Code processes.
+
+```
+==Request==
+POST /cds-grants/oauth/token HTTP/1.1
+Host: example.com
+Authorization: Basic Z2lkNzkxZTY0MmQ5MmE5NzM0MDowWWxLWXBVaWt3ekFZYzhiZWdaSE5iMVBiN0pNNGZkUzEwaEViYmRCOWxJZUJpS2lOODRZcVpmVkc2dFpuelRpLWQ0SHBDaUFNd3g4ZERMSHdTT3FrUQ==
+
+grant_type=client_credentials&scope=cds_grant_admin_1&authorization_details=%5B%7B%22type%22%3A%22cds_grant_admin_1%22%2C%22client_id%22%3A%22cd53db9fd4533d593b%22%2C%22grant_id%22%3A%22699b2d01560eb9f1%22%7D%5D
+
+==Response==
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+    "access_token": "erH74iFsSfBqPOMtfCxrMft0rfSXTNfNDGDe9QfAhBLrZJeuX3Oaq1rs0p19BPa5-tD7WcNWeh4heD4e-fACEA",
+    "token_type": "bearer",
+    "expires_in": 3600,
+    "scope": "cds_grant_admin_1",
+    "authorization_details": [
+        {
+            "type": "cds_grant_admin_1",
+            "client_id": "cd53db9fd4533d593b",
+            "grant_id": "699b2d01560eb9f1"
+        }
+    ],
+    "cds_grant_ids": ["2e6b05d88b2a3a2d"]
+}
+```
+
+#### 13.4.4. Retrieving Customer Data for a Server-Created Grant <a id="example-get-server-created-data" href="#example-get-server-created-data" class="permalink">🔗</a>
+
+```
+==Request==
+GET /cds-customerdata-api/v1/accounts HTTP/1.1
+Host: example.com
+Authorizatin: Bearer erH74iFsSfBqPOMtfCxrMft0rfSXTNfNDGDe9QfAhBLrZJeuX3Oaq1rs0p19BPa5-tD7WcNWeh4heD4e-fACEA
+
+==Response==
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+    "accounts": [
+        {
+            "cds_account_id": "ebccc291c1010042",
+            "cds_created": "2022-01-02T00:00:00Z",
+            "cds_modified": "2022-01-02T00:00:00Z",
+            "cds_synced": "2022-01-02T00:00:00Z",
+            "cds_account_parent": null,
+            "customer_number": null,
+            "account_number": "1234567-9",
+            "account_entity": {
+                "id": "a62d6ad8f0f34635",
+                "types": ["distributor", "supplier", "iou"],
+                "entity_number": "EXAMPLEUTILITY-01",
+                "entity_name": "Example Gas & Electric",
+                "entity_abbreviation": "EG&E"
+            },
+            "account_name": "John Doe",
+            "account_address": "John Doe\n123 Ave A #111\nAnytown, NY 00000",
+            "account_types": ["customer", "residential"],
+            "account_status": "active",
+            "account_contacts": [
+                {
+                    "id": "07f72cb1ca5961d0",
+                    "types": ["phone_number", "preferred"],
+                    "value": "+15556667777"
+                },
+                {
+                    "id": "0d1e2975840300d3",
+                    "types": ["email"],
+                    "value": "john.doe@example.com"
+                }
+            ]
+        }
+    ],
+    "next": null,
+    "previous": null
+}
+```
 
 ## 14. References <a id="references" href="#references" class="permalink">🔗</a>
 
@@ -6281,6 +8267,10 @@ For example, if a local municipal district requires Customer consent for a contr
 `CDS-WG1-02 Section 3.8` - "Authorization Details Field Object Format", CDS-WG1-02, LF Energy Standards and Specifications (LFESS),  
 [https://cds-registration.lfenergy.org/specs/cds-wg1-02/#auth-details-field-formats](https://cds-registration.lfenergy.org/specs/cds-wg1-02/#auth-details-fields-format)
 
+<a id="ref-cds-wg1-02-choice-object" href="#ref-cds-wg1-02-choice-object" class="permalink">🔗</a>
+`CDS-WG1-02 Section 3.10` - "Choice Object Format", CDS-WG1-02, LF Energy Standards and Specifications (LFESS),  
+[https://cds-registration.lfenergy.org/specs/cds-wg1-02/#choice-format](https://cds-registration.lfenergy.org/specs/cds-wg1-02/#choice-format)
+
 <a id="ref-cds-wg1-02-registration-response" href="#ref-cds-wg1-02-registration-response" class="permalink">🔗</a>
 `CDS-WG1-02 Section 4.2` - "Client Registration Response", CDS-WG1-02, LF Energy Standards and Specifications (LFESS),  
 [https://cds-registration.lfenergy.org/specs/cds-wg1-02/#registration-response](https://cds-registration.lfenergy.org/specs/cds-wg1-02/#registration-response)
@@ -6321,6 +8311,10 @@ For example, if a local municipal district requires Customer consent for a contr
 `CDS-WG1-02 Section 11` - "Security Considerations", CDS-WG1-02, LF Energy Standards and Specifications (LFESS),  
 [https://cds-registration.lfenergy.org/specs/cds-wg1-02/#security](https://cds-registration.lfenergy.org/specs/cds-wg1-02/#security)
 
+<a id="ref-cds-wg1-02-examples" href="#ref-cds-wg1-02-examples" class="permalink">🔗</a>
+`CDS-WG1-02 Section 12` - "Examples", CDS-WG1-02, LF Energy Standards and Specifications (LFESS),  
+[https://cds-registration.lfenergy.org/specs/cds-wg1-02/#examples](https://cds-registration.lfenergy.org/specs/cds-wg1-02/#examples)
+
 <a id="ref-e164" href="#ref-e164" class="permalink">🔗</a>
 `E.164` - "The international public telecommunication numbering plan", E.164, International Telecommunication Union (ITU),  
 [https://www.itu.int/rec/T-REC-E.164/](https://www.itu.int/rec/T-REC-E.164/)
@@ -6340,6 +8334,10 @@ For example, if a local municipal district requires Customer consent for a contr
 <a id="ref-rfc3986-url" href="#ref-rfc3986-url" class="permalink">🔗</a>
 `RFC 3986 Section 1.1.3` - Section 1.1.3. URI, URL, and URN, "Uniform Resource Identifier (URI): Generic Syntax", RFC 3986, Internet Engineering Task Force (IETF),  
 [https://www.rfc-editor.org/rfc/rfc3986#section-1.1.3](https://www.rfc-editor.org/rfc/rfc3986#section-1.1.3)
+
+<a id="ref-rfc4648" href="#ref-rfc4648" class="permalink">🔗</a>
+`RFC 4648` - "The Base16, Base32, and Base64 Data Encodings", RFC 4648, Internet Engineering Task Force (IETF),  
+[https://www.rfc-editor.org/rfc/rfc4648](https://www.rfc-editor.org/rfc/rfc4648)
 
 <a id="ref-rfc5322-email-address" href="#ref-rfc5322-email-address" class="permalink">🔗</a>
 `RFC 5322 Section 3.4.1` - Section 3.4.1. Addr-Spec, "Internet Message Format", RFC 5322, Internet Engineering Task Force (IETF),  
