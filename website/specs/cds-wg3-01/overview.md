@@ -10,18 +10,20 @@ meta_description: Linux Foundation Energy - Connected Data Specification (CDS) -
 
 This is a summary overview of the [`cds-wg3-01`]({{ "/specs/cds-wg3-01" | relative_url }}) ("Customer Data") specification, which describes how utilities and other central grid entities ("Servers") can provide secure, authorized access to customer account, usage, and bill data to external entities ("Clients").
 External entities could be anyone, including customers themselves, their vendors or energy managers, approved academic institutions, government regulators, and more.
+
+To help streamline adoption, this specification has pre-written [Scenarios]({{ "/specs/cds-wg3-01" | relative_url }}#scenarios), which are ready-made sets of requirements that can be implemented by utilities or mandated by regulators to meet common use cases.
 The goal of this specification is to define a standardized way for utilities and other central grid entities to offer secure, authorized, streamlined, and automated data access that meets many of their customer data exchange requirements.
 
-This specification extends the CDS Registration Working Group (CDS-WG1) [specifications](https://cds-registration.lfenergy.org/specs/) by defining new "scopes" (i.e. permission levels) that Servers can offer for granular customer data access.
+This specification extends the CDS Registration Working Group (CDS-WG1) [specifications](https://cds-registration.lfenergy.org/specs/) by defining new [Scopes]({{ "/specs/cds-wg3-01" | relative_url }}#scopes) (i.e. permission levels) that Servers can offer for granular customer data access.
 Servers can customize what level of access they offer, what customer datasets are available, and which external entities are approved to access the data.
 Servers can also configure "self-service" authorizations (i.e. OAuth) for customers, which allows customers to manage their own data access for approved external entities ("Clients").
 This allows utilities and other central entities to deploy Servers that are "right-sized" for their use cases, big or small.
 
-This specification also defines Application Programming Interfaces (APIs) that organize customer data into documented API endpoints and machine-readable data formats.
+This specification also defines [Customer Data APIs]({{ "/specs/cds-wg3-01" | relative_url }}#api) (Application Programming Interfaces) that organize customer data into documented API endpoints and machine-readable data formats.
 These APIs can be deployed in tandem other data access protocols for seamless, parallel operation and smooth transitions from prior protocols to the CDS APIs.
 By standardizing an open, freely available set of customer data APIs and data schemas, Servers and Clients can automate their connections and improve interoperability at a global scale.
 
-Overall, this specification's combination of defined scopes of access and documented APIs and data formats gives utilities and other central entities a free, secure, scalable, and standardized protocol to meet their customer data access needs.
+Overall, this specification's combination of defined scopes of access and documented APIs and data formats gives policymakers, utilities, and other central entities a powerful, secure, scalable, and standardized protocol to meet their customer data access needs.
 
 ## Background <a id="background" href="#background" class="permalink">🔗</a>
 
@@ -52,9 +54,9 @@ For example, a utility or other central entity could deploy a small, low cost Se
 
 As part of the extension, this specification defines new [OAuth scope values]({{ "/specs/cds-wg3-01" | relative_url }}#scopes) that standardize various levels of access for common customer data access use cases.
 These scopes cover use cases where customer consent is required (using the widely adopted OAuth `authorization_code` grant flow) and use cases where only Server authorization is required (using the OAuth `client_credentials` grant flow).
-When customer consent is required, the specification defines an [OAuth authorization process]({{ "/specs/cds-wg3-01" | relative_url }}#authorizations) that streamlines the customer's experience while also keeping the authorization secure.
+When customer consent is required, the specification defines an [OAuth authorization process]({{ "/specs/cds-wg3-01" | relative_url }}#authorizations) that streamlines the customer's experience while still keeping the authorization secure.
 
-Another part of the extension is a set of APIs and data formats for customer data (listed below).
+Another part of the extension is a set of [APIs]({{ "/specs/cds-wg3-01" | relative_url }}#api) and data formats for customer data (listed below).
 
 * Customer account and meter details:
     * [Accounts API]({{ "/specs/cds-wg3-01" | relative_url }}#accounts-api) - Standardizes details about customer billing accounts (e.g. the number at the top of your utility bill).
@@ -76,13 +78,7 @@ They can limit access by customer and Client to only the specific subset of data
 What data fields are included in the responses from these APIs is determined by what scopes the Client's `access_token` has been granted.
 
 Overall, this specification provides a highly flexible set of authorization scopes, APIs, and data formats to support many customer data access use cases.
-This allows utilities and other central entities to quickly deploy Servers that are tailor to their individual use cases, and allows Clients to automate integration with new Servers for scalable interoperability and adoption.
-
-## Examples <a id="examples" href="#examples" class="permalink">🔗</a>
-
-Here are some examples of how to programmatically interact with a Server's APIs using `curl` and `jq` from the command line.
-
-<span style="background-color:yellow">TODO</span>
+This allows utilities and other central entities to quickly deploy Servers that are tailored to their individual use cases, and allows Clients to automate integration with new Servers for scalable interoperability and adoption.
 
 ---
 
