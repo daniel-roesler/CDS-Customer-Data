@@ -2,6 +2,12 @@
 
 This is the location that contains the specifications for the CDS Customer Data Working Group (WG3) (see the `.md` files in this folder).
 
+Folder structure: `/specifications/{spec_id}/{version}/{spec_id}-{version}.md`
+
+Each specification has its own folder, which then contains the versions of that specification.
+
+The `dev` version is the working group's development draft that is open to pull requests.
+
 ## Notes
 * Prior July 2024, the Customer Data working group encompassed all Registration and Customer Data specifications and was called CDSC Customer Data WG1.
 * In July 2024, WG1 was renamed to Connectivity WG1 and continued to maintain the first two specifications (Server Metadata and Client Registration), and Customer Data was reorganized into to Customer Data WG3 to maintain the third specification (Customer Data).
