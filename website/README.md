@@ -43,11 +43,11 @@ The following is an example command line loop to run that watches for changes, t
 ```
 # via linux terminal in the repo root directory
 
-cp specifications/cds-wg3-01.md website/_includes/spec_copies/placeholder_cds-wg3-01.md
+cp specifications/cds-wg3-01/dev/cds-wg3-01-dev.md website/_includes/spec_copies/placeholder_cds-wg3-01-dev.md
 
 while true; do
-    while inotifywait -e close_write specifications/cds-wg3-01.md; do
-        read -p "pause" -t 0.3 || cp specifications/cds-wg3-01.md website/_includes/spec_copies/placeholder_cds-wg3-01.md;
+    while inotifywait --recursive --include ".+\.md" --event modify --event close_write specifications/; do
+        read -p "pause" -t 0.3 || cp specifications/cds-wg3-01/dev/cds-wg3-01-dev.md website/_includes/spec_copies/placeholder_cds-wg3-01-dev.md;
     done;
 done
 ```
