@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="Linux Foundation Energy - Connected Data Specification (CDS) - Customer Dat aWorking Group (WG3) - Specifications - cds-wg3-01 - Customer Data - Overview">
+        <meta name="description" content="Linux Foundation Energy - Connected Data Specifications (CDS) - Customer Data Working Group (WG3) - Specifications - CDS-WG3-01 - Customer Data - Overview">
         <link rel="icon" type="image/png" href="/CDS-Customer-Data/assets/favicon.png">
         <meta name="robots" content="noindex, nofollow"/>
         <title>CDS-WG3 - CDS-WG3 - 01 Customer Data - Overview</title>
@@ -131,22 +131,22 @@
         <div role="main" class="container pt-3 pb-5">
             <div class="row">
                 <div class="col">
-                    <p><a href="/CDS-Customer-Data/">Home</a> / <a href="/CDS-Customer-Data/specs">Specifications</a> / <a href="/CDS-Customer-Data/specs/cds-wg3-01"><code class="language-plaintext highlighter-rouge">cds-wg3-01</code> - Customer Data</a> / Overview</p>
+                    <p><a href="/CDS-Customer-Data/">Home</a> / <a href="/CDS-Customer-Data/specs">Specifications</a> / <a href="/CDS-Customer-Data/specs/cds-wg3-01"><code class="language-plaintext highlighter-rouge">CDS-WG3-01</code> - Customer Data</a> / Overview</p>
 
 <h1 id="customer-data---overview">Customer Data - Overview</h1>
 
-<p>This is a summary overview of the <a href="/CDS-Customer-Data/specs/cds-wg3-01"><code class="language-plaintext highlighter-rouge">cds-wg3-01</code></a> (“Customer Data”) specification, which describes how utilities and other central grid entities (“Servers”) can provide secure, authorized access to customer account, usage, and bill data to external entities (“Clients”).
+<p>This is a summary overview of the <a href="/CDS-Customer-Data/specs/cds-wg3-01"><code class="language-plaintext highlighter-rouge">CDS-WG3-01</code></a> (“Customer Data”) specification, which describes how utilities and other central grid entities (“Servers”) can provide secure, authorized access to customer account, usage, and bill data to external entities (“Clients”).
 External entities could be anyone, including customers themselves, their vendors or energy managers, approved academic institutions, government regulators, and more.</p>
 
-<p>To help streamline adoption, this specification has pre-written <a href="/CDS-Customer-Data/specs/cds-wg3-01#scenarios">Scenarios</a>, which are ready-made sets of requirements that can be implemented by utilities or mandated by regulators to meet common use cases.
+<p>To help streamline adoption, this specification has pre-written <a href="/CDS-Customer-Data/specs/cds-wg3-01/latest#scenarios">Scenarios</a>, which are ready-made sets of requirements that can be implemented by utilities or mandated by regulators to meet common use cases.
 The goal of this specification is to define a standardized way for utilities and other central grid entities to offer secure, authorized, streamlined, and automated data access that meets many of their customer data exchange requirements.</p>
 
-<p>This specification extends the CDS Registration Working Group (CDS-WG1) <a href="https://cds-registration.lfenergy.org/specs/">specifications</a> by defining new <a href="/CDS-Customer-Data/specs/cds-wg3-01#scopes">Scopes</a> (i.e. permission levels) that Servers can offer for granular customer data access.
+<p>This specification extends the CDS Registration Working Group (CDS-WG1) <a href="https://cds-registration.lfenergy.org/specs/">specifications</a> by defining new <a href="/CDS-Customer-Data/specs/cds-wg3-01/latest#scopes">Scopes</a> (i.e. permission levels) that Servers can offer for granular customer data access.
 Servers can customize what level of access they offer, what customer datasets are available, and which external entities are approved to access the data.
 Servers can also configure “self-service” authorizations (i.e. OAuth) for customers, which allows customers to manage their own data access for approved external entities (“Clients”).
 This allows utilities and other central entities to deploy Servers that are “right-sized” for their use cases, big or small.</p>
 
-<p>This specification also defines <a href="/CDS-Customer-Data/specs/cds-wg3-01#api">Customer Data APIs</a> (Application Programming Interfaces) that organize customer data into documented API endpoints and machine-readable data formats.
+<p>This specification also defines <a href="/CDS-Customer-Data/specs/cds-wg3-01/latest#api">Customer Data APIs</a> (Application Programming Interfaces) that organize customer data into documented API endpoints and machine-readable data formats.
 These APIs can be deployed in tandem other data access protocols for seamless, parallel operation and smooth transitions from prior protocols to the CDS APIs.
 By standardizing an open, freely available set of customer data APIs and data schemas, Servers and Clients can automate their connections and improve interoperability at a global scale.</p>
 
@@ -177,44 +177,44 @@ If you have a use case you think should be listed here, we encourage you to <a h
 
 <h2 id="technical-summary-">Technical Summary <a id="technical-summary" href="#technical-summary" class="permalink">🔗</a></h2>
 
-<p>The <a href="/CDS-Customer-Data/specs/cds-wg3-01"><code class="language-plaintext highlighter-rouge">cds-wg3-01</code></a> specification is fundamentally an extension of the CDS Client Registration specification (<a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02"><code class="language-plaintext highlighter-rouge">cds-wg1-02</code></a>), which is a framework for how utilities and other central entities (“Servers”) can offer standardized connectivity to external parties (“Clients”).
-By extending <code class="language-plaintext highlighter-rouge">cds-wg1-02</code>, the built-in Client registration, communication, and management features from that specification are also part of this customer data specification, which significantly increases scalability and flexibility for Server operators.
+<p>The <a href="/CDS-Customer-Data/specs/cds-wg3-01"><code class="language-plaintext highlighter-rouge">CDS-WG3-01</code></a> specification is fundamentally an extension of the CDS Client Registration specification (<a href="https://cds-registration.lfenergy.org/specs/cds-wg1-02"><code class="language-plaintext highlighter-rouge">CDS-WG1-02</code></a>), which is a framework for how utilities and other central entities (“Servers”) can offer standardized connectivity to external parties (“Clients”).
+By extending <code class="language-plaintext highlighter-rouge">CDS-WG1-02</code>, the built-in Client registration, communication, and management features from that specification are also part of this customer data specification, which significantly increases scalability and flexibility for Server operators.
 For example, a utility or other central entity could deploy a small, low cost Server for niche use cases and ad-hoc customer data access needs, then expand the Server’s enabled use cases, scopes, and datasets over time.</p>
 
 <p>As part of the extension, this specification defines new <a href="/CDS-Customer-Data/specs/cds-wg3-01#scopes">OAuth scope values</a> that standardize various levels of access for common customer data access use cases.
 These scopes cover use cases where customer consent is required (using the widely adopted OAuth <code class="language-plaintext highlighter-rouge">authorization_code</code> grant flow) and use cases where only Server authorization is required (using the OAuth <code class="language-plaintext highlighter-rouge">client_credentials</code> grant flow).
 When customer consent is required, the specification defines an <a href="/CDS-Customer-Data/specs/cds-wg3-01#authorizations">OAuth authorization process</a> that streamlines the customer’s experience while still keeping the authorization secure.</p>
 
-<p>Another part of the extension is a set of <a href="/CDS-Customer-Data/specs/cds-wg3-01#api">APIs</a> and data formats for customer data (listed below).</p>
+<p>Another part of the extension is a set of <a href="/CDS-Customer-Data/specs/cds-wg3-01/latest#api">APIs</a> and data formats for customer data (listed below).</p>
 
 <ul>
   <li>Customer account and meter details:
     <ul>
-      <li><a href="/CDS-Customer-Data/specs/cds-wg3-01#accounts-api">Accounts API</a> - Standardizes details about customer billing accounts (e.g. the number at the top of your utility bill).</li>
-      <li><a href="/CDS-Customer-Data/specs/cds-wg3-01#service-contracts-api">Service Contracts API</a> - Standardizes details about customer service contracts (e.g. your individual electric or gas service).</li>
-      <li><a href="/CDS-Customer-Data/specs/cds-wg3-01#service-points-api">Service Points API</a> - Standardizes details about utility service point locations (e.g. the box on the side of your home).</li>
-      <li><a href="/CDS-Customer-Data/specs/cds-wg3-01#meter-devices-api">Meter Devices API</a> - Standardizes details about utility meter devices (e.g. the physical meter reading your usage).</li>
+      <li><a href="/CDS-Customer-Data/specs/cds-wg3-01/latest#accounts-api">Accounts API</a> - Standardizes details about customer billing accounts (e.g. the number at the top of your utility bill).</li>
+      <li><a href="/CDS-Customer-Data/specs/cds-wg3-01/latest#service-contracts-api">Service Contracts API</a> - Standardizes details about customer service contracts (e.g. your individual electric or gas service).</li>
+      <li><a href="/CDS-Customer-Data/specs/cds-wg3-01/latest#service-points-api">Service Points API</a> - Standardizes details about utility service point locations (e.g. the box on the side of your home).</li>
+      <li><a href="/CDS-Customer-Data/specs/cds-wg3-01/latest#meter-devices-api">Meter Devices API</a> - Standardizes details about utility meter devices (e.g. the physical meter reading your usage).</li>
     </ul>
   </li>
   <li>Customer bill data:
     <ul>
-      <li><a href="/CDS-Customer-Data/specs/cds-wg3-01#bill-statements-api">Bill Statements API</a> - Standardizes details about a customer’s bill statement (how much you owe, payment due dates, etc.).</li>
-      <li><a href="/CDS-Customer-Data/specs/cds-wg3-01#bill-sections-api">Bill Sections API</a> - Standardizes usage and cost breakdowns for each of a customer’s service contracts (your electric usage, line item costs, etc.).</li>
+      <li><a href="/CDS-Customer-Data/specs/cds-wg3-01/latest#bill-statements-api">Bill Statements API</a> - Standardizes details about a customer’s bill statement (how much you owe, payment due dates, etc.).</li>
+      <li><a href="/CDS-Customer-Data/specs/cds-wg3-01/latest#bill-sections-api">Bill Sections API</a> - Standardizes usage and cost breakdowns for each of a customer’s service contracts (your electric usage, line item costs, etc.).</li>
     </ul>
   </li>
   <li>Aggregated datasets:
     <ul>
-      <li><a href="/CDS-Customer-Data/specs/cds-wg3-01#aggregations-api">Aggregations API</a> - Standardizes how to document aggregated usage groups (whole-building usage, zip-code level usage, etc.).</li>
+      <li><a href="/CDS-Customer-Data/specs/cds-wg3-01/latest#aggregations-api">Aggregations API</a> - Standardizes how to document aggregated usage groups (whole-building usage, zip-code level usage, etc.).</li>
     </ul>
   </li>
   <li>Customer usage data:
     <ul>
-      <li><a href="/CDS-Customer-Data/specs/cds-wg3-01#usage-segments-api">Usage Segments API</a> - Standardizes how to provide usage data, both individual (e.g. kWh intervals) and aggregated (e.g. monthly whole-building usage).</li>
+      <li><a href="/CDS-Customer-Data/specs/cds-wg3-01/latest#usage-segments-api">Usage Segments API</a> - Standardizes how to provide usage data, both individual (e.g. kWh intervals) and aggregated (e.g. monthly whole-building usage).</li>
     </ul>
   </li>
   <li>Energy Attribute Certificates:
     <ul>
-      <li><a href="/CDS-Customer-Data/specs/cds-wg3-01#eac-api">Energy Attribute Certificates API</a> - Standardizes how to provide EACs from utilities and other central entities to Clients.</li>
+      <li><a href="/CDS-Customer-Data/specs/cds-wg3-01/latest#eac-api">Energy Attribute Certificates API</a> - Standardizes how to provide EACs from utilities and other central entities to Clients.</li>
     </ul>
   </li>
 </ul>
@@ -228,11 +228,7 @@ This allows utilities and other central entities to quickly deploy Servers that 
 
 <hr />
 
-<h1 id="other-drafts-">Other Drafts <a id="other-drafts" href="#other-drafts" class="permalink">🔗</a></h1>
-
-<ul>
-  <li>Maintainer’s draft: [<a href="https://daniel-roesler.github.io/CDS-Customer-Data/specs/cds-wg3-01/overview">Website</a>] [<a href="https://github.com/daniel-roesler/CDS-Customer-Data/blob/main/website/specs/cds-wg3-01/overview.md">Code</a>]</li>
-</ul>
+<p>Next: <a href="/CDS-Customer-Data/specs/cds-wg3-01/latest">Read the specification (latest version)</a></p>
 
 
                 </div>
