@@ -29,7 +29,7 @@ We've also made a list of what data and functionality is specifically [not in sc
 
 These are the official [specifications]({{ "/specs" | relative_url }}) written by this working group.
 
-* `CDS-WG3-01` - Customer Data [[Overview]({{ "/specs/cds-wg3-01/overview" | relative_url }})] [[Specification]({{ "/specs/cds-wg3-01" | relative_url }})] `(in progress)`
+* [`CDS-WG3-01` - Customer Data]({{ "/specs/cds-wg3-01" | relative_url }}) `(status: draft)`
 
 If you would like to contribute to these specifications, please see our docs on [Contributing]({{ "/" | relative_url }}#contributing) and [Design Principles]({{ "specs/design-principles" | relative_url }}).
 
