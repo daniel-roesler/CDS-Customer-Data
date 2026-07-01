@@ -303,22 +303,22 @@ Specifically, in order to scalably deploy and economically operate and analyze n
 
 There are thousands of utilities serving Customers across the world, and each have their own way of providing access to and formatting Customer Data.
 This specification defines a way for these utilities and other central entities ("Servers") to provide a standardized, structured process for external companies and organizations ("Clients") to access Customer Data, requesting consent from Customers if needed.
-By offering a standardized a Customer Data access protocol, utilities and other central entities can offer secure, automated, managed means of access to Customer Data.
+By offering a standardized Customer Data access protocol, utilities and other central entities can offer secure, automated, managed means of access to Customer Data.
 
 ## 2. Terminology <a id="terminology" href="#terminology" class="permalink">🔗</a>
 
 <a id="server" href="#server" class="permalink">🔗</a> **"Server"** - The entity hosting the specified endpoints.
-A Server can be an energy utility or another type of entity that want to provide access to privileged functionality or data.
+A Server can be an energy utility or another type of entity that wants to provide access to privileged functionality or data.
 These entities can include, but are not limited to, distribution utilities, grid operators, electric retailers, community choice aggregators, government agencies, data warehouses, and private infrastructure providers.
 
 <a id="client" href="#client" class="permalink">🔗</a> **"Client"** - The entity requesting [Server's](#server) metadata endpoints.
 A Client can be any person, company, or organization seeking to access Customer Data with a Server for a specific scope of access.
-These entities can include, but are not limited to, energy efficiency contractors, utility vendors, distributed energy resource companies, building energy management platforms, and even Customers themselves (to gain automated access their own data).
+These entities can include, but are not limited to, energy efficiency contractors, utility vendors, distributed energy resource companies, building energy management platforms, and even Customers themselves (to gain automated access to their own data).
 
 <a id="customer" href="#customer" class="permalink">🔗</a> **"Customer"** - The entity who's [Customer Data](#customer-data-def) is being requested from a [Server](#server) by a [Client](#client).
 For grants that require customer authorization, the Customer is the [User](#user) who authorizes the access.
 Customers are typically the account holder, also commonly called the "customer of record", such as homeowners, renters, businesses, and industrial companies.
-Customers may also be a representative of the customer of record, such as an energy management company, provided that the reprentative has been duly authorized give consent on the customer of record's behalf according to local regulatory requirements.
+Customers may also be a representative of the customer of record, such as an energy management company, provided that the representative has been duly authorized to give consent on the customer of record's behalf according to local regulatory requirements.
 
 <a id="customer-data-def" href="#customer-data-def" class="permalink">🔗</a> **"Customer Data"** - Data that is made available by a Server via the various [APIs](#api) defined in this specification.
 This data is typically confidential data that is tied to an individual Customer ([Accounts](#account-format), [Bill Statements](#bill-statement-format), etc.), but can also be other data such as details about utility [Service Points](#service-point-format), regional usage [Aggregations](#aggregation-format), or system wide [Energy Attribute Certificates](#eac-format).
@@ -367,7 +367,7 @@ This means Servers MUST NOT store a decimal value as a float, since that format 
 
 <a id="string" href="#string" class="permalink">🔗</a> "string" - A series of unicode characters as defined in [[RFC 8259 Section 7](#ref-rfc8259-strings)].
 
-<a id="url" href="#url" class="permalink">🔗</a> "URL" - A string representing resource as defined in [[RFC 3986 Section 1.1.3](#ref-rfc3986-url)] (e.g. "https://example.com/page1").
+<a id="url" href="#url" class="permalink">🔗</a> "URL" - A string representing a resource as defined in [[RFC 3986 Section 1.1.3](#ref-rfc3986-url)] (e.g. "https://example.com/page1").
 
 <a id="key-words" href="#key-words" class="permalink">🔗</a> Key Words: "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" are defined in accordance with [[BCP 14](#ref-bcp14)].
 
@@ -393,7 +393,7 @@ In contrast, another example is for a building management company to need ongoin
 
 This section defines "Scenarios" as sets of [Scopes](#scopes) and configuration requirements for Scope Descriptions that are intended to meet the Scenario's use cases.
 Because Scenarios are defined sets of Scopes and configuration requirements, they don't actually appear in any API responses by the Server.
-Rather, Scenarios are intended to aide regulators, governing authorities, and [Extensions](#extensions) in choosing which Scopes, data fields, and functionality they require Servers to implement.
+Rather, Scenarios are intended to aid regulators, governing authorities, and [Extensions](#extensions) in choosing which Scopes, data fields, and functionality they require Servers to implement.
 
 Regulators, governing authorities, and extensions MAY choose to require implementation of any combination of Scenarios defined in this specification or choose to define new Scenarios.
 For example, a regulator could define a new Scenario that extends the [Meter Data](#scenario-meter-data) Scenario by requiring an additional `CAISO_zone_id` field be included in the [Service Contract](#service-contract-format) object.
@@ -459,7 +459,7 @@ To implement the "Usage Self-Access" Scenario, Servers MUST implement the follow
 ### 4.2. Billing Self-Access <a id="scenario-billing-self-access" href="#scenario-billing-self-access" class="permalink">🔗</a>
 
 This section defines the Scenario "Billing Self-Access" in which a utility Customer wants to access their own accounts' utility bills.
-For example, an enterprise customer would like automate importing their utility bills into their accounting software.
+For example, an enterprise customer would like to automate importing their utility bills into their accounting software.
 
 To implement the "Billing Self-Access" Scenario, Servers MUST implement the following requirements:
 
@@ -513,7 +513,7 @@ To implement the "Billing Self-Access" Scenario, Servers MUST implement the foll
 ### 4.3. Usage and Billing Self-Access <a id="scenario-self-access" href="#scenario-self-access" class="permalink">🔗</a>
 
 This section defines the Scenario "Usage and Billing Self-Access" in which a utility Customer wants to access their own accounts' usage and bills.
-For example, an enterprise customer would like automate a energy billing.
+For example, an enterprise customer would like to automate their energy use and cost tracking for reporting purposes.
 
 To implement the "Usage and Billing Self-Access" Scenario, Servers MUST implement the following requirements:
 
@@ -528,7 +528,7 @@ To implement the "Usage and Billing Self-Access" Scenario, Servers MUST implemen
 ### 4.4. Meter Data <a id="scenario-meter-data" href="#scenario-meter-data" class="permalink">🔗</a>
 
 This section defines the Scenario "Meter Data" in which a Client requests access to a Customer's historical and/or ongoing usage data.
-For example, an energy efficiency auditor is working with building owner, and needs to download their previous year's usage.
+For example, an energy efficiency auditor is working with a building owner, and needs to download their previous year's usage.
 
 To implement the "Meter Data" Scenario, Servers MUST implement the following requirements:
 
@@ -536,7 +536,7 @@ To implement the "Meter Data" Scenario, Servers MUST implement the following req
     * [Service List](#scope-service-list)
     * [Meter List](#scope-meter-list)
     * [Meter Usage](#scope-meter-usage)
-* Servers MUST include any steps in the `registration_requirements` that the Client or Server needs to complete before the Server will create a Client object that has the `production` status in it's `cds_status_options` array.
+* Servers MUST include any steps in the `registration_requirements` that the Client or Server needs to complete before the Server will create a Client object that has the `production` status in its `cds_status_options` array.
   For example, if the Server requires a manual review of the Client's registration before approving production access, the Server would include a Registration Field [[CDS-WG1-02 Section 3.5](#ref-cds-wg1-02-registration-fields)] with a `type` value of `internal_review`.
 * For the [Service List](#scope-service-list) Scope, in addition to its requirements, the following [Authorization Details Fields](#auth-details-fields) MUST also be supported by the Server:
     * [`account_numbers`](#auth-details-account-numbers)
@@ -585,8 +585,8 @@ To implement the "Meter Data" Scenario, Servers MUST implement the following req
     * For the [`sync_until`](#auth-details-sync-until) field, the Server MUST set the `maximum` value to `"infinite"` (i.e. Customers MAY authorize access to ongoing updates to their Accounts, Service Contracts, Service Points, and Meter Devices until they choose to revoke it).
 * Servers MUST keep the list of Accounts, Service Contracts, Service Points, Meter Devices, and Usage Segments that are associated with the Grant updated to reflect any changes to the Customer, in accordance with the requirements of the `sync_until` and `segment_end` authorization details fields.
   For example, if a Customer has authorized `"infinite"` as the value for `sync_until` and `segment_end`, as well as selected `"_include_future"` for Service Contracts, then builds a new warehouse on their property, the Client will see any new Accounts, Service Contracts, Service Points, Meter Devices, and Usage Segments for the new warehouse included in API objects returned when data is next synced to the Server from the Server's source of truth (e.g. the utility's internal Meter Data Management system).
-* When a Server will provide access to granular meter data that includes [Usage Segment](#usage-segment-format) `interval` values of less or equal to 90000 (i.e. daily intervals and shorter), the Server MUST sync updates from its source of truth at least once per day, so that Client's may receive daily updates to meter usage and any changes to the Customer's resources.
-* When a Server will provide access to granular meter data that includes [Usage Segment](#usage-segment-format) `interval` values of greater than 90000 (i.e. longer than daily intervals), the Server MUST sync updates from its source of truth at least once per week, so that Client's may receive changes to the Customer's resources within a week of their occurrence and meter usage updates within a week of them being saved to the Server's source of truth.
+* When a Server will provide access to granular meter data that includes [Usage Segment](#usage-segment-format) `interval` values of less or equal to 90000 (i.e. daily intervals and shorter), the Server MUST sync updates from its source of truth at least once per day, so that Clients may receive daily updates to meter usage and any changes to the Customer's resources.
+* When a Server will provide access to granular meter data that includes [Usage Segment](#usage-segment-format) `interval` values of greater than 90000 (i.e. longer than daily intervals), the Server MUST sync updates from its source of truth at least once per week, so that Clients may receive changes to the Customer's resources within a week of their occurrence and meter usage updates within a week of them being saved to the Server's source of truth.
 
 ### 4.5. Customer Tariffs <a id="scenario-customer-tariffs" href="#scenario-customer-tariffs" class="permalink">🔗</a>
 
@@ -597,7 +597,7 @@ To implement the "Rate Plan" Scenario, Servers MUST implement the following requ
 
 * Servers MUST include support for the following Scopes in their Server Metadata's `scopes_supported` array [[CDS-WG1-02 Section 3.2](#ref-cds-wg1-02-metadata)]:
     * [Rate Plan](#scope-rate-plan)
-* Servers MUST include any steps in the `registration_requirements` that the Client or Server needs to complete before the Server will create a Client object that has the `production` status in it's `cds_status_options` array.
+* Servers MUST include any steps in the `registration_requirements` that the Client or Server needs to complete before the Server will create a Client object that has the `production` status in its `cds_status_options` array.
   For example, if the Server requires a manual review of the Client's registration before approving production access, the Server would include a Registration Field [[CDS-WG1-02 Section 3.5](#ref-cds-wg1-02-registration-fields)] with a `type` value of `internal_review`.
 * For the [Rate Plan](#scope-rate-plan) Scope, in addition to its requirements, the following [Authorization Details Fields](#auth-details-fields) MUST also be supported by the Server:
     * [`account_numbers`](#auth-details-account-numbers)
@@ -612,7 +612,7 @@ To implement the "Rate Plan" Scenario, Servers MUST implement the following requ
     * For the [`sync_until`](#auth-details-sync-until) field, the Server MUST set the `maximum` value to `"infinite"` (i.e. Customers MAY authorize access to ongoing updates to their rate plans and associated details until they choose to revoke it).
 * Servers MUST keep the [API](#api) objects that are associated with the Grant updated to reflect any changes to the Customer, in accordance with the requirements of the `sync_until` authorization details field.
   For example, if a Customer has authorized `"infinite"` as the value for `sync_until` and later changes their rate plan from a fixed to time-of-use rate, the Client will see the Service Contract's `rateplan_code` and `rateplan_name` values updated when data is next synced to the Server from the Server's source of truth (e.g. the utility's internal Customer Resource Management system).
-* The Server MUST sync updates from its source of truth at least once per week, so that Client's may receive changes to the Customer's resources within a week of their occurrence.
+* The Server MUST sync updates from its source of truth at least once per week, so that Clients may receive changes to the Customer's resources within a week of their occurrence.
 
 ### 4.6. Customer Programs <a id="scenario-customer-programs" href="#scenario-customer-programs" class="permalink">🔗</a>
 
@@ -624,7 +624,7 @@ To implement the "Customer Programs" Scenario, Servers MUST implement the follow
 * Servers MUST include support for at least one the following Scopes in their Server Metadata's `scopes_supported` array [[CDS-WG1-02 Section 3.2](#ref-cds-wg1-02-metadata)]:
     * [Account Program Participation](#scope-account-program-participation)
     * [Service Program Participation](#scope-service-program-participation)
-* Servers MUST include any steps in the `registration_requirements` that the Client or Server needs to complete before the Server will create a Client object that has the `production` status in it's `cds_status_options` array.
+* Servers MUST include any steps in the `registration_requirements` that the Client or Server needs to complete before the Server will create a Client object that has the `production` status in its `cds_status_options` array.
   For example, if the Server requires a manual review of the Client's registration before approving production access, the Server would include a Registration Field [[CDS-WG1-02 Section 3.5](#ref-cds-wg1-02-registration-fields)] with a `type` value of `internal_review`.
 * For [Account Program Participation](#scope-account-program-participation) and [Service Program Participation](#scope-service-program-participation) Scopes, in addition to their requirements, the following [Authorization Details Fields](#auth-details-fields) MUST also be supported by the Server:
     * [`account_numbers`](#auth-details-account-numbers)
@@ -646,7 +646,7 @@ To implement the "Customer Programs" Scenario, Servers MUST implement the follow
     * For the [`sync_until`](#auth-details-sync-until) field, the Server MUST set the `maximum` value to `"infinite"` (i.e. Customers MAY authorize access to ongoing updates to their relevant programs and associated details until they choose to revoke it).
 * Servers MUST keep the [API](#api) objects that are associated with the Grant updated to reflect any changes to the Customer, in accordance with the requirements of the `sync_until` authorization details field.
   For example, if a Customer has authorized `"infinite"` as the value for `sync_until` and later joins a supported utility demand response program, the Client will see that [Service Program](#service-program-format) in the relevant Service Contract be updated to reflect their participation and eligibility status when data is next synced to the Server from the Server's source of truth (e.g. the utility's internal Customer Resource Management system).
-* The Server MUST sync updates from its source of truth at least once per week, so that Client's may receive changes to the Customer's resources within a week of their occurrence.
+* The Server MUST sync updates from its source of truth at least once per week, so that Clients may receive changes to the Customer's resources within a week of their occurrence.
 
 ### 4.7. Bill Amount Due <a id="scenario-bill-amount-due" href="#scenario-bill-amount-due" class="permalink">🔗</a>
 
@@ -657,17 +657,17 @@ To implement the "Bill Amount Due" Scenario, Servers MUST implement the followin
 
 * Servers MUST include support for the following Scopes in their Server Metadata's `scopes_supported` array [[CDS-WG1-02 Section 3.2](#ref-cds-wg1-02-metadata)]:
     * [Bill Statements](#scope-bill-statements)
-* Servers MUST include any steps in the `registration_requirements` that the Client or Server needs to complete before the Server will create a Client object that has the `production` status in it's `cds_status_options` array.
+* Servers MUST include any steps in the `registration_requirements` that the Client or Server needs to complete before the Server will create a Client object that has the `production` status in its `cds_status_options` array.
   For example, if the Server requires a manual review of the Client's registration before approving production access, the Server would include a Registration Field [[CDS-WG1-02 Section 3.5](#ref-cds-wg1-02-registration-fields)] with a `type` value of `internal_review`.
 * For the [Bill Statements](#scope-bill-statements) Scope, in addition to its requirements, the following [Authorization Details Fields](#auth-details-fields) MUST also be supported by the Server:
     * [`addresses`](#auth-details-addresses)
 * The following are requirements for supported Authorization Details Field Objects [[CDS-WG1-02 Section 3.8](#ref-cds-wg1-02-auth-details-object)]:
     * For the [`statement_date_start`](#auth-details-statement-start) field, the Server MUST ignore any values configured by the Client and always set this value in the relevant Grant's `authorization_details` value to be the date of the Customer's last bill statement or the creation time of the Grant, whichever is sooner.
-      This prevents this Scenario from being used to collect the historical Bill Statement data for Customers, when then intent of this Scenario is for a Customer providing access to their bill amount due going forward.
+      This prevents this Scenario from being used to collect the historical Bill Statement data for Customers, when the intent of this Scenario is for a Customer providing access to their bill amount due going forward.
     * For the [`statement_date_end`](#auth-details-statement-end) field, the Server MUST set the `maximum` value to `infinite` (i.e. Customers MAY authorize access to ongoing bill amount due access indefinitely).
 * Servers MUST keep the [API](#api) objects that are associated with the Grant updated to reflect any changes to the Customer, in accordance with the requirements of the `statement_date_end` authorization details field.
   For example, if a Customer has authorized `"infinite"` as the value for `statement_date_end`, the Client will see new [Bill Statements](#bill-statement-format) when data is next synced to the Server from the Server's source of truth (e.g. the utility's internal billing system).
-* The Server MUST sync updates from its source of truth at least once per week, so that Client's may receive changes to the Customer's resources within a week of their creation.
+* The Server MUST sync updates from its source of truth at least once per week, so that Clients may receive changes to the Customer's resources within a week of their creation.
 
 ### 4.8. Customer Bills <a id="scenario-customer-bills" href="#scenario-customer-bills" class="permalink">🔗</a>
 
@@ -678,7 +678,7 @@ To implement the "Customer Bills" Scenario, Servers MUST implement the following
 
 * Servers MUST include support for the following Scopes in their Server Metadata's `scopes_supported` array [[CDS-WG1-02 Section 3.2](#ref-cds-wg1-02-metadata)]:
     * [Bill Statements](#scope-bill-statements)
-* Servers MUST include any steps in the `registration_requirements` that the Client or Server needs to complete before the Server will create a Client object that has the `production` status in it's `cds_status_options` array.
+* Servers MUST include any steps in the `registration_requirements` that the Client or Server needs to complete before the Server will create a Client object that has the `production` status in its `cds_status_options` array.
   For example, if the Server requires a manual review of the Client's registration before approving production access, the Server would include a Registration Field [[CDS-WG1-02 Section 3.5](#ref-cds-wg1-02-registration-fields)] with a `type` value of `internal_review`.
 * For the [Bill Statements](#scope-bill-statements) Scope, in addition to its requirements, the following [Authorization Details Fields](#auth-details-fields) MUST also be supported by the Server:
     * [`addresses`](#auth-details-addresses)
@@ -689,7 +689,7 @@ To implement the "Customer Bills" Scenario, Servers MUST implement the following
     * For the [`statement_date_end`](#auth-details-usage-segment-end) field, the Server MUST set the `maximum` value to `"infinite"` (i.e. Customers MAY authorize access to ongoing bills until they choose to revoke it).
 * Servers MUST keep the [API](#api) objects that are associated with the Grant updated to reflect any changes to the Customer, in accordance with the requirements of the `statement_date_end` authorization details field.
   For example, if a Customer has authorized `"infinite"` as the value for `statement_date_end`, the Client will see new [Bill Statements](#bill-statement-format) when data is next synced to the Server from the Server's source of truth (e.g. the utility's internal billing system).
-* The Server MUST sync updates from its source of truth at least once per week, so that Client's may receive changes to the Customer's resources within a week of their creation.
+* The Server MUST sync updates from its source of truth at least once per week, so that Clients may receive changes to the Customer's resources within a week of their creation.
 
 ### 4.9. Service Charges <a id="scenario-service-charges" href="#scenario-service-charges" class="permalink">🔗</a>
 
@@ -700,7 +700,7 @@ To implement the "Service Charges" Scenario, Servers MUST implement the followin
 
 * Servers MUST include support for the following Scopes in their Server Metadata's `scopes_supported` array [[CDS-WG1-02 Section 3.2](#ref-cds-wg1-02-metadata)]:
     * [Service Bills](#scope-service-bills)
-* Servers MUST include any steps in the `registration_requirements` that the Client or Server needs to complete before the Server will create a Client object that has the `production` status in it's `cds_status_options` array.
+* Servers MUST include any steps in the `registration_requirements` that the Client or Server needs to complete before the Server will create a Client object that has the `production` status in its `cds_status_options` array.
   For example, if the Server requires a manual review of the Client's registration before approving production access, the Server would include a Registration Field [[CDS-WG1-02 Section 3.5](#ref-cds-wg1-02-registration-fields)] with a `type` value of `internal_review`.
 * For the [Service Bills](#scope-service-bills) Scope, in addition to its requirements, the following [Authorization Details Fields](#auth-details-fields) MUST also be supported by the Server:
     * [`account_numbers`](#auth-details-account-numbers)
@@ -712,18 +712,18 @@ To implement the "Service Charges" Scenario, Servers MUST implement the followin
     * For the [`end_date`](#auth-details-usage-segment-end) field, the Server MUST set the `maximum` value to `"infinite"` (i.e. Customers MAY authorize access to ongoing billed charges until they choose to revoke it).
 * Servers MUST keep the [API](#api) objects that are associated with the Grant updated to reflect any changes to the Customer, in accordance with the requirements of the `end_date` authorization details field.
   For example, if a Customer has authorized `"infinite"` as the value for `end_date`, the Client will see new [Bill Sections](#bill-statement-format) when data is next synced to the Server from the Server's source of truth (e.g. the utility's internal billing system).
-* The Server MUST sync updates from its source of truth at least once per week, so that Client's may receive changes to the Customer's resources within a week of their creation.
+* The Server MUST sync updates from its source of truth at least once per week, so that Clients may receive changes to the Customer's resources within a week of their creation.
 
 ### 4.10. Meter App Transparency <a id="scenario-meter-app-transparency" href="#scenario-meter-app-transparency" class="permalink">🔗</a>
 
 This section defines the Scenario "Meter App Transparency" in which a Client requests access to a Customer's list of applications that are installed on the Customer's meters.
-For example, an electric vehicle charging infrastructure installer may need to see if there's a specific grid edge application is capable of being installed on a Customer's meter.
+For example, an electric vehicle charging infrastructure installer may need to see if a specific grid edge application is capable of being installed on a Customer's meter.
 
 To implement the "Meter App Transparency" Scenario, Servers MUST implement the following requirements:
 
 * Servers MUST include support for the following Scopes in their Server Metadata's `scopes_supported` array [[CDS-WG1-02 Section 3.2](#ref-cds-wg1-02-metadata)]:
     * [Meter List](#scope-meter-list)
-* Servers MUST include any steps in the `registration_requirements` that the Client or Server needs to complete before the Server will create a Client object that has the `production` status in it's `cds_status_options` array.
+* Servers MUST include any steps in the `registration_requirements` that the Client or Server needs to complete before the Server will create a Client object that has the `production` status in its `cds_status_options` array.
   For example, if the Server requires a manual review of the Client's registration before approving production access, the Server would include a Registration Field [[CDS-WG1-02 Section 3.5](#ref-cds-wg1-02-registration-fields)] with a `type` value of `internal_review`.
 * For the [Meter List](#scope-meter-list) Scope, in addition to its requirements, the following Authorization Details Fields MUST also be supported by the Server:
     * [`meter_apps`](#auth-details-meter-apps)
@@ -742,15 +742,15 @@ To implement the "Whole-Building Data" Scenario, Servers MUST implement the foll
     * [Aggregations Query](#scope-aggregations-query)
     * [Usage Query](#scope-usage-query)
     * [Aggregation Inclusion](#scope-aggregation-inclusion)
-* For the [Aggregations Query](#scope-aggregations-query) and [Usage Query](#scope-usage-query) Scopes, the Server MUST include the `"client_credentials"` value the Scope Description's `grant_types_supported` array.
+* For the [Aggregations Query](#scope-aggregations-query) and [Usage Query](#scope-usage-query) Scopes, the Server MUST include the `"client_credentials"` value in the Scope Description's `grant_types_supported` array.
   This means the Clients will be able to use OAuth's Client Credentials Grant flow [[RFC 6749 Section 4.4](#ref-rfc6749-client-credentials)] to be able to issue access tokens that they can then use to query the [Aggregations API](#aggregations-api) and [Usage Segments API](#usage-segments-api).
-* Servers MUST include any steps in the `registration_requirements` that the Client or Server needs to complete before the Server will create a Client object that has the `production` status in it's `cds_status_options` array.
+* Servers MUST include any steps in the `registration_requirements` that the Client or Server needs to complete before the Server will create a Client object that has the `production` status in its `cds_status_options` array.
   For example, if the Server requires a manual review of the Client's registration before approving production access, the Server would include a Registration Field [[CDS-WG1-02 Section 3.5](#ref-cds-wg1-02-registration-fields)] with a `type` value of `internal_review`.
 * Servers MUST create an [Aggregation](#aggregation-format) object with an `aggregation_number` value for each building that needs to be accessible for this Scenario.
   Typically, a Server would set the building's Building Identifier (e.g. BuildingID) as the Aggregation's `aggregation_number`, if that is what Clients have previously used for requesting whole-building energy usage.
-  For example, if a utility is required by a municipality to offer whole-building data the buildings in their territory, the utility Server will need to create Aggregation objects for each of the buildings.
+  For example, if a utility is required by a municipality to offer whole-building data for the buildings in their territory, the utility Server will need to create Aggregation objects for each of the buildings.
 * Servers MUST create [Service Point](#service-point-format) objects that are included in aggregated usage data for each Aggregation and include the relevant Service Points in each Aggregation's `grouped_servicepoints` array.
-  This let's Clients see which Service Point `service_point_address` and any Premise `premise_number` values are associated with the Aggregation.
+  This lets Clients see which Service Point `service_point_address` and any Premise `premise_number` values are associated with the Aggregation.
 * For the [Aggregations Query](#scope-aggregations-query) Scope, in addition to its requirements, the following [Authorization Details Fields](#auth-details-fields) MUST also be supported by the Server:
     * [`servicepoint_numbers`](#auth-details-servicepoint-numbers)
     * [`aggregation_numbers`](#auth-details-aggregation-numbers)
@@ -766,7 +766,7 @@ To implement the "Whole-Building Data" Scenario, Servers MUST implement the foll
 * For the [Aggregations Query](#scope-aggregations-query) Scope, the Server MUST only return [Aggregations](#aggregation-format) that the Client is authorized to access.
   For example, if a Server restricts Clients to only see their owned properties, the Server MUST configure each Client to be able to query that subset of the Aggregations in the Server's systems.
 * The Server MAY return an empty `aggregations` array for [Aggregations listings](#aggregations-list) in which the access token's Scope does not contain enumerated preselection values.
-  This can be useful when the Server wants allow Clients to search for an Aggregation based on an identifier or address, but does not want the Client to be able to enumerate all Aggregations.
+  This can be useful when the Server wants to allow Clients to search for an Aggregation based on an identifier or address, but does not want the Client to be able to enumerate all Aggregations.
 * When the Client makes an Access Token Request [[RFC 6749 Section 4.4.2](#ref-rfc6749-token-request)] and the request contains the [Usage Query](#scope-usage-query) Scope, the Server MUST reject the request if the [Usage Query](#scope-usage-query) Scope does not contain a populated `aggregation_numbers` authorization details field.
   This means that Clients will need to specifically enumerate the Aggregation `aggregation_numbers` in Scopes for which they wish to access the whole-building usage data.
 * If the Server creates a Grant that has the [Usage Query](#scope-usage-query) Scope with `aggregation_numbers` for whole-building Aggregations, the Server MUST implement the following requirements:
@@ -807,9 +807,9 @@ To implement the "Aggregated Data" Scenario, Servers MUST implement the followin
 * Servers MUST include support for the following Scopes in their Server Metadata's `scopes_supported` array [[CDS-WG1-02 Section 3.2](#ref-cds-wg1-02-metadata)]:
     * [Aggregations Query](#scope-aggregations-query)
     * [Usage Query](#scope-usage-query)
-* For the [Aggregations Query](#scope-aggregations-query) and [Usage Query](#scope-usage-query) Scopes, the Server MUST include the `"client_credentials"` value the Scope Description's `grant_types_supported` array.
+* For the [Aggregations Query](#scope-aggregations-query) and [Usage Query](#scope-usage-query) Scopes, the Server MUST include the `"client_credentials"` value in the Scope Description's `grant_types_supported` array.
   This means the Clients will be able to use OAuth's Client Credentials Grant flow [[RFC 6749 Section 4.4](#ref-rfc6749-client-credentials)] to be able to issue access tokens that they can then use to query the [Aggregations API](#aggregations-api) and [Usage Segments API](#usage-segments-api).
-* Servers MUST include any steps in the `registration_requirements` that the Client or Server needs to complete before the Server will create a Client object that has the `production` status in it's `cds_status_options` array.
+* Servers MUST include any steps in the `registration_requirements` that the Client or Server needs to complete before the Server will create a Client object that has the `production` status in its `cds_status_options` array.
   For example, if the Server requires a manual review of the Client's registration before approving production access, the Server would include a Registration Field [[CDS-WG1-02 Section 3.5](#ref-cds-wg1-02-registration-fields)] with a `type` value of `internal_review`.
 * Servers MUST create an [Aggregation](#aggregation-format) object with an `aggregation_number` value for each aggregated set of data that needs to be accessible for this Scenario.
   For example, if a utility is required by their regulator to release regional aggregated usage data, the utility Server will need to create Aggregation objects for each of the regions that need to have aggregated usage.
@@ -850,7 +850,7 @@ This specification extends CDS's Authorization Server Metadata object [[CDS-WG1-
 * `cds_usagesegments_additional_value_types` - _Map[[ValueTypeDescription](#usage-segment-value-type-description)]_ - (OPTIONAL) A reference object of possible Usage Segment [Value Types](#usage-segment-value-types) that the Server could include in a Usage Segment's `formats` array, in addition to the Value Types that are defined in this specification.
   This object is composed of keys that represent the `id` value of the additional Value Type, and values that are [Value Type Description](#usage-segment-value-type-description) objects of the additional Value Type.
   This is REQUIRED if the `cds_usagesegments_api` field is populated in the Server Metadata object.
-  If the Server does will not provide any additional Value Types in their Usage Segment objects, this is an empty object (`{}`).
+  If the Server does not provide any additional Value Types in their Usage Segment objects, this is an empty object (`{}`).
 * `cds_eacs_api` - _[URL](#url)_ - (OPTIONAL) The base url for the [Energy Attribute Certificates listing API](#eacs-list).
   This is REQUIRED if any Scopes included in the `scopes_supported` array has the [`include_eacs`](#auth-details-include-eacs) authorization details field or it is required as part of the Scope.
 * `cds_eac_formats` - _Map[[EACDataFormatDescription](#eac-data-format-descriptions)]_ - (OPTIONAL) An object providing additional information about each Energy Attribute Certificate (EAC) data format value that may be provided as the [EAC object](#eac-format) `eac_format`, with the [EAC Data Format Description's](#eac-data-format-descriptions) `id` as the keys of the object and values being the [EAC Data Format Description](#eac-data-format-descriptions) object itself.
@@ -890,7 +890,7 @@ To support a Scope defined in this section, in addition to that Scope's defined 
         * The `enabled_authorization_details` value MUST be an empty array (`[]`).
         * The `eta` value MUST NOT be `null`.
     * During asynchronous data loading, if some data objects are accessible but others are not (e.g. the Account objects are available, but the Usage Segments are still being loaded), it is RECOMMENDED that the Server update the Grant's `enabled_scope` and `enabled_authorization_details` values to be the appropriate values representing which data is now accessible.
-      That way, Client's can start requesting and processing data from the Customer Data APIs while the Server continues to make available the rest of the granted data.
+      That way, Clients can start requesting and processing data from the Customer Data APIs while the Server continues to make available the rest of the granted data.
     * During asynchronous data loading, if the estimated time for completing the asynchronous tasks changes (e.g. there is an unexpected delay in the queries for data internally), the Server MUST update the Grant's `eta` value with the Server's new estimate for when its asynchronous tasks will be completed.
     * When the Server completes its asynchronous tasks for making data available, the Server MUST update the `status` value from `pending` to the appropriate status value based on the asynchronous task's results.
       The Server MUST also update the `enabled_scope` and `enabled_authorization_details` values to the appropriate access now available to the Client.
@@ -900,7 +900,7 @@ Additionally, the Server MAY include other [Authorization Details Fields](#auth-
 ### 6.1. Customer Consent Scopes <a id="scopes-customer-consent" href="#scopes-customer-consent" class="permalink">🔗</a>
 
 The Scopes defined in this section proves a means by which a Client can request authorization from a Customer, for situations where Customer consent is required to be able to access data on the Server.
-The Customer authorization process uses the Server's OAuth Authorization Code Grant flow [[RFC 6749 Section 4.1](#ref-rfc6749-code-grant)], so these the Scopes in this section require at least the `"code"` response type to be available in the Server's Scope Description object for the supported Scope.
+The Customer authorization process uses the Server's OAuth Authorization Code Grant flow [[RFC 6749 Section 4.1](#ref-rfc6749-code-grant)], so the Scopes in this section require at least the `"code"` response type to be available in the Server's Scope Description object for the supported Scope.
 
 When a Server supports any of the Scopes in this section, the Server MUST implement the following:
 
@@ -953,7 +953,7 @@ Additionally, to support this Scope, the Server MUST implement the following req
 
 #### 6.1.2. Account Program Participation <a id="scope-account-program-participation" href="#scope-account-program-participation" class="permalink">🔗</a>
 
-For some use cases, a Client only needs to obtain a list of which [Account-level programs](#account-program-format) which apply to a Customer.
+For some use cases, a Client only needs to obtain a list of [Account-level programs](#account-program-format) which apply to a Customer.
 For example, a utility rebate program contractor Client may need to know if a Customer is on low-income assistance for their  utility account in order to know if they are qualified for a specific set of utility rebates.
 In these relevant use cases, Clients only need access to Customers' relevant account-level programs, so this Scope provides the ability for Servers to limit access to only [Account](#account-format) `account_programs`.
 
@@ -1551,7 +1551,7 @@ Additionally, to support this Scope, the Server MUST implement the following req
 #### 6.2.5. Bill Statements Query <a id="scope-bill-statements-query" href="#scope-bill-statements-query" class="permalink">🔗</a>
 
 For some use cases, a Client needs to be able to access a list of [Bill Statements](#bill-statement-format).
-For example, a technical support contractor Client working with the utility Server may need to look up a Customer's bills while while investigating a customer support ticket.
+For example, a technical support contractor Client working with the utility Server may need to look up a Customer's bills while investigating a customer support ticket.
 In these relevant use cases, Clients need access to a set of Bill Statement objects directly, so this Scope provides the ability for Servers to offer managed access to Bill Statement objects.
 
 To support this Scope, the Scope Description object MUST meet the following requirements:
@@ -1643,7 +1643,7 @@ Clients MUST use the authorization details values in a Grant to determine that G
 
 ### 7.1. Preselection Fields <a id="auth-details-preselection" href="#auth-details-preselection" class="permalink">🔗</a>
 
-Use cases for customer data access, especially commercial use cases, frequently require that Clients to be granted limit access to a subset of the Customer's data.
+Use cases for Customer Data access, especially commercial use cases, frequently require that Clients be granted limited access to a subset of the Customer's data.
 In these situations, it is useful for a Client to "preselect" the specific accounts, contracts, devices, etc. for which the Customer needs to authorize access.
 
 This section defines authorization details fields that allow a Client to set preselections for the Server's authorization form, so that Customer doesn't have to individually select the subset of accounts, contracts, devices, etc. that are relevant for the Client's needs.
@@ -1653,8 +1653,8 @@ For all preselection fields defined in this section, the Server MUST implement t
 
 * Any matched objects for preselection MUST be able to be matched by the Client's base set of permissions.
   This means that if the Server has limited a Client to only having permissions to preselect a specific set of objects or fields, using preselection fields will not be able to extend beyond what the Server permits for that Client.
-  For example, if a energy contractor Client is set to only have permission to preselect `premise_numbers` but not `account_numbers`, when the Client uses the `account_numbers` preselection field to try to match specific Accounts, the Server will act as if there were not preselection matches for those Accounts, even if the Server does have Accounts with matching `account_number` values stored in its system.
-* If multiple preselection authorization details field are used (i.e. multiple values are not `null`), Servers MUST determine which resources are preselected by intersecting the preselected resources matched by each individual preselection authorization details field.
+  For example, if an energy contractor Client is set to only have permission to preselect `premise_numbers` but not `account_numbers`, when the Client uses the `account_numbers` preselection field to try to match specific Accounts, the Server will act as if there were not preselection matches for those Accounts, even if the Server does have Accounts with matching `account_number` values stored in its system.
+* If multiple preselection authorization details fields are used (i.e. multiple values are not `null`), Servers MUST determine which resources are preselected by intersecting the preselected resources matched by each individual preselection authorization details field.
   If the preselected resources from each individual preselection authorization details field do not have any overlap, then the intersection is an empty set, and no resources are preselected.
 
 #### 7.1.1. Preselect Account Numbers <a id="auth-details-account-numbers" href="#auth-details-account-numbers" class="permalink">🔗</a>
@@ -1860,7 +1860,7 @@ For scopes where the Scope Description's `response_types_supported` array is emp
 
 #### 7.1.7. Preselect Service Point Types <a id="auth-details-servicepoint-types" href="#auth-details-servicepoint-types" class="permalink">🔗</a>
 
-For some use cases, a Client may need to request access to datasets for a specific types of Service Points.
+For some use cases, a Client may need to request access to datasets for specific types of Service Points.
 For example, a utility vendor may need to run an analysis of energy usage over a Customer's electric service points.
 In these relevant use cases, Clients benefit from being able to configure an authorization request that preselects a set of [Service Point](#service-point-format) with the provided [Service Point Type](#service-point-types) values.
 
@@ -1901,9 +1901,9 @@ For scopes where the Scope Description's `response_types_supported` array is emp
 
 #### 7.1.8. Preselect Premise Numbers <a id="auth-details-premise-numbers" href="#auth-details-premise-numbers" class="permalink">🔗</a>
 
-For some use cases, a Client may need to request access to datasets for a specific premises.
-For example, an building benchmarking tool may need to run an analysis of energy usage for a specific list of premises.
-In these relevant use cases, Clients benefit from being able to configure an authorization request that preselects a set of [Service Point](#service-point-format) with the provided `premise_number` values.
+For some use cases, a Client may need to request access to datasets for specific premises.
+For example, a building benchmarking tool may need to run an analysis of energy usage for a specific list of premises.
+In these relevant use cases, Clients benefit from being able to configure an authorization request that preselects a set of [Service Points](#service-point-format) with the provided `premise_number` values.
 
 To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:
 
@@ -2023,7 +2023,7 @@ For scopes where the Scope Description's `response_types_supported` array is emp
 
 For some use cases, a Client may need to request access to Customer meter details for services related to a set of [Meter Apps](#meter-app-format).
 For example, an electric vehicle charging app Client may need to confirm if their grid edge application is capable of being installed on a Customer's meters.
-In these relevant use cases, Clients benefit from being able to configure an authorization request that preselects a set of [Meter App](#meter-app-format) that have certain `meter_apps` objects.
+In these relevant use cases, Clients benefit from being able to configure an authorization request that preselects a set of [Meter Apps](#meter-app-format) that have certain `meter_apps` objects.
 
 To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:
 
@@ -2053,7 +2053,7 @@ For scopes where the Scope Description's `response_types_supported` array is emp
 #### 7.1.12. Preselect Aggregation Numbers <a id="auth-details-aggregation-numbers" href="#auth-details-aggregation-numbers" class="permalink">🔗</a>
 
 For some use cases, a Client may need to request access to datasets for a specific list of Aggregations.
-For example, an energy auditor may need request access to a list of whole-building energy usage aggregrations for region to do a benchmarking analysis for the local municipality.
+For example, an energy auditor may need to request access to a list of whole-building energy usage aggregations for a region to do benchmarking analysis for the local municipality.
 In these relevant use cases, Clients benefit from being able to configure an authorization request that preselects a set of [Aggregations](#aggregation-format) with the provided `aggregation_number` values.
 
 To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:
@@ -2095,7 +2095,7 @@ For scopes where the Scope Description's `response_types_supported` array is emp
 #### 7.1.13. Preselect Addresses <a id="auth-details-addresses" href="#auth-details-addresses" class="permalink">🔗</a>
 
 For some use cases, a Client may need to request access to datasets for a specific list of addresses.
-For example, an energy benchmarking app may request access to the whole-building energy usage aggregration for a building using the building's address.
+For example, an energy benchmarking app may request access to the whole-building energy usage aggregation for a building using the building's address.
 In these relevant use cases, Clients benefit from being able to configure an authorization request that preselects resources with the provided address values.
 
 To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:
@@ -2105,7 +2105,7 @@ To support this authorization details field, the Authorization Details Field Obj
 * If this object is included in a Scope Description where the `response_types_supported` field is not empty array (e.g. Customer authorization is supported):
     * The `is_required` value MUST be `false`.
 * This object MUST NOT be included in a Scope Description where the `response_types_supported` field is an empty array.
-  This means that that limiting objects by address using this preselection field is not available on [Direct Access Scopes](#scopes-direct-access).
+  This means that limiting objects by address using this preselection field is not available on [Direct Access Scopes](#scopes-direct-access).
 
 When rendering [Account Selections](#account-selection) for this field's scope and this field is included, the Server MUST preselect Accounts based on the following criteria:
 
@@ -2135,12 +2135,12 @@ To help mitigate some of the difficulties in Clients being able to effectively u
 
 * For each address value that could be matched by this authorization details field, Servers MUST categorize the address value as a Typical Address or an Atypical Address.
     * Typical Addresses are defined as address values that Customers would largely consider to be able to be used in common mapping services in the Customers' locales. For example, `"123 Main St #123, Anytown, CA"` would be considered to be a Typical Address in the United States locale.
-    * Atypical Addresses is any format of address string that is still valid for the Server's uses, but is not a Typical Address. For example, `"Acme Farm Irrigation, 12 mi North on FM 5555, 150 ft West into the field"` could be a valid Service Point address for a utility's own reference, but would not be largely considered by Customers to be an address able to be used in common mapping servcies for the United States.
+    * Atypical Addresses is any format of address string that is still valid for the Server's uses, but is not a Typical Address. For example, `"Acme Farm Irrigation, 12 mi North on FM 5555, 150 ft West into the field"` could be a valid Service Point address for a utility's own reference, but would not be largely considered by Customers to be an address able to be used in common mapping services for the United States.
 * For each Typical Address, Servers MUST convert the address to a Normalized Address value using the following steps:
     * Remove the address name, if any (e.g. `"Acme Co., 123 Main  St. #234\n ..."` to `" 123 Main  St. #234\n ..."`).
     * Convert any postal abbreviations to their full names (e.g. `" 123 Main  St. #234\n ..."` to `" 123 Main  Street Unit 234\n ..."`).
     * Convert all characters to lowercase (e.g. `" 123 Main  Street Unit 234\n ..."` to `" 123 main  street unit 234\n ..."`).
-    * Convert address segments breaks, whether line breaks or spaces, to the locale's address segment separator to make the address one line (e.g. `" 123 main  street unit 234\n ..."` to `" 123 main  street unit 234, ..."`).
+    * Convert address segment breaks, whether line breaks or spaces, to the locale's address segment separator to make the address one line (e.g. `" 123 main  street unit 234\n ..."` to `" 123 main  street unit 234, ..."`).
     * Remove any duplicate whitespace (e.g. `" 123 main  street unit 234, ..."` to `" 123 main street unit 234, ..."`)
     * Remove any surrounding whitespace (e.g. `" 123 main street unit 234, ..."` to `"123 main street unit 234, ..."`)
     * The result is the Normalized Address used in address matching (e.g. `"123 main street unit 234, ..."`).
@@ -2175,7 +2175,7 @@ Many use cases for customer data access require a specific set of data fields to
 For example, a building energy manager Client may need access to both the energy usage intervals and bill section line items for a set of the Customer's properties in order to perform the energy cost analyses that they have been hired to do by the Customer.
 However, in other use cases, the need for bill section line items may not be needed so a Customer may not wish their bill cost breakdowns be shared with a Client.
 
-To provide the flexibility needed for Servers to cover a broad set of use cases, this specification defines authorization data fields that let the Client define which data fields they are requesting to be be included.
+To provide the flexibility needed for Servers to cover a broad set of use cases, this specification defines authorization data fields that let the Client define which data fields they are requesting to be included.
 That way, Clients can customize the scopes of their requests to select the data fields they need, and ignore others which are not needed.
 Additionally, by defining these authorization data fields, Servers will be able to disclose which data fields they support in their `authorization_details_fields_supported` array in their Server Metadata's Scope Descriptions [[CDS-WG1-02 Section 3.4](#ref-cds-wg1-02-scope-descriptions)].
 
@@ -2189,7 +2189,7 @@ For all included data fields defined in this section, the Server MUST implement 
 #### 7.2.1. Include Accounts <a id="auth-details-include-accounts" href="#auth-details-include-accounts" class="permalink">🔗</a>
 
 For some use cases, Clients need to have access to a Customer's [Accounts](#account-format).
-For example, a contracted vendor may need catalog and organize the list of accounts for an enterprise Customer's locations.
+For example, a contracted vendor may need to catalog and organize the list of accounts for an enterprise Customer's locations.
 To enable whether Account objects access is included in addition to the data normally provided for a scope, this specification defines an authorization details field that controls additional Account access.
 
 To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:
@@ -2211,7 +2211,7 @@ Additional authorization details fields are defined in subsections to this secti
 ##### 7.2.1.1. Include Account Numbers <a id="auth-details-include-account-numbers" href="#auth-details-include-account-numbers" class="permalink">🔗</a>
 
 For some use cases, Clients need to have access to a Customer's account number for reference with other Customer materials (e.g. paper copies of the bills they received from the Customer).
-For example, an energy service company Client doing and initial feasibility analysis for what energy upgrade projects would be viable at an enterprise Customer's locations may need to understand how the Customer's accounts are organized with the utility.
+For example, an energy service company Client doing an initial feasibility analysis for what energy upgrade projects would be viable at an enterprise Customer's locations may need to understand how the Customer's accounts are organized with the utility.
 To address these use cases, this specification defines an authorization details field that controls whether Account `account_number` access is enabled.
 
 To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:
@@ -2274,7 +2274,7 @@ Additionally, Servers MUST implement the following behavior to support this auth
 #### 7.2.2. Include Service Contracts <a id="auth-details-include-service-contracts" href="#auth-details-include-service-contracts" class="permalink">🔗</a>
 
 For some use cases, Clients need to have access to a Customer's [Service Contracts](#service-contract-format).
-For example, a contracted vendor may need get a business Customer's list of services so that they can determine which locations are feasible for a project.
+For example, a contracted vendor may need to get a business Customer's list of services so that they can determine which locations are feasible for a project.
 To enable whether Service Contract objects access is included in addition to the data normally provided for a scope, this specification defines an authorization details field that controls additional Service Contract access.
 
 To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:
@@ -2289,7 +2289,7 @@ Additionally, Servers MUST implement the following behavior to support this auth
 * If this field's value is `true`, in addition to the data access defined with this field's scope, the Server MUST provide access to related Service Contract objects.
   Related Service Contract objects are any Service Contract that are referenced by `cds_servicecontract_id`, `current_servicecontracts`, `previous_servicecontracts`, `related_servicecontracts`, `grouped_servicecontracts`, or `beneficiaries` values in any included [Service Point](#service-point-format), [Bill Section](#bill-section-format), [Aggregation](#aggregation-format), [Usage Segment](#usage-segment-format), or [Energy Attribute Certificate](#eac-format) object.
   Additionally, Service Contracts that have an `cds_account_id` value that matches any included Accounts MUST also be included.
-* If this field's value is `true` and the scope also have the [`include_meter_devices`](#auth-details-include-meter-devices) field value as `true` or the scope includes Meter Device access, the Server MUST treat this scope as also having the [`include_service_points`](#auth-details-include-service-points) field value as `true`.
+* If this field's value is `true` and the scope also has the [`include_meter_devices`](#auth-details-include-meter-devices) field value as `true` or the scope includes Meter Device access, the Server MUST treat this scope as also having the [`include_service_points`](#auth-details-include-service-points) field value as `true`.
   This means that Service Point objects connecting Service Contracts and Meter Devices MUST be included when both Service Contracts and Meter Devices are included, so that Clients can know which Service Contracts are related to which Meter Devices.
 * Servers MUST NOT include OPTIONAL fields for Service Contracts unless those fields are enabled to be included by the Grant's scope or other authorization details fields.
 
@@ -2298,7 +2298,7 @@ Additional authorization details fields are defined in subsections to this secti
 ##### 7.2.2.1. Include Contract Numbers <a id="auth-details-include-contract-numbers" href="#auth-details-include-contract-numbers" class="permalink">🔗</a>
 
 For some use cases, Clients need to have access to a Customer's contract number for reference with other Customer materials (e.g. paper copies of the bills they received from the Customer).
-For example, an energy service company Client doing and initial feasibility analysis for what energy upgrade projects would be viable at an enterprise Customer's locations may need to match up the service charges from the paper utility bills to the list service contract numbers in the Customer's online accounts.
+For example, an energy service company Client doing an initial feasibility analysis for what energy upgrade projects would be viable at an enterprise Customer's locations may need to match up the service charges from the paper utility bills to the list service contract numbers in the Customer's online accounts.
 To address these use cases, this specification defines an authorization details field that controls whether Service Contract `contract_number` access is enabled.
 
 To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:
@@ -2317,7 +2317,7 @@ Additionally, Servers MUST implement the following behavior to support this auth
 ##### 7.2.2.2. Include Rate Plans <a id="auth-details-include-rate-plans" href="#auth-details-include-rate-plans" class="permalink">🔗</a>
 
 For some use cases, Clients need to have access to a Customer's service rate plan details to use in analyses for the Customer.
-For example, a demand response app Client working with a residential Customer may want to know if the Customer's home is one a time-of-use rate plan, which could impact whether they would save money by joining a demand response program.
+For example, a demand response app Client working with a residential Customer may want to know if the Customer's home is on a time-of-use rate plan, which could impact whether they would save money by joining a demand response program.
 To address these use cases, this specification defines an authorization details field that controls whether service contract details access is enabled.
 
 To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:
@@ -2464,7 +2464,7 @@ Additionally, Servers MUST implement the following behavior to support this auth
 
 * If this field's value is `true`, in addition to the data access defined with this field's scope, the Server MUST provide access to related Meter Device objects.
   Related Meter Device objects are any Meter Device that are referenced by `related_meterdevices` or `grouped_meterdevices` values in any included [Bill Section](#bill-section-format), [Aggregation](#aggregation-format), or [Usage Segment](#usage-segment-format) object.
-* If this field's value is `true` and the scope also have the [`include_service_contracts`](#auth-details-include-service-contracts) field value as `true` or the scope includes Service Contract access, the Server MUST treat this scope as also having the [`include_service_points`](#auth-details-include-service-points) field value as `true`.
+* If this field's value is `true` and the scope also has the [`include_service_contracts`](#auth-details-include-service-contracts) field value as `true` or the scope includes Service Contract access, the Server MUST treat this scope as also having the [`include_service_points`](#auth-details-include-service-points) field value as `true`.
   This means that Service Point objects connecting Meter Devices and Service Contracts MUST be included when both Meter Devices and Service Contracts are included, so that Clients can know which Meter Devices are related to which Service Contracts.
 * Servers MUST NOT include OPTIONAL fields for Service Points unless those fields are enabled to be included by the Grant's scope or other authorization details fields.
 
@@ -2473,7 +2473,7 @@ Additional authorization details fields are defined in subsections to this secti
 ##### 7.2.4.1. Include Meter Numbers <a id="auth-details-include-meter-numbers" href="#auth-details-include-meter-numbers" class="permalink">🔗</a>
 
 For some use cases, Clients need to have access to a Customer's meter numbers for reference with other Customer materials (e.g. their notes from an on-site inspection).
-For example, an energy service company Client doing and initial feasibility analysis for an enterprise Customer's locations may need to match up the meter numbers written down during their on-site inspection to the list of Meter Devices obtained when requesting usage data from the Server for the Customer.
+For example, an energy service company Client doing an initial feasibility analysis for an enterprise Customer's locations may need to match up the meter numbers written down during their on-site inspection to the list of Meter Devices obtained when requesting usage data from the Server for the Customer.
 To address these use cases, this specification defines an authorization details field that controls whether Meter Device `meter_number` access is enabled.
 
 To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:
@@ -2490,7 +2490,7 @@ Additionally, Servers MUST implement the following behavior to support this auth
 
 ##### 7.2.4.2. Include Meter Apps <a id="auth-details-include-meter-apps" href="#auth-details-include-meter-apps" class="permalink">🔗</a>
 
-For some use cases, Clients need to have access to a [Meter Device's](#meter-device-format) installed or capable of being installed applications.
+For some use cases, Clients need to have access to a [Meter Device's](#meter-device-format) installed applications or applications that are capable of being installed.
 For example, a Customer may wish to discover what grid edge applications are installed on their own meters by their utility.
 To address these use cases, this specification defines an authorization details field that controls whether [Meter App](#meter-app-format) access is enabled.
 
@@ -2570,7 +2570,7 @@ Additionally, Servers MUST implement the following behavior to support this auth
 
 ##### 7.2.5.3. Include Bill Statement Programs <a id="auth-details-include-bill-statement-programs" href="#auth-details-include-bill-statement-programs" class="permalink">🔗</a>
 
-For some use cases, Clients need to have access which Account Programs in which a Customer participated for each [Bill Statement](#bill-statement-format) period.
+For some use cases, Clients need to have access to the Account Programs in which a Customer participated for each [Bill Statement](#bill-statement-format) period.
 For example, a rebate review contractor may need to see if a Customer was participating in a low-income program for the previous 6 months in order to qualify for a new rebate.
 To address these use cases, this specification defines an authorization details field that controls whether Bill Statement program participation details are included.
 
@@ -2603,7 +2603,7 @@ Additionally, Servers MUST implement the following behavior to support this auth
 
 * If this field's value is `true`, in addition to the data access defined with this field's scope, the Server MUST provide access to related Bill Section objects.
   Related Bill Section objects are any of the following:
-    * Any Bill Section that have both a `cds_account_id` value equal to an included [Account](#account-format) and contains at least one included [Service Contract](#service-contract-format) listed in the Bill Section's `related_servicecontracts` array.
+    * Any Bill Section that has both a `cds_account_id` value equal to an included [Account](#account-format) and contains at least one included [Service Contract](#service-contract-format) listed in the Bill Section's `related_servicecontracts` array.
     * Any Bill Section that is referenced by `related_billsections` values in any included [Usage Segment](#usage-segment-format) or [New Charge](#new-charge-format) object.
 * Servers MUST NOT include OPTIONAL fields for Bill Statements unless those fields are enabled to be included by the Grant's scope or other authorization details fields.
 
@@ -2612,7 +2612,7 @@ Additional authorization details fields are defined in subsections to this secti
 ##### 7.2.6.1. Include Bill Section Line Items <a id="auth-details-include-bill-section-line-items" href="#auth-details-include-bill-section-line-items" class="permalink">🔗</a>
 
 For some use cases, Clients need to have access to a Customer's [Bill Section](#bill-section-format) detailed line items from their utility bills.
-For example, an enterprise's internal accounting team, in this case acting as the Client, may need to analyze the details energy cost breakdown for their enterprise, the Customer, to keep track of where energy costs are being allocated.
+For example, an enterprise's internal accounting team, in this case acting as the Client, may need to analyze the detailed energy cost breakdown for their enterprise, the Customer, to keep track of where energy costs are being allocated.
 To address these use cases, this specification defines an authorization details field that controls whether Bill Section detailed line item access is enabled.
 
 To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:
@@ -2630,7 +2630,7 @@ Additionally, Servers MUST implement the following behavior to support this auth
 #### 7.2.7. Include Aggregations <a id="auth-details-include-aggregations" href="#auth-details-include-aggregations" class="permalink">🔗</a>
 
 For some use cases, Clients need to have access to a specific list of [Aggregations](#aggregation-format).
-For example, an academic research Client may need access aggregated usage data as part of their energy grid project with their university.
+For example, an academic research Client may need to access aggregated usage data as part of their energy grid project with their university.
 To enable whether Aggregation objects access is included in addition to the data normally provided for a scope, this specification defines an authorization details field that controls additional Aggregation access.
 
 To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:
@@ -2721,7 +2721,7 @@ Additionally, Servers MUST implement the following behavior to support this auth
 #### 7.2.9. Include Energy Attribute Certificates <a id="auth-details-include-eacs" href="#auth-details-include-eacs" class="permalink">🔗</a>
 
 For some use cases, Clients need to have access to a set of [Energy Attribute Certificates](#eac-format) (EACs).
-For example, a emissions auditor Client may need to access the utility's EACs that have been applied to a set of enterprise Customer's Accounts in order to verify the Customer's corporate emissions reporting.
+For example, an emissions auditor Client may need to access the utility's EACs that have been applied to a set of enterprise Customer's Accounts in order to verify the Customer's corporate emissions reporting.
 To enable whether EAC objects access is included in addition to the data normally provided for a scope, this specification defines an authorization details field that controls additional EAC access.
 
 To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:
@@ -2740,7 +2740,7 @@ Additionally, Servers MUST implement the following behavior to support this auth
     * EACs that have a `beneficiary_type` value of `servicecontract` and `beneficiaries` values that match the `cds_servicecontract_id` for any included Service Contract object.
     * EACs that have a `beneficiary_type` value of `rateplan` and `beneficiaries` values that match the `rateplan_code` for any included Service Contract object.
     * EACs that have a `beneficiary_type` value of `program` and `beneficiaries` values that match the `program_number` for any included Account object's `account_programs` entries or Service Contract object's `service_programs` entries.
-    * EACs that are referenced in [`eacs`](#usage-segment--eacs) formatted [Value Objects](#usage-segment-value-objects) in any included [Usage Segment](#usage-segment-format) object.
+    * EACs that are referenced in [Electric Supply Mix Value Object](#usage-segment-supply-mix-value-object) `eacs` arrays.
     * Any additional EACs that the Server determines are related to this field's scope or other authorization details fields (e.g. EACs that have a `beneficiary_type` value of `general` and applicable to the Client's use case).
 * If this field's value is `false`, Servers MUST NOT include EAC objects in the Client's access.
 
@@ -2759,7 +2759,7 @@ For all duration authorization details fields defined in this section, a Server 
   This means that if the Server has limited a Client to only having access to a specific time range of objects or fields, including other data using these duration fields will not be able to extend access beyond what the Server permits for that Client.
   For example, if a utility vendor Client is set to only have access to one year of data for Usage Segments, when the Client uses the `start_date` and `end_date` fields to try to enable access for two years, the Server will still only return one year of Usage Segment data, even if the Server does have the two years of Usage Segment objects stored in its system.
 * If the field is part of an authorization details array that is returned by the Server in a Token Response [[RFC 9396 Section 7](#ref-rfc9396-token-response)] or the Grants API [[CDS-WG1-02 Section 8.1](#ref-cds-wg1-02-grant-object)], the value of the field MUST be a `date` or `datetime` or `"infinite"` string, subject to the field's other constraints (e.g. the `maximum` value), and MUST NOT be a `relative date` or `relative datetime` string.
-  This ensures Clients are provided an absolute time for field's value.
+  This ensures Clients are provided an absolute time for the field's value.
 * Clients MAY set formats that are any valid relative date or datetime format when including the field in any authorization details array as part of a request to the Server.
   When receiving a relative formatted string (e.g. `"P30DT2H"`) from a Client's request for the field, as part of any Token Response and for any Grant created, the Server MUST convert that relative string into an absolute string (i.e. `absolute date` or `absolute datetime`) that is the Server's Grant creation time plus the duration of the relative string for the authorization details field.
   For [`statement_date_end`](#auth-details-statement-start), [`start_date`](#auth-details-bill-section-start), and [`segment_start`](#auth-details-usage-segment-start), relative dates and datetimes are subtracted from the Server's Grant creation time instead of added, meaning historical data will be included.
@@ -2862,7 +2862,7 @@ To support this authorization details field, the Authorization Details Field Obj
 
 Additionally, Servers MUST implement the following behavior to support this authorization details field:
 
-* Bill Section objects available under the scope for this authorization details field MUST have a `end_date` value that is equal to or before this field's value.
+* Bill Section objects available under the scope for this authorization details field MUST have an `end_date` value that is equal to or before this field's value.
   If the value of this field is a relative date (e.g. "P3Y"), the end date is set by taking the current date and adding the relative value (i.e. including future bill sections until the end date).
   If the value of this field is `"infinite"`, the end date is unbounded (i.e. all future bill sections are included).
 
@@ -2885,7 +2885,7 @@ Additionally, Servers MUST implement the following behavior to support this auth
   If the value of this field is a relative datetime (e.g. "P1Y"), the start datetime is set by taking the current datetime and subtracting the relative value (i.e. including historical usage starting on or after the start datetime).
   If the value of this field is `"infinite"`, the start datetime is unbounded (i.e. all available historical usage is included).
 * If a Usage Segment contains [Value Sets](#usage-segment-value-set-format) `values` that represent intervals that start on or after this field's value, the Server MUST create a new Usage Segment with `values` that contain only Value Sets representing intervals that start on or after this field's value.
-  For example, if the Server normally provides 30 day long Usage Segments with daily intervals (i.e. 30 Value Sets per Usage Segment), and the Client sets this field's value to start 10 days into a normal Usage Segment period, the Server MUST not provided access to the normal Usage Segment and instead create a Usage Segment that has the remaining 20 days worth of Value Sets as the Usage Segment's `values` and provide access to that trimmed Usage Segment.
+  For example, if the Server normally provides 30 day long Usage Segments with daily intervals (i.e. 30 Value Sets per Usage Segment), and the Client sets this field's value to start 10 days into a normal Usage Segment period, the Server MUST NOT provide access to the normal Usage Segment and instead MUST create a Usage Segment that has the remaining 20 days worth of Value Sets as the Usage Segment's `values` and provide access to that trimmed Usage Segment.
   This means that Clients will still be granted access to authorized interval data even if the normally provided Usage Segment is partially cut off by this field's value.
 
 #### 7.3.7. Usage Segment End <a id="auth-details-usage-segment-end" href="#auth-details-usage-segment-end" class="permalink">🔗</a>
@@ -2907,7 +2907,7 @@ Additionally, Servers MUST implement the following behavior to support this auth
   If the value of this field is a relative datetime (e.g. "P1YT23H"), the end datetime is set by taking the current datetime and adding the relative value (i.e. including future usage until the end datetime).
   If the value of this field is `"infinite"`, the end datetime is unbounded (i.e. all future usage is included).
 * If a Usage Segment contains [Value Sets](#usage-segment-value-set-format) `values` that represent intervals that end on or before this field's value, the Server MUST create a new Usage Segment with `values` that contain only Value Sets representing intervals that start on or after this field's value.
-  For example, if the Server normally provides 30 day long Usage Segments with daily intervals (i.e. 30 Value Sets per Usage Segment), and the Client sets this field's value to end 10 days from the end of a normal Usage Segment period, the Server MUST not provided access to the normal Usage Segment and instead create a Usage Segment that has the first 20 days worth of Value Sets as the Usage Segment's `values` and provide access to that trimmed Usage Segment.
+  For example, if the Server normally provides 30 day long Usage Segments with daily intervals (i.e. 30 Value Sets per Usage Segment), and the Client sets this field's value to end 10 days from the end of a normal Usage Segment period, the Server MUST NOT provide access to the normal Usage Segment and instead MUST create a Usage Segment that has the first 20 days worth of Value Sets as the Usage Segment's `values` and provide access to that trimmed Usage Segment.
   This means that Clients will still be granted access to authorized interval data even if the normally provided Usage Segment is partially cut off by this field's value.
 
 #### 7.3.8. Expires <a id="auth-details-expires" href="#auth-details-expires" class="permalink">🔗</a>
@@ -2925,7 +2925,7 @@ To support this authorization details field, the Authorization Details Field Obj
 
 Additionally, Servers MUST implement the following behavior to support this authorization details field:
 
-* When a Grant is created with this field as an authorization details field, provided that all scope and authorization details are valid, the Server MUST set to the Grant's `expires` value to this field's value.
+* When a Grant is created with this field as an authorization details field, provided that all scope and authorization details are valid, the Server MUST set the Grant's `expires` value to this field's value.
 * When the Grant expires, the Server MUST remove the Client's access that was provided by the Grant.
 
 ### 7.4. Other Fields <a id="auth-details-other" href="#auth-details-other" class="permalink">🔗</a>
@@ -2946,7 +2946,7 @@ To support this authorization details field, the Authorization Details Field Obj
 
 Servers MUST include an object for this authorization field in a Scope Description's `authorization_details_fields_supported` array when the [Scope](#scopes) definition lists multiple Selections as possible ways to render the Customer's resource selection in the authorization form.
 Servers MAY support any number of the possible Selection choices for a scope, but Servers MUST always support this authorization details field when supporting that scope.
-So even if a Server supports only one of the Selections listed as possibilities in a given scope definition in this specification, the Server MUST include this authorization details field in it's scope Description with one choice available and the default choice defined, so that the Client knows which Selection will be rendered in the authorization form the scope by default.
+So even if a Server supports only one of the Selections listed as possibilities in a given scope definition in this specification, the Server MUST include this authorization details field in its scope Description with one choice available and the default choice defined, so that the Client knows which Selection will be rendered in the authorization form the scope by default.
 
 When this authorization field is included in an authorization request, Servers MUST implement the following requirements:
 
@@ -2954,7 +2954,7 @@ When this authorization field is included in an authorization request, Servers M
 
 #### 7.4.2. Merge Selections <a id="auth-details-merge-selections" href="#auth-details-merge-selections" class="permalink">🔗</a>
 
-For some use cases, a Client may send authorization request that contains multiple scopes that are intended to be applied of the same selection of Customer accounts or service contracts.
+For some use cases, a Client may send an authorization request that contains multiple scopes that are intended to be applied to the same selection of Customer accounts or service contracts.
 For example, a demand response provided may need to request access to both interval energy usage intervals (e.g. the `cds_meter_usage` scope) and the Customer's rate plan (e.g. the `cds_rate_plan` scope), and the Client needs the list of Service Contracts for which the Customer authorizes to be the same.
 
 In these relevant use cases, Clients benefit from being able to have the Server "merge" [Selections](#selection-component) in the authorization form into a single Selection Component that constrains multiple scopes to the same set of resources (e.g. Service Contracts).
@@ -2978,11 +2978,11 @@ When this authorization field is included in an authorization request, Servers M
         * Matches MUST have the same Selection type to be rendered on the authorization form, so that the [Selection Component](#selection-component) can be unified.
         * Matches MUST have the same `purpose` value, if used, so that the [Purpose Component](#purpose-component) can be unified.
         * Matches MUST have the same `allow_scope_modifications`, if used, so that the Server can render the [Request Section](#auth-form-request) as editable or non-editable.
-        * For preselection authorization details fields that exist both in both match's Scope Description `authorization_details_fields_supported`, the field's object MUST have the same values, so that the field's value in the request has the same validation process for both scopes.
+        * For preselection authorization details fields that exist both in both matches' Scope Description `authorization_details_fields_supported` arrays, the field's object MUST have the same values, so that the field's value in the request has the same validation process for both scopes.
         * For preselection authorization details fields that only exist in one or the other Scope Descriptions `authorization_details_fields_supported`, the field's value in the request MUST be `null` or `null` by default, so that there is no preselection impact for combining the Scopes into a single Selection Component.
     * If a match does not pass validation, the Server MUST reject the authorization request with an `invalid_authorization_details` error.
     * If a match passes validation, the Server MUST render the [Request Section](#auth-form-request) for this field's scope and the matched scope as having a single Selection Component, such that the Customer only needs to select the resources in that Selection and those resources will be applied to all of the scopes grouped together via this authorization details field.
-    * Servers MUST support merging the any number of scopes together that reference each other via this authorization details field, so that Clients can group any number of scopes together into a single Selection Component for an authorization form.
+    * Servers MUST support merging any number of scopes together that reference each other via this authorization details field, so that Clients can group any number of scopes together into a single Selection Component for an authorization form.
 * When the field value is `null`, Servers MUST treat the scope for this authorization details field as an individually rendered [Request Section](#auth-form-request) with an individual Selection Component.
   This means that when a scope uses this authorization details field to reference another scope, that other scope MUST also have a non-`null` value for its `merge_selection_with` authorization details field.
 
@@ -3020,9 +3020,9 @@ For scopes where the Scope Description's `response_types_supported` array is emp
 #### 7.4.4. Purpose Identifier <a id="auth-details-purpose" href="#auth-details-purpose" class="permalink">🔗</a>
 
 For some use cases, a Client may need to disclose to the Customer the purpose or restrictions for an authorization request.
-For example, a energy upgrade contractor may need to let the Customer know that their historical energy usage data will only be used for the purposes of calculating the feasibility of various energy efficiency upgrade projects.
+For example, an energy upgrade contractor may need to let the Customer know that their historical energy usage data will only be used for the purposes of calculating the feasibility of various energy efficiency upgrade projects.
 
-These disclosures of purpose and data use can be included included in the Authorization Form's [Purpose Component](#purpose-component), and this section defines an authorization details field that the Client can use to configure which [Purpose Object](#purpose-format) to use when rendering the Purpose Component.
+These disclosures of purpose and data use can be included in the Authorization Form's [Purpose Component](#purpose-component), and this section defines an authorization details field that the Client can use to configure which [Purpose Object](#purpose-format) to use when rendering the Purpose Component.
 
 To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:
 
@@ -3058,7 +3058,7 @@ Servers MUST NOT include an object for this authorization field in a Scope Descr
 When this authorization field is included in an authorization request, Servers MUST implement the following requirements:
 
 * When the field value is `true`, Servers MAY render authorization form presented to the Customer as editable, meaning that the Customer MAY modify the requested scope or authorization details values within the authorization form and then authorize that modified scope.
-* When this field value is `false`, Servers MUST render the authorization from presented to the Customer as non-editable, meaning that the Customer MUST be able to only authorize or decline the authorization request as a whole and cannot modify the requested scope.
+* When this field value is `false`, Servers MUST render the authorization form presented to the Customer as non-editable, meaning that the Customer MUST be able to only authorize or decline the authorization request as a whole and cannot modify the requested scope.
 
 If the Server supports the ability for a Customer to modify the requested Scope in the [Authorization Form](#auth-form), the Server MUST include this authorization details field for all Scopes that may be used for that Authorization Form.
 This means that in this situation, Servers MUST support a Client's ability to toggle the ability for a Customer to edit their authorization request.
@@ -3084,7 +3084,7 @@ This specification extends the CDS's Client modification API [[CDS-WG1-02 Sectio
     * The Server MUST ignore any removal or modifications to default [Purpose](#purpose-format) objects that are included by the Server by default.
     * The Server MUST ignore any changes to Purpose object `id` or `scopes_supported` values.
     * If a Purpose is currently included in the Client's `cds_purposes` object, but the request does not include that Purpose and the Purpose is not a Server default, the Server MUST treat this as the Client requesting to remove the Purpose and the Server MUST remove the Purpose from the Client's `cds_purposes` object.
-    * For included Purpose objects with unknown `id` values, the Server MUST treat that Purpose object as a new Purpose object and assign a Server-generated `id` value and assign applicable `scopes_supported`, ignoring the values submitted submitted for `id` and `scopes_supported` in the request.
+    * For included Purpose objects with unknown `id` values, the Server MUST treat that Purpose object as a new Purpose object and assign a Server-generated `id` value and assign applicable `scopes_supported`, ignoring the values submitted for `id` and `scopes_supported` in the request.
       This allows Clients to request to add new Purposes.
       If the Server requires an asynchronous review of added Purposes, the Server MUST follow the asynchronous procedure defined in [[CDS-WG1-02 Section 5.5](#ref-cds-wg1-02-modifying-clients)].
 
@@ -3118,7 +3118,7 @@ Servers MAY add additional functionality beyond the requirements defined in this
 These requirements are intended to help clarify and streamline the request handling and user interface aspects of the Customer authorization process, so that Servers can start with a base set of functionality onto which they can build their implementations and do not have to figure out the entire authorization process from scratch.
 
 If the Server has regulatory or government requirements that directly conflict with Customer Authorization requirements in this specification, the Server MUST implement the regulatory or government requirements instead of the requirements in this specification.
-If the regulatory or government requirements only partially or incidentally conflicts with requirements in this specification, it is RECOMMENDED that the Server implement functionality that is close to and in the spirit of the requirements of this specification while still remaining in compliance with their regulatory or government requirements.
+If regulatory or government requirements only partially conflict with requirements in this specification, it is RECOMMENDED that the Server implement functionality that is close to and in the spirit of the requirements of this specification while still remaining in compliance with their regulatory or government requirements.
 For example, if government regulations for a Server require that the Header Section include the Customer always go through the authentication process for each authorization request (e.g. have to login each time they try to load the authorization form), then the Server MUST disregard the requirement in this specification for a retained authenticated session for at least 10 minutes, but instead the Server could implement a feature where they retain the Customer's username so that field is prefilled when the Customer tries to load the Authorization Form multiple times.
 
 ### 9.1. Authorization Process <a id="auth-process" href="#auth-process" class="permalink">🔗</a>
@@ -3131,7 +3131,7 @@ This specification only defines requirements for Servers when implementing the A
 
 The first step of the OAuth Authorization Code Grant flow is the Authorization Request [[RFC 6749 Section 4.1.1](#ref-rfc6749-auth-request)], where the authorizing user (i.e. Customer in this specification) opens a URL to the Server's Authorization Endpoint [[RFC 6749 Section 3.1](#ref-rfc6749-auth-endpoint)].
 
-When a authorization request is received by a Server, the Server MUST implement the following:
+When an authorization request is received by a Server, the Server MUST implement the following:
 
 * Upon receiving an authorization request, prior to the [Customer Authentication](#customer-authentication) process, the Server MUST:
     * Validate at least the following URL parameters:
@@ -3152,7 +3152,7 @@ When a authorization request is received by a Server, the Server MUST implement 
     * Determine if the [Authorization Form](#auth-form) requires [Customer Authentication](#customer-authentication).
       Customer Authentication MUST be required when the Authorization Form will render with Customer details that are sourced from a confidential dataset, such as rendering the Customer's full list of accounts in the [Account Selection](#account-selection).
       Customer Authentication MAY not be required if the Authorization Form is only rendering information that is provided by the Client, such as the `client_name` and any prefilled fields (e.g. [`account_numbers`](#auth-details-account-numbers)).
-      It is RECOMMENDED that Customer Authentication is required when the Server has the ability to authenticate the Customer (e.g. when the Server is integrated wit a utility's Single Sign-On (SSO)) and the Server has access to render the Customer's list of resources for the [Selection Component](#selection-component) of the Authorization.
+      It is RECOMMENDED that Customer Authentication is required when the Server has the ability to authenticate the Customer (e.g. when the Server is integrated with a utility's Single Sign-On (SSO)) and the Server has access to render the Customer's list of resources for the [Selection Component](#selection-component) of the Authorization.
         * If Customer Authentication is required, the Server MUST follow the [Customer Authentication](#customer-authentication) process.
         * If Customer Authentication is not required, the Server MUST skip the Customer Authentication process and proceed to rendering the Authorization Form.
 * If the User completes the Customer Authentication process and is now authenticated as a Customer, the Server MUST:
@@ -3170,7 +3170,7 @@ When a authorization request is received by a Server, the Server MUST implement 
     * If the Server has the ability to contact the Customer, send the Customer an [Authorization Receipt](#auth-receipt).
     * If the Customer has an associated online profile or user account, include in the Customer's authenticated interface (e.g. their user settings) a location where the Customer can open and view the [Authorization Receipt](#auth-receipt) for the Grant.
     * Redirect the Customer back to the Client's `redirect_uri` with an Authorization Response as defined in [[RFC 6749 Section 4.1.2](#ref-rfc6749-auth-response)].
-* If the authorization request's `redirect_uri` paramter is the Server's default `redirect_uri` value that is created by the Server as part of the Client object setup [[CDS-WG1-02 Section 4.2](#ref-cds-wg1-02-registration-response)], the Server will end up redirecting the User to a Server controlled endpoint and not to the Client's interfaces.
+* If the authorization request's `redirect_uri` parameter is the Server's default `redirect_uri` value that is created by the Server as part of the Client object setup [[CDS-WG1-02 Section 4.2](#ref-cds-wg1-02-registration-response)], the Server will end up redirecting the User to a Server controlled endpoint and not to the Client's interfaces.
   This means that the User will end their authorization process without being redirected back to the Client's interface with success (e.g. `code=...`) or error (e.g. `error=...`) parameters, and the Client will not know the outcome of the authorization request.
   This result is expected behavior, be Client deliberately set the authorization request `redirect_uri` parameter to the Server's default `redirect_uri` value, meaning they knew that the User would not be redirected back to the Client's interfaces and instead be redirected to the Server's default redirect interfaces.
   Thus, when the authorization request's `redirect_uri` parameter is set to the Server's default `redirect_uri` value, the Server MUST implement the following:
@@ -3178,18 +3178,18 @@ When a authorization request is received by a Server, the Server MUST implement 
       This allows the Customer to view a confirmation of their authorization approval.
     * If the redirect contains error parameters (e.g. `error=...`), the Server MUST render and show the User the [Default Redirect Error](#default-redirect-error) page.
     * The Server MUST allow the Client to use their Client with the Grant Admin Scope to obtain an `access_token` that is able to access the Grant's enabled scope as required in [[CDS-WG1-02 Section 3.3.2](#ref-cds-wg1-02-grant-admin)].
-      This is how Client's will be able access Customer authorized data when the Server's default `redirect_uri` is used.
+      This is how Clients will be able access Customer authorized data when the Server's default `redirect_uri` is used.
       Additionally, if the Client included a `state` parameter in the authorization request, the Client can query for the Grant, if any, that was created or updated as a result of the authorization request by querying the Grants API listing endpoint with the `states` request parameter, which filters for Grants with matching `states` values [[CDS-WG1-02 Section 8.5](#ref-cds-wg1-02-grant-list)].
       Alternatively, if the Customer provides a Client with their [Authorization Receipt](#auth-receipt) confirmation number, and the Client can query the Grants API listing endpoint with the `receipt_confirmations` request parameter to get the Grant that is associated with the Authorization Receipt confirmation number.
 
 #### 9.1.2. Customer Authentication <a id="customer-authentication" href="#customer-authentication" class="permalink">🔗</a>
 
-Because the OAuth authorization process can be initiated by unauthenticated users (e.g. a Customer clicking on the authorization request URL in a Client app), Servers MAY authenticate the user as a Customer before rendering the [Authorization Form](#auth-form).
+Because the OAuth authorization process can be initiated by unauthenticated Users (e.g. a Customer clicking on the authorization request URL in a Client app), Servers MAY authenticate the User as a Customer before rendering the [Authorization Form](#auth-form).
 
-The actual processes and methods of authenticating Customers is outside the scope of this specification.
-So, for the purposes of defining the requirements in this section, when the Server needs to authenticate a user as a Customer, it is assumed that they will "redirect" the user to an authentication provider.
-The term "redirect" in this context means user is shown the start of an authentication process that they can follow to verify their identity as a Customer.
-Then, when the user has been authenticated as a Customer, the authentication provider will "redirect" the Customer back to the Server, and it is assumed that the Server has some means of determining which Customer has been authenticated.
+The actual processes and methods of authenticating Customers is outside of the scope of this specification.
+So, for the purposes of defining the requirements in this section, when the Server needs to authenticate a User as a Customer, it is assumed that they will "redirect" the User to an authentication provider.
+The term "redirect" in this context means the User MAY be shown the start of an authentication process that they can follow to verify their identity as a Customer, if they have not already been authenticated by the authentication provider.
+Then, when the User has been authenticated as a Customer, the authentication provider will "redirect" the Customer back to the Server, and it is assumed that the Server has some means of determining which Customer has been authenticated.
 This "redirect" is dependent on the authentication process, which could be an actual HTTP redirect (i.e. `302 Found` response), or some other means of presenting and completing the authentication process (e.g. using an iframe popup or embedded resource with events instead of page redirects).
 
 Given the assumptions in the previous paragraph, the Server MUST implement the following when needing to complete the Customer Authentication process as defined in handling [Authorization Requests](#auth-requests):
@@ -3197,7 +3197,7 @@ Given the assumptions in the previous paragraph, the Server MUST implement the f
 * If the Server can immediately authenticate the User as a Customer (e.g. the User has an authenticated session cookie), and the authentication is still valid, based on session timeout and policy requirements, the Server MUST continue on to the next step of the request handling process with the Customer as authenticated.
 * If the Server cannot immediately authenticate the User as a Customer (e.g. because the User does not have a session or the User's session has expired), the Server MUST redirect the User to the start of the authentication process.
   Which authentication processes are used is outside of the scope of this specification, so the following examples of common authentication processes are not endorsements of preference:
-    * Integration with an Identify Provider (IdP) using OpenID Connect (OIDC) for a Single Sign-On (SSO) process
+    * Integration with an Identity Provider (IdP) using OpenID Connect (OIDC) for a Single Sign-On (SSO) process
     * Using contact information, such as phone or email, to send a One-Time Passcode (OTP) to verify the Customer's identity
 * If the User is unable to successfully complete the authentication process (e.g. can't remember their password), the authentication process SHOULD have a way for the User to decline to continue (e.g. click "Cancel") or be automatically redirected back (e.g. after too many failed login attempts) to the Server, so that the Server knows that the authentication process failed.
     * When the Server receives a redirect back from an authentication process indicating that the authentication process did not complete, the Server MUST redirect the User back to the Client's `redirect_uri` with an `access_denied` error as defined in [[RFC 6749 Section 4.1.2.1](#ref-rfc6749-error-response)].
@@ -3314,7 +3314,7 @@ sequenceDiagram
             SERVER ->> SERVER: GO TO "Customer needs<br/>to be authenticated"
         end
 
-        alt (d) Preslection decline
+        alt (d) Preselection decline
             USER_AGENT ->> SERVER: POST decline choice
             SERVER -->>+ USER_AGENT: 302 redirect to redirect_uri with error
             USER_AGENT ->>- CLIENT: GET redirect_uri with error
@@ -3390,7 +3390,7 @@ The following are requirements the Server MUST implement for the Authorization F
   The Server MAY navigate the Customer away from the Authorization Form in order to perform optional functionality (e.g. submitting a message to the Server's technical support team), as long as the Customer is returned to the Authorization Form after the optional task is completed.
 * For any links or buttons on the Authorization Form that navigate the Customer away from the Authorization Form (e.g. linking to the Terms and Conditions), the Server MUST configure them to open in a new tab or window so that the Customer does not lose their place on the Authorization Form.
 * If the Server does not require the Customer to initially be authenticated in order to complete the Authorization Form, the Server MUST NOT include any confidential information about the Customer in the Authorization Form, unless the information is included as part of the Client's authorization request parameters.
-  This is to prevent Customer Data or confidential information from being show to anyone except an authenticated Customer before the Customer has authorized access.
+  This is to prevent Customer Data or confidential information from being shown to anyone except an authenticated Customer before the Customer has authorized access.
   For example, if the authorization request Scope(s) include an [`"account_numbers"`](#auth-details-account-numbers) preselection field that list some Customer account numbers, in the [Account Selection](#account-selection) the Server MUST only render the included preselected Account numbers, MUST NOT show whether those Account numbers are valid, and MUST NOT include Customer details it may have on file for those Account numbers (e.g. address, contact name, etc.).
 * If the Server does not require the Customer to initially be authenticated in order to view the Authorization Form, the Server MUST collect the Customer's contact information as defined in the [Closing Section](#auth-form-closing) and verify that contact information as defined in the [Approval Section](#auth-form-approval) so that it can send the Customer an [Authorization Receipt](#auth-receipt).
 
@@ -3614,21 +3614,21 @@ The Closing Section of the Authorization Form is where the Server includes any o
 The following are requirements and recommendations for the Server when implementing the Closing Section:
 
 * The Server MUST only include content that is required for the Customer to review or complete in order to approve the authorization request.
-  This means that the Server MUST NOT include optional content or form fields, such as surveys or other distracting features that reduces the streamlined and focused nature of the Authorization Form.
+  This means that the Server MUST NOT include optional content or form fields, such as surveys or other distracting features that reduce the streamlined and focused nature of the Authorization Form.
   For example, a Server could include a required checkbox requiring the Customer to agree to the Server's terms and conditions for data sharing, but the Server could not include a field asking for the Customer to provide the square footage of their home as part of a survey on building attributes.
 * If the Server supports a Customer modifying the requested Scopes, the Server MUST dynamically update the content or requirements of the Closing Section to reflect the required content or requirements for the modified Scopes and selections that the Customer has made.
   For example, if some content of the Closing Section was a required disclosure for a specific Scope in a Request Section, and the Customer clicked to remove that Request Section, then the related content in the Closing Section is no longer required and the Server MUST remove it when the Request Section is removed.
-* The Server MAY include disclosures or requirements that is required in some cases, but not all cases, based on the Authorization Form's Requester Section and Requests Container.
-  However, it is RECOMMENDED that the Server attempt to not include this content when it is able to know with certainty that the content or requirements are not required.
+* The Server MAY include disclosures or requirements that are required in some cases, but not all cases, based on the Authorization Form's Requester Section and Requests Container.
+  However, it is RECOMMENDED that the Server attempts to not include this content when it is able to know with certainty that the content or requirements are not required.
   For example, if the Client is requesting access to the [Account List](#scope-account-list) for a large commercial Customer, and sometimes those details can take a few hours to compile, the Server could include a disclosure to the Customer that it is possible that their data sharing may be delayed in some cases.
-* If the Server may need may end up needing some additional requirements to complete the data sharing process for some cases, but not all cases, the Server MAY include those requirements as optional in the Closing Section.
-  However, it is RECOMMENDED that the Server attempt to not include these potential requirements when it is able to know with certainty that the requirements to not apply to the Client or Customer.
-  For example, if the Client is requesting [Meter Usage](#scope-meter-usage) from a local city government Customer, and sometimes for special facilities such as police departments the Server requires an extra form to be signed to release data, the Server could include a file attachment option for government Customers to attach the signed release form if they already know they need to included it.
+* If the Server may end up needing some additional requirements to complete the data sharing process for some cases, but not all cases, the Server MAY include those requirements as optional in the Closing Section.
+  However, it is RECOMMENDED that the Server attempts to not include these potential requirements when it is able to know with certainty that the requirements do not apply to the Client or Customer.
+  For example, if the Client is requesting [Meter Usage](#scope-meter-usage) from a local city government Customer, and sometimes for special facilities such as police departments the Server requires an extra form to be signed to release data, the Server could include a file attachment option for government Customers to attach the signed release form if they already know they need to include it.
 * If the Server is required to include long blocks of content in the Closing Section, the Server MUST embed the long blocks in independently scrolling blocks on the page so that the Customer does not have to scroll for long periods of time if they need to scroll back and forth between Sections as they review the Authorization Form.
   For example, if a Server is required to include a long set of terms and conditions in the Authorization Form page itself, the Server MUST include that content in an independent scrolling block.
 * If the Server does not currently have access to the Customer's contact information, such as email or phone number, and the Server has a requirement of sending the Customer an [Authorization Receipt](#auth-receipt), the Server MAY include an inline request for contact information in the Closing Section.
   When rendering the request for contact information, the Server MUST communicate that the contact information will only be used to send the Customer a receipt and notify them about any changes to this authorization, so if the Customer changes their mind in the future, they can use the receipt to cancel their authorization.
-  The Server and any entity for which the Authorization Form is branded MUST NOT use the collected contact information for other purpose beyond communicating with the Customer about the authorization, such as advertising utility programs or sharing with other entities for mailing list inclusion, except in cases where there is a regulatory or legal requirement.
+  The Server and any entity for which the Authorization Form is branded MUST NOT use the collected contact information for other purposes beyond communicating with the Customer about the authorization, such as advertising utility programs or sharing with other entities for mailing list inclusion, except in cases where there is a regulatory or legal requirement.
   If the Server or entity for which the Authorization Form is branded has a regulatory or legal requirement for obtaining contact information for purposes outside of strictly communicating about the authorization, the Server MUST communicate to the Customer what these other purposes are when requesting the contact information.
   If the Server is collecting the contact information in order to be able to send an unauthenticated Customer an [Authorization Receipt](#auth-receipt), the contact information collected MUST be able to be verified before an approved authorization is finalized, so the Server MUST only ask for contact information that the Server can verify immediately, such as email or phone number, and not other non-immediately verifiable information, such as address.
 
@@ -3650,7 +3650,7 @@ The following are requirements and recommendations for the Server when implement
       However, if additional steps are not explicitly required by the Server's regulatory or legal jurisdictions, the Server MUST NOT include any additional steps.
       For example, if the Server is not explicitly required by regulatory or legal requirements to add an e-signature step, they cannot add a step where the Customer gets redirected to an e-signature pdf document to complete after they select to approve the authorization request.
     * If the Server has not already authenticated the Customer, and the Customer selects to approve the authorization request, the Server MUST verify the Customer's contact information collected in the [Closing Section](#auth-form-closing) with the following requirements:
-        * The Server MUST immediately verify the Customer's provided contaction information, prior to processing the Customer's approval.
+        * The Server MUST immediately verify the Customer's provided contact information, prior to processing the Customer's approval.
           Which contact information verification process is used is outside of the scope of this specification, so the following examples of common authentication processes are not endorsements of preference:
             * Sending a One-Time Passcode (OTP) to the provided contact email and on the Authorization Form showing a popup modal that asks to enter the OTP digits.
             * Sending a One-Time Passcode (OTP) to the provided contact mobile phone number and on the Authorization Form a showing popup modal asking to enter the OTP digits.
@@ -3670,8 +3670,8 @@ The following are requirements and recommendations for the Server when implement
 
 * The Server MUST include a link to allow the Customer to reauthenticate and then reload the Authorization Form as the new authenticated Customer.
   This allows Customers who have multiple user accounts, which is common with large enterprise Customers, to switch which account they are using for the Authorization Form.
-* It is RECOMMENDED that the Server link to or otherwise add the ability to contact the customer support of the Server or entity that for which the Authorization Form is branded.
-* It is RECOMMENDED that the Server link to the terms of service and privacy policies of the Server or entity that for which the Authorization Form is branded.
+* It is RECOMMENDED that the Server links to or otherwise add the ability to contact the customer support of the Server or entity for which the Authorization Form is branded.
+* It is RECOMMENDED that the Server links to the terms of service and privacy policies of the Server or entity for which the Authorization Form is branded.
 
 #### 9.2.2. Authorization Form Components <a id="auth-form-components" href="#auth-form-components" class="permalink">🔗</a>
 
@@ -3686,11 +3686,11 @@ The following are requirements and recommendations for the Server when implement
   The Server MUST NOT use terminology or language, when communicating what types of data to the Customer, that the Customer is not likely to understand.
   The Server MAY use different terminology or language depending on the type of Customer, since some Customers could have more sophisticated knowledge of what each type of data is.
   For example, if the Client is requesting access to a residential Customer's Usage Segments, the Customer is unlikely to understand what a "Usage Segment" is (because that is a term specific to this specification and not widely known by homeowners), so the Server MUST change the term used to something more familiar to the Customer, such as "access to your meter's usage data."
-* When the Scope(s) provide access to many types of data (e.g. multiple object types and data fields are included), the Server MUST communicate an succinct summary of the types of data and also include an informational toggle that the Customer can select to learn more about the details and specifics of the access.
+* When the Scope(s) provide access to many types of data (e.g. multiple object types and data fields are included), the Server MUST communicate a succinct summary of the types of data and also include an informational toggle that the Customer can select to learn more about the details and specifics of the access.
   This is to prevent the Customer from being overwhelmed by a long list of data fields and not understanding the overall summary of what these data fields represent.
-  For example, if a Client requests access to a Customer's Account details using the `cds_accounts` Scope plus the `include_account_details` and `include_account_programs` authorization details field, the Server could render the summary as a the short phrase "access to your list of accounts, including your address and utility programs you've signed up for [see details]", were the `[see details]` toggle could open an expanded section with the list of specific data fields that will be included.
+  For example, if a Client requests access to a Customer's Account details using the `cds_accounts` Scope plus the `include_account_details` and `include_account_programs` authorization details field, the Server could render the summary as a the short phrase "access to your list of accounts, including your address and utility programs you've signed up for [see details]", where the `[see details]` toggle could open an expanded section with the list of specific data fields that will be included.
 * For the details section linked to or opened by the informational toggle, the Server MUST disclose the data fields included using terminology and language the Customer is likely to understand and not only the field names defined in this specification.
-  Additionally, the Server MUST include an example of what those data fields could be, so that Customer can better understand to what information they are providing access.
+  Additionally, the Server MUST include an example of what those data fields could be, so that Customers can better understand to what information they are providing access.
 * When multiple Scopes have been merged into the same Request Section, it is RECOMMENDED that the Data Component be rendered as a list of the overall categories of data to be included, rather than a multiple line paragraph, that communicates the summary of types of data being requested.
 
 ##### 9.2.2.2. Duration Component <a id="duration-component" href="#duration-component" class="permalink">🔗</a>
@@ -3718,7 +3718,7 @@ The following are requirements and recommendations for the Server when implement
   If the `segment_end` value ends immediately (e.g. `PT0S`), the Server MUST communicate that the access will only be for historical usage data but not any data going forward.
 * For the Scope [`cds_aggregation_consent`](#scope-aggregation-inclusion), the Server MUST communicate for how long the authorization will be valid (i.e. when the [`expires`](#auth-details-expires) authorization details field is set to end).
   If the `expires` value is `"infinite"`, the Server MUST communicate that the authorization will continue to be valid until the Customer chooses to stop it in their settings.
-  If the `expires` value ends immediately (e.g. `PT0S`), the Server MUST communicate that the authorization is only be for the current request, and the Customer will need to authorize again if the Client needs updates in the future.
+  If the `expires` value ends immediately (e.g. `PT0S`), the Server MUST communicate that the authorization is only for the current request, and the Customer will need to authorize again if the Client needs updates in the future.
 * If there are multiple Scopes merged into the Request Section and those Scopes have the same duration (e.g. the same `sync_until`), the Server MUST combine the communications for the duration of each Scope into a single statement.
   For example, if the Client is requesting 3 years of access to both the `cds_meters` and `cds_accounts` Scopes (i.e. `sync_until` is set to `P3Y` for both Scopes), the Server could render a statement such as "Access to your meter and account details for 3 years", but could not render this duration as two separate statements (e.g. "Access to your meter details for 3 years" and "Access to your account details for 3 years").
 * If the Scope(s) included in the Request Section have multiple durations, it is RECOMMENDED that the Server render the the Duration Component be rendered as a list of statements, rather than a multiple line paragraph, that communicates the summary of types of data being requested.
@@ -3745,8 +3745,8 @@ The following are requirements and recommendations for the Server when implement
 * The Server MUST set a maximum height of 10 lines of text for the block where the Purpose's `content` will be rendered.
   If the Purpose's `content` exceeds this maximum, including any wrapped text and `related_uri` link, the Server MUST configure the block to be independently scrolling in the vertical direction.
 * If rendering the Authorization Form as HTML, the Server MUST implement the following requirements:
-    * The Server MUST set the rendered Purpose's `content` as having a CSS values of `white-space: pre-wrap;`, so that line breaks and indentations in the content are rendered appropriately.
-    * The Server MUST set the rendered Purpose's `content` as having a CSS values of `word-break: break-word;`, so that very long words do not overflow horizontally.
+    * The Server MUST set the rendered Purpose's `content` as having a CSS value of `white-space: pre-wrap;`, so that line breaks and indentations in the content are rendered appropriately.
+    * The Server MUST set the rendered Purpose's `content` as having a CSS value of `word-break: break-word;`, so that very long words do not overflow horizontally.
     * The Server MUST set the rendered Purpose's `content` as having a CSS value of `overflow: scroll;`, so that the block becomes independently scrolling if the content is too long.
 
 #### 9.2.3. Authorization Form Selections <a id="auth-form-selections" href="#auth-form-selections" class="permalink">🔗</a>
@@ -3768,7 +3768,7 @@ The Server MUST implement the following to support the Account Selection type:
             * If the Server has access to the Account's display name as the Customer would see it in their online profile, the Server MUST display that value.
             * If the Server has access to the Account's `account_address`, the Server MUST display that value.
         * The Server MAY include other values for the entries, such as primary contact or number of services under the Account.
-        * The Server MUST allow the Customer to select and deselect individual Account entries that will be subject the the Scope(s).
+        * The Server MUST allow the Customer to select and deselect individual Account entries that will be subject to the Scope(s).
         * The Server MUST include the ability for the Customer to select or deselect all Account entries.
         * The Server MUST include the ability for the Customer to select and deselect the option to include future Accounts added under the Customer's control.
         * If there are more than 10 Account entries, the Server MUST implement the following requirements:
@@ -3784,10 +3784,10 @@ The Server MUST implement the following to support the Account Selection type:
     * If the Server does not have access to the list of the Customer's [Accounts](#account-format), the Server MUST implement the following:
         * The Server MUST include the ability for a Customer to manually enter one or more Account `account_number` values for which the Scope(s) will apply.
         * If the Scope(s) include the [`"account_numbers"`](#auth-details-account-numbers) preselection field, the Server MUST initially populate the list of added Accounts with the `account_numbers` values.
-          The `account_numbers` preslection values include `"_all"`, the Server MUST populate the list with an entry communicating that all applicable Accounts will be selected.
-          The `account_numbers` preslection values include `"_include_future"`, the Server MUST populate the list with an entry communicating that Accounts added in the future will also have the Scope(s) applied.
-        * The Server MAY include the ability for a Customer upload a document containing the list of Account `account_number` values for which the Scope(s) will apply.
-        * The Server MAY include the ability for a Customer connect another online profile to the Request Section from which the Server can pull the list of Account `account_number` values.
+          The `account_numbers` preselection values include `"_all"`, the Server MUST populate the list with an entry communicating that all applicable Accounts will be selected.
+          The `account_numbers` preselection values include `"_include_future"`, the Server MUST populate the list with an entry communicating that Accounts added in the future will also have the Scope(s) applied.
+        * The Server MAY include the ability for a Customer to upload a document containing the list of Account `account_number` values for which the Scope(s) will apply.
+        * The Server MAY include the ability for a Customer to connect another online profile to the Request Section from which the Server can pull the list of Account `account_number` values.
 
 ##### 9.2.3.2. Service Contract Selection <a id="contract-selection" href="#contract-selection" class="permalink">🔗</a>
 
@@ -3805,7 +3805,7 @@ The Server MUST implement the following to support the Service Contract Selectio
             * If the Server has access to the Service Contract's display name as the Customer would see it in their online profile, the Server MUST display that value.
             * If the Server has access to the Service Contract's `contract_address`, the Server MUST display that value.
         * The Server MAY include other values for the entries, such as rate plan under the Service Contract.
-        * The Server MUST allow the Customer to select and deselect individual Service Contract entries that will be subject the the Scope(s).
+        * The Server MUST allow the Customer to select and deselect individual Service Contract entries that will be subject to the Scope(s).
         * The Server MUST include the ability for the Customer to select or deselect all Service Contract entries.
         * The Server MUST include the ability for the Customer to select and deselect the option to include future Service Contracts added under the Customer's control.
         * If there are more than 10 Service Contract entries, the Server MUST implement the following requirements:
@@ -3821,10 +3821,10 @@ The Server MUST implement the following to support the Service Contract Selectio
     * If the Server does not have access to the list of the Customer's [Service Contracts](#service-contract-format), the Server MUST implement the following:
         * The Server MUST include the ability for a Customer to manually enter one or more Service Contract `contract_number` values for which the Scope(s) will apply.
         * If the Scope(s) include the [`"contract_numbers"`](#auth-details-contract-numbers) preselection field, the Server MUST initially populate the list of added Service Contracts with the `contract_numbers` values.
-          The `contract_numbers` preslection values include `"_all"`, the Server MUST populate the list with an entry communicating that all applicable Service Contracts will be selected.
-          The `contract_numbers` preslection values include `"_include_future"`, the Server MUST populate the list with an entry communicating that Service Contracts added in the future will also have the Scope(s) applied.
-        * The Server MAY include the ability for a Customer upload a document containing the list of Service Contract `contract_number` values for which the Scope(s) will apply.
-        * The Server MAY include the ability for a Customer connect another online profile to the Request Section from which the Server can pull the list of Service Contract `contract_number` values.
+          The `contract_numbers` preselection values include `"_all"`, the Server MUST populate the list with an entry communicating that all applicable Service Contracts will be selected.
+          The `contract_numbers` preselection values include `"_include_future"`, the Server MUST populate the list with an entry communicating that Service Contracts added in the future will also have the Scope(s) applied.
+        * The Server MAY include the ability for a Customer to upload a document containing the list of Service Contract `contract_number` values for which the Scope(s) will apply.
+        * The Server MAY include the ability for a Customer to connect another online profile to the Request Section from which the Server can pull the list of Service Contract `contract_number` values.
 
 ##### 9.2.3.3. Service Point Selection <a id="servicepoint-selection" href="#servicepoint-selection" class="permalink">🔗</a>
 
@@ -3841,7 +3841,7 @@ The Server MUST implement the following to support the Service Point Selection t
             * If the Server has access to the Service Point's display name as the Customer would see it in their online profile, the Server MUST display that value.
             * If the Server has access to the Service Point's `servicepoint_address`, the Server MUST display that value.
         * The Server MAY include other values for the entries, such as [Premise](#premise-format) `premise_number` under the Service Point.
-        * The Server MUST allow the Customer to select and deselect individual Service Point entries that will be subject the the Scope(s).
+        * The Server MUST allow the Customer to select and deselect individual Service Point entries that will be subject to the Scope(s).
         * The Server MUST include the ability for the Customer to select or deselect all Service Point entries.
         * If there are more than 10 Service Point entries, the Server MUST implement the following requirements:
             * The Server MUST include the ability for the Customer to search for specific Service Points by their `servicepoint_number`, name (if displayed), and address (if displayed).
@@ -3855,9 +3855,9 @@ The Server MUST implement the following to support the Service Point Selection t
     * If the Server does not have access to the list of the Customer's [Service Points](#service-point-format), the Server MUST implement the following:
         * The Server MUST include the ability for a Customer to manually enter one or more Service Point `servicepoint_number` values for which the Scope(s) will apply.
         * If the Scope(s) include the [`"servicepoint_numbers"`](#auth-details-servicepoint-numbers) preselection field, the Server MUST initially populate the list of added Service Points with the `servicepoint_numbers` values.
-          The `servicepoint_numbers` preslection values include `"_all"`, the Server MUST populate the list with an entry communicating that all applicable Service Points will be selected.
-        * The Server MAY include the ability for a Customer upload a document containing the list of Service Point `servicepoint_number` values for which the Scope(s) will apply.
-        * The Server MAY include the ability for a Customer connect another online profile to the Request Section from which the Server can pull the list of Service Point `servicepoint_number` values.
+          The `servicepoint_numbers` preselection values include `"_all"`, the Server MUST populate the list with an entry communicating that all applicable Service Points will be selected.
+        * The Server MAY include the ability for a Customer to upload a document containing the list of Service Point `servicepoint_number` values for which the Scope(s) will apply.
+        * The Server MAY include the ability for a Customer to connect another online profile to the Request Section from which the Server can pull the list of Service Point `servicepoint_number` values.
 
 ##### 9.2.3.4. Meter Device Selection <a id="meter-selection" href="#meter-selection" class="permalink">🔗</a>
 
@@ -3873,7 +3873,7 @@ The Server MUST implement the following to support the Meter Device Selection ty
             * The Server MUST display the Meter Device's `meter_type`.
             * If the Server has access to the Meter Device's display name as the Customer would see it in their online profile, the Server MUST display that value.
         * The Server MAY include other values for the entries, such as the currently related Service Contract `contract_number`.
-        * The Server MUST allow the Customer to select and deselect individual Meter Device entries that will be subject the the Scope(s).
+        * The Server MUST allow the Customer to select and deselect individual Meter Device entries that will be subject to the Scope(s).
         * The Server MUST include the ability for the Customer to select or deselect all Meter Device entries.
         * If there are more than 10 Meter Device entries, the Server MUST implement the following requirements:
             * The Server MUST include the ability for the Customer to search for specific Meter Devices by their `meter_number` and name (if displayed).
@@ -3887,9 +3887,9 @@ The Server MUST implement the following to support the Meter Device Selection ty
     * If the Server does not have access to the list of the Customer's [Meter Devices](#meter-device-format), the Server MUST implement the following:
         * The Server MUST include the ability for a Customer to manually enter one or more Meter Device `meter_number` values for which the Scope(s) will apply.
         * If the Scope(s) include the [`"meter_numbers"`](#auth-details-meter-numbers) preselection field, the Server MUST initially populate the list of added Meter Devices with the `meter_numbers` values.
-          The `meter_numbers` preslection values include `"_all"`, the Server MUST populate the list with an entry communicating that all applicable Meter Devices will be selected.
-        * The Server MAY include the ability for a Customer upload a document containing the list of Meter Device `meter_number` values for which the Scope(s) will apply.
-        * The Server MAY include the ability for a Customer connect another online profile to the Request Section from which the Server can pull the list of Meter Device `meter_number` values.
+          The `meter_numbers` preselection values include `"_all"`, the Server MUST populate the list with an entry communicating that all applicable Meter Devices will be selected.
+        * The Server MAY include the ability for a Customer to upload a document containing the list of Meter Device `meter_number` values for which the Scope(s) will apply.
+        * The Server MAY include the ability for a Customer to connect another online profile to the Request Section from which the Server can pull the list of Meter Device `meter_number` values.
 
 ##### 9.2.3.5. Aggregation Selection <a id="aggregation-selection" href="#aggregation-selection" class="permalink">🔗</a>
 
@@ -3914,7 +3914,7 @@ The Server MUST implement the following to support the Aggregation Selection typ
             * If the Server has access to the Aggregation's display name as the Customer would see it in their online profile, the Server MUST display that value.
             * If the Server has access to the Aggregation's `grouped_addresses`, the Server MUST display at least one of those values per entry, if it has any.
         * The Server MAY include other values for the entries, such as related `premise_number` values.
-        * The Server MUST allow the Customer to select and deselect individual Aggregation entries that will be subject the the Scope(s).
+        * The Server MUST allow the Customer to select and deselect individual Aggregation entries that will be subject to the Scope(s).
         * The Server MUST include the ability for the Customer to select or deselect all Aggregation entries.
         * If there are more than 10 Aggregation entries, the Server MUST implement the following requirements:
             * The Server MUST include the ability for the Customer to search for specific Aggregations by their `aggregation_number` and name (if displayed).
@@ -3927,8 +3927,8 @@ The Server MUST implement the following to support the Aggregation Selection typ
     * If the Server does not have access to the list of the Customer's [Aggregations](#aggregation-format), the Server MUST implement the following:
         * The Server MUST include the ability for a Customer to manually enter one or more Aggregation `aggregation_number` values for which the Scope(s) will apply.
         * If the Scope(s) include the [`"aggregation_numbers"`](#auth-details-aggregation-numbers) preselection field, the Server MUST initially populate the list of added Aggregations with the `aggregation_numbers` values.
-        * The Server MAY include the ability for a Customer upload a document containing the list of Aggregation `aggregation_number` values for which the Scope(s) will apply.
-        * The Server MAY include the ability for a Customer connect another online profile to the Request Section from which the Server can pull the list of Aggregation `aggregation_number` values.
+        * The Server MAY include the ability for a Customer to upload a document containing the list of Aggregation `aggregation_number` values for which the Scope(s) will apply.
+        * The Server MAY include the ability for a Customer to connect another online profile to the Request Section from which the Server can pull the list of Aggregation `aggregation_number` values.
 
 ### 9.3. Authorization Errors <a id="auth-errors" href="#auth-errors" class="permalink">🔗</a>
 
@@ -3942,7 +3942,7 @@ Rather than automatically redirecting back to Client's `redirect_uri` with an er
 
 There are two primary reasons this specification defines the Preselection Error:
 
-* Since preselection fields match against the Customer's resources, if the Server automatically redirected back to the Client if there are no matches, the Client could potentially secretly enumerate which resources are not under a Customer's profile without the Customer's authorization.
+* Since preselection fields match against the Customer's resources, if the Server automatically redirected back to the Client when there were no matches, the Client could potentially enumerate which resources are not under a Customer's profile without the Customer's authorization.
   By adding a Preselection Error page, the Customer is given a chance to review the authorization request and what preselected resources have been requested and must choose to be redirected back to the Client.
 * It is a common situation for enterprise Customers with many properties in a utility territory to to have multiple logins and online profiles for their various properties and utility Accounts.
   So if a Client is requesting a specific set of resources using preselection fields (e.g. a specific set of `account_numbers`), it is entirely likely that the Customer could be already authenticated or accidentally authenticates with the wrong online profile that does not have access to that specific set of preselected resources.
@@ -3971,7 +3971,7 @@ If the Server receives an authorization request with invalid `response_type`, `r
 In these situations the Server MUST display an Invalid Request Error page to the User, and the following are requirements and recommendations for the Server when implementing the Invalid Request Error:
 
 * The Server MUST render an error message that clearly communicates to the User that the authorization request does not have the correct parameters, so the Server is unable to complete the request.
-* The Server MUST communicate to the User the they should contact the website or app that provided them with the link to this authorization request and let that entity know their link is invalid.
+* The Server MUST communicate to the User that they should contact the website or app that provided them with the link to this authorization request and let that entity know their link is invalid.
 * The Server MAY include a [Header Section](#auth-form-header) above the error message, so long as it does not hide the required error message.
 * Below the required options, the Server MAY include additional content and functionality, so long as it appears secondary to the required error message.
 
@@ -3983,8 +3983,8 @@ This means that for authorization requests, a Client could set the `redirect_uri
 For situations where the redirect is to the Server's default `redirect_uri`, and the resulting redirect contains error parameters (e.g. when the Customer declines an authorization request), the Server MUST display a Default Redirect Error page to the User, and the following are requirements and recommendations for the Server when implementing the Default Redirect Error:
 
 * If the request's `error` parameter is `access_denied`, the Server MUST render a message that clearly communicates to the User that they have declined the authorization request and this is their confirmation that they have declined the request.
-* If the request's `error` parameter is not `access_denied`, the Server MUST an error message that clearly communicates to the User that the authorization request is unable to be completed and explain why the request is unable to be completed (e.g. because the request had an invalid scope).
-  Additionally, the Server MUST communicate to the User the they should contact the website or app that provided them with the link to this authorization request and let that entity know their request could not be completed.
+* If the request's `error` parameter is not `access_denied`, the Server MUST render an error message that clearly communicates to the User that the authorization request is unable to be completed and explain why the request is unable to be completed (e.g. because the request had an invalid scope).
+  Additionally, the Server MUST communicate to the User that they should contact the website or app that provided them with the link to this authorization request and let that entity know their request could not be completed.
 * The Server MAY include a [Header Section](#auth-form-header) above the required messages, so long as it does not hide the required messages.
 * Below the required messages, the Server MAY include additional content and functionality, so long as it appears secondary to the required error message.
 
@@ -4042,7 +4042,7 @@ The following are requirements and recommendations for the Server when implement
       The Server MUST provide functionality to revoke the authorization and the Customer MUST be able to revoke their approval whether or not they are authenticated, so that there are as few barriers as possible for a Customer being able to revoke the Client's access.
 * The Server MAY display other details about the Client, authorization, or Grant, so long as any confidential Customer Data is not visible unless the Customer authenticates themselves.
 * The Server MUST display the required information on the Authorization Receipt in a manner in which the Customer is likely to understand.
-  It is RECOMMENDED that the Server use the same terms and language that were displayed to the Customer on the Authorization Form at the time of of the authorization approval.
+  It is RECOMMENDED that the Server use the same terms and language that were displayed to the Customer on the Authorization Form at the time of the authorization approval.
 * If any of the following have changed since the time of authorization approval, the Server MUST display the updated version in addition the information as it was at the time of the authorization approval, so that the Customer can understand what has changed for their Grant since this Authorization Receipt was issued:
     * Client `client_name`
     * Client `client_uri` (if any)
@@ -4053,7 +4053,7 @@ The following are requirements and recommendations for the Server when implement
 * It is RECOMMENDED that the Authorization Receipt page has a button or link to allow the Customer to print the page for their records.
 
 
-Below is an example rendered Authorization Receipt layout that is rendered when the viewed by an unauthenticated Customer.
+Below is an example rendered Authorization Receipt layout that is rendered when viewed by an unauthenticated Customer.
 
 **Figure 5: Example Authorization Receipt page** <a id="figure-5" href="#figure-5" class="permalink">🔗</a>
 
@@ -4103,7 +4103,7 @@ The APIs defined in this section MUST be authenticated using a Bearer `access_to
 
 ### 10.1. Accounts API <a id="accounts-api" href="#accounts-api" class="permalink">🔗</a>
 
-This specification requires Servers provide a set of Application Programming Interfaces (APIs) allowing Clients to retrieve a Customer's Account details for which they are authorized to access.
+This specification requires Servers to provide a set of Application Programming Interfaces (APIs) allowing Clients to retrieve a Customer's Account details for which they are authorized to access.
 
 #### 10.1.1. Account Object Format <a id="account-format" href="#account-format" class="permalink">🔗</a>
 
@@ -4131,7 +4131,7 @@ Account objects are formatted as JSON objects and contain the following named va
 * `account_status` - _[AccountStatus](#account-statuses)_ - (OPTIONAL) What the Account's status is.
 * `account_contacts` - _Array[[AccountContact](#account-contact-format)]_ - (OPTIONAL) A list of Account Contacts for the Account.
 * `account_programs` - _Array[[AccountProgram](#account-program-format)]_ - (OPTIONAL) A list of Account Programs for the Account.
-  If the Server does not have this information or the Customer is not participating in any Account-level programs, this value is and empty list (`[]`).
+  If the Server does not have this information or the Customer is not participating in any Account-level programs, this value is an empty list (`[]`).
 
 Clients MUST ignore unknown `account_types` values, unknown `account_status` values, and unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
@@ -4142,11 +4142,11 @@ Account Type values MUST be a [string](#string) of one of the following:
 * `customer` - The account represents a Customer's account.
   This is what most people think of when they think of a utility account.
 * `thirdparty` - The account represents a contractor, vendor, or other third party entity account.
-  Some utilities designate account numbers to third party vendor or contractors so that they can be assigned resources in the utility's system.
+  Some utilities designate account numbers to third party vendors or contractors so that they can be assigned resources in the utility's system.
 * `internal` - The account represents the central entity's own account (e.g. admin, internal testing, etc.).
   Some utilities designate account numbers to internal teams so that they can assign resources or allow that team to test the utility's systems.
 * `parent` - The account has one or more sub-accounts underneath it.
-  This usually happens when a utility combines multiple Customer accounts for an enterprise into a single "parent" account and create bill statements for that primary parent account rather than each individual sub-account.
+  This usually happens when a utility combines multiple Customer accounts for an enterprise into a single "parent" account and creates bill statements for that primary parent account rather than each individual sub-account.
 * `child` - The account is part of a group of sub-accounts and has a parent account above it.
   This usually happens when many of an enterprise's utility accounts are organized underneath a main "parent" account, so that the utility can bill the various "child" sub-accounts together as one bill statement.
 * `test` - The account represents a fictional test account, not a real entity.
@@ -4176,7 +4176,7 @@ Entity objects are formatted as JSON objects and contain the following named val
 * `types` - _Array[[EntityType](#entity-types)]_ - (REQUIRED)  An array of types for the Entity.
 * `entity_number` - _[string](#string)_ - (REQUIRED) A value that acts as a unique identifier for the Entity (e.g. "US-CA-IOU-EE&E").
   If no prior value exists for uniquely identifying the Entity or the Server does not know a unique identifier for the Entity, the Server MUST use the Entity's `id` value as the `entity_number` value.
-  If a Server includes Coverage Entries for the same entity in it's Server Metadata `coverage` endpoint [[CDS-WG1-01 Section 4](#ref-cds-wg1-01-coverage-endpoint)], the Server MUST use the same value for both this Entity's `entity_number` value and the Coverage Entry's `entity_number` value [[CDS-WG1-01 Section 4.3](#ref-cds-wg1-01-coverage-entry)].
+  If a Server includes Coverage Entries for the same entity in its Server Metadata `coverage` endpoint [[CDS-WG1-01 Section 4](#ref-cds-wg1-01-coverage-endpoint)], the Server MUST use the same value for both this Entity's `entity_number` value and the Coverage Entry's `entity_number` value [[CDS-WG1-01 Section 4.3](#ref-cds-wg1-01-coverage-entry)].
 * `entity_name` - _[string](#string)_ - (REQUIRED) The name of the entity (e.g. "Example Gas & Electric").
 * `entity_abbreviation` - _[string](#string) or `null`_ - (REQUIRED) An abbreviation of the Entity's name that is commonly used to identify that entity (e.g. "EG&E").
   If no abbreviation is available or the Server does not know an abbreviation for the Entity, this value is `null`.
@@ -4196,13 +4196,13 @@ Entity Type values MUST be a [string](#string) of one of the following:
   This type of Entity is typically called an investor-owned utility, or "IOU".
   An Entity that includes this type MUST also include
 * `muni` - The Entity provides distribution services and is government owned.
-  This type of Entity is typically called an municipal utilitym, or "muni".
+  This type of Entity is typically called a municipal utility, or "muni".
 * `cca` - The Entity provides supply services and is government owned, typically by a collection of local city or regional governments.
   This type of Entity is typically called a community choice aggregator, or "CCA".
 * `retailer` - The Entity provides supply services and is privately owned.
   This type of Entity is typically called a retail electric provider ("REP") or electric service company ("ESCO").
 * `generator` - The Entity provides generation services directly to end Customers.
-  This type of Entity is typically called an asset owner, direct access provider, or power purchase agreement ("PPA") generator.
+  This type of Entity is typically called an asset owner, direct access provider, or power purchase agreement generator.
 * `dso` - The Entity acts as a distribution system operator ("DSO").
 * `tso` - The Entity acts as a transmission system operator ("TSO").
 * `iso` - The Entity acts as an interstate system operator ("ISO").
@@ -4215,8 +4215,8 @@ Account Contact objects are formatted as JSON objects and contain the following 
 * `id` - _[string](#string)_ - (REQUIRED) The unique identifier for the Account Contact.
 * `types` - _Array[[AccountContactType](#account-contact-types)]_ - (REQUIRED) An array of types for the Account Contact.
   The Server MUST have one of `"phone_number"` or `"email"` in this array.
-  The Server MAY include other Account Contact Types in the array to further define the type of contact (e.g. including `"mobile"` to indicate this it Account's mobile contact).
-* `value` - _[string](#string)_ - (REQUIRED) The contact value, depending on the `type` value.
+  The Server MAY include other Account Contact Types in the array to further define the type of contact (e.g. including `"mobile"` to indicate this is the Account's mobile contact).
+* `value` - _[string](#string)_ - (REQUIRED) The contact value, depending on the `types` array values.
   If the `types` array contains `"phone_number"`, this value MUST be an E.164 internationally formatted phone number [[E.164](#ref-e164)] (e.g. `"+15554443333"`).
   If the `types` array contains `"email"`, this value MUST be an [email address](#email-address) (e.g. `"name@example.com"`).
 
@@ -4258,7 +4258,7 @@ Account Program objects are formatted as JSON objects and contain the following 
   If the way for a Customer to obtain their status or modify their settings cannot be done via an online process, this link MAY be to a webpage that instructs Customers on how to accomplish those tasks (e.g. provides a phone number to call).
 * `discontinue` - _[URL](#url)_ - (OPTIONAL) A link to where a Customer may stop participating in the program.
   If there is not a link where a Customer may discontinue participating in the program, this field MUST NOT be included.
-  If the way to stop participating cannot be done via an online process, this link MAY be to a webpage that instructs Customers on how to stopping participating (e.g. provides a phone number to call).
+  If the way to stop participating cannot be done via an online process, this link MAY be to a webpage that instructs Customers on how to stop participating (e.g. provides a phone number to call).
 * `participation_number` - _[string](#string)_ - (OPTIONAL) The identifier for the Account's participation in the program.
   If the Account has not participated in the program or the Server does not know the Account's participation number, this field MUST NOT be included.
 * `start` - _[date](#date)_ - (OPTIONAL) The date the Account most recently started participating in the program.
@@ -4271,7 +4271,7 @@ See each [Account Program Type](#account-program-types) value for what additiona
 
 Servers MAY add additional fields to Account Program objects as needed to include program-specific data.
 It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. `exampleutility_*`).
-For example, if the Server has an Account that is participating in a credit bank credit bank program (e.g. NEM tracked charges) and wants to included the tracked amount of energy, the Server could add a `exampleutility_nem_net_kwh` field that provides the net kilowatt hours accumulated for the program.
+For example, if the Server has an Account that is participating in a credit bank program (e.g. NEM tracked charges) and wants to include the tracked amount of energy, the Server could add a `exampleutility_nem_net_kwh` field that provides the net kilowatt hours accumulated for the program.
 
 Clients MUST ignore unknown `types` values and unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
@@ -4312,7 +4312,7 @@ The Account listing request responses are formatted as JSON objects and contain 
 * `previous` - _[URL](#url)_ or `null` - Where to request the previous segment of the list of Accounts.
   If no previous segment exists (i.e. the requester is at the front of the list), this value is `null`.
 
-Clients MUST ignore unknown unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
+Clients MUST ignore unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
 Servers MUST support Clients adding any of the following URL parameters to the `GET` request, which will filter the list of Accounts to be the intersection of results for each of the URL parameters filters:
 
@@ -4335,7 +4335,7 @@ Listings of Account objects MUST be ordered in reverse chronological order by `c
 
 ### 10.2. Service Contracts API <a id="service-contracts-api" href="#service-contracts-api" class="permalink">🔗</a>
 
-This specification requires Servers provide a set of APIs allowing Clients to retrieve a Customer's Service Contract details for which they are authorized to access.
+This specification requires Servers to provide a set of APIs allowing Clients to retrieve a Customer's Service Contract details for which they are authorized to access.
 
 #### 10.2.1. Service Contract Object Format <a id="service-contract-format" href="#service-contract-format" class="permalink">🔗</a>
 
@@ -4366,7 +4366,7 @@ Service Contract objects are formatted as JSON objects and contain the following
 * `rateplan_code` - _[string](#string)_ - (OPTIONAL) A unique code for the current rate plan or tariff on which costs for this Service Contract are calculated.
 * `rateplan_name` - _[string](#string)_ - (OPTIONAL) The name that a Customer sees on their bill or online user interface as the rate plan or tariff that applies to this Service Contract.
 * `service_programs` - _Array[[ServiceProgram](#service-program-format)]_ - (OPTIONAL) A list of Service Programs for the Account.
-  If the Server does not have this information or the Customer is not participating in any Service Contract-level programs, this value is and empty list (`[]`).
+  If the Server does not have this information or the Customer is not participating in any Service Contract-level programs, this value is an empty list (`[]`).
 
 Clients MUST ignore unknown `contract_types` values, unknown `contract_status` values, and unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
@@ -4416,7 +4416,7 @@ Service Type values MUST be a [string](#string) of one of the following:
 
 #### 10.2.5. Service Program Object Format <a id="service-program-format" href="#service-program-format" class="permalink">🔗</a>
 
-Service Program objects represent an service-level program in which the Service Contract is participating, has previously participated, or is eligible to participate.
+Service Program objects represent a service-level program in which the Service Contract is participating, has previously participated, or is eligible to participate.
 Service Program objects are formatted as JSON objects and contain the following named values:
 
 * `id` - _[string](#string)_ - (REQUIRED) The unique identifier for the Service Program object.
@@ -4436,7 +4436,7 @@ Service Program objects are formatted as JSON objects and contain the following 
   If the way for a Customer to obtain their status or modify their settings cannot be done via an online process, this link MAY be to a webpage that instructs Customers on how to accomplish those tasks (e.g. provides a phone number to call).
 * `discontinue` - _[URL](#url)_ - (OPTIONAL) A link to where a Customer may stop participating in the program.
   If there is not a link where a Customer may discontinue participating in the program, this field MUST NOT be included.
-  If the way to stop participating cannot be done via an online process, this link MAY be to a webpage that instructs Customers on how to stopping participating (e.g. provides a phone number to call).
+  If the way to stop participating cannot be done via an online process, this link MAY be to a webpage that instructs Customers on how to stop participating (e.g. provides a phone number to call).
 * `participation_number` - _[string](#string)_ - (OPTIONAL) The identifier for the Service Contract's participation in the program.
   If the Service Contract has not participated in the program or the Server does not know the Service Contract's participation number, this field MUST NOT be included.
 * `start` - _[date](#date)_ - (OPTIONAL) The date the Service Contract most recently started participating in the program.
@@ -4444,12 +4444,12 @@ Service Program objects are formatted as JSON objects and contain the following 
 * `end` - _[date](#date)_ - (OPTIONAL) The date the Service Contract most recently stopped participating in the program.
   If the Service Contract has not participated in the program or the Server does not know the Service Contract's most recent end date, this field MUST NOT be included.
 
-Depending on the values in an Service Program's `types` array, the Service Program MAY have additional fields.
+Depending on the values in a Service Program's `types` array, the Service Program MAY have additional fields.
 See each [Service Program Type](#service-program-types) value for what additional fields are defined.
 
 Servers MAY add additional fields to Service Program objects as needed to include program-specific data.
 It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. `exampleutility_*`).
-For example, if the Server has an Service Contract that is participating in an electric vehicle charging management program (e.g. EV demand response) and wants to included the model of the Customer's electric vehicle charging unit, the Server could add a `exampleutility_ev_charger_model` field that provides the unit model number as a string.
+For example, if the Server has an Service Contract that is participating in an electric vehicle charging management program (e.g. EV demand response) and wants to include the model of the Customer's electric vehicle charging unit, the Server could add a `exampleutility_ev_charger_model` field that provides the unit model number as a string.
 
 Clients MUST ignore unknown `types` values and unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
@@ -4499,7 +4499,7 @@ The Service Contract listing request responses are formatted as JSON objects and
 * `previous` - _[URL](#url)_ or `null` - Where to request the previous segment of the list of Service Contracts.
   If no previous segment exists (i.e. the requester is at the front of the list), this value is `null`.
 
-Clients MUST ignore unknown unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
+Clients MUST ignore unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
 Servers MUST support Clients adding any of the following URL parameters to the `GET` request, which will filter the list of Service Contracts to be the intersection of results for each of the URL parameters filters:
 
@@ -4524,7 +4524,7 @@ Listings of Service Contract objects MUST be ordered in reverse chronological or
 
 ### 10.3. Service Points API <a id="service-points-api" href="#service-points-api" class="permalink">🔗</a>
 
-This specification requires Servers provide a set of APIs allowing Clients to retrieve a Customer's and Server's Service Point details for which they are authorized to access.
+This specification requires Servers to provide a set of APIs allowing Clients to retrieve a Customer's and Server's Service Point details for which they are authorized to access.
 
 #### 10.3.1. Service Point Object Format <a id="service-point-format" href="#service-point-format" class="permalink">🔗</a>
 
@@ -4571,7 +4571,7 @@ Service Point Type values MUST be a [string](#string) of one of the following:
 * `edge` - The Service Point represents an edge that represents the utility's boundary (e.g. the "grid edge").
   This is what most Customer meter points represent, where the electrical system on the other side of the meter point is the Customer's electrical systems (e.g. "beyond the grid edge").
 * `internal` - The Service Point represents an internal node, where each side of the service point is still considered part of the grid.
-  This type would typically be only be used if the Server is providing Usage Segments for internal nodes in a grid system (i.e. not Customer Data).
+  This type would typically only be used if the Server is providing Usage Segments for internal nodes in a grid system (i.e. not Customer Data).
 
 #### 10.3.3. Premise Object Format <a id="premise-format" href="#premise-format" class="permalink">🔗</a>
 
@@ -4617,7 +4617,7 @@ The Service Point listing request responses are formatted as JSON objects and co
 * `previous` - _[URL](#url)_ or `null` - Where to request the previous segment of the list of Service Points.
   If no previous segment exists (i.e. the requester is at the front of the list), this value is `null`.
 
-Clients MUST ignore unknown unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
+Clients MUST ignore unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
 Servers MUST support Clients adding any of the following URL parameters to the `GET` request, which will filter the list of Service Points to be the intersection of results for each of the URL parameters filters:
 
@@ -4635,7 +4635,7 @@ Listings of Service Point objects MUST be ordered in reverse chronological order
 
 ### 10.4. Meter Devices API <a id="meter-devices-api" href="#meter-devices-api" class="permalink">🔗</a>
 
-This specification requires Servers provide a set of APIs allowing Clients to retrieve a Customer's and Server's Meter Device details for which they are authorized to access.
+This specification requires Servers to provide a set of APIs allowing Clients to retrieve a Customer's and Server's Meter Device details for which they are authorized to access.
 
 #### 10.4.1. Meter Device Object Format <a id="meter-device-format" href="#meter-device-format" class="permalink">🔗</a>
 
@@ -4656,7 +4656,7 @@ Meter Device objects are formatted as JSON objects and contain the following nam
 * `previous_servicepoints` - _Array[[string](#string)]_ - (REQUIRED) The list of `cds_servicepoint_id` values that identify Service Points where this Meter Device was previously installed or associated.
   This list MUST only include identifiers that the Client is authorized to see as scoped by their requesting `access_token`.
 * `meter_apps` - _Array[[MeterApp](#meter-app-format)]_ - (OPTIONAL) A list of Meter App objects associated with the Meter Device.
-  If the Server does not have this information or the Customer does not have any meter applications that are installed or available to install on the Meter Device, this value is and empty list (`[]`).
+  If the Server does not have this information or the Customer does not have any meter applications that are installed or available to install on the Meter Device, this value is an empty list (`[]`).
 
 Clients MUST ignore unknown `meter_types` values and unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
@@ -4700,11 +4700,11 @@ Meter App objects are formatted as JSON objects and contain the following named 
 
 * `id` - _[string](#string)_ - (REQUIRED) The unique identifier for the Meter App object.
 * `app_number` - _[string](#string)_ - (REQUIRED) The identifier for the application that is used for external entities (Customers, vendors, contractors, etc.).
-  If there is not a designated identifier for the program, the Server MUST generate a `app_number` value to use for continuity, since the `app_name` may change over time.
+  If there is not a designated identifier for the program, the Server MUST generate an `app_number` value to use for continuity, since the `app_name` may change over time.
 * `types` - _Array[[MeterAppType](#meter-app-types)]_ - (REQUIRED) An array of types for the Meter App.
 * `name` - _[string](#string)_ - (REQUIRED) The name of the application.
 
-Depending on the values in an Meter App's `types` array, the Meter App MAY have additional fields.
+Depending on the values in a Meter App's `types` array, the Meter App MAY have additional fields.
 See each [Meter App Type](#meter-app-types) value for what additional fields are defined.
 
 Servers MAY add additional fields to Meter App objects as needed to include app-specific data.
@@ -4720,7 +4720,7 @@ Meter App Type values MUST be a [string](#string) of one of the following:
 * `installed` - The application is installed on the Meter Device.
   Meter App objects that contain this value in their `types` array MAY have the following additional fields:
     * `start` - _[datetime](#datetime)_ - (OPTIONAL) The timestamp on which the Meter App was most recently installed.
-* `uinstalled` - The application is not installed on the Meter Device.
+* `uninstalled` - The application is not installed on the Meter Device.
   Meter App objects that contain this value in their `types` array MAY have the following additional fields:
     * `end` - _[datetime](#datetime)_ - (OPTIONAL) The timestamp on which the Meter App was most recently uninstalled.
       If the Meter App has never been installed on the Meter Device, this field MUST NOT be included.
@@ -4743,7 +4743,7 @@ The Meter Device listing request responses are formatted as JSON objects and con
 * `previous` - _[URL](#url)_ or `null` - Where to request the previous segment of the list of Meter Devices.
   If no previous segment exists (i.e. the requester is at the front of the list), this value is `null`.
 
-Clients MUST ignore unknown unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
+Clients MUST ignore unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
 Servers MUST support Clients adding any of the following URL parameters to the `GET` request, which will filter the list of Meter Devices to be the intersection of results for each of the URL parameters filters:
 
@@ -4759,7 +4759,7 @@ Listings of Meter Device objects MUST be ordered in reverse chronological order 
 
 ### 10.5. Bill Statements API <a id="bill-statements-api" href="#bill-statements-api" class="permalink">🔗</a>
 
-This specification requires Servers provide a set of APIs allowing Clients to retrieve a Customer's and Server's Bill Statement details for which they are authorized to access.
+This specification requires Servers to provide a set of APIs allowing Clients to retrieve a Customer's and Server's Bill Statement details for which they are authorized to access.
 
 #### 10.5.1. Bill Statement Object Format <a id="bill-statement-format" href="#bill-statement-format" class="permalink">🔗</a>
 
@@ -4778,7 +4778,7 @@ Bill Statement objects are formatted as JSON objects and contain the following n
 * `file_uri` - _[URL](#url) or `null`_ - (OPTIONAL) A link to the raw bill statement file (e.g. the PDF bill) that was provided to the Customer, if available.
   If this Bill Statement was mailed to the Customer, this value is a link to the digital PDF copy of the mailed bill.
   Authentication for the linked file MUST be the same authentication as required for accessing this Bill Statement.
-  If the Server does not have a raw bill statement file for the Bill Statement and the scope of access for a Client requires including this field, this field is include in the Bill Statement object with a value of `null`.
+  If the Server does not have a raw bill statement file for the Bill Statement and the scope of access for a Client requires including this field, this field is included in the Bill Statement object with a value of `null`.
 * `file_mimetype` - _[string](#string)_ - (OPTIONAL) The MIME type for the `file_uri`.
   This field is REQUIRED if the `file_uri` field is populated with a URL.
 * `previous_balance_amount` - _[decimal](#decimal)_ - (OPTIONAL) The value shown on the Customer-facing bill statement as the previous balance for the Account, if available.
@@ -4794,10 +4794,10 @@ Bill Statement objects are formatted as JSON objects and contain the following n
 * `shutoff_prevention_date` - _[date](#date) or `null`_ - (REQUIRED) The value shown on the Customer-facing bill statement as the date that the `shutoff_prevention_minimum_due` value is due, if available.
   If `shutoff_prevention_minimum_due` is `null`, this value is also `null`.
 * `account_programs` - _Array[[AccountProgram](#account-program-format)]_ - (OPTIONAL) A list of Account-level programs in which the Customer is participating for the Bill Statement period.
-  If the Server does not have this information or the Customer is not participating in any Account-level programs, this value is and empty list (`[]`).
+  If the Server does not have this information or the Customer is not participating in any Account-level programs, this value is an empty list (`[]`).
 
 The Server MUST ensure that if both `previous_balance_unpaid` and `new_charges` fields are included in a Bill Statement, the sum of the Bill Statement's `previous_balance_unpaid` value and all New Charge `amount` values where the New Charge has a `included_in_amount_due` value of `true` MUST equal the Bill Statement's `amount_due` value.
-For situations where the Customer's bill doesn't actually sum to the amount due (e.g. there's a billing error), the Server MUST include a New Charge object that has a `amout_due_sum_difference` in its `types` array and the difference from the sum to the `amount_due` value as the object's `amount` value.
+For situations where the Customer's bill doesn't actually sum to the amount due (e.g. there's a billing error), the Server MUST include a New Charge object that has a `amount_due_sum_difference` in its `types` array and the difference from the sum to the `amount_due` value as the object's `amount` value.
 This requirement is a confirmation to Clients that the Server has included all New Charge objects that it knows about, and the Server recognizes that there is something unaccounted for in the `amount_due` value, but the Server does not know what has caused that unaccounted for amount.
 
 Clients MUST ignore unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
@@ -4835,14 +4835,14 @@ New Charge Type values MUST be a [string](#string) of one of the following:
 * `flat_rate` - The line item is an account-level flat rate charge.
 * `interest` - The line item is an account-level interest charge, typically for when an Account is on a payment plan with interest.
 * `deposit` - The line item is an adjustment that results from the application of deposit the Customer paid, either as a charge (i.e. positive value) if the deposit is being charged on the Bill Statement, or as a credit (i.e. negative value) if the deposit is being refunded on the Bill Statement.
-* `differed` - The line item is the amount of the Account's balance that will is not being included in the `amount_due` because it is differed or carried over to future bills.
+* `differed` - The line item is the amount of the Account's balance that will not be included in the `amount_due` because it is differed or carried over to future bills.
 * `credit_bank` - The line item is an adjustment that results from the application of an Account's credit bank (e.g. NEM tracked charges).
 * `program` - The line item is an adjustment to the amount due that is the result of the Account participating in an Account-level program (e.g. the Account being enrolled in a low-income discount program).
-* `adhoc` - The line item is a ad-hoc, one-time, or manual adjustment to the Bill Statement's `amount_due` that appears on the Bill Statement visible to the Customer.
+* `adhoc` - The line item is an ad-hoc, one-time, or manual adjustment to the Bill Statement's `amount_due` that appears on the Bill Statement visible to the Customer.
   For example, a Customer could have a manual one-time credit applied to their bill as the result from a prior misread of their meter that is now being corrected.
-* `amout_due_sum_difference` - The Server is inserting this New Charge object to account for a difference between the `amount_due` value not matching the sum of the `previous_balance_unpaid` and New Charges' `amount` values where `included_in_amount_due` is `true`.
-  This New Charge does not appear on the real world Customer's bill and is only an acknowledgment from the Server that there is a difference between the `amount_due` and account unpaid balance plus new charges that is not listed on the Customer's bill.
-  It is RECOMMENDED that if the Server knows reason for the difference, it include that reason in this New Charge's `name` value (e.g. "VPP pilot program contract credit").
+* `amount_due_sum_difference` - The Server is inserting this New Charge object to account for a difference between the `amount_due` value not matching the sum of the `previous_balance_unpaid` and New Charges' `amount` values where `included_in_amount_due` is `true`.
+  This New Charge does not appear on the real world Customer's bill and is only an acknowledgment from the Server that there is a difference between the `amount_due` and account unpaid balance plus new charges that are not listed on the Customer's bill.
+  It is RECOMMENDED that if the Server knows the reason for the difference, it includes that reason in this New Charge's `name` value (e.g. "VPP pilot program contract credit").
 
 #### 10.5.4. Listing Bill Statements <a id="bill-statement-list" href="#bill-statement-list" class="permalink">🔗</a>
 
@@ -4857,7 +4857,7 @@ The Bill Statement listing request responses are formatted as JSON objects and c
 * `previous` - _[URL](#url)_ or `null` - Where to request the previous segment of the list of Bill Statements.
   If no previous segment exists (i.e. the requester is at the front of the list), this value is `null`.
 
-Clients MUST ignore unknown unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
+Clients MUST ignore unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
 Servers MUST support Clients adding any of the following URL parameters to the `GET` request, which will filter the list of Bill Statements to be the intersection of results for each of the URL parameters filters:
 
@@ -4867,12 +4867,12 @@ Servers MUST support Clients adding any of the following URL parameters to the `
 * `cds_account_ids` - A space-separated list of `cds_account_id` values for which the Servers MUST filter the Bill Statements.
 * `account_numbers` - A space-separated list of `account_number` values for which the Servers MUST filter the Bill Statements.
 
-Listings of Bill Statement objects MUST be ordered in reverse chronological order by `statement_date` date, where the most recent dated relevant Bill Statement MUST be first in each listing.
+Listings of Bill Statement objects MUST be ordered in reverse chronological order by `statement_date` date, where the most recently dated relevant Bill Statement MUST be first in each listing.
 In situations where relevant Bill Statement objects have the same `statement_date`, those Bill Statements with the same `statement_date` are further ordered in reverse chronological order by `cds_modified` timestamp, where the most recently updated relevant Bill Statement is listed first.
 
 ### 10.6. Bill Sections API <a id="bill-sections-api" href="#bill-sections-api" class="permalink">🔗</a>
 
-This specification requires Servers provide a set of APIs allowing Clients to retrieve a Customer's and Server's Bill Section details for which they are authorized to access.
+This specification requires Servers to provide a set of APIs allowing Clients to retrieve a Customer's and Server's Bill Section details for which they are authorized to access.
 
 #### 10.6.1. Bill Section Object Format <a id="bill-section-format" href="#bill-section-format" class="permalink">🔗</a>
 
@@ -4931,10 +4931,10 @@ Bill Section Type values MUST be a [string](#string) of one of the following:
 
 #### 10.6.3. Bill Section Usage Detail Object Format <a id="bill-section-usage-detail-format" href="#bill-section-usage-detail-format" class="permalink">🔗</a>
 
-Bill Section Usage Detail objects represent measurement readings, aggretated totals, or summary values that are relevant to the Bill Section.
+Bill Section Usage Detail objects represent measurement readings, aggregated totals, or summary values that are relevant to the Bill Section.
 Typically, the values in these objects are visible on the Customer's utility bill, but Servers MAY include other types of values as needed to support the Server's intended use cases.
 Additionally, while it is likely that most of the objects have values that represent usage (e.g. total gallons of water consumed during the billing period), other values may also be included that do not technically represent usage (e.g. peak electric demand).
-The name of the object as "Usage Detail" is for convenience and to match how these values are typically referred on Customer bills, but do not necessarily always have to have values representing usage.
+The name of the object as "Usage Detail" is for convenience and to match how these values are typically referred to on Customer bills, but do not necessarily always have to have values representing usage.
 
 Bill Section Usage Detail objects are formatted as JSON objects and contain the following named values:
 
@@ -5011,13 +5011,13 @@ See each [Bill Section Cost Detail Type](#bill-section-cost-detail-types) value 
 
 Servers MAY add additional fields to Bill Section Cost Detail objects as needed to include utility-specific data.
 It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. `exampleutility_*`).
-For example, if the Server has a Bill Section Cost Detail that identifies a utility-specific grouping type (e.g. this cost detail is the total nuclear decommisioning charge) and wants to include the tariff's designation number in the Bill Section Cost Detail object, the Server could add a `exampleutility_tariff_designation` field that provides the tariff designation number number as a string.
+For example, if the Server has a Bill Section Cost Detail that identifies a utility-specific grouping type (e.g. this cost detail is the total nuclear decommissioning charge) and wants to include the tariff's designation number in the Bill Section Cost Detail object, the Server could add a `exampleutility_tariff_designation` field that provides the tariff designation number number as a string.
 
 Clients MUST ignore unknown `types` values and unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
 ##### 10.6.5.1. Cost Detail Summation Clarifications <a id="bill-section-cost-detail-sums" href="#bill-section-cost-detail-sums" class="permalink">🔗</a>
 
-Because utility bills may break down summary cost information in different ways, the to sum of `cost` values in the objects will not necessarily match the overall total charges for the Bill Section.
+Because utility bills may break down summary cost information in different ways, the sum of `cost` values in the objects will not necessarily match the overall total charges for the Bill Section.
 
 For example, a Customer's utility bill may summarize the charges for a Service Contract's usage during a billing period two different ways: by distributions vs. supply charges, and by usage vs. demand charges.
 In this example, there would be four Bill Section Cost Detail objects in a Bill Section's `cost_details` array: one object for total distribution charges, one object for total supply charges, one object for total usage charges, and one object for total demand charges.
@@ -5058,7 +5058,7 @@ These objects are formatted as JSON objects and contain the following named valu
 * `name` - _[string](#string)_ - (REQUIRED) The name of the Bill Section Line Item entry (e.g. "Distribution kWh charge").
   This value MUST be formatted such that it can be easily found on a Customer's utility bill.
   This may be as straightforward as copying the line item name exactly if the line item as it appears on the bill is sufficiently unique and descriptive (e.g. "Electric generation charge").
-  However, if the line item as it appears on the Customer's utility bill is abiguous, the Server MUST set this object's `name` value to be something that will allow the Client to clearly understand for what the line item charge is assessed.
+  However, if the line item as it appears on the Customer's utility bill is ambiguous, the Server MUST set this object's `name` value to be something that will allow the Client to clearly understand for what the line item charge is assessed.
   For example, if the Customer's utility bill has a table of individual usage and demand charges under a header called "Distribution", the Server could set the `name` value to "Distribution - Usage" of Bill Section Line Item object that represents usage charge row of the table, where the header and row name of the table are combined into the object's `name` value.
 * `types` - _Array[[BillSectionLineItemType](#bill-section-line-item-types)]_ - (REQUIRED) An array of types for the Bill Section Line Item object.
   The values in this array determine what the line item represents, as well as any additional fields included in this object.
@@ -5072,9 +5072,9 @@ These objects are formatted as JSON objects and contain the following named valu
 * `rate` - _[decimal](#decimal) or `null`_ - (REQUIRED) The rate of charge per unit value to determine the `cost`.
   If the line item does not have or display a rate on the Customer's utility bill, this value is `null`.
 * `related_usage_details` - _Array[[string](#string)]_ - (REQUIRED)  The list of [Bill Section Usage Detail](#bill-section-usage-detail-format) `id` values that identify related usage details in which this line item's `value` is included.
-  If the Server does include or does not know which Bill Section Usage Details objects includes the `value` of this line item, this is an empty array (`[]`).
+  If the Server does include or does not know which Bill Section Usage Details objects include the `value` of this line item, this is an empty array (`[]`).
 * `related_cost_details` - _Array[[string](#string)]_ - (REQUIRED)  The list of [Bill Section Cost Detail](#bill-section-cost-detail-format) `id` values that identify related summary cost details in which this line item's `cost` is included.
-  If the Server does include or does not know which Bill Section Cost Details objects includes the `cost` of this line item, this is an empty array (`[]`).
+  If the Server does include or does not know which Bill Section Cost Details objects include the `cost` of this line item, this is an empty array (`[]`).
 
 Depending on the values in a Bill Section Line Item's `types` array, the Bill Section Line Item MAY have additional fields.
 See each [Bill Section Line Item Type](#bill-section-line-item-types) value for what additional fields are defined.
@@ -5114,7 +5114,7 @@ The Bill Section listing request responses are formatted as JSON objects and con
 * `previous` - _[URL](#url)_ or `null` - Where to request the previous segment of the list of Bill Sections.
   If no previous segment exists (i.e. the requester is at the front of the list), this value is `null`.
 
-Clients MUST ignore unknown unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
+Clients MUST ignore unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
 Servers MUST support Clients adding any of the following URL parameters to the `GET` request, which will filter the list of Bill Sections to be the intersection of results for each of the URL parameters filters:
 
@@ -5134,7 +5134,7 @@ In situations where relevant Bill Section objects have the same `account_number`
 
 ### 10.7. Aggregations API <a id="aggregations-api" href="#aggregations-api" class="permalink">🔗</a>
 
-This specification requires Servers provide a set of APIs allowing Clients to retrieve a Server's Aggregation objects for which they are authorized to access.
+This specification requires Servers to provide a set of APIs allowing Clients to retrieve a Server's Aggregation objects for which they are authorized to access.
 
 #### 10.7.1. Aggregation Object Format <a id="aggregation-format" href="#aggregation-format" class="permalink">🔗</a>
 
@@ -5149,7 +5149,7 @@ Aggregation objects are formatted as JSON objects and contain the following name
   If the Server directly queries the source of truth when returning data for this object, this value is the current time.
   If the Server caches the data for this object and periodically synchronizes it with the Server's source of truth (e.g. nightly batch updates), this value is the last time this object's Customer Data was updated or validated.
 * `aggregation_types` - _Array[[AggregationType](#aggregation-types)]_ - (REQUIRED) A list of types that this Aggregation represents.
-  Multiple Aggregation Types can apply to a single Aggreation (e.g. both `regional` and `public`).
+  Multiple Aggregation Types can apply to a single Aggregation (e.g. both `regional` and `public`).
 * `aggregation_number` - _[string](#string) or `null`_ - (REQUIRED) The aggregation identifier that a Client sees in Server documentation or other online interfaces as the aggregation identifier for this Aggregation, if available.
   If a Server does not have a Client-facing aggregation identifier for an Aggregation and the Client is not authorized to see the Server's internal aggregation identifier for this Aggregation, or the Server does not have aggregation identifiers stored for this Aggregation, this value is `null`.
 * `scope` - _[string](#string)_ - (REQUIRED) The scopes for accessing the Aggregation's dataset.
@@ -5182,7 +5182,7 @@ See each [Aggregation Type](#aggregation-types) value for what additional fields
 
 Servers MAY add additional fields to Aggregation objects as needed to include utility-specific data.
 It is RECOMMENDED that Servers add a Server-specific prefix to additional fields to minimize the chance of collision (e.g. `exampleutility_*`).
-For example, if the Server has a Aggregation that aggregates usage by neighborhood and wants to include the list of neighborhoods included in the Aggregation object, the Server could add a `exampleutility_neighborhoods` field that provides an array of neighborhood name strings for which the Aggregation applies.
+For example, if the Server has an Aggregation that aggregates usage by neighborhood and wants to include the list of neighborhoods included in the Aggregation object, the Server could add a `exampleutility_neighborhoods` field that provides an array of neighborhood name strings for which the Aggregation applies.
 
 Clients MUST ignore unknown `aggregation_types` values and unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
@@ -5276,7 +5276,7 @@ Aggregation Region Type values MUST be a [string](#string) of one of the followi
       This value MUST NOT be `null` if the `geojson_resource` value is `null`.
       If this value is not `null`, the object linked by the URL value MUST have the same authentication requirements for accessing it as this Aggregation object.
     * `map_content_type` - _[MIME type](#mime-type) or `null`_ - (REQUIRED) Content-Type format of the `map_resource`.
-      This value is MUST NOT be `null` if the `map_resource` value is not `null`.
+      This value MUST NOT be `null` if the `map_resource` value is not `null`.
     * `geojson_resource` - _[URL](#url) or `null`_ - (REQUIRED) Link to a [GeoJSON](#geojson) object that maps the geographic territory.
       If this value is not `null`, the linked GeoJSON object MUST use the default WGS 84 coordinate system.
       This value MUST NOT be `null` if the `map_resource` value is `null`.
@@ -5300,7 +5300,7 @@ Aggregation Region Type values MUST be a [string](#string) of one of the followi
 
 #### 10.7.5. Consent Requirement Object Format <a id="consent-requirement-format" href="#consent-requirement-format" class="permalink">🔗</a>
 
-Consent Requirement objects contain details about the consent requirements for being able to access [Usage Segment](#usage-segment-format) objects related to the the [Aggregation](#aggregation-format).
+Consent Requirement objects contain details about the consent requirements for being able to access [Usage Segment](#usage-segment-format) objects related to the [Aggregation](#aggregation-format).
 For example, if a regulator requires consent from the tenants to a building in order to access the aggregated electric usage for that building (i.e. whole-building electric usage) if any one tenant is greater than 25% of the total electric usage for the aggregated period, that requirement can be disclosed using Consent Requirement objects, as well as which Customers need to consent.
 Consent Requirement objects are formatted as JSON objects and contain the following named values:
 
@@ -5342,7 +5342,7 @@ The following are the typical steps for a Client to find the correct Aggregation
 * The Client makes a request to the Aggregations listing API with the desired query parameters (e.g. GET "https://cds.example.com/aggregations?q=BID-1234", which filters for Aggregations for Building ID 1234).
   The Server returns a list of the matching Aggregation objects, and the Client scans the list for the desired Aggregation (e.g. the Aggregation object that has an `aggregation_number` value of `"BID-1234"`).
 * The Client parses the [Aggregation object's](#aggregation-format) `consent_requirements` to see what, if any, [Consent Requirements](#consent-requirement-format) need to be completed to access the Aggregation's `scope`.
-* The Client uses OAuth's Client Credentials Grant Flow [[RFC 6749 Section 4.4](#ref-rfc6749-client-credentials)] with the Aggrgation's `scope` (e.g. `"cds_query_usage"`) to obtain an access token (`"access_token": "bbbbb..."`) and the Grant object ids (`"cds_grant_ids": ["aaaaa..."]`) for accessing the Aggregation's dataset [[CDS-WG1-02 Section 8.4](#ref-cds-wg1-02-grants-in-tokens)].
+* The Client uses OAuth's Client Credentials Grant Flow [[RFC 6749 Section 4.4](#ref-rfc6749-client-credentials)] with the Aggregation's `scope` (e.g. `"cds_query_usage"`) to obtain an access token (`"access_token": "bbbbb..."`) and the Grant object ids (`"cds_grant_ids": ["aaaaa..."]`) for accessing the Aggregation's dataset [[CDS-WG1-02 Section 8.4](#ref-cds-wg1-02-grants-in-tokens)].
 * The Client uses OAuth's Client Credentials Grant Flow [[RFC 6749 Section 4.4](#ref-rfc6749-client-credentials)] with the scope `"cds_client_admin"` [[CDS-WG1-02 Section 3.3.1](#ref-cds-wg1-02-client-admin)] to obtain an access token that can query the Grants API [[CDS-WG1-02 Section 8](#ref-cds-wg1-02-grants-api)].
 * The Client looks up the URL for the Grants API, which is the Server Metadata's `cds_grants_api` value (e.g. "https://cds.example.com/grants") [[CDS-WG1-02 Section 3.2](#ref-cds-wg1-02-metadata)].
 * The Client makes a request to the Grants listing API [[CDS-WG1-02 Section 8.5](#ref-cds-wg1-02-grant-list)] with the appropriate query parameters to obtain the relevant Grant object (e.g. GET "https://cds.example.com/grants?grant_ids=aaaaa...").
@@ -5353,7 +5353,7 @@ The following are the typical steps for a Client to find the correct Aggregation
 * The Client sends the relevant Customers an authorization request following the Grant Authorization Request process [[CDS-WG1-02 Section 8.3](#ref-cds-wg1-02-grant-auth-requests)] to complete the consent requirements in order to enable access to the Aggregation's dataset.
 * Once Customers authorize access for the child Grants, the Aggregation's dataset Grant (i.e. the parent Grant) will change status from `"needs_sub_grants"` to `"active"`.
 * The Client looks up the base URL for the Usage Segments API, which is the [Server Metadata's](#server-metadata) `cds_usagesegments_api` value (e.g. "https://cds.example.com/usage-segments").
-* The Client can now use OAuth's Client Credentials Grant Flow [[RFC 6749 Section 4.4](#ref-rfc6749-client-credentials)] with the Aggrgation's `scope` (e.g. `"cds_query_usage"`) to obtain an access token (`"access_token": "bbbbb..."`), or use the previously obtained access token for the same scope if it has not yet expired, to query the [Usage Segments listing API](#usage-segment-list) (e.g. GET "https://cds.example.com/usage-segments") and obtain the Aggregation's Usage Segment objects (i.e. the Aggregation's dataset).
+* The Client can now use OAuth's Client Credentials Grant Flow [[RFC 6749 Section 4.4](#ref-rfc6749-client-credentials)] with the Aggregation's `scope` (e.g. `"cds_query_usage"`) to obtain an access token (`"access_token": "bbbbb..."`), or use the previously obtained access token for the same scope if it has not yet expired, to query the [Usage Segments listing API](#usage-segment-list) (e.g. GET "https://cds.example.com/usage-segments") and obtain the Aggregation's Usage Segment objects (i.e. the Aggregation's dataset).
 
 #### 10.7.8. Listing Aggregations <a id="aggregation-list" href="#aggregation-list" class="permalink">🔗</a>
 
@@ -5368,7 +5368,7 @@ The Aggregation listing request responses are formatted as JSON objects and cont
 * `previous` - _[URL](#url)_ or `null` - Where to request the previous segment of the list of Aggregations.
   If no previous segment exists (i.e. the requester is at the front of the list), this value is `null`.
 
-Clients MUST ignore unknown unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
+Clients MUST ignore unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
 Servers MUST support Clients adding any of the following URL parameters to the `GET` request, which will filter the list of Aggregations to be the intersection of results for each of the URL parameters filters:
 
@@ -5386,7 +5386,7 @@ Listings of Aggregation objects MUST be ordered in reverse chronological order b
 
 ### 10.8. Usage Segments API <a id="usage-segments-api" href="#usage-segments-api" class="permalink">🔗</a>
 
-This specification requires Servers provide a set of APIs allowing Clients to retrieve a Customer's and Server's Usage Segment objects for which they are authorized to access.
+This specification requires Servers to provide a set of APIs allowing Clients to retrieve a Customer's and Server's Usage Segment objects for which they are authorized to access.
 
 #### 10.8.1. Usage Segment Objects <a id="usage-segment-format" href="#usage-segment-format" class="permalink">🔗</a>
 
@@ -5410,7 +5410,7 @@ Usage Segment objects are formatted as JSON objects and contain the following na
 * `interval` - _[decimal](#decimal)_ - (REQUIRED) How long between values, in seconds.
   For values representing a duration interval (e.g. [Electric Usage](#usage-segment-electric-usage)), this `interval` represents the duration of each interval, where the next value starts immediately at the end of the prior interval value with no time gap.
   For values representing point-in-time readings (e.g. [Meter Readings](#usage-segment-meter-readings)), this `interval` represents the time between the readings provided in the `values`.
-* `formats` - _Array[[ValueFormat](#usage-segment-value-formats)]_ - (REQUIRED) For each entry in `values`, these are the formats of that are included, presented in the order in which the values are presented.
+* `formats` - _Array[[ValueFormat](#usage-segment-value-formats)]_ - (REQUIRED) For each entry in `values`, these are the formats that are included, presented in the order in which the values are presented.
 * `values` - _Array[[ValueSet](#usage-segment-value-set-format)]_ - (REQUIRED) A list of Value Sets that represent the entries included in the Usage Segment.
 
 For data that has varying durations, such as monthly billed usage (e.g. anywhere from 28 days to 31 days), Servers MUST create individual Usage Segment objects that have an `interval` value with the duration of the specific period (e.g. month) and a single Value Set entry in their `values` array.
@@ -5443,7 +5443,7 @@ Clients MUST ignore unknown `type` values and unknown fields in this object, suc
 #### 10.8.3. Value Sets <a id="usage-segment-value-set-format" href="#usage-segment-value-set-format" class="permalink">🔗</a>
 
 The [Usage Segment](#usage-segment-format) `values` field provides an ordered list of Value Set entries.
-A Value Set entry is an array that contains an ordered list of [Value Objects](#usage-segment-value-objects), where the type of each Value object which is defined by the order of the `formats` listing.
+A Value Set entry is an array that contains an ordered list of [Value Objects](#usage-segment-value-objects), where the type of each Value object is defined by the order of the `formats` listing.
 
 Each Value Set entry in the `values` listing represents an increment of `interval` seconds in the Usage Segment from the `segment_start`.
 For example, if a Usage Segment has a `segment_start` of `2025-01-01T00:00:00Z`, an `interval` of `900`, and four Value Set entries in the `values`, the Value Set entries would represent the each 15 minute period of a one hour segment (`2025-01-01T00:00:00Z - 2025-01-01T00:15:00Z`, `2025-01-01T00:15:00Z - 2025-01-01T00:30:00Z`, `2025-01-01T00:30:00Z - 2025-01-01T00:45:00Z`, and `2025-01-01T00:45:00Z - 2025-01-01T01:00:00Z`).
@@ -5908,7 +5908,7 @@ The Usage object listing request responses are formatted as JSON objects and con
 * `previous` - _[URL](#url)_ or `null` - Where to request the previous segment of the list of Usage Segments.
   If no previous segment exists (i.e. the requester is at the front of the list), this value is `null`.
 
-Clients MUST ignore unknown unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
+Clients MUST ignore unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
 Servers MUST support Clients adding any of the following URL parameters to the `GET` request, which will filter the list of Usage Segments to be the intersection of results for each of the URL parameters filters:
 
@@ -5933,7 +5933,7 @@ In situations where relevant Usage Segments have the same `segment_start`, those
 
 ### 10.9. Energy Attribute Certificates API <a id="eac-api" href="#eac-api" class="permalink">🔗</a>
 
-This specification requires Servers provide a set of APIs allowing Clients to retrieve a Customer's and Server's Energy Attribute Certificate (EAC) objects for which they are authorized to access.
+This specification requires Servers to provide a set of APIs allowing Clients to retrieve a Customer's and Server's Energy Attribute Certificate (EAC) objects for which they are authorized to access.
 
 #### 10.9.1. Energy Attribute Certificate Object Format <a id="eac-format" href="#eac-format" class="permalink">🔗</a>
 
@@ -5947,13 +5947,13 @@ EAC objects are formatted as JSON objects and contain the following named values
   If the Server caches the data for this object and periodically synchronizes it with the Server's source of truth (e.g. nightly batch updates), this value is the last time this object's Customer Data was updated or validated.
 * `beneficiary_type` - _[BeneficiaryType](#eac-beneficiary-types)_ - (REQUIRED) The type of beneficiary to which this EAC is applied.
 * `beneficiaries` - _Array[[string](#string)]_ - (REQUIRED) The list of identifiers to which the EAC is allocated, based on the `beneficiary_type`.
-* `eac_numbers` - _Array[[string](#string)]_ - (REQUIRED) A list of EAC identifier that a Client or Customer sees in Server documentation, Customer documents, Certificate Registries, or other interfaces as the identifier for this EAC, if available.
-  If a Server does not have a Client or Customer-facing EAC identifier and the Client is not authorized to see the Server's internal EAC identifier for this EAC, or the Server does not have identifiers stored for this EAC, this value is an emtpy list (`[]`).
+* `eac_numbers` - _Array[[string](#string)]_ - (REQUIRED) A list of EAC identifiers that a Client or Customer sees in Server documentation, Customer documents, Certificate Registries, or other interfaces as the identifier for this EAC, if available.
+  If a Server does not have a Client or Customer-facing EAC identifier and the Client is not authorized to see the Server's internal EAC identifier for this EAC, or the Server does not have identifiers stored for this EAC, this value is an empty list (`[]`).
 * `eac_format` - _[string](#string)_ - (REQUIRED) The format of the EAC data linked in the `eac_data_url`.
   Possible values of this format MUST be included in the [Server Metadata's](#server-metadata) `cds_eac_formats` object.
   Clients MUST ignore `eac_format` values that they do not know how to interpret.
 * `eac_data_url` - _[URL](#url)_ - (REQUIRED) A link to an endpoint containing the EAC's data (e.g. asset identifiers, values, locations, etc.).
-  This is a URL, rather than a structured object because there are many EAC formats available across regions, registries, and jursidictions, and rather than this specification attempting to accomodate all EAC formats, Servers only need to link to the EAC data in the format they have the data accessible.
+  This is a URL, rather than a structured object because there are many EAC formats available across regions, registries, and jurisdictions, and rather than this specification attempting to accommodate all EAC formats, Servers only need to link to the EAC data in the format they have the data accessible.
   URL endpoints provided in this field MUST be accessible under the same authentication and security requirements as accessing this specification's EAC API endpoints.
   URLs may link to an individual formatted file, compressed archive files, the base URL to a set of APIs, or any other type of data location, as long as the data is formatted in the manner described by the `eac_format` field.
   In situations where the URL is the base URL to another set of APIs that contain the EAC data, Servers MUST scope the access to that API to only the relevant EAC data for the specific Grant that the `access_token` provides.
@@ -5969,10 +5969,10 @@ EAC object `beneficiary_type` values MUST be one of the following:
 * `customer` - Within the EAC's destination, the EAC is further applied to an individual Power Purchase Agreement (PPA) for a set of Customers.
   When the `beneficiary_type` is `customer`, the `beneficiaries` MUST have values of the relevant `customer_number` values.
   NOTE: listed `customer_number` values MUST be authorized to be visible to the Client, so while the destination MAY allocate beneficiaries of the EAC to multiple customers, only the customer numbers that are available to be seen as part of the Client's authorization MUST be listed.
-* `account` - Within the EAC's destination, the EAC is further applied to an individual Power Purchase Agreement (PPA) for a set of Customer accounts.
+* `account` - Within the EAC's destination, the EAC is further applied to an individual PPA for a set of Customer accounts.
   When the `beneficiary_type` is `account`, the `beneficiaries` MUST have values of the relevant `cds_account_id` values.
   NOTE: listed `cds_account_id` values MUST be authorized to be visible to the Client, so while the destination MAY allocate beneficiaries of the EAC to multiple accounts, only the accounts that are available to be seen as part of the Client's authorization MUST be listed.
-* `servicecontract` - Within the EAC's destination, the EAC is further applied to an individual Power Purchase Agreement (PPA) for a set of Customer service contracts.
+* `servicecontract` - Within the EAC's destination, the EAC is further applied to an individual PPA for a set of Customer service contracts.
   When the `beneficiary_type` is `servicecontract`, the `beneficiaries` MUST have values of the relevant `cds_servicecontract_id` values.
   NOTE: listed `cds_servicecontract_id` values MUST be authorized to be visible to the Client, so while the destination MAY allocate beneficiaries of the EAC to multiple contracts, only the service contracts that are available to be seen as part of the Client's authorization MUST be listed.
 * `rateplan` - Within the EAC's destination, the EAC is further applied to a rate plan or tariff for the customers with service contracts on that rate plan.
@@ -6008,7 +6008,7 @@ The EAC object listing request responses are formatted as JSON objects and conta
 * `previous` - _[URL](#url)_ or `null` - Where to request the previous segment of the list of EACs.
   If no previous segment exists (i.e. the requester is at the front of the list), this value is `null`.
 
-Clients MUST ignore unknown unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
+Clients MUST ignore unknown fields in this object, such as those added by Servers or [Extensions](#extensions).
 
 Servers MUST support Clients adding any of the following URL parameters to the `GET` request, which will filter the list of EACs to be the intersection of results for each of the URL parameters filters:
 
@@ -6231,7 +6231,7 @@ Extensions MAY modify the following enumerated value lists defined in this speci
 Extensions that modify the lists of enumerated values MUST meet the following requirements:
 
 * The enumerated value list modification MUST be backwards compatible, meaning that a Client that supports the existing list of enumerated values will also be able to support the modified list of enumerated values without issue.
-  For example, an extension could modify the [Entity Types](#entity-types) to require supporting an additional enumerated values (e.g. adding a `solar_generator` value), and since Clients are required to ignore unknown values, the modification would be backwards compatible with Clients.
+  For example, an extension could modify the [Entity Types](#entity-types) to require supporting an additional enumerated value (e.g. adding a `solar_generator` value), and since Clients are required to ignore unknown values, the modification would be backwards compatible with Clients.
   If a modification is not backwards compatible (e.g. changing the definition of an existing value), a new enumerated value list MUST be defined.
 
 Extensions MAY define new enumerated value lists as needed.
@@ -6538,7 +6538,7 @@ Content-Type: application/json;charset=UTF-8
                     "description": "Include Bill Statements that are issued on or after this date.",
                     "documentation": "https://example.com/docs/customerdata/auth-details-fields#statement_date_start",
                     "for_types": ["cds_query_bill_statements_1ad"]
-                    "format": "relative_or_absolute_datet",
+                    "format": "relative_or_absolute_date",
                     "is_required": false,
                     "default": "infinite",
                     "maximum": "infinite",
@@ -6576,7 +6576,7 @@ Content-Type: application/json;charset=UTF-8
             "authorization_details_fields_supported": [
                 {
                     "id": "contract_numbers",
-                    "name": "Preslect contract numbers",
+                    "name": "Preselect contract numbers",
                     "description": "On the Authorization Form, preselect specific service contract numbers.",
                     "documentation": "https://example.com/docs/customerdata/auth-details-fields#contract_numbers",
                     "for_types": ["cds_service_contracts_1ad"]
@@ -6588,7 +6588,7 @@ Content-Type: application/json;charset=UTF-8
                 },
                 {
                     "id": "service_types",
-                    "name": "Preslect service types",
+                    "name": "Preselect service types",
                     "description": "On the Authorization Form, preselect specific service types.",
                     "documentation": "https://example.com/docs/customerdata/auth-details-fields#service_types",
                     "for_types": ["cds_service_contracts_1ad"]
@@ -6612,7 +6612,7 @@ Content-Type: application/json;charset=UTF-8
                 },
                 {
                     "id": "addresses",
-                    "name": "Preslect addresses",
+                    "name": "Preselect addresses",
                     "description": "On the Authorization Form, preselect specific services by their service address.",
                     "documentation": "https://example.com/docs/customerdata/auth-details-fields#addresses",
                     "for_types": ["cds_service_contracts_1ad"]
@@ -6772,7 +6772,7 @@ Content-Type: application/json;charset=UTF-8
             "authorization_details_fields_supported": [
                 {
                     "id": "contract_numbers",
-                    "name": "Preslect contract numbers",
+                    "name": "Preselect contract numbers",
                     "description": "On the Authorization Form, preselect specific service contract numbers.",
                     "documentation": "https://example.com/docs/customerdata/auth-details-fields#contract_numbers",
                     "for_types": ["cds_usage_1ad"]
@@ -6784,7 +6784,7 @@ Content-Type: application/json;charset=UTF-8
                 },
                 {
                     "id": "meter_numbers",
-                    "name": "Preslect meter numbers",
+                    "name": "Preselect meter numbers",
                     "description": "On the Authorization Form, preselect service contracts with specific meter numbers.",
                     "documentation": "https://example.com/docs/customerdata/auth-details-fields#meter_numbers",
                     "for_types": ["cds_usage_1ad"]
@@ -6796,7 +6796,7 @@ Content-Type: application/json;charset=UTF-8
                 },
                 {
                     "id": "addresses",
-                    "name": "Preslect addresses",
+                    "name": "Preselect addresses",
                     "description": "On the Authorization Form, preselect specific services by their service address.",
                     "documentation": "https://example.com/docs/customerdata/auth-details-fields#addresses",
                     "for_types": ["cds_usage_1ad"]
@@ -6878,7 +6878,7 @@ Content-Type: application/json;charset=UTF-8
                         },
                         {
                             "id": "gas_monthly_01",
-                            "name": "Natural gas montly usage (therms)",
+                            "name": "Natural gas monthly usage (therms)",
                             "description": "A natural gas service provided by the utility.",
                             "documentation": "https://example.com/docs/customerdata/usage-segments#formats",
                         }
@@ -7611,7 +7611,7 @@ The following is the non-percent encoded and pretty printed version of the `auth
 
 #### 13.3.3. Using an Authorization Code to Obtain an Access Token <a id="example-auth-code-to-token" href="#example-auth-code-to-token" class="permalink">🔗</a>
 
-In this example, the Client provides the [previous example's](#example-auth-request-url) authorization request URL their desired Customer.
+In this example, the Client provides the [previous example's](#example-auth-request-url) authorization request URL to their desired Customer.
 
 The Customer loads the authorization request URL and follows the [Authorization Process](#auth-process) to give their written consent for the Client to access their Customer Data for the requested scope of access.
 
@@ -7930,7 +7930,7 @@ The above `access_token` can be used the same as the access token obtained via t
 
 ### 13.4. Server Request Examples <a id="example-server-request" href="#example-server-request" class="permalink">🔗</a>
 
-The examples in this section show how a Client directly request from a Server that a Grant be created using the Messages API [[CDS-WG1-02 Section 6](#ref-cds-wg1-02-messages-api)].
+The examples in this section show how a Client directly requests from a Server that a Grant be created using the Messages API [[CDS-WG1-02 Section 6](#ref-cds-wg1-02-messages-api)].
 
 This process typically happens when a Server is providing Customer Data access to a contracted vendor that already has a preexisting relationship with the Server (or the utility the Server is servicing).
 
