@@ -307,6 +307,7 @@ For more information, visit <a href="https://lfess.energy/">https://lfess.energy
           <li><a href="#auth-details-error-if-no-preselections">7.4.3. Error If No Preselections</a></li>
           <li><a href="#auth-details-purpose">7.4.4. Purpose Identifier</a></li>
           <li><a href="#auth-details-allow-scope-modifications">7.4.5. Allow Scope Modifications</a></li>
+          <li><a href="#auth-details-jwk">7.4.6. Additional JWK Encryption</a></li>
         </ul>
       </li>
     </ul>
@@ -660,6 +661,8 @@ This means Servers MUST NOT store a decimal value as a float, since that format 
 <p><a id="integer" href="#integer" class="permalink">🔗</a> “integer” - A positive integer value as defined by <code class="language-plaintext highlighter-rouge">int</code> in [<a href="#ref-rfc8259-numbers">RFC 8259 Section 6</a>].</p>
 
 <p><a id="json" href="#json" class="permalink">🔗</a> “JSON” - A data format defined in [<a href="#ref-rfc8259">RFC 8259</a>].</p>
+
+<p><a id="jwk-enc" href="#jwk-enc" class="permalink">🔗</a> “JWK Public Encryption Key” - A JSON object representing a public key as defined in [<a href="#ref-rfc7517-pk">RFC 7517 Section 4</a>] where the <code class="language-plaintext highlighter-rouge">use</code> field MUST contain the value <code class="language-plaintext highlighter-rouge">enc</code>.</p>
 
 <p><a id="map" href="#map" class="permalink">🔗</a> “Map” - A JSON object as defined by <code class="language-plaintext highlighter-rouge">Objects</code> in [<a href="#ref-rfc8259-objects">RFC 8259 Section 4</a>].</p>
 
@@ -1403,6 +1406,7 @@ In these relevant use cases, Clients only need access to Customers’ rate plans
       <li><a href="#auth-details-merge-selections"><code class="language-plaintext highlighter-rouge">"merge_selection_with"</code></a></li>
       <li><a href="#auth-details-error-if-no-preselections"><code class="language-plaintext highlighter-rouge">"error_if_no_preselections"</code></a></li>
       <li><a href="#auth-details-allow-scope-modifications"><code class="language-plaintext highlighter-rouge">"allow_scope_modifications"</code></a></li>
+      <li><a href="#auth-details-jwk"><code class="language-plaintext highlighter-rouge">"jwk"</code></a></li>
     </ul>
   </li>
   <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain any the following values and support the authorization details field when the Server has access to the data that allows for support of that field:
@@ -1470,6 +1474,7 @@ In these relevant use cases, Clients only need access to Customers’ relevant a
       <li><a href="#auth-details-merge-selections"><code class="language-plaintext highlighter-rouge">"merge_selection_with"</code></a></li>
       <li><a href="#auth-details-error-if-no-preselections"><code class="language-plaintext highlighter-rouge">"error_if_no_preselections"</code></a></li>
       <li><a href="#auth-details-allow-scope-modifications"><code class="language-plaintext highlighter-rouge">"allow_scope_modifications"</code></a></li>
+      <li><a href="#auth-details-jwk"><code class="language-plaintext highlighter-rouge">"jwk"</code></a></li>
     </ul>
   </li>
   <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain any the following values and support the authorization details field when the Server has access to the data that allows for support of that field:
@@ -1537,6 +1542,7 @@ In these relevant use cases, Clients only need access to Customers’ relevant s
       <li><a href="#auth-details-merge-selections"><code class="language-plaintext highlighter-rouge">"merge_selection_with"</code></a></li>
       <li><a href="#auth-details-error-if-no-preselections"><code class="language-plaintext highlighter-rouge">"error_if_no_preselections"</code></a></li>
       <li><a href="#auth-details-allow-scope-modifications"><code class="language-plaintext highlighter-rouge">"allow_scope_modifications"</code></a></li>
+      <li><a href="#auth-details-jwk"><code class="language-plaintext highlighter-rouge">"jwk"</code></a></li>
     </ul>
   </li>
   <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain any the following values and support the authorization details field when the Server has access to the data that allows for support of that field:
@@ -1609,6 +1615,7 @@ In these relevant use cases, Clients only need access to a Customer’s list of 
       <li><a href="#auth-details-merge-selections"><code class="language-plaintext highlighter-rouge">"merge_selection_with"</code></a></li>
       <li><a href="#auth-details-error-if-no-preselections"><code class="language-plaintext highlighter-rouge">"error_if_no_preselections"</code></a></li>
       <li><a href="#auth-details-allow-scope-modifications"><code class="language-plaintext highlighter-rouge">"allow_scope_modifications"</code></a></li>
+      <li><a href="#auth-details-jwk"><code class="language-plaintext highlighter-rouge">"jwk"</code></a></li>
     </ul>
   </li>
   <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain any the following values and support the authorization details field when the Server has access to the data that allows for support of that field:
@@ -1672,6 +1679,7 @@ In these relevant use cases, Clients only need access to a Customer’s list of 
       <li><a href="#auth-details-merge-selections"><code class="language-plaintext highlighter-rouge">"merge_selection_with"</code></a></li>
       <li><a href="#auth-details-error-if-no-preselections"><code class="language-plaintext highlighter-rouge">"error_if_no_preselections"</code></a></li>
       <li><a href="#auth-details-allow-scope-modifications"><code class="language-plaintext highlighter-rouge">"allow_scope_modifications"</code></a></li>
+      <li><a href="#auth-details-jwk"><code class="language-plaintext highlighter-rouge">"jwk"</code></a></li>
     </ul>
   </li>
   <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain any the following values and support the authorization details field when the Server has access to the data that allows for support of that field:
@@ -1758,6 +1766,7 @@ In these relevant use cases, Clients only need access to a Customer’s list of 
       <li><a href="#auth-details-merge-selections"><code class="language-plaintext highlighter-rouge">"merge_selection_with"</code></a></li>
       <li><a href="#auth-details-error-if-no-preselections"><code class="language-plaintext highlighter-rouge">"error_if_no_preselections"</code></a></li>
       <li><a href="#auth-details-allow-scope-modifications"><code class="language-plaintext highlighter-rouge">"allow_scope_modifications"</code></a></li>
+      <li><a href="#auth-details-jwk"><code class="language-plaintext highlighter-rouge">"jwk"</code></a></li>
     </ul>
   </li>
   <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain any the following values and support the authorization details field when the Server has access to the data that allows for support of that field:
@@ -1857,6 +1866,7 @@ In these relevant use cases, Clients need access to a Customer’s set of Bill S
       <li><a href="#auth-details-merge-selections"><code class="language-plaintext highlighter-rouge">"merge_selection_with"</code></a></li>
       <li><a href="#auth-details-error-if-no-preselections"><code class="language-plaintext highlighter-rouge">"error_if_no_preselections"</code></a></li>
       <li><a href="#auth-details-allow-scope-modifications"><code class="language-plaintext highlighter-rouge">"allow_scope_modifications"</code></a></li>
+      <li><a href="#auth-details-jwk"><code class="language-plaintext highlighter-rouge">"jwk"</code></a></li>
     </ul>
   </li>
   <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain any the following values and support the authorization details field when the Server has access to the data that allows for support of that field:
@@ -1922,6 +1932,7 @@ In these relevant use cases, Clients need access to a Customer’s set of Bill S
       <li><a href="#auth-details-merge-selections"><code class="language-plaintext highlighter-rouge">"merge_selection_with"</code></a></li>
       <li><a href="#auth-details-error-if-no-preselections"><code class="language-plaintext highlighter-rouge">"error_if_no_preselections"</code></a></li>
       <li><a href="#auth-details-allow-scope-modifications"><code class="language-plaintext highlighter-rouge">"allow_scope_modifications"</code></a></li>
+      <li><a href="#auth-details-jwk"><code class="language-plaintext highlighter-rouge">"jwk"</code></a></li>
     </ul>
   </li>
   <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain any the following values and support the authorization details field when the Server has access to the data that allows for support of that field:
@@ -2014,6 +2025,7 @@ In these relevant use cases, Clients need access to a Customer’s Usage Segment
       <li><a href="#auth-details-merge-selections"><code class="language-plaintext highlighter-rouge">"merge_selection_with"</code></a></li>
       <li><a href="#auth-details-error-if-no-preselections"><code class="language-plaintext highlighter-rouge">"error_if_no_preselections"</code></a></li>
       <li><a href="#auth-details-allow-scope-modifications"><code class="language-plaintext highlighter-rouge">"allow_scope_modifications"</code></a></li>
+      <li><a href="#auth-details-jwk"><code class="language-plaintext highlighter-rouge">"jwk"</code></a></li>
     </ul>
   </li>
   <li>The <code class="language-plaintext highlighter-rouge">authorization_details_types_supported</code> array MUST contain any the following values and support the authorization details field when the Server has access to the data that allows for support of that field:
@@ -4502,6 +4514,47 @@ This authorization data field is intended to allow Clients a way to configure a 
 
 <p>If the Server supports the ability for a Customer to modify the requested Scope in the <a href="#auth-form">Authorization Form</a>, the Server MUST include this authorization details field for all Scopes that may be used for that Authorization Form.
 This means that in this situation, Servers MUST support a Client’s ability to toggle the ability for a Customer to edit their authorization request.</p>
+
+<h4 id="746-additional-jwk-encryption-">7.4.6. Additional JWK Encryption <a id="auth-details-jwk" href="#auth-details-jwk" class="permalink">🔗</a></h4>
+
+<p>By default, all <a href="#api">Customer Data API</a> requests and responses are secured using <a href="#https">HTTPS</a> so that data is encrypted in transit between the Server and Client.
+However, for some use cases, a Client may additionally want to encrypt Customer Data API responses so that only specific individual end devices can decrypt and view the authorized Customer Data.
+For example, an energy mobile app developer Client may be in a jurisdiction that incurs liability for being able to view Customer Data on its servers, so the Client’s app that is installed on a Customer’s mobile device needs to be the only place where the Customer Data is accessible.</p>
+
+<p>In these relevant use cases, Clients benefit from being able to add a JSON Web Key (JWK) public encryption key to an authorization request, which will cause the Customer Data API responses for the authorization to be encrypted with that JWK public key.
+This authorization data field is intended to enable Clients to provide JWK public encryption keys on a per-authorization basis, which allows Clients to add a layer of encryption that is individual to each of their end devices.</p>
+
+<p>To support this authorization details field, the Authorization Details Field Object MUST meet the following requirements:</p>
+
+<ul>
+  <li>The <code class="language-plaintext highlighter-rouge">id</code> value MUST be <code class="language-plaintext highlighter-rouge">"jwk"</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">format</code> value MUST be <code class="language-plaintext highlighter-rouge">"jwk_or_null"</code>.</li>
+  <li>If this object is included in a Scope Description where the <code class="language-plaintext highlighter-rouge">response_types_supported</code> field is not empty array (e.g. Customer authorization is supported):
+    <ul>
+      <li>The <code class="language-plaintext highlighter-rouge">is_required</code> value MUST be <code class="language-plaintext highlighter-rouge">false</code>.</li>
+      <li>The <code class="language-plaintext highlighter-rouge">default</code> value MUST be <code class="language-plaintext highlighter-rouge">null</code>.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Additionally, Servers MUST implement the following behavior to support this authorization details field:</p>
+
+<ul>
+  <li>For all Customer Data <a href="#scopes">Scopes</a> included in the authorization request or token request this field’s value MUST be the same, meaning that only one JWK may be provided for an authorization request or token request.
+This limitation is because many Scopes have overlapping Customer Data API access, so Servers cannot encrypt API responses based on individual Scopes.
+If a Client submits an authorization request or token request with different <code class="language-plaintext highlighter-rouge">"jwk"</code> authorization details field values, the Server MUST reject the authorization request or token request with an <code class="language-plaintext highlighter-rouge">invalid_authorization_details</code> error.</li>
+  <li>When the field value is <code class="language-plaintext highlighter-rouge">null</code>, Servers MUST use the default <a href="#https">HTTPS</a> encryption requirements for Customer Data API responses.</li>
+  <li>When the field value is not <code class="language-plaintext highlighter-rouge">null</code>, Servers MUST validate that the submitted value is a valid <a href="#jwk-enc">JWK Public Encryption Key</a> and the Server supports the value for public key encryption.
+Servers MUST support at least JWK public keys with a <code class="language-plaintext highlighter-rouge">"kty"</code> value of <code class="language-plaintext highlighter-rouge">"EC"</code> and <code class="language-plaintext highlighter-rouge">"crv"</code> value of <code class="language-plaintext highlighter-rouge">"P-256"</code>.
+If the JWK value does not have a valid format or the Server does not support that type of JWK for public key encryption, the Server MUST reject the request with an <code class="language-plaintext highlighter-rouge">invalid_authorization_details</code> error.
+If the JWK value is valid and the Server supports that type of JWK for public key encryption, the Server MUST do the following:
+    <ul>
+      <li>The Server MUST continue to use the default HTTPS encryption requirements for Customer Data API requests and responses.</li>
+      <li>For any Customer Data API requests made using access tokens that have Scopes with a <code class="language-plaintext highlighter-rouge">"jwk"</code> authorization details field value that is not <code class="language-plaintext highlighter-rouge">null</code>, the Server MUST additionally encrypt Customer Data API response body using the JWK that is set in the <code class="language-plaintext highlighter-rouge">"jwk"</code> authorizations details field value.
+This means that not only is the response payload encrypted using HTTPS between the Client and the Server, but the Client needs to also have the matching JWK private key to decrypt the response body.</li>
+    </ul>
+  </li>
+</ul>
 
 <h2 id="8-clients-">8. Clients <a id="clients" href="#client" class="permalink">🔗</a></h2>
 
@@ -10365,6 +10418,10 @@ Content-Type: application/json;charset=UTF-8
 <p><a id="ref-rfc6838" href="#ref-rfc6838" class="permalink">🔗</a>
 <code class="language-plaintext highlighter-rouge">RFC 6838</code> - “Media Type Specifications and Registration Procedures”, RFC 6838, Internet Engineering Task Force (IETF),<br />
 <a href="https://www.rfc-editor.org/rfc/rfc6838">https://www.rfc-editor.org/rfc/rfc6838</a></p>
+
+<p><a id="ref-rfc7517-pk" href="#ref-rfc7517-pk" class="permalink">🔗</a>
+<code class="language-plaintext highlighter-rouge">RFC 7517 Section 4</code> - Section 4. JSON Web Key (JWK) Format, “JSON Web Key (JWK)”, RFC 7517, Internet Engineering Task Force (IETF),<br />
+<a href="https://www.rfc-editor.org/rfc/rfc7517#section-4">https://www.rfc-editor.org/rfc/rfc7517#section-4</a></p>
 
 <p><a id="ref-rfc7946-geojson" href="#ref-rfc7946-geojson" class="permalink">🔗</a>
 <code class="language-plaintext highlighter-rouge">RFC 7946</code> - Section 3. GeoJSON Object, “The GeoJSON Format”, RFC 7946, Internet Engineering Task Force (IETF),
